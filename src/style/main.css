@@ -1,0 +1,83 @@
+
+:root{
+
+}
+*{
+    box-sizing: border-box;
+}
+.bg-darkBlue{
+    background-color: #1E293B;
+}
+
+/* start login */
+.login_backdrop{
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    z-index: 1;
+    width: 350px;
+}
+
+.form_container{
+    z-index: 2;
+    position: relative;
+}
+
+/* end login */
+
+/* start reference */
+.referense_side{
+    width: 300px;
+    position: relative;
+}
+/* end reference */
+
+/* start chat */
+.chat_container{
+    width: calc(100% - 300px);
+    position: relative;
+}
+.chat_userName{
+    border-left: 3px solid blue;
+    color: black;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 10px;
+}
+.chat_userName_2{
+    border-right: 3px solid rgb(8, 8, 124);
+    color: black;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 10px;
+}
+.code{
+    position: absolute;
+    left: -100px;
+    background-color: #1E293B;
+    width: 100px;
+    height: 100px;
+}
+/* end chat */
+
+/* start chat input */
+.chat_input{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+/* end chat input */
+
+/* start archive */
+/* .accordion li > div {
+    display: none;
+} */
+
+.accordion .flipY {
+    transform: rotate3d(1, 0, 0, 180deg);
+}
+
+.accordion svg {
+    transition: all 1s cubic-bezier(0, .5, 0, 1);
+}
+/* end archive */
