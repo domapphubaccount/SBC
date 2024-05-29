@@ -64,7 +64,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
           
           <ul className="flex justify-between list-none ml-auto items-center">
             <li className='mr-3'>
-              <Archive dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>/>
+              <Archive dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>
             </li>
             <li className='mr-3' onClick={handleStartNewChat}>
               <div>
