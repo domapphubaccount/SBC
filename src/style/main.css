@@ -67,12 +67,16 @@
     /* background-color: #1E293B; */
     width: 200px;
     height: 100px;
+    top: 20px;
     transform: translateX(-100%);
 }
 .dislike{
     position: absolute;
     top: -5px;
     right: -5px;
+}
+.chat_card{
+    min-width: 150px;
 }
 /* end chat */
 

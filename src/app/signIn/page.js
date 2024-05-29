@@ -169,9 +169,9 @@ function Page() {
             </Link>
           </div>
         </div>
-        <div>
+        {/* <div>
           <img src={LoginImg.src} className="login_backdrop" alt="login bannar" />
-        </div>
+        </div> */}
       </div>
     </section>
   );

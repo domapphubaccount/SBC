@@ -169,7 +169,7 @@ function TailwindAccordion() {
                   </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                  <button onClick={()=>setRenameToggle(false)} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"> Subscribe </button>
+                  <button onClick={()=>setRenameToggle(false)} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"> Rename Chat </button>
                   <button  onClick={()=>setRenameToggle(false)} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"> Cancel </button>
                 </div>
               </div>
@@ -195,9 +195,9 @@ function TailwindAccordion() {
                     </svg>
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline"> Delete Item </h3>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline"> Delete Chat </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500"> Are you sure you want to delete <span className="font-bold">Sample Item</span>? This action cannot be undone. </p>
+                      <p className="text-sm text-gray-500"> Are you sure you want to delete <span className="font-bold">this Chat</span>? This action cannot be undone. </p>
                     </div>
                   </div>
                 </div>

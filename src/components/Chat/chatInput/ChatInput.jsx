@@ -1,11 +1,37 @@
-import React from 'react';
+"use client"
+import axios from 'axios';
+import React, { useState } from 'react';
 
 function ChatInput() {
+  const [message , setMessage] = useState("")
+  const token = JSON.parse(localStorage.getItem("data")).token
+
+  const handleSendMessage = () =>{
+    axios.post(
+      "https://sbc.designal.cc/api/send-message",
+      {
+        question: message,
+        master_chat_id: "61",
+        selected_pdf: "id1,id2"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('There was an error making the request!', error);
+    });
+  }
   return (
     
 
     <div className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300" >
-    <button className="outline-none focus:outline-none">
+    {/* <button className="outline-none focus:outline-none">
       <svg
         className="text-gray-400 h-6 w-6"
         xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +62,7 @@ function ChatInput() {
           d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
         />
       </svg>
-    </button>
+    </button> */}
 
     <textarea
       aria-placeholder="Escribe un mensaje aquí"
@@ -47,10 +73,11 @@ function ChatInput() {
       required
       style={{borderRadius:'20px'}}
       rows={1}
+      onChange={(e)=>setMessage(e.target.value)}
     >
       </textarea>
 
-    <button className="outline-none focus:outline-none" type="submit">
+    <button onClick={handleSendMessage} className="outline-none focus:outline-none" type="submit">
       <svg
         className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
         xmlns="http://www.w3.org/2000/svg"

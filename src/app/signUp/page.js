@@ -1,11 +1,12 @@
 "use client"
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import LoginImg from '@/assets/login/login.png';
 import Link from 'next/link';
 import axios from 'axios';
 import { config } from '@/config/config';
+import { useRouter } from 'next/navigation';
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -21,6 +22,9 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
+  const [message, setMessage] = useState("")
+  const [loading,setLoading] = useState(false)
+  const router = useRouter()
 
 
 
@@ -38,9 +42,21 @@ function Page() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      setLoading(true)
+      setMessage(false)
 
-      axios.post(`${config.api}user-create`,values).then(res=>console.log(res)).catch(e=>console.log(e))
+      axios.post(`${config.api}user-create`,values)
+      .then(res=>
+      {
+        if(res.data.status === "SUCCESS"){
+          router.push('/signIn')
+          setMessage("")
+          setLoading(false)
+       }else if(res.data.status === "ERROR"){
+          setMessage(res.data.message)
+          setLoading(false)
+       }
+    }).catch(e=>{ setLoading(false); console.log(e)})
     },
   });
 
@@ -52,14 +68,31 @@ function Page() {
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
         crossOrigin="anonymous"
       />
+
       <div className="min-h-screen flex flex-col items-center justify-center">
+      {message &&
+        <div className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4" role="alert">
+            <svg className="w-100 h-5 inline mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+            <div>
+                <span className="font-medium">ERROR!</span> {message}
+            </div>
+        </div>
+        }
         <div className="form_container flex flex-col bg-white shadow-md px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-3xl w-50 max-w-md">
           <div className="font-medium self-center text-xl sm:text-3xl text-gray-800">
             Join us Now
           </div>
+          {
+            loading ?
+            <div className='flex justify-center pt-3'>
+            <div className="w-12 h-12 rounded-full animate-spin
+            border-2 border-dashed border-blue-500 border-t-transparent"></div>
+            </div>
+            :
           <div className="mt-4 self-center text-xl sm:text-sm text-gray-800">
             Enter your credentials to get access account
           </div>
+          }
 
           <div className="mt-10">
             <form onSubmit={formik.handleSubmit}>
@@ -176,9 +209,9 @@ function Page() {
             </Link>
           </span>
         </div>
-        <div>
+        {/* <div>
           <img src={LoginImg.src} className="login_backdrop" alt="login bannar" />
-        </div>
+        </div> */}
       </div>
     </section>
   );
