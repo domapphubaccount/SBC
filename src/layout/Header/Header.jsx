@@ -6,33 +6,38 @@ import axios from 'axios'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
-function Header({path}) {
+function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpdate,setInsideChat,setCatchChat}) {
   const [ userName , setUserName] = useState("");
-  const token = JSON.parse(localStorage.getItem("data")).token
 
   useEffect(()=>{
+    const token = JSON.parse(localStorage.getItem("data")).token
+
     if(localStorage.getItem("data")){
       setUserName(JSON.parse(localStorage.getItem("data")).name)
     }
   },[])
 
   const handleStartNewChat = () => {
-    axios.get("https://sbc.designal.cc/api/start-chat", {
+    const token = JSON.parse(localStorage.getItem("data")).token
+      axios.get("https://sbc.designal.cc/api/start-chat", {
       headers: {
         Authorization: `Bearer ${token}`
       },
       params: {
-        chat_id: "61",
-        share_name: "0 or 1"
+        chat_id: "",
+        share_name: "1"
       }
     })
     .then(response => {
       console.log(response.data);
+      setCatchChat(response.data.data.id)
     })
     .catch(error => {
       console.error('There was an error making the request!', error);
     })
   }
+
+  
   return (
     <>       
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
@@ -44,15 +49,12 @@ function Header({path}) {
 
         <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
           <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">SBC</Link>
-          {/* <button className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none" type="button" onClick="toggleNavbar('example-collapse-navbar')">
-            <i className="text-white fas fa-bars"></i>
-          </button> */}
         </div>
         {
           !path ?
 
                 <div>
-                  <MultipleSelect />
+                  <MultipleSelect code={code} setStoredCode={setStoredCode} storedCode={storedCode} />
                 </div>
         :
         <div>PROFILE</div>
@@ -62,7 +64,7 @@ function Header({path}) {
           
           <ul className="flex justify-between list-none ml-auto items-center">
             <li className='mr-3'>
-              <Archive />
+              <Archive dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>/>
             </li>
             <li className='mr-3' onClick={handleStartNewChat}>
               <div>

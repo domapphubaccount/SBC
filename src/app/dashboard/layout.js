@@ -13,8 +13,6 @@ export const metadata = {
 function layout({children}) {
   return (
     <div>
-        <Header />
-        <DashLayout />
         {children}
         {/* <ChatInput /> */}
     </div>

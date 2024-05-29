@@ -4,7 +4,8 @@ import Refrence from '../reference/Refrence'
 import ChatInput from '../chatInput/ChatInput'
 import MainChat from '../mainChat/MainChat'
 
-function ChatContainer() {
+function ChatContainer({storedCode,insideChat,update,setUpdate,}) {
+  
   const [elementWidth,setElementWidth] = useState()
   useEffect(()=>{
     setElementWidth(document.getElementById("refContainer").offsetWidth)
@@ -16,7 +17,7 @@ function ChatContainer() {
       <div className="w-screen">
         <div className="grid grid-cols-4 min-w-full border rounded" style={{ minHeight: '80vh' }}>
           <Refrence setElementWidth={setElementWidth}/>
-          <MainChat elementWidth={elementWidth}/>
+          <MainChat elementWidth={elementWidth} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
         </div>
       </div>
     </div>

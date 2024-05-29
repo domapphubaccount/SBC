@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
 
-function MultipleSelect() {
+function MultipleSelect({code,setStoredCode,storedCode}) {
   const [selectedOptions, setSelectedOptions] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -20,6 +20,18 @@ function MultipleSelect() {
     };
   }, [dropdownRef]);
 
+  const handleCheckboxChange = (itemName) => {
+    setStoredCode(prevState => {
+      if (prevState.includes(itemName)) {
+        // Remove the item if it's already selected
+        return prevState.filter(item => item !== itemName);
+      } else {
+        // Add the item if it's not already selected
+        return [...prevState, itemName];
+      }
+    });
+  };
+
   return (
     <>
         <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -32,42 +44,19 @@ function MultipleSelect() {
             </button>
         </div>
         {selectedOptions &&
-        <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+          code[0] &&
+          <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
             <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem"><input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>Option 1</div></span>
-                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem"><input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>Option 1</div></span>
-                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem"><input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>Option 1</div></span>
-                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem"><input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>Option 1</div></span>
-                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem"><input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>Option 1</div></span>
-                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem"><input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>Option 1</div></span>
-
+              {code[0].pdfs.map(item => (
+                    <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem">
+                      <input  
+                    onChange={() => {handleCheckboxChange(item.id)}}
+                    checked={storedCode.includes(item.id)} type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>{item.name}</div></span>
+              ))}
             </div>
         </div>
 }
         </div>
-
-        {/* <div className="mt-4">
-        <label className="inline-flex items-center">
-            <input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" />
-            <span className="ml-2 text-gray-700">Checkbox 1</span>
-        </label>
-        <label className="inline-flex items-center">
-            <input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" />
-            <span className="ml-2 text-gray-700">Checkbox 2</span>
-        </label>
-        <label className="inline-flex items-center">
-            <input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" />
-            <span className="ml-2 text-gray-700">Checkbox 3</span>
-        </label>
-        <label className="inline-flex items-center">
-            <input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" />
-            <span className="ml-2 text-gray-700">Checkbox 4</span>
-        </label>
-        <label className="inline-flex items-center">
-            <input type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" />
-            <span className="ml-2 text-gray-700">Checkbox 5</span>
-        </label>
-        </div> */}
     </>
 
   );

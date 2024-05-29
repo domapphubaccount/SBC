@@ -1,11 +1,16 @@
-import Header from '@/layout/Header/Header'
-import React from 'react'
+import DashLayout from '@/layout/DashLayout/DashLayout'
+import React, { useEffect } from 'react'
 
 function page() {
+  useEffect(()=>{
+console.log('sd;fknhsdjvfjd')
+  },[])
+
+
   return (
-    <div>
-        
-    </div>
+    <>
+    <DashLayout />
+    </>
   )
 }
 

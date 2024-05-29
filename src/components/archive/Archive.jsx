@@ -1,9 +1,10 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ArchiveAccordion from './ArchiveAccordions'
 
-function Archive() {
+function Archive({dashboardData,setUpdate,update,setInsideChat,setCatchChat}) {
     const [archiveToggle,setArchiveToggle] = useState(false)
+
   return (
     <>
             <svg xmlns="http://www.w3.org/2000/svg" onClick={()=>setArchiveToggle(!archiveToggle)} width={25}  fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer">
@@ -14,7 +15,7 @@ function Archive() {
                 archiveToggle &&
                 <div className="absolute right-0 z-10 mt-2 w-96 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div className="py-1" role="none">
-                        <ArchiveAccordion />
+                        <ArchiveAccordion setCatchChat={setCatchChat} dashboardData={dashboardData} setUpdate={setUpdate} update={update}setInsideChat={setInsideChat}/>
                     </div>
                 </div>
                 }

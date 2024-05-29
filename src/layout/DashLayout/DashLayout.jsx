@@ -2,11 +2,11 @@ import ChatContainer from '@/components/Chat/chatContainer/ChatContainer'
 import Refrence from '@/components/Chat/reference/Refrence'
 import React from 'react'
 
-function DashLayout() {
+function DashLayout({storedCode,insideChat,update,setUpdate}) {
   return (
     <main >
         {/* <Refrence /> */}
-        <ChatContainer />
+        <ChatContainer storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
     </main>
   )
 }

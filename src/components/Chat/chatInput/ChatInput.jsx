@@ -1,18 +1,26 @@
 "use client"
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function ChatInput() {
+function ChatInput({storedCode,insideChat,update,setUpdate}) {
   const [message , setMessage] = useState("")
-  const token = JSON.parse(localStorage.getItem("data")).token
+  
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("data")) {
+      const storedData = JSON.parse(localStorage.getItem("data"));
+      setToken(storedData.token);
+    }
+  }, []);
 
   const handleSendMessage = () =>{
     axios.post(
       "https://sbc.designal.cc/api/send-message",
       {
         question: message,
-        master_chat_id: "61",
-        selected_pdf: "id1,id2"
+        master_chat_id: insideChat&& insideChat.id,
+        selected_pdf: storedCode && storedCode
       },
       {
         headers: {
@@ -22,6 +30,7 @@ function ChatInput() {
     )
     .then(response => {
       console.log(response.data);
+      setUpdate(!update)
     })
     .catch(error => {
       console.error('There was an error making the request!', error);
@@ -67,7 +76,7 @@ function ChatInput() {
     <textarea
       aria-placeholder="Escribe un mensaje aquí"
       placeholder="Escribe un mensaje aquí"
-      className="py-2 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700"
+      className="py-2 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
       type="text"
       name="message"
       required
