@@ -10,6 +10,16 @@
 }
 
 /* start login */
+.log-bannar{
+    background-image: url("../assets/login/bannar.jpg");
+}
+.log-bannar-2{
+    background-image: url("../assets/login/layer2.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+}
 .login_backdrop{
     position: absolute;
     left: 10px;
@@ -53,10 +63,16 @@
 }
 .code{
     position: absolute;
-    left: -100px;
-    background-color: #1E293B;
-    width: 100px;
+    left: -40px;
+    /* background-color: #1E293B; */
+    width: 200px;
     height: 100px;
+    transform: translateX(-100%);
+}
+.dislike{
+    position: absolute;
+    top: -5px;
+    right: -5px;
 }
 /* end chat */
 

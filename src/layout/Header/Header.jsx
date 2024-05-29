@@ -3,9 +3,16 @@ import MultipleSelect from '@/components/Chat/code/code'
 import Archive from '@/components/archive/Archive'
 import DropDown from '@/components/dropDown/DropDown'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Header({path}) {
+  const [ userName , setUserName] = useState("")
+
+  useEffect(()=>{
+    if(localStorage.getItem("data")){
+      setUserName(JSON.parse(localStorage.getItem("data")).name)
+    }
+  },[])
   return (
     <>       
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
@@ -45,7 +52,7 @@ function Header({path}) {
             </div>
             </li>
             <li >
-              <DropDown />
+              <DropDown userName={userName}/>
             </li>
 
           </ul>

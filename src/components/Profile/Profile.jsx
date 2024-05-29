@@ -22,7 +22,7 @@ function Profile() {
                 </div> 
                 <div className="px-4 w-full">
                     <div className="w-100 mb-4">
-                        <div class="relative h-10 w-full min-w-[200px]">
+                        <div className="relative h-10 w-full min-w-[200px]">
                             <input
                             className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                             placeholder=" "
@@ -33,7 +33,7 @@ function Profile() {
                         </div>
                     </div>
                     <div className="w-100 mb-4">
-                        <div class="relative h-10 w-full min-w-[200px]">
+                        <div className="relative h-10 w-full min-w-[200px]">
                             <input
                             className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                             placeholder=" "
@@ -43,8 +43,8 @@ function Profile() {
                             </label>
                         </div>
                     </div>
-                    <button class="px-3 md:px-4 py-1 md:py-2 bg-sky-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Save
+                    <button className="px-3 md:px-4 py-1 md:py-2 bg-sky-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
+                        <i className="fa-solid fa-arrow-right-to-bracket"></i> Save
                     </button>
                 </div>
             </div>  
@@ -61,7 +61,7 @@ function Profile() {
 
                 <div className="px-4 w-full">
                     <div className="w-100 mb-4">
-                        <div class="relative h-10 w-full min-w-[200px]">
+                        <div className="relative h-10 w-full min-w-[200px]">
                             <input
                             className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                             placeholder=" "
@@ -72,7 +72,7 @@ function Profile() {
                         </div>
                     </div>
                     <div className="w-100 mb-4">
-                        <div class="relative h-10 w-full min-w-[200px]">
+                        <div className="relative h-10 w-full min-w-[200px]">
                             <input
                             className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                             placeholder=" "
@@ -83,7 +83,7 @@ function Profile() {
                         </div>
                     </div>
                     <div className="w-100 mb-4">
-                        <div class="relative h-10 w-full min-w-[200px]">
+                        <div className="relative h-10 w-full min-w-[200px]">
                             <input
                             className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                             placeholder=" "
@@ -93,8 +93,8 @@ function Profile() {
                             </label>
                         </div>
                     </div>
-                    <button class="px-3 md:px-4 py-1 md:py-2 bg-sky-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Save
+                    <button className="px-3 md:px-4 py-1 md:py-2 bg-sky-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
+                        <i className="fa-solid fa-arrow-right-to-bracket"></i> Save
                     </button>
                 
 
@@ -112,8 +112,8 @@ function Profile() {
                     </p>
                 </div> 
                 <div className="px-4 w-full">
-                    <button class="px-3 md:px-4 py-1 md:py-2 bg-red-700	 border border-red-800	text-white rounded-lg hover:bg-red-900">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Delete Account
+                    <button className="px-3 md:px-4 py-1 md:py-2 bg-red-700	 border border-red-800	text-white rounded-lg hover:bg-red-900">
+                        <i className="fa-solid fa-arrow-right-to-bracket"></i> Delete Account
                     </button>
                 </div>
             </div>  
