@@ -125,7 +125,7 @@ function MainChat({elementWidth}) {
             <div className='flex justify-end relative'>
                 {/* <div className='code'></div> */}
                 <div>
-                  <div className='chat_userName_2'>{user}</div>
+                  <div className='chat_userName_2'>{user}</div> 
                     <div className="flex justify-end">
                     <div
                         className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative"
