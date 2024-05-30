@@ -47,12 +47,16 @@ function MultipleSelect({code,setStoredCode,storedCode}) {
           code[0] &&
           <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
             <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+              <div className='ps-2 text-black'>{code[0].name}</div>
+              <div>
               {code[0].pdfs.map(item => (
                     <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem">
                       <input  
+                      style={{borderRadius:'7px'}}
                     onChange={() => {handleCheckboxChange(item.id)}}
                     checked={storedCode.includes(item.id)} type="checkbox" className="form-checkbox h-5 w-5 text-indigo-600" mr-3/><div className='px-3'>{item.name}</div></span>
               ))}
+              </div>
             </div>
         </div>
 }

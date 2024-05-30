@@ -13,10 +13,9 @@ export default function Home() {
   const [update,setUpdate] = useState(false)
   const [insideChat , setInsideChat] = useState({})
   const [catchChat,setCatchChat] = useState(null)
-  console.log("catchChat",catchChat)
+  const [loading,setLoading] = useState(false)
   
   useEffect(()=>{
-
     if(!JSON.parse(localStorage.getItem("data"))){
       redirect('/signIn')
     }
@@ -33,7 +32,6 @@ export default function Home() {
         {
           if(res.data.success){
             setCode(res.data.data)
-            console.log(res.data.data)
           }
         }
       ).catch(e => console.log(e))
@@ -56,15 +54,14 @@ export default function Home() {
             }
           }
         ).catch(e => console.log(e))
-
     }
   },[update])
 
   useEffect(()=>{
     if(token){
       if(dashboardData){
+        
         if(catchChat){
-          console.log("catch chat")
           axios.get(`https://sbc.designal.cc/api/get-chat/${catchChat}`, {
             headers: {
               Authorization: `Bearer ${token}`
@@ -83,11 +80,9 @@ export default function Home() {
           .catch(error => {
             console.error('There was an error making the request!', error);
           })
-
-        }else if(dashboardData.chat_history && catchChat === null){
+        }else if(dashboardData.chat_history && dashboardData.chat_history.length >= 1 && catchChat === null){
           console.log("default chat")
           const chat_id = Object.entries(dashboardData?.chat_history)[0][1][0].id
-          const share_name = Object.entries(dashboardData?.chat_history)[0][1][0].share_name
 
           axios.get(`https://sbc.designal.cc/api/get-chat/${chat_id}`, {
             headers: {
@@ -113,12 +108,10 @@ export default function Home() {
   }
   },[token,dashboardData,update,catchChat])
 
-
-
   return (
     <main >
-        <Header code={code} setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>
-        <DashLayout storedCode={storedCode} dashboardData={dashboardData} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
+        <Header code={code} setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat} setLoading={setLoading}/>
+        <DashLayout storedCode={storedCode} dashboardData={dashboardData} insideChat={insideChat} setUpdate={setUpdate} update={update} loading={loading}/>
     </main>
   );
 }

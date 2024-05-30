@@ -5,12 +5,21 @@ import DropDown from '@/components/dropDown/DropDown'
 import axios from 'axios'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { redirect, usePathname } from 'next/navigation'
 
-function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpdate,setInsideChat,setCatchChat}) {
+function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpdate,setInsideChat,setCatchChat,setLoading}) {
   const [ userName , setUserName] = useState("");
+  const pathname = usePathname()
 
+  console.log(pathname.slice(0,9))
   useEffect(()=>{
-    const token = JSON.parse(localStorage.getItem("data")).token
+    if(localStorage.getItem("data")){
+    const token =  JSON.parse(localStorage.getItem("data")).token
+    }else{
+      if( pathname.slice(0,9) != "/sharable"){
+      redirect('/signIn')
+      }
+    }
 
     if(localStorage.getItem("data")){
       setUserName(JSON.parse(localStorage.getItem("data")).name)
@@ -18,6 +27,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
   },[])
 
   const handleStartNewChat = () => {
+    setLoading(true)
     const token = JSON.parse(localStorage.getItem("data")).token
       axios.get("https://sbc.designal.cc/api/start-chat", {
       headers: {
@@ -29,20 +39,22 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
       }
     })
     .then(response => {
-      console.log(response.data);
       setCatchChat(response.data.data.id)
+      setLoading(false)
     })
     .catch(error => {
+      setLoading(false)
       console.error('There was an error making the request!', error);
     })
   }
-
   
   return (
-    <>       
+    <>      
+    {pathname == "/profile" ? "" :<> 
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" />
-
+    </>
+    }
 
     <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg bg-darkBlue">
       <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
@@ -50,9 +62,10 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
         <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
           <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">SBC</Link>
         </div>
+      {pathname.slice(0,9) == "/sharable" ? "" :
+        <>
         {
           !path ?
-
                 <div>
                   <MultipleSelect code={code} setStoredCode={setStoredCode} storedCode={storedCode} />
                 </div>
@@ -64,7 +77,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
           
           <ul className="flex justify-between list-none ml-auto items-center">
             <li className='mr-3'>
-              <Archive dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>
+              <Archive setLoading={setLoading} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>
             </li>
             <li className='mr-3' onClick={handleStartNewChat}>
               <div>
@@ -79,6 +92,8 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
 
           </ul>
         </div>
+        </>
+      }
       </div>
     </nav>
 

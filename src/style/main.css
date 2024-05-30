@@ -63,7 +63,7 @@
 }
 .code{
     position: absolute;
-    left: -40px;
+    left: -60px;
     /* background-color: #1E293B; */
     width: 200px;
     height: 100px;
@@ -101,3 +101,19 @@
     transition: all 1s cubic-bezier(0, .5, 0, 1);
 }
 /* end archive */
+
+/* start profile */
+/* .profile_input{
+    border-radius: 7px;
+}
+.profile_input:focus{
+    border: 0;
+    --tw-ring-shadow:0
+}
+[type=password]{
+    border-radius: 7px !important;
+}
+.profile_lable{
+
+} */
+/* end profile */

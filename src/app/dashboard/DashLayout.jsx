@@ -6,12 +6,6 @@ import axios from 'axios'
 function DashLayout() {
 
 
-    useEffect(()=>{
-        console.log('aldjfhbsbk')
-
-          
-
-  },[])
 
   return (
     <div>        

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function ArchiveSettings({setRenameToggle,setDeleteToggle,toggleShare,item,setHandleChat}) {
+function ArchiveSettings({setRenameToggle,setDeleteToggle,item,setHandleChat, setShareToggle}) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -16,7 +16,7 @@ function ArchiveSettings({setRenameToggle,setDeleteToggle,toggleShare,item,setHa
       {dropdownOpen && (
         <div className="absolute z-10 right-0 mt-2 bg-white border rounded shadow-md">
           <ul>
-            <li onClick={()=>toggleShare(item)} className="py-1 px-3 hover:bg-gray-100 flex items-center cursor-pointer">
+            <li onClick={()=>{setShareToggle(true);setHandleChat(item)}} className="py-1 px-3 hover:bg-gray-100 flex items-center cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3 mr-3">
                 <path fillRule="evenodd" d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" clipRule="evenodd" />
               </svg>

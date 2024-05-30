@@ -3,7 +3,7 @@ import ArchiveSettings from './ArchiveSettings';
 import ShareChatLink from '../Chat/shareChatLink/ShareChatLink';
 import axios from 'axios';
 
-function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCatchChat}) {
+function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCatchChat,setLoading}) {
   const [open, setOpen] = useState(null);
   const [renameToggle, setRenameToggle] = useState(false)
   const [deleteToggle, setDeleteToggle] = useState(false)
@@ -11,13 +11,42 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
   const [modal, setModal] = useState(false);
   const [actionAlert,setActionAlert] = useState(false)
   const [inputName,setInputName] = useState("")
-  const token = JSON.parse(localStorage.getItem("data")).token
+  const [shareName,setShareName] = useState("0")
+  const [shareToggle , setShareToggle] = useState(false)
+  const [sharableChat , setSharableChat] = useState([])
+  const token = localStorage.getItem("data") && JSON.parse(localStorage.getItem("data")).token
+
 
   const handleAction = () => {
     setActionAlert(true)
     setTimeout(()=> setActionAlert(false) , 4000)
   }
-  const toggleShare = () => setModal(!modal);
+
+
+  // mark name sharable
+  const handleCopyShare = (toggleItem) => {
+    axios.post(
+      "https://sbc.designal.cc/api/mark-name-sharable",
+      {
+          chat_id: handleChat.id,
+          share_name: toggleItem
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    .then(response => {
+      if(response.data.success){
+          console.log(response.data)
+      }
+    })
+    .catch(error => {
+      console.error('There was an error making the request!', error);
+    });
+  } 
+
   const toggle = (id) => {
     setOpen((prevId) => (prevId === id ? null : id));
   };
@@ -48,6 +77,7 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
     });
   }
   const handleGetChat = (chat_id,share_name) => {
+    setLoading(true)
     axios.get(`https://sbc.designal.cc/api/get-chat/${chat_id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -61,12 +91,15 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
       console.log(response.data);
       setInsideChat(response.data.data[0])
       setCatchChat(chat_id)
+      setLoading(false)
     })
     .catch(error => {
+      setLoading(false)
       console.error('There was an error making the request!', error);
     })
   }
   const handleDeleteChate = (handleChat) => {
+    setLoading(true)
     axios.post(
       "https://sbc.designal.cc/api/delete-chat",
       {
@@ -81,14 +114,17 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
     )
     .then(response => {
       if(response.data.success){
+        setCatchChat(null)
         setDeleteToggle(false)
         setHandleChat({})
         handleAction()
         setUpdate(!update)
         setOpen(false)
+        setLoading(false)
       }
     })
     .catch(error => {
+      setLoading(false)
       console.error('There was an error making the request!', error);
     });
   }
@@ -96,9 +132,11 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
   return (
     <div className="w-full bg-gray-50 rounded-lg shadow-lg p-2 " style={{maxHeight:'80vh',overflowY:'auto'}}>
       <div className="accordion">
-        {dashboardData.chat_history &&
+        {dashboardData.chat_history && Object.entries(dashboardData.chat_history).length >= 1?
         Object.entries(dashboardData.chat_history).map((item,i) => (
         <div className="border-b border-gray-200" key={item[0]}>
+                     
+
           <div
             className="cursor-pointer py-4 flex justify-between items-center"
             onClick={() => toggle(i)}
@@ -118,13 +156,19 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
             <div className="pb-2 text-sm font-bold text-gray-700">
                 <ul>
                   {item[1].map((item,i)=>(
-                    <li key={i} className='px-4 hover:bg-slate-200 flex justify-between cursor-pointer' onClick={()=>handleGetChat(item.id,item.share_name)}>-- {item.name} <ArchiveSettings item={item} setRenameToggle={setRenameToggle} setDeleteToggle={setDeleteToggle} setHandleChat={setHandleChat} toggleShare={toggleShare}/></li>
+                    <li key={i} className='px-4 hover:bg-slate-200 flex justify-between cursor-pointer' onClick={(e)=>{ e.stopPropagation();handleGetChat(item.id,item.share_name)}}>-- {item.name}<ArchiveSettings item={item} setRenameToggle={setRenameToggle} setDeleteToggle={setDeleteToggle} setHandleChat={setHandleChat} setShareToggle={setShareToggle}/></li>
                   ))}
                   </ul>
             </div>
           )}
         </div>
         ))
+        : 
+        <>
+              <div className='h-100 w-100 text-black text-center'>
+                No History Yet
+              </div>
+        </>
         }
       </div>
 
@@ -197,8 +241,8 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
       </div>
     }
     {
-      modal &&
-      <ShareChatLink modal={modal} toggleShare={toggleShare}/>
+      shareToggle &&
+      <ShareChatLink setSharableChat={setSharableChat} sharableChat={sharableChat} handleChat={handleChat} handleCopyShare={handleCopyShare} setShareToggle={setShareToggle} token={token} shareToggle={shareToggle} setShareName={setShareName} shareName={shareName}/>
     }
     {actionAlert &&
           <div class="flex bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700" role="alert">
