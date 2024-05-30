@@ -25,6 +25,7 @@ function Archive({ dashboardData, setUpdate, update, setInsideChat, setCatchChat
     return (
         <>
             <svg
+                style={{color:'#fff !important'}}
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={() => setArchiveToggle(!archiveToggle)}
                 width={25}
