@@ -49,8 +49,8 @@ function MultipleSelect({code,setStoredCode,storedCode}) {
             <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
               <div className='ps-2 text-black'>{code[0].name}</div>
               <div>
-              {code[0].pdfs.map(item => (
-                    <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem">
+              {code[0].pdfs.map((item,i) => (
+                    <span key={i} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem">
                       <input  
                       style={{borderRadius:'7px'}}
                     onChange={() => {handleCheckboxChange(item.id)}}
