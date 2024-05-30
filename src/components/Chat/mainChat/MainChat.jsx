@@ -160,7 +160,7 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading})
             <React.Fragment key={i}>
             <div className='flex justify-end relative'>
                 <div>
-                  <div className='chat_userName_2'>{user}</div> 
+                  <div className='chat_userName_2 text-right'>{user}</div> 
                     <div className="flex justify-end">
                     <div
                         className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card"
