@@ -111,7 +111,7 @@ export default function Home() {
   return (
     <main >
         <Header code={code} setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat} setLoading={setLoading}/>
-        <DashLayout storedCode={storedCode} dashboardData={dashboardData} insideChat={insideChat} setUpdate={setUpdate} update={update} loading={loading}/>
+        <DashLayout storedCode={storedCode} dashboardData={dashboardData} insideChat={insideChat} setUpdate={setUpdate} update={update} loading={loading} setLoading={setLoading} setCatchChat={setCatchChat}/>
     </main>
   );
 }

@@ -6,7 +6,7 @@ import Dislike from './actions/Dislike'
 import chatImg from '@/assets/chat/noChat.png'
 import { usePathname } from 'next/navigation'
 
-function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading}) {
+function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,setLoading,setCatchChat}) {
   const pathName = usePathname()
   const [copyIcon , setCopyIcon] = useState(false)
   const [user,setUser] = useState('')
@@ -106,6 +106,28 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading})
 
   }
 
+  const handleStartNewChat = () => {
+    setLoading(true)
+    const token = JSON.parse(localStorage.getItem("data")).token
+      axios.get("https://sbc.designal.cc/api/start-chat", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: {
+        chat_id: "",
+        share_name: "1"
+      }
+    })
+    .then(response => {
+      setCatchChat(response.data.data.id)
+      setLoading(false)
+    })
+    .catch(error => {
+      setLoading(false)
+      console.error('There was an error making the request!', error);
+    })
+  }
+
   useEffect(()=>{
     if(localStorage.getItem("data")){
       setUser(JSON.parse(localStorage.getItem("data")).name)
@@ -145,10 +167,10 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading})
             <div className="text-center">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">you can start new session or chose previous chat.</p>
-              {/* <div className="mt-10 flex items-center justify-center gap-x-6">
-                <a href="#" className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
-                <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
-              </div> */}
+              <div className="mt-10 flex items-center justify-center gap-x-6">
+                <button onClick={handleStartNewChat} className="rounded-md bg-slate-900	 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Start Chat</button>
+                {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a> */}
+              </div>
             </div>
           </div>
           :

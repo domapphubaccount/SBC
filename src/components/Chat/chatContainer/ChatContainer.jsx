@@ -4,7 +4,7 @@ import Refrence from '../reference/Refrence'
 import ChatInput from '../chatInput/ChatInput'
 import MainChat from '../mainChat/MainChat'
 
-function ChatContainer({storedCode,insideChat,update,setUpdate,loading}) {
+function ChatContainer({storedCode,insideChat,update,setUpdate,loading,setLoading,setCatchChat}) {
   
   const [elementWidth,setElementWidth] = useState()
   useEffect(()=>{
@@ -21,7 +21,7 @@ function ChatContainer({storedCode,insideChat,update,setUpdate,loading}) {
         <div className=" border rounded" style={{ minHeight: '80vh'}}>
           <div className='grid grid-cols-4 min-w-full'>
           <Refrence setElementWidth={setElementWidth}/>
-          <MainChat loading={loading} elementWidth={elementWidth} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
+          <MainChat setCatchChat={setCatchChat} setLoading={setLoading} loading={loading} elementWidth={elementWidth} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
           </div>
         </div>
       </div>
