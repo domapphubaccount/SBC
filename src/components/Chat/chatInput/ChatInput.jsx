@@ -45,6 +45,14 @@ function ChatInput({storedCode,insideChat,update,setUpdate}) {
       console.error('There was an error making the request!', error);
     });
   }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     
 
@@ -102,10 +110,12 @@ function ChatInput({storedCode,insideChat,update,setUpdate}) {
       rows={1}
       onChange={(e)=>setMessage(e.target.value)}
       disabled={!insideChat.id}
+      onKeyDown={handleKeyDown}
+
     >
       </textarea>
 
-    <button onClick={handleSendMessage} disabled={message.length <= 0 && !insideChat.id } className="outline-none focus:outline-none" type="submit">
+    <button  onClick={handleSendMessage} disabled={message.length <= 0 && !insideChat.id } className="outline-none focus:outline-none" type="submit">
       <svg
         className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
         xmlns="http://www.w3.org/2000/svg"
