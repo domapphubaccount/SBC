@@ -212,8 +212,8 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading})
                       className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
                       >
                         {loadingMessage ? <h4 className='text-black'>loading..</h4>:
-                        <>
-                      <span className="block" dangerouslySetInnerHTML={{ __html: item.answer }} />
+                        <>{console.log(item.answer.split('//')[1])}
+                      <span className="block" dangerouslySetInnerHTML={{ __html: '<p>' + item.answer.split('//')[1] }} />
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                       </>
                         }
