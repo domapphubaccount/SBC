@@ -82,7 +82,7 @@ export default function Home() {
           })
         }else if(dashboardData.chat_history && dashboardData.chat_history.length >= 1 && catchChat === null){
           console.log("default chat")
-          const chat_id = Object.entries(dashboardData?.chat_history)[0][1][0].id
+          const chat_id = Object.entries(dashboardData?.chat_history)[0][1][0]?.id
 
           axios.get(`https://sbc.designal.cc/api/get-chat/${chat_id}`, {
             headers: {
