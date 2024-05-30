@@ -130,7 +130,7 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
   }
 
   return (
-    <div className="w-full bg-gray-50 rounded-lg shadow-lg p-2 " style={{maxHeight:'80vh',overflowY:'auto'}}>
+    <div className="w-full bg-gray-50 rounded-lg shadow-lg p-2 " style={{maxHeight:'80vh',overflowY:'auto', minHeight:'400px'}}>
       <div className="accordion">
         {dashboardData.chat_history && Object.entries(dashboardData.chat_history).length >= 1?
         Object.entries(dashboardData.chat_history).map((item,i) => (

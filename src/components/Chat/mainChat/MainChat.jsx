@@ -140,8 +140,7 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading})
         </div>
         :
         <ul>
-          {console.log(Object.entries(insideChat).length)}
-          {Object.entries(insideChat).length == 0 ?
+          {insideChat && Object.entries(insideChat).length == 0 ?
           <div className='pt-4' style={{paddingTop:'200px'}}>
             <div className="text-center">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1>

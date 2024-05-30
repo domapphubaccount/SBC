@@ -93,7 +93,7 @@ function ChatInput({storedCode,insideChat,update,setUpdate}) {
 <>
     <textarea
       aria-placeholder="Escribe un mensaje aquí"
-      placeholder={!insideChat.id ? "start new chat first" : "start question"}
+      placeholder={!insideChat?.id ? "start new chat first" : "start question"}
       className="py-2 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
       type="text"
       name="message"
