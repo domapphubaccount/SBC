@@ -1,3 +1,4 @@
+"use client"
 import DashLayout from '@/layout/DashLayout/DashLayout'
 import React, { useEffect } from 'react'
 
