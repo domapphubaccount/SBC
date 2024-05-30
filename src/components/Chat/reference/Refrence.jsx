@@ -13,7 +13,7 @@ function Refrence({setElementWidth}) {
   return (
     <div ref={colRef} id="refContainer" className="col-span-1  bg-gray-100 border-r border-gray-300	relative">
     <ul id="listRef" className="overflow-auto h-screen " style={{paddingTop:'100px' }}>
-      <h2 className="ml-2 mb-2 text-gray-600 text-lg my-2 absolute" style={{top:'60px',fontSize:'1rem',fontWeight:'bold',left:'50%',transform:'translateX(-50%)'}}>Refrence</h2>
+      <h2 className="ml-2 mb-2 text-gray-600 text-lg my-2 absolute" style={{top:'60px',fontSize:'1rem',fontWeight:'bold',left:'50%',transform:'translateX(-50%)'}}>Reference</h2>
       <li>
         {/* <a className="hover:bg-gray-100 border-b border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
           <div className="w-full pb-2">

@@ -216,26 +216,26 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
 
             <div className='relative'>
                 <div className='code' style={{width: (elementWidth - 40)+'px'}}>
-                  <a className="hover:bg-gray-100 border border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                {item.answer.includes('//') && <a className="hover:bg-gray-100 border border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                     <div className="w-full pb-2">
                       <div className="flex justify-between">
                         {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
                         {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
                       </div>
-                      <span className="block ml-2 text-sm text-gray-600  font-semibold">{item.answer.split('//')[0].slice(3)}</span>
+                       <span className="block ml-2 text-sm text-gray-600  font-semibold">{ item.answer.split('//')[0].slice(3)}</span>
                     </div>
-                  </a>
+                  </a>}
                 </div>
 
                 <div>
-                  <div className='chat_userName'>SBC AI</div>
+                  <div className='chat_userName'>BYLD AI</div>
                   <div className="w-full flex justify-start chat_card">
                   <div 
                       className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
                       >
                         {loadingMessage ? <h4 className='text-black'>loading..</h4>:
-                        <>{console.log(item.answer.split('//')[1])}
-                      <span className="block" dangerouslySetInnerHTML={{ __html: '<p>' + item.answer.split('//')[1] }} />
+                        <>{console.log(item.answer.includes('//') && item.answer.split('//')[1])}
+                      <span className="block" dangerouslySetInnerHTML={{ __html: item.answer.includes('//') ? '<p>' + item.answer.split('//')[1] : item.answer }} />
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                       </>
                         }

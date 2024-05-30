@@ -11,7 +11,6 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
   const [ userName , setUserName] = useState("");
   const pathname = usePathname()
 
-  console.log(pathname.slice(0,9))
   useEffect(()=>{
     if(localStorage.getItem("data")){
     const token =  JSON.parse(localStorage.getItem("data")).token
@@ -60,7 +59,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
       <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
 
         <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
-          <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">SBC</Link>
+          <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">BYLD</Link>
         </div>
       {pathname.slice(0,9) == "/sharable" ? "" :
         <>
@@ -84,7 +83,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
                   <svg style={{color:'#fff !important'}} xmlns="http://www.w3.org/2000/svg" width={25} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                   </svg>
-            </div>
+              </div>
             </li>
             <li >
               <DropDown userName={userName}/>
