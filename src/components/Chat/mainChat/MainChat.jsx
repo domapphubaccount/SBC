@@ -38,16 +38,21 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading})
       console.error('Speech synthesis not supported in this browser.');
     }
   };
+  const stripHtml = (html) => {
+    const temporalDivElement = document.createElement("div");
+    temporalDivElement.innerHTML = html;
+    return temporalDivElement.textContent || temporalDivElement.innerText || "";
+  };
 
   const handleCopyText = (textCopy) => {
-    // const textToCopy = "Hello bro";
+    const textToCopy = stripHtml(textCopy);
     setCopyIcon(true)
-    navigator.clipboard.writeText(textCopy).then(() => {
+    navigator.clipboard.writeText(textToCopy).then(() => {
       // alert('Text copied to clipboard');
     }).catch(err => {
       console.error('Failed to copy text: ', err);
     });
-    setTimeout(()=>setCopyIcon(false),500)
+    setTimeout(() => setCopyIcon(false), 500)
   };
 
   const handleResendMessage = (id) => {
