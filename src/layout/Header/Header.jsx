@@ -80,7 +80,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
             </li>
             <li className='mr-3' onClick={handleStartNewChat}>
               <div>
-                  <svg style={{color:'#fff !important'}} xmlns="http://www.w3.org/2000/svg" width={25} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer">
+                  <svg style={{color:'#fff !important'}} xmlns="http://www.w3.org/2000/svg" width={25} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer text-white">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                   </svg>
               </div>
