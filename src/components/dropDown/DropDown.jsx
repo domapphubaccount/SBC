@@ -40,7 +40,7 @@ function DropDown({ userName }) {
                 <button
                     type="button"
                     onClick={handleDropDown}
-                    style={{ fontSize: '.6rem', width: '23px', height: "23px" }}
+                    style={{ fontSize: '.8rem', width: '25px', height: "25px" }}
                     className="inline-flex w-full justify-center text-sm gap-x-1.5 rounded-full font-semibold shadow-sm hover:bg-gray-950 text-white border-2 border-sky-500 rounded-full"
                     id="menu-button"
                     aria-expanded="true"

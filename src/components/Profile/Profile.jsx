@@ -127,9 +127,10 @@ function Profile() {
           <div className="mt-2 mb-8 w-full">
             <h4 className="px-2 text-xl font-bold text-black dark:text-white">Profile Data</h4>
             <p className="mt-2 px-2 text-base text-gray-600">
-              Update your account's profile information .
+              Update your profile Name information .
             </p>
           </div>
+
           <form className="px-4 w-full" onSubmit={profileFormik.handleSubmit}>
             <div className="w-100 mb-4">
               <div className="relative h-10 w-full min-w-[200px]">

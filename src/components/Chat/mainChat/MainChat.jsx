@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import ChatInput from '../chatInput/ChatInput'
 import axios from 'axios'
 import Dislike from './actions/Dislike'
-import chatImg from '@/assets/chat/noChat.png'
 import { usePathname } from 'next/navigation'
+import MessageImg from "@/assets/chat/MESSAGE.png"
+import { Button } from '@material-tailwind/react'
 
-function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,setLoading,setCatchChat}) {
+function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,update,setUpdate,loading,setLoading,setCatchChat}) {
   const pathName = usePathname()
   const [copyIcon , setCopyIcon] = useState(false)
   const [user,setUser] = useState('')
@@ -21,14 +22,12 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
     setDislike(!dislike)
 
   }
-
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
       const storedData = JSON.parse(localStorage.getItem("data"));
       setToken(storedData.token);
     }
   }, []);
-
   const handleReadText = (textRead) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(textRead);
@@ -43,7 +42,6 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
     temporalDivElement.innerHTML = html;
     return temporalDivElement.textContent || temporalDivElement.innerText || "";
   };
-
   const handleCopyText = (textCopy) => {
     const textToCopy = stripHtml(textCopy);
     setCopyIcon(true)
@@ -54,7 +52,6 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
     });
     setTimeout(() => setCopyIcon(false), 500)
   };
-
   const handleResendMessage = (id) => {
     setLoadingMessage(true)
     axios.post(
@@ -78,7 +75,6 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
       console.error('There was an error making the request!', error);
     });
   }
-
   const handleDislike = (data) => {
     axios.post(
       "https://sbc.designal.cc/api/dislike",
@@ -105,7 +101,6 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
 
 
   }
-
   const handleStartNewChat = () => {
     setLoading(true)
     const token = JSON.parse(localStorage.getItem("data")).token
@@ -127,13 +122,11 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
       console.error('There was an error making the request!', error);
     })
   }
-
   useEffect(()=>{
     if(localStorage.getItem("data")){
       setUser(JSON.parse(localStorage.getItem("data")).name)
     }
   },[])
-
   const [windhtchat,setwidthchat] = useState()
   useEffect(()=>{
     setwidthchat(window.innerWidth)
@@ -141,12 +134,12 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
       setwidthchat(window.innerWidth)
     }
   },[])
+  console.log(chatData)
 
 
   return (
     <div className="col-span-3 bg-white relative">
     <div className="w-full log-bannar-2" style={{paddingTop:'100px',height:'100vh'}}>
-
       <div
         className="w-full grid grid-cols-4" 
         id="chat"
@@ -165,10 +158,17 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
           {insideChat && Object.entries(insideChat).length == 0 ?
           <div className='pt-4' style={{paddingTop:'200px'}}>
             <div className="text-center">
+              <div className='m-auto' style={{width:'200px'}}><img src={MessageImg.src} className='w-100' alt=''  /></div>
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">you can start new session or chose previous chat.</p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
-                <button onClick={handleStartNewChat} className="rounded-md bg-slate-900	 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Start Chat</button>
+                {/* <Button  variant="gradient">Start Chat</Button> */}
+                <button onClick={handleStartNewChat} className="learn-more start">
+                  <span className="circle" aria-hidden="true">
+                  <span className="icon arrow"></span>
+                  </span>
+                  <span className="button-text">Start Chat</span>
+                </button>
                 {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a> */}
               </div>
             </div>
@@ -177,7 +177,7 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
           <li className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
 
             {insideChat && insideChat.user_chats &&
-              insideChat.user_chats.map((item,i)=>(
+              chatData.map((item,i)=>(
             <React.Fragment key={i}>
             <div className='flex justify-end relative'>
                 <div>
@@ -216,7 +216,7 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
 
             <div className='relative'>
                 <div className='code' style={{width: (elementWidth - 40)+'px'}}>
-                {item.answer.includes('//') && <a className="hover:bg-gray-100 border border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                {item?.answer?.includes('//') && <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                     <div className="w-full pb-2">
                       <div className="flex justify-between">
                         {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
@@ -224,7 +224,7 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
                       </div>
                        <span className="block ml-2 text-sm text-gray-600  font-semibold">{ item.answer.split('//')[0].slice(3)}</span>
                     </div>
-                  </a>}
+                  </span>}
                 </div>
 
                 <div>
@@ -234,13 +234,16 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
                       className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
                       >
                         {loadingMessage ? <h4 className='text-black'>loading..</h4>:
-                        <>{console.log(item.answer.includes('//') && item.answer.split('//')[1])}
-                      <span className="block" dangerouslySetInnerHTML={{ __html: item.answer.includes('//') ? '<p>' + item.answer.split('//')[1] : item.answer }} />
+                      <>
+                      {item?.answer ? <span className="block" dangerouslySetInnerHTML={{ __html: item?.answer?.includes('//') ? '<p>' + item.answer.split('//')[1] : item?.answer }} /> :  
+                        <>...</>                         
+                      }
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                       </>
                         }
                   </div>
                   </div>
+                  {item?.answer ?
                   <div className='flex mb-3'>
                     <svg onClick={()=>handleReadText(item.answer)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2 cursor-pointer">
                       <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
@@ -266,11 +269,12 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
                     {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2 cursor-pointer">
                       <path fillRule="evenodd" d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" clipRule="evenodd" />
                     </svg> */}
-                  </div>
+                  </div>:
+                    ''
+
+                  }
                 </div>
             </div>
-
-
             </React.Fragment>
             ))
             }
@@ -282,10 +286,13 @@ function MainChat({elementWidth,storedCode,insideChat,update,setUpdate,loading,s
       </div>
 
     </div>
+    
     {pathName.slice(0,9) == "/sharable"? "" :
+      insideChat && Object.entries(insideChat).length != 0 &&
       <div style={{width: '100%',position:'absolute',bottom:'0'}}>
-        <ChatInput storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
+        <ChatInput chatData={chatData} setChatData={setChatData} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
       </div>
+
       }
 
     {

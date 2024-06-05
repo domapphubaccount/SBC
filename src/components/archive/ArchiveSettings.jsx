@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 function ArchiveSettings({setRenameToggle,setDeleteToggle,item,setHandleChat, setShareToggle}) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (e) => {
+    e.stopPropagation()
     setDropdownOpen(!dropdownOpen);
   };
 

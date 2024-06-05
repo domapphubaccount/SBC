@@ -14,6 +14,7 @@ export default function Home() {
   const [insideChat , setInsideChat] = useState({})
   const [catchChat,setCatchChat] = useState(null)
   const [loading,setLoading] = useState(false)
+  const [chatData , setChatData] = useState([])
   
   useEffect(()=>{
     if(!JSON.parse(localStorage.getItem("data"))){
@@ -73,8 +74,8 @@ export default function Home() {
           })
           .then(response => {
             if(response.data.success){
-            setInsideChat(response.data.data[0])
-            console.log("response get chat",response.data);
+              setInsideChat(response.data.data[0]);
+              setChatData(response.data.data[0].user_chats)
             }
           })
           .catch(error => {
@@ -95,8 +96,8 @@ export default function Home() {
           })
           .then(response => {
             if(response.data.success){
-            setInsideChat(response.data.data[0])
-            console.log("response get chat",response.data);
+              setInsideChat(response.data.data[0]);
+              setChatData(response.data.data[0].user_chats)
             }
           })
           .catch(error => {
@@ -107,11 +108,12 @@ export default function Home() {
       }
   }
   },[token,dashboardData,update,catchChat])
+  console.log(insideChat)
 
   return (
     <main >
         <Header code={code} setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat} setLoading={setLoading}/>
-        <DashLayout storedCode={storedCode} dashboardData={dashboardData} insideChat={insideChat} setUpdate={setUpdate} update={update} loading={loading} setLoading={setLoading} setCatchChat={setCatchChat}/>
+        <DashLayout setChatData={setChatData} chatData={chatData} storedCode={storedCode} dashboardData={dashboardData} insideChat={insideChat} setUpdate={setUpdate} update={update} loading={loading} setLoading={setLoading} setCatchChat={setCatchChat}/>
     </main>
   );
 }
