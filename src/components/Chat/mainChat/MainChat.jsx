@@ -16,6 +16,8 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
   const [token, setToken] = useState("");
   const [itemId,setItemId] = useState(null)
   const [dislikeMessage,setDislikeMessage] = useState('')
+  const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
+
 
   const dislikeToggle = (id) => {
     setItemId(id)
@@ -30,29 +32,38 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
   }, []);
   const handleReadText = async (textRead) => {
     try {
-      // Check if the text is in Arabic
-      const isArabic = /[^\u0000-\u007F]/.test(textRead);
-  
-      if (isArabic) {
-        // Translate Arabic text to English
-        const { text } = await translate(textRead, { to: 'en' });
-        textRead = text;
-      }
-  
-      // Speak the text in English
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(textRead);
-        utterance.lang = 'en-US'; // Set language to English (United States)
-        window.speechSynthesis.speak(utterance);
-      } else {
-        console.error('Speech synthesis not supported in this browser.');
-      }
+        // Check if the text is in Arabic
+        const isArabic = /[^\u0000-\u007F]/.test(textRead);
+
+        if (isArabic) {
+            // Translate Arabic text to English
+            const { text } = await translate(textRead, { to: 'en' });
+            textRead = text;
+        }
+
+        // Speak the text in English
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(textRead);
+            utterance.lang = 'en-US'; // Set language to English (United States)
+            window.speechSynthesis.speak(utterance);
+            setIsSpeaking(true); // Update state to indicate speech synthesis is active
+            utterance.onend = () => {
+                setIsSpeaking(false); // Update state to indicate speech synthesis has ended
+            };
+        } else {
+            console.error('Speech synthesis not supported in this browser.');
+        }
     } catch (error) {
-      console.error('Error translating or reading text:', error);
+        console.error('Error translating or reading text:', error);
     }
-  };
-  
-  
+};
+
+const handleStopReading = () => {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stop speech synthesis
+        setIsSpeaking(false); // Update state to indicate speech synthesis has stopped
+    }
+};
   
   const stripHtml = (html) => {
     const temporalDivElement = document.createElement("div");
@@ -266,6 +277,17 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
                       <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
                       <path d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
                     </svg>
+
+                    {isSpeaking && (
+                        <svg onClick={handleStopReading} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3.5 ml-2 cursor-pointer">
+                        <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z" clipRule="evenodd" />
+                      </svg>
+
+
+                      )}
+
+
+
                     {!copyIcon ?
                     <svg onClick={()=>handleCopyText(item.answer)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2 cursor-pointer">
                       <path fillRule="evenodd" d="M17.663 3.118c.225.015.45.032.673.05C19.876 3.298 21 4.604 21 6.109v9.642a3 3 0 0 1-3 3V16.5c0-5.922-4.576-10.775-10.384-11.217.324-1.132 1.3-2.01 2.548-2.114.224-.019.448-.036.673-.051A3 3 0 0 1 13.5 1.5H15a3 3 0 0 1 2.663 1.618ZM12 4.5A1.5 1.5 0 0 1 13.5 3H15a1.5 1.5 0 0 1 1.5 1.5H12Z" clipRule="evenodd" />
