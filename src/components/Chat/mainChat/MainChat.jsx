@@ -28,15 +28,32 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
       setToken(storedData.token);
     }
   }, []);
-  const handleReadText = (textRead) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(textRead);
-      utterance.lang = 'ar-SA'; // Set language to Arabic (Saudi Arabia)
-      window.speechSynthesis.speak(utterance);
-    } else {
-      console.error('Speech synthesis not supported in this browser.');
+  const handleReadText = async (textRead) => {
+    try {
+      // Check if the text is in Arabic
+      const isArabic = /[^\u0000-\u007F]/.test(textRead);
+  
+      if (isArabic) {
+        // Translate Arabic text to English
+        const { text } = await translate(textRead, { to: 'en' });
+        textRead = text;
+      }
+  
+      // Speak the text in English
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(textRead);
+        utterance.lang = 'en-US'; // Set language to English (United States)
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.error('Speech synthesis not supported in this browser.');
+      }
+    } catch (error) {
+      console.error('Error translating or reading text:', error);
     }
   };
+  
+  
+  
   const stripHtml = (html) => {
     const temporalDivElement = document.createElement("div");
     temporalDivElement.innerHTML = html;
@@ -176,7 +193,7 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
           :
           <li className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
 
-            {insideChat && insideChat.user_chats &&
+            { chatData && insideChat && insideChat.user_chats && 
               chatData.map((item,i)=>(
             <React.Fragment key={i}>
             <div className='flex justify-end relative'>
