@@ -9,12 +9,19 @@ function Profile() {
     const [token,setToken] = useState("")
     const [timer,setTimer] = useState(3) 
     const [actionToggle,setActionToggle] = useState(false) 
+    const [userData,setUserData] = useState({name:'' , email: ''})
     const router = useRouter()
 
 
     useEffect(()=>{
       if(localStorage.getItem("data")){
         setToken(JSON.parse(localStorage.getItem("data")).token)
+        const data = JSON.parse( localStorage.getItem("data"))
+        setUserData(
+        {
+          name:data.name,
+          email:data.email
+        })
       }
     },[])
 
@@ -123,11 +130,11 @@ function Profile() {
         href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css"
       />
       <div className="h-screen flex flex-col justify-center overflow-auto" style={{ paddingTop: "100px" }}>
-        <div className=" pb-2 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
+        <div className=" pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
           <div className="mt-2 mb-8 w-full">
             <h4 className="px-2 text-xl font-bold text-black dark:text-white">Profile Data</h4>
             <p className="mt-2 px-2 text-base text-gray-600">
-              Update your profile Name information .
+                There is no option to update name and email .
             </p>
           </div>
 
@@ -140,14 +147,14 @@ function Profile() {
                   name="name"
                   onChange={profileFormik.handleChange}
                   onBlur={profileFormik.handleBlur}
-                  value={profileFormik.values.name}
+                  value={userData.name}
                 />
                 <label className={labelClass}>
                   Name
                 </label>
-                {profileFormik.touched.name && profileFormik.errors.name ? (
+                {/* {profileFormik.touched.name && profileFormik.errors.name ? (
                   <div className="text-red-500 text-xs">{profileFormik.errors.name}</div>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
             <div className="w-100 mb-4">
@@ -158,23 +165,23 @@ function Profile() {
                   name="email"
                   onChange={profileFormik.handleChange}
                   onBlur={profileFormik.handleBlur}
-                  value={profileFormik.values.email}
+                  value={userData.email}
                 />
                 <label className={labelClass}>
-                  Confirm Email
+                  Email
                 </label>
-                {profileFormik.touched.email && profileFormik.errors.email ? (
+                {/* {profileFormik.touched.email && profileFormik.errors.email ? (
                   <div className="text-red-500 text-xs">{profileFormik.errors.email}</div>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
-            <button type="submit" className="px-3 md:px-4 py-1 md:py-2 bg-blue-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
+            {/* <button type="submit" className="px-3 md:px-4 py-1 md:py-2 bg-blue-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
               <i className="fa-solid fa-arrow-right-to-bracket"></i> Save
-            </button>
+            </button> */}
           </form>
         </div>
 
-        <div className="pb-2 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
+        <div className="pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
           <div className="mt-2 mb-8 w-full">
             <h4 className="px-2 text-xl font-bold text-black dark:text-white">Update Password</h4>
             <p className="mt-2 px-2 text-base text-gray-600">

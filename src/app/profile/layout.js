@@ -6,8 +6,8 @@ import Header from '@/layout/Header/Header';
 import React from 'react'
 
 export const metadata = {
-  title: "SignUp",
-  description: "SignUp and make account on SBC",
+  title: "Profile",
+  description: "profile ai and make account on SBC",
 };
 
 function layout({children}) {

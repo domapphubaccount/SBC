@@ -75,17 +75,17 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
         <div className="flex  items-center shadow-none  bg-darkBlue" >
           
           <ul className="flex justify-between list-none ml-auto items-center">
-            <li className='mr-3'>
+            <li className='mr-3' title='timeline'>
               <Archive setLoading={setLoading} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>
             </li>
-            <li className='mr-3' onClick={handleStartNewChat}>
+            <li title='start new chat' className='mr-3' onClick={handleStartNewChat}>
               <div>
                   <svg style={{color:'#fff !important'}} xmlns="http://www.w3.org/2000/svg" width={25} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer text-white">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                   </svg>
               </div>
             </li>
-            <li >
+            <li title='profile'>
               <DropDown userName={userName}/>
             </li>
           </ul>
