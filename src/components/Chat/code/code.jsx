@@ -1,10 +1,12 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-function MultipleSelect({ code, setStoredCode, storedCode }) {
+function MultipleSelect({ setStoredCode, storedCode }) {
   const [selectedOptions, setSelectedOptions] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const dropdownRef = useRef(null);
+  const code = useSelector(state => state.codeSlice.value)
 
   useEffect(() => {
     function handleClickOutside(event) {

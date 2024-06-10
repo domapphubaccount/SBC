@@ -7,7 +7,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { redirect, usePathname } from 'next/navigation'
 
-function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpdate,setInsideChat,setCatchChat,setLoading}) {
+function Header({path,setStoredCode,storedCode,dashboardData,update,setUpdate,setInsideChat,setCatchChat,setLoading}) {
   const [ userName , setUserName] = useState("");
   const pathname = usePathname()
 
@@ -66,7 +66,7 @@ function Header({path,code,setStoredCode,storedCode,dashboardData,update,setUpda
         {
           !path ?
                 <div>
-                  <MultipleSelect code={code} setStoredCode={setStoredCode} storedCode={storedCode} />
+                  <MultipleSelect setStoredCode={setStoredCode} storedCode={storedCode} />
                 </div>
         :
         <div>PROFILE</div>

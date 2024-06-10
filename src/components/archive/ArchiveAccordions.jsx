@@ -2,19 +2,20 @@ import React, { useState } from 'react';
 import ArchiveSettings from './ArchiveSettings';
 import ShareChatLink from '../Chat/shareChatLink/ShareChatLink';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
-function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCatchChat,setLoading}) {
+function TailwindAccordion({setUpdate,update,setInsideChat, setCatchChat,setLoading}) {
   const [open, setOpen] = useState(null);
   const [renameToggle, setRenameToggle] = useState(false)
   const [deleteToggle, setDeleteToggle] = useState(false)
   const [handleChat,setHandleChat] = useState({})
-  const [modal, setModal] = useState(false);
   const [actionAlert,setActionAlert] = useState(false)
   const [inputName,setInputName] = useState("")
   const [shareName,setShareName] = useState("0")
   const [shareToggle , setShareToggle] = useState(false)
   const [sharableChat , setSharableChat] = useState([])
   const token = localStorage.getItem("data") && JSON.parse(localStorage.getItem("data")).token
+  const dashboardData = useSelector(state => state.chatSlice.value)
 
 
   const handleAction = () => {
@@ -89,6 +90,7 @@ function TailwindAccordion({dashboardData,setUpdate,update,setInsideChat, setCat
     })
     .then(response => {
       console.log(response.data);
+      localStorage.setItem("chat",chat_id)
       setInsideChat(response.data.data[0])
       setCatchChat(chat_id)
       setLoading(false)

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ArchiveAccordion from './ArchiveAccordions';
 
-function Archive({ dashboardData, setUpdate, update, setInsideChat, setCatchChat, setLoading }) {
+function Archive({ setUpdate, update, setInsideChat, setCatchChat, setLoading }) {
     const [archiveToggle, setArchiveToggle] = useState(false);
     const archiveRef = useRef(null);
 
@@ -50,7 +50,6 @@ function Archive({ dashboardData, setUpdate, update, setInsideChat, setCatchChat
                         <ArchiveAccordion
                             setLoading={setLoading}
                             setCatchChat={setCatchChat}
-                            dashboardData={dashboardData}
                             setUpdate={setUpdate}
                             update={update}
                             setInsideChat={setInsideChat}
