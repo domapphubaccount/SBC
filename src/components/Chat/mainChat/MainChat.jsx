@@ -6,9 +6,10 @@ import Dislike from './actions/Dislike'
 import { usePathname } from 'next/navigation'
 import MessageImg from "@/assets/chat/MESSAGE.png"
 import { Button } from '@material-tailwind/react'
-
 import 'katex/dist/katex.min.css';
 import katex from 'katex';
+import { MathJaxContext, MathJax } from 'better-react-mathjax';
+
 
 const renderContent = (content) => {
   const parts = content.split(/(\$[^$]*\$)/g);
@@ -190,6 +191,10 @@ const handleStopReading = () => {
     }
   },[])
 
+  useEffect(() => {
+    window.MathJax && window.MathJax.typeset();
+  }, [insideChat]);
+
   return (
     <div className="col-span-3 bg-white relative">
     <div className="w-full log-bannar-2" style={{paddingTop:'100px',height:'100vh'}}>
@@ -239,7 +244,10 @@ const handleStopReading = () => {
                     <div
                         className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card"
                     >
+                      <MathJaxContext>
                         <span className="block" dangerouslySetInnerHTML={{ __html: item.question }} />
+                      </MathJaxContext>
+
                         {/* <span className="block text-right " style={{fontSize:'0.5rem'}}>{item.created_at}10:32pm</span> */}
                     </div>
                   </div>
@@ -289,13 +297,16 @@ const handleStopReading = () => {
                       >
                         {loadingMessage ? <h4 className='text-black'>loading..</h4>:
                       <>
+                      {/* {console.log(item.answer,'item answer')} */}
                       {item?.answer ? 
-                      <span className="block" dangerouslySetInnerHTML={{ __html: item?.answer?.includes('//') ? '<p>' + item.answer.split('//')[1] : item?.answer }} /> :  
+          
+                      <span className="block" dangerouslySetInnerHTML={{ __html: item.answer.split('//')[1] }} /> :  
                         <>...</>                         
                       }
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                       </>
                         }
+                  {console.log(item.answer.split('//'))}
                   </div>
                   </div>
                   {item?.answer ?
