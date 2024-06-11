@@ -197,6 +197,22 @@ const handleStopReading = () => {
 
   const pattern = /SBC.*?\/\//g;
 
+  const textHandler = (item) => {
+    if (item.match(pattern)) {
+        let dataArray = item.match(pattern);
+        let data = item;
+
+        dataArray.forEach(item2 => {
+            data = data.replaceAll(item2, '');
+        });
+
+        console.log(data);
+        return data;
+    }
+    return item; // Return the original item if no match is found
+}
+
+
   return (
     <div className="col-span-3 bg-white relative">
     <div className="w-full log-bannar-2" style={{paddingTop:'100px',height:'100vh'}}>
@@ -309,8 +325,8 @@ const handleStopReading = () => {
                       <>
                       {/* {console.log(item.answer,'item answer')} */}
                       {item?.answer ? 
-          
-                      <span className="block" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: item.answer.split('//')[1] }} /> :  
+                            
+                      <span className="block" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: textHandler(item.answer) }} /> :  
                         <>...</>                         
                       }
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
