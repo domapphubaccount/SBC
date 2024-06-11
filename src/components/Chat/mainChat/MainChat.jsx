@@ -195,6 +195,8 @@ const handleStopReading = () => {
     window.MathJax && window.MathJax.typeset();
   }, [insideChat]);
 
+  const pattern = /SBC.*?\/\//g;
+
   return (
     <div className="col-span-3 bg-white relative">
     <div className="w-full log-bannar-2" style={{paddingTop:'100px',height:'100vh'}}>
@@ -284,14 +286,22 @@ const handleStopReading = () => {
                         {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
                         {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
                       </div>
-                       <span className="block ml-2 text-sm text-gray-600  font-semibold">{ item.answer.split('//')[0].slice(3)}</span>
+                       <span className="block ml-2 text-sm text-gray-600  font-semibold">
+                        {
+                        // console.log(item.answer.match(pattern))
+                          // item.answer.split('//')[0].slice(3)}
+                          item.answer.match(pattern).map(item3 => (
+                            <p className='w-100 my-3'>{item3}</p>
+                          ))
+                        }
+                        </span>
                     </div>
                   </span>}
                 </div>
 
                 <div>
                   <div className='chat_userName'>BYLD AI</div>
-                  <div className="w-full flex justify-start chat_card">
+                  <div className="w-full flex justify-start chat_card" >
                   <div 
                       className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
                       >
@@ -300,13 +310,12 @@ const handleStopReading = () => {
                       {/* {console.log(item.answer,'item answer')} */}
                       {item?.answer ? 
           
-                      <span className="block" dangerouslySetInnerHTML={{ __html: item.answer.split('//')[1] }} /> :  
+                      <span className="block" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: item.answer.split('//')[1] }} /> :  
                         <>...</>                         
                       }
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                       </>
                         }
-                  {console.log(item.answer.split('//'))}
                   </div>
                   </div>
                   {item?.answer ?

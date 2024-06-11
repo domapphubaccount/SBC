@@ -40,6 +40,7 @@ function Header({path,setStoredCode,storedCode,dashboardData,update,setUpdate,se
     .then(response => {
       setCatchChat(response.data.data.id)
       setLoading(false)
+      localStorage.setItem("chat",response.data.data.id)
     })
     .catch(error => {
       setLoading(false)
