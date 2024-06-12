@@ -5,10 +5,10 @@ import axios from 'axios'
 import Dislike from './actions/Dislike'
 import { usePathname } from 'next/navigation'
 import MessageImg from "@/assets/chat/MESSAGE.png"
-import { Button } from '@material-tailwind/react'
-import 'katex/dist/katex.min.css';
-import katex from 'katex';
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
+import { TextFormat } from 'react-text-format';
+import ReactMarkdown from 'react-markdown';
+
 
 
 const renderContent = (content) => {
@@ -198,6 +198,7 @@ const handleStopReading = () => {
   const pattern = /SBC.*?\/\//g;
 
   const textHandler = (item) => {
+
     if (item.match(pattern)) {
         let dataArray = item.match(pattern);
         let data = item;
@@ -211,6 +212,7 @@ const handleStopReading = () => {
     }
     return item; // Return the original item if no match is found
 }
+
 
 
   return (
@@ -304,8 +306,6 @@ const handleStopReading = () => {
                       </div>
                        <span className="block ml-2 text-sm text-gray-600  font-semibold">
                         {
-                        // console.log(item.answer.match(pattern))
-                          // item.answer.split('//')[0].slice(3)}
                           item.answer.match(pattern).map(item3 => (
                             <p className='w-100 my-3'>{item3}</p>
                           ))
@@ -324,9 +324,8 @@ const handleStopReading = () => {
                         {loadingMessage ? <h4 className='text-black'>loading..</h4>:
                       <>
                       {/* {console.log(item.answer,'item answer')} */}
-                      {item?.answer ? 
-                            
-                      <span className="block" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: textHandler(item.answer) }} /> :  
+                      {item?.answer ?     
+                        <span className="block chat_box" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: textHandler(item.answer) }} /> :  
                         <>...</>                         
                       }
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}

@@ -21,7 +21,9 @@
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-markdown": "^9.0.1",
     "react-redux": "^9.1.2",
+    "react-text-format": "^2.0.32",
     "reactstrap": "^9.2.2",
     "yup": "^1.4.0"
   },
