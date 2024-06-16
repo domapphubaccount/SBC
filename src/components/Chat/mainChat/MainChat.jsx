@@ -306,8 +306,8 @@ const handleStopReading = () => {
                       </div>
                        <span className="block ml-2 text-sm text-gray-600  font-semibold">
                         {
-                          item.answer.match(pattern).map(item3 => (
-                            <p className='w-100 my-3'>{item3}</p>
+                          item.answer.match(pattern).map((item3,i) => (
+                            <p className='w-100 my-3' key={i}>{item3}</p>
                           ))
                         }
                         </span>
