@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 
+@import "../style/colors.css";
 @import "../style/main.css";
 
 :root {

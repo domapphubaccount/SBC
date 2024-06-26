@@ -1,94 +1,137 @@
 "use client"
+
+import { Button, Menu, MenuHandler, MenuItem, MenuList } from '@material-tailwind/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-function MultipleSelect({ setStoredCode, storedCode }) {
-  const [selectedOptions, setSelectedOptions] = useState(false);
-  const [selectAll, setSelectAll] = useState(false);
-  const dropdownRef = useRef(null);
-  const code = useSelector(state => state.codeSlice.value)
+function MultipleSelect() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null)
+  let codeArray = [...chosen_code]
+  const token = useSelector(state => state.authSlice.userData.token)
+  const codes = useSelector(state => state.codeSlice.codes)
+  const chosen_code = useSelector(state => state.codeSlice.chosen_code)
+  const dispatch = useDispatch()
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setSelectedOptions(false);
-      }
-    }
+  useEffect(()=>{
+      axios.get('https://sbc.designal.cc/api/sections',{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }}).then(res => 
+            {
+              if(res.data.success){
+                dispatch(get_code(res.data.data))
+              }
+            }
+          ).catch(e => console.log(e))
+  },[])
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+  const handleChoseCode = (item) => {
+      let codeArray = [...chosen_code]
 
-  const handleCheckboxChange = (itemName) => {
-    setStoredCode(prevState => {
-      if (prevState.includes(itemName)) {
-        // Remove the item if it's already selected
-        return prevState.filter(item => item !== itemName);
+      if (codeArray.includes(item)) {
+          codeArray = codeArray.filter(code => code !== item)
       } else {
-        // Add the item if it's not already selected
-        return [...prevState, itemName];
+          codeArray.push(item)
       }
-    });
-  };
+      dispatch(chose_code(codeArray))
+  }
+  const handleChoseAllCode = (checked,item) => {
+      let idsArray = []
+      if(checked === true){
+          setCheckAllCode(true)
+          item.map(item => idsArray.push(item.id))
+      }else if(checked === false){
+          setCheckAllCode(false)
+          idsArray = []
+      }
+      dispatch(chose_code(idsArray))
+  }
 
-  const handleSelectAllChange = () => {
-    if (selectAll) {
-      // Deselect all items
-      setStoredCode(prevState => prevState.filter(item => !code[0].pdfs.map(pdf => pdf.id).includes(item)));
-    } else {
-      // Select all items
-      setStoredCode(prevState => [...new Set([...prevState, ...code[0].pdfs.map(pdf => pdf.id)])]);
+      // start dropdown toggle
+    const handleToggleDropdown = () => {
+      console.log('dsfsdf')
+      setDropdownOpen(!dropdownOpen)
     }
-    setSelectAll(!selectAll);
-  };
-
-  useEffect(() => {
-    // Check if all items are selected
-    if (code[0]) {
-      const allSelected = code[0].pdfs.every(pdf => storedCode.includes(pdf.id));
-      setSelectAll(allSelected);
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setDropdownOpen(false)
+        }
     }
-  }, [storedCode, code]);
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
+    // end dropdown toggle
 
   return (
     <>
-      <div className="relative inline-block text-left" ref={dropdownRef}>
+      <div className="relative inline-block text-left">
+      <div className=" relative inline-block text-left dropdown-code">
         <div>
-          <button type="button" style={{ color: '#fff !important' }} onClick={() => setSelectedOptions(!selectedOptions)} className="inline-flex justify-center w-full text-sm font-medium text-white" id="options-menu" aria-haspopup="true" aria-expanded="true">
-            CODE
-            <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fillRule="evenodd" d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </button>
+          <div onClick={handleToggleDropdown} className="codeInButton">
+            <p className="codeInButtonText semibold">CODE</p>
+          </div>
         </div>
-        {selectedOptions && code[0] &&
-          <div className="origin-top-right absolute right-0 mt-2 w-80	 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-              <div className="flex items-center ps-2 text-black px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-indigo-600 mr-2 rounded"
-                  onChange={handleSelectAllChange}
-                  checked={selectAll}
-                />
-                <div>{code[0].name}</div>
-              </div>
-              <div>
-                {code[0].pdfs.map((item, i) => (
-                  <span key={i} className="block px-4 ml-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex" role="menuitem">
-                    <input
-                      style={{ borderRadius: '7px' }}
-                      onChange={() => { handleCheckboxChange(item.id) }}
-                      checked={storedCode.includes(item.id)} type="checkbox" className="form-checkbox h-3 w-3 text-indigo-600 mr-1" />
-                    <div className='px-2'>{item.name}</div>
-                  </span>
-                ))}
+        {dropdownOpen && (
+          <div className="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
+            <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
+              <div className="px-4 py-3">  
+              {
+                codes.length > 0 ? codes.map((item,index)=>(
+                                <p key={index} className="text-sm leading-5">
+                                    <div className='flex justify-between'>
+                                        <div>{item.name}</div>
+                                        <div>
+                                            <label className="checkbox" >
+                                                <input type="checkbox" onChange={(e)=> {e.target.checked ? handleChoseAllCode(true , item.pdfs) : handleChoseAllCode(false) } }/>
+                                                <svg viewBox="0 0 21 18">
+                                                    <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 18" id="tick-path">
+                                                        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="2.25" fill="none" d="M5.22003 7.26C5.72003 7.76 7.57 9.7 8.67 11.45C12.2 6.05 15.65 3.5 19.19 1.69"></path>
+                                                    </symbol>
+                                                    <defs>
+                                                        <mask id="tick">
+                                                            
+                                                        </mask>
+                                                    </defs>
+                                                    
+                                                    <path d="M18 9C18 10.4464 17.9036 11.8929 17.7589 13.1464C17.5179 15.6054 15.6054 17.5179 13.1625 17.7589C11.8929 17.9036 10.4464 18 9 18C7.55357 18 6.10714 17.9036 4.85357 17.7589C2.39464 17.5179 0.498214 15.6054 0.241071 13.1464C0.0964286 11.8929 0 10.4464 0 9C0 7.55357 0.0964286 6.10714 0.241071 4.8375C0.498214 2.39464 2.39464 0.482143 4.85357 0.241071C6.10714 0.0964286 7.55357 0 9 0C10.4464 0 11.8929 0.0964286 13.1625 0.241071C15.6054 0.482143 17.5179 2.39464 17.7589 4.8375C17.9036 6.10714 18 7.55357 18 9Z" mask="url(#tick)" fill="white"></path>
+                                                </svg>
+                                                <svg viewBox="0 0 11 11" className="lines">
+                                                    <path d="M5.88086 5.89441L9.53504 4.26746"></path>
+                                                    <path d="M5.5274 8.78838L9.45391 9.55161"></path>
+                                                    <path d="M3.49371 4.22065L5.55387 0.79198"></path>
+                                                </svg>
+                                            </label>
+                                        </div>
+                                    </div> 
+                                    <ul>
+                                        {item.pdfs.map((item2,index)=>(
+                                        <li key={index}>
+                                            <div className="checkbox-wrapper-11">
+                                                <input value={index}  checked={chosen_code.includes(item2.id)} name="r" onChange={(e)=>{ handleChoseCode(item2.id)}} type="checkbox" id={'02-'+index} />
+                                                <label for={'02-'+index}>{item2.name}</label>
+                                            </div>
+                                        </li>
+                                        ))}
+                                    </ul>
+                                </p>
+                            ))
+                         :                                 
+                         <div className="loader m-auto py-3">
+                            <div className="circle"></div>
+                            <div className="circle"></div>
+                            <div className="circle"></div>
+                            <div className="circle"></div>
+                        </div> 
+                        }
+                </div>
               </div>
             </div>
-          </div>
-        }
+        )}
+        </div>
       </div>
     </>
   );

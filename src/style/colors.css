@@ -1,0 +1,18 @@
+:root{
+    --dark_blue: #1E293B;
+}
+
+
+
+
+/* start text */
+.text_blue{
+    color: var(--dark_blue);
+}
+/* end text */
+
+/* start background */
+.background_color{
+    background-color: var(--dark_blue);
+}
+/* end background */

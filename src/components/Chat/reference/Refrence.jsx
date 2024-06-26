@@ -5,9 +5,9 @@ function Refrence({setElementWidth}) {
   const colRef = useRef()
 
   useEffect(()=>{
-    window.onresize = () => {
-     setElementWidth(colRef.current?.offsetWidth)
-    }
+    // window.onresize = () => {
+    //  setElementWidth(colRef.current?.offsetWidth)
+    // }
   },[])
 
   return (
