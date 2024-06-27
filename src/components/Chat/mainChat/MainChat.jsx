@@ -5,7 +5,7 @@ import axios from 'axios'
 import Dislike from './actions/Dislike'
 import { usePathname } from 'next/navigation'
 import MessageImg from "@/assets/chat/MESSAGE.png"
-import { MathJaxContext } from 'better-react-mathjax';
+import { MathJax, MathJaxContext } from 'better-react-mathjax';
 
 
 
@@ -266,7 +266,9 @@ const handleStopReading = () => {
                         className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card"
                     >
                       <MathJaxContext>
+                        <MathJax dynamic>
                         <span className="block" dangerouslySetInnerHTML={{ __html: item.question }} />
+                        </MathJax>
                       </MathJaxContext>
 
                         {/* <span className="block text-right " style={{fontSize:'0.5rem'}}>{item.created_at}10:32pm</span> */}
