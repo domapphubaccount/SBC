@@ -59,6 +59,7 @@ export default function Home() {
           }
         ).catch(e => console.log(e))
     }
+    window.MathJax && window.MathJax.typeset();
   },[update])
 
 
@@ -108,6 +109,7 @@ export default function Home() {
         }
       }
   }
+  window.MathJax && window.MathJax.typeset();
   },[token,dashboardData,update,catchChat])
 
   return (
