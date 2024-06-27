@@ -42,7 +42,9 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
   const [copID,setCopId] = useState()
 
-
+  useEffect(()=>{
+    window.MathJax && window.MathJax.typeset();
+  },[itemId,dislike,copID,update,copyIcon,isSpeaking,chatData,elementWidth,storedCode,insideChat])
   const dislikeToggle = (id) => {
     setItemId(id)
     setDislike(!dislike)
