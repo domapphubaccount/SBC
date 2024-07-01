@@ -3,24 +3,23 @@ import DashLayout from "@/layout/DashLayout/DashLayout";
 import Header from "@/layout/Header/Header";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCode } from "./Redux/Features/Code/CodeSlice";
-import { getChatHistory } from "./Redux/Features/Chat/ChatSlice";
+import { getChatData, getChatHistory, getConversation } from "./Redux/Features/Chat/ChatSlice";
 
 export default function Home() {
   const [token, setToken] = useState("");
   const [storedCode ,setStoredCode] = useState([])
-  // const [dashboardData , setDashboardData] = useState({})
-  const [update,setUpdate] = useState(false)
-  const [insideChat , setInsideChat] = useState({})
-  const [catchChat,setCatchChat] = useState(null)
-  const [loading,setLoading] = useState(false)
-  const [chatData , setChatData] = useState([])
+  // const [loading,setLoading] = useState(false)
+  const loading = useSelector(state => state.updateSlice.loading_chat)
   const dashboardData = useSelector(state => state.chatSlice.value)
+  const catchChat = useSelector(state => state.chatSlice.get_chat)
+  const updates = useSelector(state => state.updateSlice.state)
   const dispatch = useDispatch()
   
   useEffect(()=>{
+    console.log('page')
     if(!JSON.parse(localStorage.getItem("data"))){
       redirect('/signIn')
     }
@@ -44,6 +43,7 @@ export default function Home() {
 
   },[])
 
+  console.log('rerender')
   useEffect(()=>{
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
       const storedData = JSON.parse(localStorage.getItem("data"));
@@ -60,7 +60,7 @@ export default function Home() {
         ).catch(e => console.log(e))
     }
     window.MathJax && window.MathJax.typeset();
-  },[update])
+  },[updates])
 
 
   useEffect(()=>{
@@ -78,8 +78,10 @@ export default function Home() {
           })
           .then(response => {
             if(response.data.success){
-              setInsideChat(response.data.data[0]);
-              setChatData(response.data.data[0].user_chats)
+              // setInsideChat(response.data.data[0]);
+              dispatch(getConversation(response.data.data[0]))
+              dispatch(getChatData(response.data.data[0].user_chats))
+              // setChatData(response.data.data[0].user_chats)
             }
           })
           .catch(error => {
@@ -98,8 +100,8 @@ export default function Home() {
           })
           .then(response => {
             if(response.data.success){
-              setInsideChat(response.data.data[0]);
-              setChatData(response.data.data[0].user_chats)
+              dispatch(getConversation(response.data.data[0]))
+              dispatch(getChatData(response.data.data[0].user_chats))
             }
           })
           .catch(error => {
@@ -110,12 +112,12 @@ export default function Home() {
       }
   }
   window.MathJax && window.MathJax.typeset();
-  },[token,dashboardData,update,catchChat])
+  },[token,dashboardData,updates,catchChat])
 
   return (
     <main >
-        <Header setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat} setLoading={setLoading}/>
-        <DashLayout setChatData={setChatData} chatData={chatData} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update} loading={loading} setLoading={setLoading} setCatchChat={setCatchChat}/>
+        <Header setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData}/>
+        <DashLayout storedCode={storedCode} />
     </main>
   );
 }

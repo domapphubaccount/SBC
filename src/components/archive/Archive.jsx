@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ArchiveAccordion from './ArchiveAccordions';
 
-function Archive({ setUpdate, update, setInsideChat, setCatchChat, setLoading }) {
+function Archive() {
     const [archiveToggle, setArchiveToggle] = useState(false);
     const archiveRef = useRef(null);
 
@@ -47,13 +47,7 @@ function Archive({ setUpdate, update, setInsideChat, setCatchChat, setLoading })
                     tabIndex="-1"
                 >
                     <div className="py-1" role="none">
-                        <ArchiveAccordion
-                            setLoading={setLoading}
-                            setCatchChat={setCatchChat}
-                            setUpdate={setUpdate}
-                            update={update}
-                            setInsideChat={setInsideChat}
-                        />
+                        <ArchiveAccordion/>
                     </div>
                 </div>
             )}

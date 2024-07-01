@@ -6,9 +6,12 @@ import axios from 'axios'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { redirect, usePathname } from 'next/navigation'
+import { get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
+import { useDispatch } from 'react-redux'
 
-function Header({path,setStoredCode,storedCode,dashboardData,update,setUpdate,setInsideChat,setCatchChat,setLoading}) {
+function Header({path,setStoredCode,storedCode,dashboardData}) {
   const [ userName , setUserName] = useState("");
+  const dispatch = useDispatch()
   const pathname = usePathname()
 
   useEffect(()=>{
@@ -26,7 +29,7 @@ function Header({path,setStoredCode,storedCode,dashboardData,update,setUpdate,se
   },[])
 
   const handleStartNewChat = () => {
-    setLoading(true)
+    dispatch(loading_chat(true))
     const token = JSON.parse(localStorage.getItem("data")).token
       axios.get("https://sbc.designal.cc/api/start-chat", {
       headers: {
@@ -38,8 +41,8 @@ function Header({path,setStoredCode,storedCode,dashboardData,update,setUpdate,se
       }
     })
     .then(response => {
-      setCatchChat(response.data.data.id)
-      setLoading(false)
+      dispatch(get_chat(response.data.data.id))
+      dispatch(loading_chat(false))
       localStorage.setItem("chat",response.data.data.id)
     })
     .catch(error => {
@@ -77,7 +80,7 @@ function Header({path,setStoredCode,storedCode,dashboardData,update,setUpdate,se
           
           <ul className="flex justify-between list-none ml-auto items-center">
             <li className='mr-3' title='timeline'>
-              <Archive setLoading={setLoading} dashboardData={dashboardData} setUpdate={setUpdate} update={update} setInsideChat={setInsideChat} setCatchChat={setCatchChat}/>
+              <Archive dashboardData={dashboardData} />
             </li>
             <li title='start new chat' className='mr-3' onClick={handleStartNewChat}>
               <div>

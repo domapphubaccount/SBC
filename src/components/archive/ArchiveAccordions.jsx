@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import ArchiveSettings from './ArchiveSettings';
 import ShareChatLink from '../Chat/shareChatLink/ShareChatLink';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { loading_chat, updateSlice } from '@/app/Redux/Features/Update/UpdateSlice';
+import { choseChate, getConversation, get_chat } from '@/app/Redux/Features/Chat/ChatSlice';
 
-function TailwindAccordion({setUpdate,update,setInsideChat, setCatchChat,setLoading}) {
+function TailwindAccordion() {
   const [open, setOpen] = useState(null);
   const [renameToggle, setRenameToggle] = useState(false)
   const [deleteToggle, setDeleteToggle] = useState(false)
@@ -16,11 +18,14 @@ function TailwindAccordion({setUpdate,update,setInsideChat, setCatchChat,setLoad
   const [sharableChat , setSharableChat] = useState([])
   const token = localStorage.getItem("data") && JSON.parse(localStorage.getItem("data")).token
   const dashboardData = useSelector(state => state.chatSlice.value)
+  const dispatch = useDispatch()
 
 
   const handleAction = () => {
     setActionAlert(true)
     setTimeout(()=> setActionAlert(false) , 4000)
+    window.MathJax && window.MathJax.typeset();
+
   }
 
 
@@ -69,16 +74,18 @@ function TailwindAccordion({setUpdate,update,setInsideChat, setCatchChat,setLoad
         setRenameToggle(false)
         setHandleChat({})
         handleAction()
-        setUpdate(!update)
+        dispatch(updateSlice())
         setOpen(false)
       }
     })
     .catch(error => {
       console.error('There was an error making the request!', error);
     });
+    window.MathJax && window.MathJax.typeset();
+
   }
   const handleGetChat = (chat_id,share_name) => {
-    setLoading(true)
+    dispatch(loading_chat(true))
     axios.get(`https://sbc.designal.cc/api/get-chat/${chat_id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -91,17 +98,18 @@ function TailwindAccordion({setUpdate,update,setInsideChat, setCatchChat,setLoad
     .then(response => {
       console.log(response.data);
       localStorage.setItem("chat",chat_id)
-      setInsideChat(response.data.data[0])
-      setCatchChat(chat_id)
-      setLoading(false)
+      dispatch(getConversation(response.data.data[0]))
+      dispatch(choseChate(chat_id))
+      dispatch(loading_chat(false))
     })
     .catch(error => {
-      setLoading(false)
+      dispatch(loading_chat(false))
       console.error('There was an error making the request!', error);
     })
+    window.MathJax && window.MathJax.typeset();
   }
   const handleDeleteChate = (handleChat) => {
-    setLoading(true)
+    dispatch(loading_chat(true))
     axios.post(
       "https://sbc.designal.cc/api/delete-chat",
       {
@@ -116,19 +124,21 @@ function TailwindAccordion({setUpdate,update,setInsideChat, setCatchChat,setLoad
     )
     .then(response => {
       if(response.data.success){
-        setCatchChat(null)
+        // setCatchChat(null)
+        dispatch(get_chat(null))
         setDeleteToggle(false)
         setHandleChat({})
         handleAction()
-        setUpdate(!update)
+        dispatch(updateSlice())
         setOpen(false)
-        setLoading(false)
+        dispatch(loading_chat(false))
       }
     })
     .catch(error => {
-      setLoading(false)
+      dispatch(loading_chat(false))
       console.error('There was an error making the request!', error);
     });
+    window.MathJax && window.MathJax.typeset();
   }
 
   return (

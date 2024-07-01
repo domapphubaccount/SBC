@@ -1,12 +1,18 @@
 "use client"
+import { getChatData } from '@/app/Redux/Features/Chat/ChatSlice';
+import { update } from '@/app/Redux/Features/Update/UpdateSlice';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-function ChatInput({chatData,setChatData,storedCode,insideChat,update,setUpdate}) {
+function ChatInput({storedCode}) {
   const [message , setMessage] = useState("")
   const [token, setToken] = useState("");
   const [sendMessage,setSendMessage] = useState(false)
   const [loading,setLoading] = useState(false)
+  const chatData = useSelector(state => state.chatSlice.chat_data)
+  const conversation = useSelector(state => state.chatSlice.conversation)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
@@ -16,13 +22,13 @@ function ChatInput({chatData,setChatData,storedCode,insideChat,update,setUpdate}
   }, []);
 
   const handleSendMessage = () =>{
-    setChatData(prev => [...chatData, { question: message }]);
+    dispatch(getChatData([...chatData, { question: message }]))
     setLoading(true)
     axios.post(
       "https://sbc.designal.cc/api/send-message",
       {
         question: message,
-        master_chat_id: insideChat&& insideChat.id,
+        master_chat_id: conversation && conversation.id,
         selected_pdf: storedCode && storedCode
       },
       {
@@ -34,7 +40,7 @@ function ChatInput({chatData,setChatData,storedCode,insideChat,update,setUpdate}
     .then(response => {
       console.log(response.data.success);
       if(response.data.success){
-        setUpdate(!update)
+        dispatch(update())
       }else{
         console.log("works",storedCode)
         setSendMessage(true)
@@ -102,7 +108,7 @@ function ChatInput({chatData,setChatData,storedCode,insideChat,update,setUpdate}
 <>
     <textarea
       aria-placeholder="Escribe un mensaje aquí"
-      placeholder={!insideChat?.id ? "start new chat first" : "start question"}
+      placeholder={!conversation?.id ? "start new chat first" : "start question"}
       className="py-2 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
       type="text"
       name="message"
@@ -110,13 +116,13 @@ function ChatInput({chatData,setChatData,storedCode,insideChat,update,setUpdate}
       style={{borderRadius:'20px'}}
       rows={1}
       onChange={(e)=>{setMessage(e.target.value)}}
-      disabled={!insideChat.id}
+      disabled={!conversation.id}
       onKeyDown={handleKeyDown}
 
     >
       </textarea>
 
-    <button  onClick={handleSendMessage} disabled={message.length <= 0 && !insideChat.id } className="outline-none focus:outline-none" type="submit">
+    <button  onClick={handleSendMessage} disabled={message.length <= 0 && !conversation.id } className="outline-none focus:outline-none" type="submit">
       <svg
         className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
         xmlns="http://www.w3.org/2000/svg"

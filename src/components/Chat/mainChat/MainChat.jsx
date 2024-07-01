@@ -6,6 +6,9 @@ import Dislike from './actions/Dislike'
 import { usePathname } from 'next/navigation'
 import MessageImg from "@/assets/chat/MESSAGE.png"
 import { MathJax, MathJaxContext } from 'better-react-mathjax';
+import { useDispatch, useSelector } from 'react-redux'
+import { loading_chat, updateSlice } from '@/app/Redux/Features/Update/UpdateSlice'
+import { choseChate } from '@/app/Redux/Features/Chat/ChatSlice'
 
 
 
@@ -30,7 +33,7 @@ const renderContent = (content) => {
 };
 
 
-function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,update,setUpdate,loading,setLoading,setCatchChat}) {
+function MainChat({elementWidth,storedCode}) {
   const pathName = usePathname()
   const [copyIcon , setCopyIcon] = useState(false)
   const [user,setUser] = useState('')
@@ -41,10 +44,18 @@ function MainChat({chatData,setChatData,elementWidth,storedCode,insideChat,updat
   const [dislikeMessage,setDislikeMessage] = useState('')
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
   const [copID,setCopId] = useState()
+  const disaptch = useDispatch()
+  const chatData = useSelector(state => state.chatSlice.chat_data)
+  const updates = useSelector(state => state.updateSlice.state)
+  const conversation = useSelector(state => state.chatSlice.conversation)
+  const loading = useSelector(state => state.updateSlice.loading_chat)
+
+
+
 
   useEffect(()=>{
     window.MathJax && window.MathJax.typeset();
-  },[itemId,dislike,copID,update,copyIcon,isSpeaking,chatData,elementWidth,storedCode,insideChat])
+  },[user,itemId,dislike,copID,updates,copyIcon,isSpeaking,elementWidth,chatData,storedCode,conversation,dislikeMessage,loadingMessage])
   const dislikeToggle = (id) => {
     setItemId(id)
     setDislike(!dislike)
@@ -123,7 +134,7 @@ const handleStopReading = () => {
     )
     .then(response => {
       console.log(response.data);
-      setUpdate(!update)
+      disaptch(updateSlice())
       setLoadingMessage(false)
     })
     .catch(error => {
@@ -158,7 +169,7 @@ const handleStopReading = () => {
 
   }
   const handleStartNewChat = () => {
-    setLoading(true)
+    disaptch(loading_chat(true))
     const token = JSON.parse(localStorage.getItem("data")).token
       axios.get("https://sbc.designal.cc/api/start-chat", {
       headers: {
@@ -170,12 +181,12 @@ const handleStopReading = () => {
       }
     })
     .then(response => {
-      setCatchChat(response.data.data.id)
+      disaptch(choseChate(response.data.data.id))
       localStorage.setItem("chat",response.data.data.id)
-      setLoading(false)
+      disaptch(loading_chat(false))
     })
     .catch(error => {
-      setLoading(false)
+      disaptch(loading_chat(false))
       console.error('There was an error making the request!', error);
     })
   }
@@ -194,7 +205,7 @@ const handleStopReading = () => {
 
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [insideChat]);
+  }, [conversation]);
 
   const pattern = /SBC.*?\/\//g;
 
@@ -208,13 +219,17 @@ const handleStopReading = () => {
             data = data.replaceAll(item2, '');
         });
 
-        console.log(data);
+        // console.log(data);
         return data;
     }
     return item; // Return the original item if no match is found
 }
 
-
+    // Scroll to the bottom
+  //   useEffect(() => {
+  //     const element = document.getElementById('chat_container');
+  //     element.scrollTop = element.scrollHeight;      
+  // }, []);
 
   return (
     <div className="col-span-3 bg-white relative">
@@ -234,7 +249,7 @@ const handleStopReading = () => {
         </div>
         :
         <ul>
-          {insideChat && Object.entries(insideChat).length == 0 ?
+          {conversation && Object.entries(conversation).length == 0 ?
           <div className='pt-4' style={{paddingTop:'200px'}}>
             <div className="text-center">
               <div className='m-auto' style={{width:'200px'}}><img src={MessageImg.src} className='w-100' alt=''  /></div>
@@ -255,7 +270,7 @@ const handleStopReading = () => {
           :
           <li className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
 
-            { chatData && insideChat && insideChat.user_chats && 
+            { chatData && conversation && conversation.user_chats && 
               chatData.map((item,i)=>(
             <React.Fragment key={i}>
             <div className='flex justify-end relative'>
@@ -275,13 +290,6 @@ const handleStopReading = () => {
                     </div>
                   </div>
                   <div className='flex mb-3 justify-end'>
-                    {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2">
-                      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                      <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2">
-                      <path fillRule="evenodd" d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" clipRule="evenodd" />
-                    </svg> */}
                   {!copyIcon ?
                     <svg onClick={()=>handleCopyText(item.question,i)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 mr-4 cursor-pointer">
                       <path fillRule="evenodd" d="M17.663 3.118c.225.015.45.032.673.05C19.876 3.298 21 4.604 21 6.109v9.642a3 3 0 0 1-3 3V16.5c0-5.922-4.576-10.775-10.384-11.217.324-1.132 1.3-2.01 2.548-2.114.224-.019.448-.036.673-.051A3 3 0 0 1 13.5 1.5H15a3 3 0 0 1 2.663 1.618ZM12 4.5A1.5 1.5 0 0 1 13.5 3H15a1.5 1.5 0 0 1 1.5 1.5H12Z" clipRule="evenodd" />
@@ -368,9 +376,6 @@ const handleStopReading = () => {
                     <svg onClick={()=>dislikeToggle(item.id)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2 cursor-pointer">
                       <path d="M15.73 5.5h1.035A7.465 7.465 0 0 1 18 9.625a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v.633A.75.75 0 0 1 9 22a2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 0 1 1.5 12.25c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23ZM21.669 14.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.958 8.958 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227Z" />
                     </svg>
-                    {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2 cursor-pointer">
-                      <path fillRule="evenodd" d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" clipRule="evenodd" />
-                    </svg> */}
                   </div>:
                     ''
 
@@ -390,9 +395,9 @@ const handleStopReading = () => {
     </div>
     
     {pathName.slice(0,9) == "/sharable"? "" :
-      insideChat && Object.entries(insideChat).length != 0 &&
+      conversation && Object.entries(conversation).length != 0 &&
       <div style={{width: '100%',position:'absolute',bottom:'0'}}>
-        <ChatInput chatData={chatData} setChatData={setChatData} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
+        <ChatInput storedCode={storedCode} />
       </div>
 
       }
