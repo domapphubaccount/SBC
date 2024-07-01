@@ -304,10 +304,12 @@ const handleStopReading = () => {
                         {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
                       </div>
                        <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                        {
-                          item.answer.match(pattern).map((item3,i) => (
+                        {item.answer.match(pattern) ?
+                          item.answer.match(pattern)?.map((item3,i) => (
                             <p className='w-100 my-3' key={i}>{item3}</p>
                           ))
+                          :
+                          <div>No Reference</div>
                         }
                         </span>
                     </div>
