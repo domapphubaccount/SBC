@@ -6,7 +6,7 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import { chatHistory } from '@/store/Features/Chat/ChatSlice';
+import { chatHistory, get_chat, startChat } from '@/store/Features/Chat/ChatSlice';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { ChatSettings } from './settings/ChatSettings';
@@ -32,10 +32,7 @@ function Archive() {
     const [open, setOpen] = React.useState(0);
     const [dashBoardData,setDashboardData] = useState('')
     const dispatch = useDispatch()
-
- 
     const handleOpen = (value) => setOpen(open === value ? 0 : value);  
-
     const archiveRef = useRef(null);
 
     const handleClickOutside = (event) => {
@@ -45,7 +42,6 @@ function Archive() {
     };
     const openDrawerRight = () => setOpenRight(true);
     const closeDrawerRight = () => setOpenRight(false);
-
     useEffect(() => {
         if (archiveToggle) {
             document.addEventListener('mousedown', handleClickOutside);
@@ -56,7 +52,6 @@ function Archive() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [archiveToggle]);
-
     // start get archive data
     useEffect(()=>{
         if (typeof window !== "undefined" && localStorage.getItem("data")) {
@@ -76,12 +71,10 @@ function Archive() {
         }
       },[])
     // end get archive data
-
     const handleChat = (chat) => {
         dispatch(get_chat(chat))
         dispatch(startChat(false))
     }
-
     return (
         <>
             <button className="Btn_history" onClick={openDrawerRight}>
@@ -115,7 +108,7 @@ function Archive() {
                 placement="right"
                 open={openRight}
                 onClose={closeDrawerRight}
-                className="p-4 z-50	"
+                className="p-4 "
             >
                 <div className="mb-6 flex items-center justify-between">
                       <Button className="rounded-full background_color p-2" onClick={closeDrawerRight}>

@@ -1,12 +1,31 @@
 import ChatContainer from '@/components/Chat/chatContainer/ChatContainer'
 import Refrence from '@/components/Chat/reference/Refrence'
+import Delete from '@/components/archive/settings/ChatSetting/Delete'
+import Rename from '@/components/archive/settings/ChatSetting/Rename'
+import { Share } from '@/components/archive/settings/ChatSetting/Share'
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-function DashLayout({chatData,setChatData,storedCode,insideChat,update,setUpdate,loading,setLoading,setCatchChat}) {
+function DashLayout() {
+  const open = useSelector(state => state.ShareSlice.open)
+
   return (
     <main >
         {/* <Refrence /> */}
-        <ChatContainer chatData={chatData} setChatData={setChatData} setCatchChat={setCatchChat} setLoading={setLoading} loading={loading} storedCode={storedCode} insideChat={insideChat} setUpdate={setUpdate} update={update}/>
+        <ChatContainer />
+
+        {/* {true &&
+            <DeslikeAnswer />
+          } */}
+          {true &&
+            <Rename />
+          }
+          {true &&
+            <Delete />
+          }
+          {open &&
+            <Share />
+          }
     </main>
   )
 }

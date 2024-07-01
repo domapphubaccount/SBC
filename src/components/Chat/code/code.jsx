@@ -1,17 +1,20 @@
 "use client"
 
-import { Button, Menu, MenuHandler, MenuItem, MenuList } from '@material-tailwind/react';
+import { chose_code, get_code } from '@/store/Features/Code/Code';
+import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 function MultipleSelect() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null)
-  let codeArray = [...chosen_code]
+  const chosen_code = useSelector(state => state.codeSlice.chosen_code)
   const token = useSelector(state => state.authSlice.userData.token)
   const codes = useSelector(state => state.codeSlice.codes)
-  const chosen_code = useSelector(state => state.codeSlice.chosen_code)
+  let codeArray = [...chosen_code]
   const dispatch = useDispatch()
+  const state = useSelector(state => state)
+  console.log(state)
 
   useEffect(()=>{
       axios.get('https://sbc.designal.cc/api/sections',{
@@ -39,10 +42,8 @@ function MultipleSelect() {
   const handleChoseAllCode = (checked,item) => {
       let idsArray = []
       if(checked === true){
-          setCheckAllCode(true)
           item.map(item => idsArray.push(item.id))
       }else if(checked === false){
-          setCheckAllCode(false)
           idsArray = []
       }
       dispatch(chose_code(idsArray))
@@ -77,13 +78,13 @@ function MultipleSelect() {
         </div>
         {dropdownOpen && (
           <div className="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
-            <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
+            <div className="absolute right-0 w-72 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
               <div className="px-4 py-3">  
               {
                 codes.length > 0 ? codes.map((item,index)=>(
                                 <p key={index} className="text-sm leading-5">
                                     <div className='flex justify-between'>
-                                        <div>{item.name}</div>
+                                        <div className='text_blue'>{item.name}</div>
                                         <div>
                                             <label className="checkbox" >
                                                 <input type="checkbox" onChange={(e)=> {e.target.checked ? handleChoseAllCode(true , item.pdfs) : handleChoseAllCode(false) } }/>

@@ -134,10 +134,7 @@ function Profile() {
               </button>
             </div>
           </div>
-      <link
-        rel="stylesheet"
-        href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css"
-      />
+
       <div className="h-screen flex flex-col justify-center overflow-auto" style={{ paddingTop: "100px" }}>
         <div className=" pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
           <div className="mt-2 mb-8 w-full">
