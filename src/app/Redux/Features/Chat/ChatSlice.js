@@ -24,7 +24,6 @@ export const chatSlice = createSlice({
     },
     choseChate: (state , action) => {
       state.get_chat = action.payload
-      
     }
 
   },

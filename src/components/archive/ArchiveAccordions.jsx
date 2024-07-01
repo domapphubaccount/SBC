@@ -105,7 +105,6 @@ function TailwindAccordion() {
 
   }
   const handleGetChat = (chat_id,share_name) => {
-    console.log(chat_id)
     dispatch(choseChate(chat_id))
     localStorage.setItem("chat",chat_id)
   }

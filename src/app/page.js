@@ -44,7 +44,7 @@ export default function Home() {
 
   useEffect(()=>{
     if(token){
-      if(dashboardData){
+      console.log('start')
         if(catchChat || localStorage.getItem("chat")){
           axios.get(`https://sbc.designal.cc/api/get-chat/${JSON.parse(localStorage.getItem("chat"))}`, {
             headers: {
@@ -87,7 +87,7 @@ export default function Home() {
             console.error('There was an error making the request!', error);
           })
 
-        }
+        
       }
   }
   window.MathJax && window.MathJax.typeset();
