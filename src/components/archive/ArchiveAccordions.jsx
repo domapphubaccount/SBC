@@ -4,7 +4,7 @@ import ShareChatLink from '../Chat/shareChatLink/ShareChatLink';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { loading_chat, updateSlice, update_archive } from '@/app/Redux/Features/Update/UpdateSlice';
-import { choseChate, getChatHistory, getConversation, get_chat } from '@/app/Redux/Features/Chat/ChatSlice';
+import { choseChate, getChatHistory, getConversation } from '@/app/Redux/Features/Chat/ChatSlice';
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -146,9 +146,9 @@ function TailwindAccordion() {
       if(response.data.success){
         // setCatchChat(null)
         dispatch(update_archive())
-        dispatch(get_chat(null))
+        dispatch(choseChate(null))
+        console.log('test')
         setHandleChat({})
-        handleAction()
         setOpen(false)
         dispatch(loading_chat(false))
         setDeleteToggle(false)

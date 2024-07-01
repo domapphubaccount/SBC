@@ -3,7 +3,7 @@ import DashLayout from "@/layout/DashLayout/DashLayout";
 import Header from "@/layout/Header/Header";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCode } from "./Redux/Features/Code/CodeSlice";
 import { getChatData, getConversation } from "./Redux/Features/Chat/ChatSlice";
@@ -40,9 +40,6 @@ export default function Home() {
     }}
 
   },[])
-
-  console.log('rerender')
-
 
 
   useEffect(()=>{
