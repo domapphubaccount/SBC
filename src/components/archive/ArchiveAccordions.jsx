@@ -105,28 +105,9 @@ function TailwindAccordion() {
 
   }
   const handleGetChat = (chat_id,share_name) => {
-    dispatch(loading_chat(true))
-    axios.get(`https://sbc.designal.cc/api/get-chat/${chat_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      params: {
-        chat_id: chat_id,
-        share_name: share_name
-    }
-    })
-    .then(response => {
-      console.log(response.data);
-      localStorage.setItem("chat",chat_id)
-      dispatch(getConversation(response.data.data[0]))
-      dispatch(choseChate(chat_id))
-      dispatch(loading_chat(false))
-    })
-    .catch(error => {
-      dispatch(loading_chat(false))
-      console.error('There was an error making the request!', error);
-    })
-    window.MathJax && window.MathJax.typeset();
+    console.log(chat_id)
+    dispatch(choseChate(chat_id))
+    localStorage.setItem("chat",chat_id)
   }
   const handleDeleteChate = (handleChat) => {
     dispatch(loading_chat(true))
