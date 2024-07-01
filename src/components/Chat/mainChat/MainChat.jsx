@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ChatInput from '../chatInput/ChatInput'
 import axios from 'axios'
 import Dislike from './actions/Dislike'
@@ -49,6 +49,7 @@ function MainChat({elementWidth,storedCode}) {
   const updates = useSelector(state => state.updateSlice.state)
   const conversation = useSelector(state => state.chatSlice.conversation)
   const loading = useSelector(state => state.updateSlice.loading_chat)
+  const chatRef = useRef()
 
 
 
@@ -227,8 +228,10 @@ const handleStopReading = () => {
 
     // Scroll to the bottom
   //   useEffect(() => {
-  //     const element = document.getElementById('chat_container');
-  //     element.scrollTop = element.scrollHeight;      
+  //     if(chatRef){
+  //     const element = chatRef.current
+  //     element.scrollTop = element.scrollHeight;    
+  //     }  
   // }, []);
 
   return (
@@ -268,7 +271,7 @@ const handleStopReading = () => {
             </div>
           </div>
           :
-          <li className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
+          <li ref={chatRef} className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
 
             { chatData && conversation && conversation.user_chats && 
               chatData.map((item,i)=>(

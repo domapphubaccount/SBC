@@ -1,6 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ArchiveAccordion from './ArchiveAccordions';
 
+
+function Icon({ id, open }) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className={`${id === open ? "rotate-180" : ""} h-5 w-5 transition-transform`}
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      </svg>
+    );
+  }
+
 function Archive() {
     const [archiveToggle, setArchiveToggle] = useState(false);
     const archiveRef = useRef(null);
@@ -24,7 +40,7 @@ function Archive() {
 
     return (
         <>
-            <svg
+            {/* <svg
                 style={{color:'#fff !important'}}
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={() => setArchiveToggle(!archiveToggle)}
@@ -36,7 +52,35 @@ function Archive() {
                 className="size-6 cursor-pointer text-white"
             >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
+            </svg> */}
+            <button className="Btn_history" onClick={() => setArchiveToggle(!archiveToggle)}>
+                <div className="svgWrapper">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 42 42"
+                    className="svgIcon"
+                    >
+                    <path
+                        stroke-width="5"
+                        stroke="#fff"
+                        d="M9.14073 2.5H32.8593C33.3608 2.5 33.8291 2.75065 34.1073 3.16795L39.0801 10.6271C39.3539 11.0378 39.5 11.5203 39.5 12.0139V21V37C39.5 38.3807 38.3807 39.5 37 39.5H5C3.61929 39.5 2.5 38.3807 2.5 37V21V12.0139C2.5 11.5203 2.6461 11.0378 2.91987 10.6271L7.89266 3.16795C8.17086 2.75065 8.63921 2.5 9.14073 2.5Z"
+                    ></path>
+                    <rect
+                        stroke-width="3"
+                        stroke="#fff"
+                        rx="2"
+                        height="4"
+                        width="11"
+                        y="18.5"
+                        x="15.5"
+                    ></rect>
+                    <path stroke-width="5" stroke="#fff" d="M1 12L41 12"></path>
+                    </svg>
+                    <div className="text">History</div>
+                </div>
+            </button>
+
             {archiveToggle && (
                 <div
                     ref={archiveRef}
