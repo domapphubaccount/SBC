@@ -45,6 +45,7 @@
 /* start chat */
 .chat_container{
     width: calc(100% - 300px);
+    height: calc(100vh - 69px);
     position: relative;
 }
 .chat_userName{

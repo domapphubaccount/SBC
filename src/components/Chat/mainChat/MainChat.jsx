@@ -6,43 +6,66 @@ import Dislike from './actions/Dislike'
 import { usePathname } from 'next/navigation'
 import MessageImg from "@/assets/chat/MESSAGE.png"
 import { MathJaxContext } from 'better-react-mathjax';
+import { useDispatch, useSelector } from 'react-redux'
 
 
 function MainChat() {
+  const chatState = useSelector(state => state.chat)
+  const auth = useSelector(state => state.authSlice.userData.token )
+  const update = useSelector(state => state.updatesSlice.value)
+  const update_first_message = useSelector(state => state.chat.first_message)
+  const pattern = /SBC.*?\/\//g;
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+    if(chatState.chatData){
+        const chatId = chatState.chatData.id
+        axios.get(`https://sbc.designal.cc/api/get-chat/1`, { //${chatId}
+            headers: {
+              Authorization: `Bearer ${auth}`
+            },
+            params: {
+              chat_id: chatId,
+              share_name: "1"
+            }
+          })
+          .then(response => {
+            if(response.data.success){
+                dispatch(get_conversations(response.data))
+            }
+          })
+          .catch(error => {
+            console.error('There was an error making the request!', error);
+      })
+    }
+    window.MathJax && window.MathJax.typeset();
+},[chatState.chatData.id,update,update_first_message])
+
+const textHandler = (item) => {
+    if (item.match(pattern)) {
+        let dataArray = item.match(pattern);
+        let data = item;
+
+        dataArray.forEach(item2 => {
+            data = data.replaceAll(item2, '<br/>');
+        });
+      return data;
+    }
+    return item; // Return the original item if no match is found
+}
 
 
   return (
-    <div className="col-span-3 bg-white relative">
-    <div className="w-full log-bannar-2" style={{paddingTop:'100px',height:'100vh'}}>
+    <div className="col-span-3 bg-white relative" style={{paddingTop:'100px',height:'calc(100vh - 69px)'}}>
+    <div className="w-full log-bannar-2" >
       <div
         className="w-full grid grid-cols-4" 
         id="chat"
         style={{ height: 'calc(100vh - 80px)',position:'absolute',right:0,top:0,overflowY:'scroll'}}
         >
-          <div className='col-span-1' ></div>
-          {/* relative */}
-          <div className='col-span-3'>
-            <ul>
-              <div className='pt-4' style={{paddingTop:'200px'}}>
-                <div className="text-center">
-                  <div className='m-auto' style={{width:'200px'}}><img src={MessageImg.src} className='w-100' alt=''  /></div>
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1>
-                  <p className="mt-6 text-lg leading-8 text-gray-600">you can start new session or chose previous chat.</p>
-                  <div className="mt-10 flex items-center justify-center gap-x-6">
-                    {/* <Button  variant="gradient">Start Chat</Button> */}
-                    <button  className="learn-more start">
-                      <span className="circle" aria-hidden="true">
-                      <span className="icon arrow"></span>
-                      </span>
-                      <span className="button-text">Start Chat</span>
-                    </button>
-                    {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a> */}
-                  </div>
-                </div>
-              </div>
-              :
-              <li className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
-
+          <div className='col-span-4'>
+            <div>
+              <div className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
                 <React.Fragment >
                 <div className='flex justify-end relative'>
                     <div>
@@ -52,7 +75,7 @@ function MainChat() {
                             className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card"
                         >
                           <MathJaxContext>
-                            {/* <span className="block" dangerouslySetInnerHTML={{ __html: item.question }} /> */}
+                             <span className="block" dangerouslySetInnerHTML={{ __html: 'item.question' }} />
                           </MathJaxContext>
                         </div>
                       </div>
@@ -62,23 +85,17 @@ function MainChat() {
                           <path d="M3 8.625c0-1.036.84-1.875 1.875-1.875h.375A3.75 3.75 0 0 1 9 10.5v1.875c0 1.036.84 1.875 1.875 1.875h1.875A3.75 3.75 0 0 1 16.5 18v2.625c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625v-12Z" />
                           <path d="M10.5 10.5a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963 5.23 5.23 0 0 0-3.434-1.279h-1.875a.375.375 0 0 1-.375-.375V10.5Z" />
                         </svg>
-
                           <svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-3.5 mr-4  ml-2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
-                        
                       </div>
                     </div>
                 </div>
-
-
                 <div className='relative'>
                     <div className='code' >
                   <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                         <div className="w-full pb-2">
                           <div className="flex justify-between">
-                            {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
-                            {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
                           </div>
                           <span className="block ml-2 text-sm text-gray-600  font-semibold">
                               <p className='w-100 my-3' >item3</p>
@@ -95,7 +112,6 @@ function MainChat() {
                           >
                             <h4 className='text-black'>loading..</h4>
                           <>
-      
                             <span className="block chat_box" style={{overflowX: 'auto'}}  /> :  
                             <>...</>                         
                           </>
@@ -130,8 +146,8 @@ function MainChat() {
                     </div>
                 </div>
                 </React.Fragment>
-              </li>
-            </ul>
+              </div>
+            </div>
         </div>
       </div>
 
