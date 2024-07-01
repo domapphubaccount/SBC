@@ -6,8 +6,9 @@ import axios from 'axios'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { redirect, usePathname } from 'next/navigation'
-import { get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
+import { choseChate, get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
 import { useDispatch } from 'react-redux'
+import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 
 function Header({path,setStoredCode,storedCode}) {
   const [ userName , setUserName] = useState("");
@@ -41,12 +42,12 @@ function Header({path,setStoredCode,storedCode}) {
       }
     })
     .then(response => {
-      dispatch(get_chat(response.data.data.id))
+      dispatch(choseChate(response.data.data.id))
       dispatch(loading_chat(false))
       localStorage.setItem("chat",response.data.data.id)
     })
     .catch(error => {
-      setLoading(false)
+      dispatch(loading_chat(false))
       console.error('There was an error making the request!', error);
     })
   }
@@ -82,13 +83,26 @@ function Header({path,setStoredCode,storedCode}) {
             <li className='mr-3' title='timeline'>
               <Archive/>
             </li>
-            <li title='start new chat' className='mr-3' onClick={handleStartNewChat}>
+            {/* <li title='start new chat' className='mr-3' >
               <div>
                   <svg style={{color:'#fff !important'}} xmlns="http://www.w3.org/2000/svg" width={25} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer text-white">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                   </svg>
               </div>
+            </li> */}
+              {/* start start new chat */}
+            <li title='start new chat' className='mr-3' onClick={handleStartNewChat}>
+              <div>
+                <div tabindex="0" className="plusButton">
+                  <svg className="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                    <g mask="url(#mask0_21_345)">
+                      <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                    </g>
+                  </svg>
+                </div>
+              </div>
             </li>
+            {/* end start new chat */}
             <li title='profile'>
               <DropDown userName={userName}/>
             </li>
