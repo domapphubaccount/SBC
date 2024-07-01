@@ -20,8 +20,8 @@ function ChatContainer({storedCode}) {
       <div className="w-screen" style={{overflowX: 'hidden'}}>
         <div className=" border rounded" style={{ minHeight: '80vh'}}>
           <div className='grid grid-cols-4 min-w-full'>
-          <Refrence setElementWidth={setElementWidth}/>
-          <MainChat elementWidth={elementWidth} storedCode={storedCode}/>
+            <Refrence setElementWidth={setElementWidth}/>
+            <MainChat elementWidth={elementWidth} storedCode={storedCode}/>
           </div>
         </div>
       </div>

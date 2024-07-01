@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ArchiveSettings from './ArchiveSettings';
 import ShareChatLink from '../Chat/shareChatLink/ShareChatLink';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { loading_chat, updateSlice } from '@/app/Redux/Features/Update/UpdateSlice';
-import { choseChate, getConversation, get_chat } from '@/app/Redux/Features/Chat/ChatSlice';
+import { loading_chat, updateSlice, update_archive } from '@/app/Redux/Features/Update/UpdateSlice';
+import { choseChate, getChatHistory, getConversation, get_chat } from '@/app/Redux/Features/Chat/ChatSlice';
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -17,9 +17,30 @@ function TailwindAccordion() {
   const [shareToggle , setShareToggle] = useState(false)
   const [sharableChat , setSharableChat] = useState([])
   const token = localStorage.getItem("data") && JSON.parse(localStorage.getItem("data")).token
-  const dashboardData = useSelector(state => state.chatSlice.value)
   const dispatch = useDispatch()
+  const dashboardData = useSelector(state => state.chatSlice.value)
+  const updateDashboard = useSelector(state => state.updateSlice.archive)
+  const updates = useSelector(state => state.updateSlice.state)
 
+
+
+  useEffect(()=>{
+    if (typeof window !== "undefined" && localStorage.getItem("data")) {
+      const storedData = JSON.parse(localStorage.getItem("data"));
+      axios.get('https://sbc.designal.cc/api/dashboard',{
+        headers: {
+          Authorization: `Bearer ${storedData.token}`
+        }}).then(res => 
+          {
+            if(res.data.success){
+              // setDashboardData(res.data.data)
+              dispatch(getChatHistory(res.data.data))
+            }
+          }
+        ).catch(e => console.log(e))
+    }
+    window.MathJax && window.MathJax.typeset();
+  },[updates,updateDashboard])
 
   const handleAction = () => {
     setActionAlert(true)
@@ -27,7 +48,6 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
 
   }
-
 
   // mark name sharable
   const handleCopyShare = (toggleItem) => {
@@ -74,7 +94,7 @@ function TailwindAccordion() {
         setRenameToggle(false)
         setHandleChat({})
         handleAction()
-        dispatch(updateSlice())
+        dispatch(update_archive())
         setOpen(false)
       }
     })
@@ -125,13 +145,13 @@ function TailwindAccordion() {
     .then(response => {
       if(response.data.success){
         // setCatchChat(null)
+        dispatch(update_archive())
         dispatch(get_chat(null))
-        setDeleteToggle(false)
         setHandleChat({})
         handleAction()
-        dispatch(updateSlice())
         setOpen(false)
         dispatch(loading_chat(false))
+        setDeleteToggle(false)
       }
     })
     .catch(error => {

@@ -6,13 +6,11 @@ import { redirect } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCode } from "./Redux/Features/Code/CodeSlice";
-import { getChatData, getChatHistory, getConversation } from "./Redux/Features/Chat/ChatSlice";
+import { getChatData, getConversation } from "./Redux/Features/Chat/ChatSlice";
 
 export default function Home() {
   const [token, setToken] = useState("");
   const [storedCode ,setStoredCode] = useState([])
-  // const [loading,setLoading] = useState(false)
-  const loading = useSelector(state => state.updateSlice.loading_chat)
   const dashboardData = useSelector(state => state.chatSlice.value)
   const catchChat = useSelector(state => state.chatSlice.get_chat)
   const updates = useSelector(state => state.updateSlice.state)
@@ -44,23 +42,7 @@ export default function Home() {
   },[])
 
   console.log('rerender')
-  useEffect(()=>{
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
-      axios.get('https://sbc.designal.cc/api/dashboard',{
-        headers: {
-          Authorization: `Bearer ${storedData.token}`
-        }}).then(res => 
-          {
-            if(res.data.success){
-              // setDashboardData(res.data.data)
-              dispatch(getChatHistory(res.data.data))
-            }
-          }
-        ).catch(e => console.log(e))
-    }
-    window.MathJax && window.MathJax.typeset();
-  },[updates])
+
 
 
   useEffect(()=>{
@@ -116,7 +98,7 @@ export default function Home() {
 
   return (
     <main >
-        <Header setStoredCode={setStoredCode} storedCode={storedCode} dashboardData={dashboardData}/>
+        <Header setStoredCode={setStoredCode} storedCode={storedCode}/>
         <DashLayout storedCode={storedCode} />
     </main>
   );

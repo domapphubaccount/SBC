@@ -47,7 +47,7 @@ function Archive() {
                     tabIndex="-1"
                 >
                     <div className="py-1" role="none">
-                        <ArchiveAccordion/>
+                        <ArchiveAccordion                        />
                     </div>
                 </div>
             )}

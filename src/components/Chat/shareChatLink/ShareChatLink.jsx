@@ -1,5 +1,6 @@
 "use client"
 import axios from 'axios';
+import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import React, { useEffect, useState } from 'react';
 
 function Example({ shareName, setShareName , setShareToggle , setSharableChat , sharableChat , shareToggle , handleCopyShare , handleChat ,token}) {
@@ -27,7 +28,7 @@ function Example({ shareName, setShareName , setShareToggle , setSharableChat , 
   };
   useEffect(()=>{
     toggleShare()
-  },[handleCopyShare])
+  },[])
 
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.href}sharable/${handleChat.sharable_link}`).then(() => {
@@ -88,7 +89,11 @@ function Example({ shareName, setShareName , setShareToggle , setSharableChat , 
                                                     className="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative"
                                                     style={{ maxWidth: '300px' }}
                                                     >
+                                                    <MathJaxContext>
+                                                    <MathJax dynamic>
                                                     <span className="block text-left" dangerouslySetInnerHTML={{ __html: item.answer }} />
+                                                    </MathJax>
+                                                    </MathJaxContext>
                                                     {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                                                 </div>
                                                 </div>

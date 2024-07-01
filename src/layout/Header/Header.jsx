@@ -9,7 +9,7 @@ import { redirect, usePathname } from 'next/navigation'
 import { get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
 import { useDispatch } from 'react-redux'
 
-function Header({path,setStoredCode,storedCode,dashboardData}) {
+function Header({path,setStoredCode,storedCode}) {
   const [ userName , setUserName] = useState("");
   const dispatch = useDispatch()
   const pathname = usePathname()
@@ -80,7 +80,7 @@ function Header({path,setStoredCode,storedCode,dashboardData}) {
           
           <ul className="flex justify-between list-none ml-auto items-center">
             <li className='mr-3' title='timeline'>
-              <Archive dashboardData={dashboardData} />
+              <Archive/>
             </li>
             <li title='start new chat' className='mr-3' onClick={handleStartNewChat}>
               <div>
