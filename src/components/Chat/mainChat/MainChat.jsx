@@ -57,7 +57,7 @@ function MainChat({elementWidth,storedCode}) {
 
   useEffect(()=>{
     window.MathJax && window.MathJax.typeset();
-  },[user,itemId,dislike,copID,updates,copyIcon,isSpeaking,elementWidth,chatData,storedCode,conversation,dislikeMessage,loadingMessage])
+  },[responseId,user,itemId,dislike,copID,updates,copyIcon,isSpeaking,elementWidth,chatData,storedCode,conversation,dislikeMessage,loadingMessage])
   const dislikeToggle = (id) => {
     setItemId(id)
     setDislike(!dislike)
