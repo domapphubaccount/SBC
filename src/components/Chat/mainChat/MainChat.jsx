@@ -201,8 +201,11 @@ const handleStopReading = () => {
     setwidthchat(window.innerWidth)
     window.onresize = () => {
       setwidthchat(window.innerWidth)
+      window.MathJax && window.MathJax.typeset();
     }
   },[])
+  useEffect(()=>{      window.MathJax && window.MathJax.typeset();
+  },[windhtchat])
 
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();

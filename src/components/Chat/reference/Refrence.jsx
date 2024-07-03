@@ -7,6 +7,7 @@ function Refrence({setElementWidth}) {
   useEffect(()=>{
     window.onresize = () => {
      setElementWidth(colRef.current?.offsetWidth)
+     window.MathJax && window.MathJax.typeset();
     }
   },[])
 
