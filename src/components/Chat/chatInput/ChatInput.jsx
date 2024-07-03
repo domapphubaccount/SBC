@@ -118,6 +118,7 @@ function ChatInput({storedCode}) {
       onChange={(e)=>{setMessage(e.target.value)}}
       disabled={!conversation.id}
       onKeyDown={handleKeyDown}
+      value={message}
 
     >
       </textarea>

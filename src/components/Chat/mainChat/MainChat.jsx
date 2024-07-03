@@ -121,6 +121,8 @@ const handleStopReading = () => {
     });
     setTimeout(() => setCopyIcon(false), 500)
   };
+
+  
   const handleResendMessage = (id) => {
     setResponseId(id)
 
@@ -237,12 +239,12 @@ const handleStopReading = () => {
 }
 
     // Scroll to the bottom
-  //   useEffect(() => {
-  //     if(chatRef){
-  //     const element = chatRef.current
-  //     element.scrollTop = element.scrollHeight;    
-  //     }  
-  // }, []);
+    useEffect(() => {
+      
+      const element = document.getElementById('chat')
+      element.scrollTop = element.scrollHeight;    
+      
+  }, [conversation]);
 
   return (
     <div className="col-span-3 bg-white relative">
@@ -281,7 +283,7 @@ const handleStopReading = () => {
             </div>
           </div>
           :
-          <li ref={chatRef} className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
+          <li ref={chatRef} id='chat-zeft' className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
 
             { chatData && conversation && conversation.user_chats && 
               chatData.map((item,i)=>(
