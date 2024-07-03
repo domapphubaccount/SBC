@@ -50,6 +50,7 @@ function MainChat({elementWidth,storedCode}) {
   const conversation = useSelector(state => state.chatSlice.conversation)
   const loading = useSelector(state => state.updateSlice.loading_chat)
   const chatRef = useRef()
+  const [responseId , setResponseId] = useState('')
 
 
 
@@ -121,6 +122,8 @@ const handleStopReading = () => {
     setTimeout(() => setCopyIcon(false), 500)
   };
   const handleResendMessage = (id) => {
+    setResponseId(id)
+
     setLoadingMessage(true)
     axios.post(
       "https://sbc.designal.cc/api/resend-message",
@@ -137,11 +140,14 @@ const handleStopReading = () => {
       console.log(response.data);
       disaptch(updateSlice())
       setLoadingMessage(false)
+      setResponseId('')
     })
     .catch(error => {
       setLoadingMessage(false)
+      setResponseId('')
       console.error('There was an error making the request!', error);
     });
+
   }
   const handleDislike = (data) => {
     axios.post(
@@ -204,7 +210,8 @@ const handleStopReading = () => {
       window.MathJax && window.MathJax.typeset();
     }
   },[])
-  useEffect(()=>{      window.MathJax && window.MathJax.typeset();
+  useEffect(()=>{     
+     window.MathJax && window.MathJax.typeset();
   },[windhtchat])
 
   useEffect(() => {
@@ -248,7 +255,7 @@ const handleStopReading = () => {
           <div className='col-span-1' style={{width: elementWidth+'px'}}></div>
           {/* relative */}
           <div className='col-span-3'>
-        {loading ? 
+        {  loading ? 
         <div className='flex items-center justify-center min-h-screen'>
           <div style={{borderTopColor:"transparent"}} className="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
           <p className="ml-2">Loading...</p>
@@ -340,7 +347,7 @@ const handleStopReading = () => {
                   <div 
                       className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
                       >
-                        {loadingMessage ? <h4 className='text-black'>loading..</h4>:
+                        {responseId == item.id ? <h4 className='text-black'>loading..</h4>:
                       <>
                       {/* {console.log(item.answer,'item answer')} */}
                       {item?.answer ?     
