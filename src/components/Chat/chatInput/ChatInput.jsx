@@ -62,7 +62,7 @@ function ChatInput({storedCode}) {
 
   return (
     
-
+<>
     <div className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300" >
     {/* <button className="outline-none focus:outline-none">
       <svg
@@ -168,6 +168,9 @@ function ChatInput({storedCode}) {
       </div>
     }
   </div>
+  <div className='m-auto text-center text-black	text-xs	'>BYLD AI: offers responses based on SBC data. Verify critical information independently.</div>
+
+  </>
   );
 }
 

@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
+const nextConfig = {
+    // experimental: {
+    //     output: 'hybrid',
+    //   },
+    output: 'client'
+}
 export default nextConfig;
