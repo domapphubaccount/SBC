@@ -244,7 +244,7 @@ const handleStopReading = () => {
       const element = document.getElementById('chat')
       element.scrollTop = element.scrollHeight;    
       
-  }, [conversation]);
+  }, [conversation,chatData]);
 
   return (
     <div className="col-span-3 bg-white relative">
@@ -354,7 +354,15 @@ const handleStopReading = () => {
                       {/* {console.log(item.answer,'item answer')} */}
                       {item?.answer ?     
                         <span className="block chat_box" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: textHandler(item.answer) }} /> :  
-                        <>...</>                         
+                        
+                        <>
+                        <div className="flex space-x-2 animate-pulse">
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                        </div>
+                        </>
+                        
                       }
                       {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
                       </>

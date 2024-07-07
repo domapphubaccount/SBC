@@ -400,3 +400,29 @@ button {
 
    }
    /* end table */
+
+
+   /* start list */
+   ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  /* Define counter for list items */
+  ul.roman-numerals {
+    counter-reset: list-counter;
+  }
+
+  /* Style list items with Roman numerals */
+  ul.roman-numerals li {
+    position: relative;
+    counter-increment: list-counter;
+    padding-left: 2em; /* Adjust as needed */
+  }
+
+  ul.roman-numerals li:before {
+    content: counter(list-counter, lower-roman);
+    position: absolute;
+    left: 0;
+  }
+   /* end list */
