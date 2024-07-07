@@ -20,7 +20,6 @@ function ChatContainer({storedCode}) {
 
     
   useEffect(()=>{
-    console.log('page')
     if(!JSON.parse(localStorage.getItem("data"))){
       redirect('/signIn')
     }
@@ -101,6 +100,8 @@ function ChatContainer({storedCode}) {
   }
   window.MathJax && window.MathJax.typeset();
   },[token,dashboardData,updates,catchChat])
+
+  
 
   return (
     <div className='h-screen chat_container'>

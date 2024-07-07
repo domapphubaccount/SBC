@@ -1,5 +1,5 @@
 "use client"
-import { getChatData } from '@/app/Redux/Features/Chat/ChatSlice';
+import { getChatData, sendMessage_success } from '@/app/Redux/Features/Chat/ChatSlice';
 import { update } from '@/app/Redux/Features/Update/UpdateSlice';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -13,6 +13,8 @@ function ChatInput({storedCode}) {
   const chatData = useSelector(state => state.chatSlice.chat_data)
   const conversation = useSelector(state => state.chatSlice.conversation)
   const dispatch = useDispatch()
+  const state = useSelector(state => state)
+  console.log(state)
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
@@ -38,9 +40,11 @@ function ChatInput({storedCode}) {
       }
     )
     .then(response => {
-      console.log(response.data.success);
       if(response.data.success){
-        dispatch(update())
+        console.log(response.data.message)
+
+        // dispatch(update())
+        dispatch(sendMessage_success({answer: response.data.message}))
       }else{
         console.log("works",storedCode)
         setSendMessage(true)
