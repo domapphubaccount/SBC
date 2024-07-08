@@ -168,8 +168,7 @@ function ChatInput({storedCode}) {
       </div>
     }
   </div>
-  <div className='m-auto text-center text-black	text-xs	'>BYLD AI: offers responses based on SBC data. Verify critical information independently.</div>
-
+  <div className='m-auto text-center text-black	footer-text'>Verify crucial details for accuracy by cross-referencing with reliable sources.  <span className='mx-3'>powered by <span className='font-semibold'>CPVARABIA</span></span></div>
   </>
   );
 }
