@@ -37,10 +37,10 @@ export const chatSlice = createSlice({
       }
       state.loading = false;
     },
-    send_failed: (state) => {
+    send_failed: (state , action) => {
       if (state.chat_data.length > 0) {
         console.log('it works')
-        state.chat_data[state.chat_data.length - 1].answer = "<div style=color:#864545;font-weight:800> Sorry there is an ERROR please try again </div>";
+        state.chat_data[state.chat_data.length - 1].answer = `<div style=font-weight:800> Sorry there is an ERROR please try again ${action.payload} </div>`;
       }
       console.log('it works 2')
       state.loading = false;

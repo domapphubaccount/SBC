@@ -15,8 +15,14 @@ function ChatInput({storedCode}) {
   const conversation = useSelector(state => state.chatSlice.conversation)
   const [popoverOpen , setPopoverOpen] = useState({open: false , data: ''})
   const dispatch = useDispatch()
-  const state = useSelector(state => state)
-  console.log(send_failed)
+
+  let errorsStore = [
+    "error 1",
+    "error 2",
+    "error 3",
+    "error 4",
+    "error 5",
+  ]
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
@@ -50,12 +56,13 @@ function ChatInput({storedCode}) {
       }else{
         console.log("works",storedCode)
         setSendMessage(true)
-        dispatch(send_failed())
+        dispatch(send_failed(errorsStore[Math.floor(Math.random() * errorsStore.length)]))
       }
       setLoading(false)
     })
     .catch(error => {
       setLoading(false)
+      dispatch(send_failed(errorsStore[Math.floor(Math.random() * errorsStore.length)]))
       console.error('There was an error making the request!', error);
     })
   }
