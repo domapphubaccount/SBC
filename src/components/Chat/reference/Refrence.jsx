@@ -44,7 +44,9 @@ function Refrence({setElementWidth}) {
             </div>
             <span className="block ml-2 text-sm text-gray-600">Last message</span>
           </div>
-        </a> */}
+        </a> */}         
+
+         <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text'>powered by <span className='font-semibold'>CPVARABIA</span></div>
       </li>
     </ul>
 

@@ -37,10 +37,18 @@ export const chatSlice = createSlice({
       }
       state.loading = false;
     },
+    send_failed: (state) => {
+      if (state.chat_data.length > 0) {
+        console.log('it works')
+        state.chat_data[state.chat_data.length - 1].answer = "<div style=color:#864545;font-weight:800> Sorry there is an ERROR please try again </div>";
+      }
+      console.log('it works 2')
+      state.loading = false;
+    },
 
   },
 })
 
-export const { getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success} = chatSlice.actions
+export const { getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success , send_failed} = chatSlice.actions
 
 export default chatSlice.reducer

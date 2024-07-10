@@ -1,6 +1,7 @@
 "use client"
-import { getChatData } from '@/app/Redux/Features/Chat/ChatSlice';
+import { getChatData, send_failed } from '@/app/Redux/Features/Chat/ChatSlice';
 import { update } from '@/app/Redux/Features/Update/UpdateSlice';
+import { Popover, PopoverContent, PopoverHandler } from '@material-tailwind/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +13,10 @@ function ChatInput({storedCode}) {
   const [loading,setLoading] = useState(false)
   const chatData = useSelector(state => state.chatSlice.chat_data)
   const conversation = useSelector(state => state.chatSlice.conversation)
+  const [popoverOpen , setPopoverOpen] = useState({open: false , data: ''})
   const dispatch = useDispatch()
+  const state = useSelector(state => state)
+  console.log(send_failed)
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
@@ -22,8 +26,10 @@ function ChatInput({storedCode}) {
   }, []);
 
   const handleSendMessage = () =>{
+    // if(storedCode.length > 0){
     dispatch(getChatData([...chatData, { question: message }]))
     setLoading(true)
+    setMessage('')
     axios.post(
       "https://sbc.designal.cc/api/send-message",
       {
@@ -44,14 +50,20 @@ function ChatInput({storedCode}) {
       }else{
         console.log("works",storedCode)
         setSendMessage(true)
+        dispatch(send_failed())
       }
       setLoading(false)
     })
     .catch(error => {
       setLoading(false)
       console.error('There was an error making the request!', error);
-    });
+    })
   }
+  // else if(storedCode.length === 0){
+  //       setPopoverOpen({open: true , data: 'You must chose CODE first'})
+  //     }
+      // setTimeout(() => setPopoverOpen({open: false, data: ''}), 2000)
+  // }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -62,8 +74,8 @@ function ChatInput({storedCode}) {
 
   return (
     
-<>
-    <div className="w-full py-2 px-3 flex items-center justify-between border-t border-gray-300" >
+  <>
+    <div className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300" >
     {/* <button className="outline-none focus:outline-none">
       <svg
         className="text-gray-400 h-6 w-6"
@@ -109,7 +121,7 @@ function ChatInput({storedCode}) {
     <textarea
       aria-placeholder="Escribe un mensaje aquí"
       placeholder={!conversation?.id ? "start new chat first" : "start question"}
-      className="py-2 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
+      className="py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
       type="text"
       name="message"
       required
@@ -124,6 +136,8 @@ function ChatInput({storedCode}) {
       </textarea>
 
     <button  onClick={handleSendMessage} disabled={message.length <= 0 && !conversation.id } className="outline-none focus:outline-none" type="submit">
+    <PopoverDefault popoverOpen={popoverOpen}>
+
       <svg
         className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
         xmlns="http://www.w3.org/2000/svg"
@@ -132,6 +146,8 @@ function ChatInput({storedCode}) {
       >
         <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
       </svg>
+      </PopoverDefault>
+
     </button>
     </>
 }
@@ -167,11 +183,25 @@ function ChatInput({storedCode}) {
       </div>
       </div>
     }
-  </div>
-  <div className='m-auto text-center text-black	footer-text'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
-  <div className='mx-auto text-black text-center footer-text'>powered by <span className='font-semibold'>CPVARABIA</span></div>
+    </div>
+    <div className='m-auto text-center text-black	footer-text py-2'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
   </>
   );
 }
 
 export default ChatInput;
+
+function PopoverDefault({children , popoverOpen}) {
+  return (
+    <Popover open={popoverOpen.open}>
+        <PopoverHandler>
+          {children}
+        </PopoverHandler>
+        <PopoverContent>
+          <p className='text-black'>
+          {popoverOpen.data}
+          </p>
+        </PopoverContent>
+      </Popover>
+  );
+}
