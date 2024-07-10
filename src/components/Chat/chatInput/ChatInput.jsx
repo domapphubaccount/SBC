@@ -63,7 +63,7 @@ function ChatInput({storedCode}) {
   return (
     
 <>
-    <div className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300" >
+    <div className="w-full py-2 px-3 flex items-center justify-between border-t border-gray-300" >
     {/* <button className="outline-none focus:outline-none">
       <svg
         className="text-gray-400 h-6 w-6"
@@ -168,7 +168,8 @@ function ChatInput({storedCode}) {
       </div>
     }
   </div>
-  <div className='m-auto text-center text-black	footer-text'>Verify crucial details for accuracy by cross-referencing with reliable sources.  <span className='mx-3'>powered by <span className='font-semibold'>CPVARABIA</span></span></div>
+  <div className='m-auto text-center text-black	footer-text'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
+  <div className='mx-auto text-black text-center footer-text'>powered by <span className='font-semibold'>CPVARABIA</span></div>
   </>
   );
 }

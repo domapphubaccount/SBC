@@ -256,7 +256,7 @@ const handleStopReading = () => {
         >
           <div className='col-span-1' style={{width: elementWidth+'px'}}></div>
           {/* relative */}
-          <div className='col-span-3'>
+          <div className='col-span-3 py-5'>
         {  loading ? 
         <div className='flex items-center justify-center min-h-screen'>
           <div style={{borderTopColor:"transparent"}} className="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
@@ -297,7 +297,7 @@ const handleStopReading = () => {
                     >
                       <MathJaxContext>
                         <MathJax dynamic>
-                        <span className="block" dangerouslySetInnerHTML={{ __html: item.question }} />
+                          <span className="block" dangerouslySetInnerHTML={{ __html: item.question }} />
                         </MathJax>
                       </MathJaxContext>
 
