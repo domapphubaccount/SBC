@@ -46,7 +46,7 @@ function Refrence({setElementWidth}) {
           </div>
         </a> */}         
 
-         <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text'>powered by <span className='font-semibold'>CPVARABIA</span></div>
+         <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	'>powered by <span className='font-semibold'>CPVARABIA</span></div>
       </li>
     </ul>
 

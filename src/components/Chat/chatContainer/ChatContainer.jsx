@@ -45,12 +45,19 @@ function ChatContainer({storedCode}) {
   },[])
   
   const [elementWidth,setElementWidth] = useState()
-  useEffect(()=>{
-    setElementWidth(document.getElementById("listRef").offsetWidth)
-    // window.onresize = () => {
-    //   setElementWidth(document.getElementById("refContainer").offsetWidth)
-    // }
-  },[])
+  useEffect(() => {
+    const updateElementWidth = () => {
+      setElementWidth(document.getElementById("listRef").offsetWidth);
+    }
+
+    updateElementWidth(); // Set initial width
+
+    window.addEventListener('resize', updateElementWidth);
+
+    return () => {
+      window.removeEventListener('resize', updateElementWidth);
+    }
+  }, []);
 
   useEffect(()=>{
     if(token){

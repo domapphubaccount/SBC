@@ -32,10 +32,9 @@ function ChatInput({storedCode}) {
   }, []);
 
   const handleSendMessage = () =>{
-    // if(storedCode.length > 0){
+    if(storedCode.length > 0){
     dispatch(getChatData([...chatData, { question: message }]))
     setLoading(true)
-    setMessage('')
     axios.post(
       "https://sbc.designal.cc/api/send-message",
       {
@@ -53,6 +52,7 @@ function ChatInput({storedCode}) {
       console.log(response.data.success);
       if(response.data.success){
         dispatch(update())
+        setMessage('')
       }else{
         console.log("works",storedCode)
         setSendMessage(true)
@@ -66,11 +66,11 @@ function ChatInput({storedCode}) {
       console.error('There was an error making the request!', error);
     })
   }
-  // else if(storedCode.length === 0){
-  //       setPopoverOpen({open: true , data: 'You must chose CODE first'})
-  //     }
-      // setTimeout(() => setPopoverOpen({open: false, data: ''}), 2000)
-  // }
+  else if(storedCode.length === 0){
+        setPopoverOpen({open: true , data: 'You must chose CODE first'})
+      }
+      setTimeout(() => setPopoverOpen({open: false, data: ''}), 2000)
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -191,7 +191,7 @@ function ChatInput({storedCode}) {
       </div>
     }
     </div>
-    <div className='m-auto text-center text-black	footer-text py-2'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
+    <div className='m-auto text-center text-black	footer-text py-2 text-xs	'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
   </>
   );
 }
