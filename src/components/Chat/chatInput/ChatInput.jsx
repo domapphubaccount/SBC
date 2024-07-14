@@ -32,7 +32,7 @@ function ChatInput({storedCode}) {
   }, []);
 
   const handleSendMessage = () =>{
-    if(storedCode.length > 0){
+    if(storedCode.length > 0 && message.length > 0){
     dispatch(getChatData([...chatData, { question: message }]))
     setLoading(true)
     axios.post(
@@ -67,9 +67,10 @@ function ChatInput({storedCode}) {
     })
   }
   else if(storedCode.length === 0){
-        setPopoverOpen({open: true , data: 'You must chose CODE first'})
+        setSendMessage(true)
+        // setPopoverOpen({open: true , data: 'You must chose CODE first'})
       }
-      setTimeout(() => setPopoverOpen({open: false, data: ''}), 2000)
+      // setTimeout(() => setPopoverOpen({open: false, data: ''}), 1000)
   }
 
   const handleKeyDown = (e) => {
@@ -175,9 +176,9 @@ function ChatInput({storedCode}) {
                   </svg>
                 </div>
                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <h3 className="text-base font-semibold leading-6 text-gray-900" id="modal-title">Error</h3>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">Warnning ! You must chose Code..</p>
+                  {/* <h3 className="text-base font-semibold leading-6 text-gray-900" id="modal-title">Error</h3> */}
+                  <div className="mt-5">
+                    <p className="text-sm text-gray-500">Please select the CODE before submitting your query.</p>
                   </div>
                 </div>
               </div>
