@@ -336,7 +336,7 @@ function Profile() {
         </div>
       }
   <div className='m-auto text-center py-1 text-white	footer-text'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
-  <div className='mx-auto text-white py-2 text-center footer-text'>powered by <span className='font-semibold'>CPVARABIA</span></div>    </div>
+  <div className='mx-auto text-white py-2 text-center footer-text' style={{color: "#545454"}}>Powered By <span className='font-semibold'><span style={{color:'#162C4C'}}>CPV</span><span style={{color: "#2C518E"}}>ARABIA</span></span></div>    </div>
   );
 }
 

@@ -192,7 +192,7 @@ function ChatInput({storedCode}) {
       </div>
     }
     </div>
-    <div className='m-auto text-center text-black	footer-text py-2 text-xs	'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
+    <div className='m-auto text-center text-black	footer-text py-2 text-xs' style={{color: "#545454"}}>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
   </>
   );
 }

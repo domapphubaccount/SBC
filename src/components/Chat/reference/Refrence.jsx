@@ -46,7 +46,10 @@ function Refrence({setElementWidth}) {
           </div>
         </a> */}         
 
-         <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	'>powered by <span className='font-semibold'>CPVARABIA</span></div>
+         {/* <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	'>powered by <span className='font-semibold'>CPVARABIA</span></div> */}
+         <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	' style={{color: "#545454"}}><span style={{fontSize:'10px'}}>Powered By</span> <span className='font-bold' style={{fontFamily: "Alef, sans-serif",letterSpacing: "-1px" }}>  <span style={{color:'#162C4C'}}>CPV</span><span style={{color: "#2C518E"}}>ARABIA</span></span></div>    
+         {/* </div> */}
+
       </li>
     </ul>
 
