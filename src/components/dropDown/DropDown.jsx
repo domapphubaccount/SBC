@@ -7,22 +7,18 @@ function DropDown({ userName }) {
     const [dropDownToggle, setDropDownToggle] = useState(false);
     const router = useRouter();
     const dropdownRef = useRef(null);
-
     const handleDropDown = () => {
         setDropDownToggle(!dropDownToggle);
     };
-
     const handleLogout = () => {
         localStorage.removeItem("data");
         router.push('/signIn');
     };
-
     const handleClickOutside = (event) => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
             setDropDownToggle(false);
         }
     };
-
     useEffect(() => {
         if (dropDownToggle) {
             document.addEventListener('mousedown', handleClickOutside);

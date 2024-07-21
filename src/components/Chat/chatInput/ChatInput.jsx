@@ -5,6 +5,8 @@ import { Popover, PopoverContent, PopoverHandler } from '@material-tailwind/reac
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 function ChatInput({storedCode}) {
   const [message , setMessage] = useState("")
@@ -126,7 +128,7 @@ function ChatInput({storedCode}) {
 </>
 :
 <>
-    <textarea
+    {/* <textarea
       aria-placeholder="Escribe un mensaje aquí"
       placeholder={!conversation?.id ? "start new chat first" : "start question"}
       className="py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
@@ -141,7 +143,16 @@ function ChatInput({storedCode}) {
       value={message}
 
     >
-      </textarea>
+      </textarea> */}
+
+      <TextareaAutosize
+                  onChange={(e)=>{setMessage(e.target.value)}}
+                  className="py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
+                  onKeyDown={handleKeyDown}
+                  disabled={!conversation.id}
+                  placeholder={!conversation?.id ? "start new chat first" : "start question"}
+                  maxRows={8}
+              />
 
     <button  onClick={handleSendMessage} disabled={message.length <= 0 && !conversation.id } className="outline-none focus:outline-none" type="submit">
     <PopoverDefault popoverOpen={popoverOpen}>

@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import React, { useEffect, useState } from 'react';
+import Logo from "@/assets/logo/icon.png"
+
 
 function Example({ shareName, setShareName , setShareToggle , setSharableChat , sharableChat , shareToggle , handleCopyShare , handleChat ,token}) {
 
@@ -83,7 +85,7 @@ function Example({ shareName, setShareName , setShareToggle , setSharableChat , 
                                             </div>
                                             <div className='relative flex'>
                                                 <div>
-                                                <div className='chat_userName text-left'>BYLD AI</div>
+                                                <div className='chat_userName'><img src={Logo.src} style={{width: '30px'}} alt='logo' /></div>
                                                 <div className="w-full flex justify-start">
                                                 <div 
                                                     className="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative"

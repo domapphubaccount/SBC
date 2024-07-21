@@ -9,9 +9,9 @@ import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import { useDispatch, useSelector } from 'react-redux'
 import { loading_chat, updateSlice } from '@/app/Redux/Features/Update/UpdateSlice'
 import { choseChate } from '@/app/Redux/Features/Chat/ChatSlice'
-
-
-
+import loadingImg from "@/assets/logo/loading_icon.gif"
+import StartLogo from "@/assets/logo/start_logo.png"
+import Logo from "@/assets/logo/icon.png"
 
 const renderContent = (content) => {
   const parts = content.split(/(\$[^$]*\$)/g);
@@ -32,7 +32,6 @@ const renderContent = (content) => {
   });
 };
 
-
 function MainChat({elementWidth,storedCode}) {
   const pathName = usePathname()
   const [copyIcon , setCopyIcon] = useState(false)
@@ -51,8 +50,6 @@ function MainChat({elementWidth,storedCode}) {
   const loading = useSelector(state => state.updateSlice.loading_chat)
   const chatRef = useRef()
   const [responseId , setResponseId] = useState('')
-
-
 
 
   useEffect(()=>{
@@ -96,15 +93,13 @@ function MainChat({elementWidth,storedCode}) {
     } catch (error) {
         console.error('Error translating or reading text:', error);
     }
-};
-
-const handleStopReading = () => {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Stop speech synthesis
-        setIsSpeaking(false); // Update state to indicate speech synthesis has stopped
-    }
-};
-  
+  };
+  const handleStopReading = () => {
+      if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel(); // Stop speech synthesis
+          setIsSpeaking(false); // Update state to indicate speech synthesis has stopped
+      }
+  };
   const stripHtml = (html) => {
     const temporalDivElement = document.createElement("div");
     temporalDivElement.innerHTML = html;
@@ -121,8 +116,6 @@ const handleStopReading = () => {
     });
     setTimeout(() => setCopyIcon(false), 500)
   };
-
-  
   const handleResendMessage = (id) => {
     setResponseId(id)
 
@@ -150,7 +143,7 @@ const handleStopReading = () => {
       console.error('There was an error making the request!', error);
     });
 
-  }
+  };
   const handleDislike = (data) => {
     axios.post(
       "https://sbc.designal.cc/api/dislike",
@@ -176,7 +169,7 @@ const handleStopReading = () => {
     });
 
 
-  }
+  };
   const handleStartNewChat = () => {
     disaptch(loading_chat(true))
     const token = JSON.parse(localStorage.getItem("data")).token
@@ -198,7 +191,7 @@ const handleStopReading = () => {
       disaptch(loading_chat(false))
       console.error('There was an error making the request!', error);
     })
-  }
+  };
   useEffect(()=>{
     if(localStorage.getItem("data")){
       setUser(JSON.parse(localStorage.getItem("data")).name)
@@ -215,35 +208,25 @@ const handleStopReading = () => {
   useEffect(()=>{     
      window.MathJax && window.MathJax.typeset();
   },[windhtchat])
-
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [conversation]);
-
   const pattern = /SBC.*?\/\//g;
-
   const textHandler = (item) => {
-
     if (item.match(pattern)) {
         let dataArray = item.match(pattern);
         let data = item;
-
         dataArray.forEach(item2 => {
             data = data.replaceAll(item2, '');
         });
-
-        // console.log(data);
         return data;
     }
     return item; // Return the original item if no match is found
-}
-
-    // Scroll to the bottom
-    useEffect(() => {
-      
-      const element = document.getElementById('chat')
-      element.scrollTop = element.scrollHeight;    
-      
+  }
+  // Scroll to the bottom
+  useEffect(() => {
+    const element = document.getElementById('chat')
+    element.scrollTop = element.scrollHeight;    
   }, [conversation,chatData]);
 
   return (
@@ -252,39 +235,35 @@ const handleStopReading = () => {
       <div
         className="w-full grid grid-cols-4" 
         id="chat"
-        style={{ height: 'calc(100vh - 80px)',width: (windhtchat-10)+"px",position:'absolute',right:0,top:0,overflowY:'scroll'}}
+        style={{ height: 'calc(100vh - 120px)',width: (windhtchat-10)+"px",position:'absolute',right:0,top:0,overflowY:'scroll'}}
         >
           <div className='col-span-1' style={{width: elementWidth+'px'}}></div>
           {/* relative */}
           <div className='col-span-3 py-5'>
-        {  loading ? 
+        { loading ? 
         <div className='flex items-center justify-center min-h-screen'>
-          <div style={{borderTopColor:"transparent"}} className="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"></div>
-          <p className="ml-2">Loading...</p>
+          <img src={loadingImg.src} className='loading_icon' alt='laoding' />
         </div>
         :
         <ul>
           {conversation && Object.entries(conversation).length == 0 ?
           <div className='pt-4' style={{paddingTop:'200px'}}>
             <div className="text-center">
-              <div className='m-auto' style={{width:'200px'}}><img src={MessageImg.src} className='w-100' alt=''  /></div>
+              <div className='m-auto mb-5' style={{width:'100px'}}><img src={StartLogo.src} className='w-100' alt=''  /></div>
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">you can start new session or chose previous chat.</p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
-                {/* <Button  variant="gradient">Start Chat</Button> */}
                 <button onClick={handleStartNewChat} className="learn-more start">
                   <span className="circle" aria-hidden="true">
                   <span className="icon arrow"></span>
                   </span>
                   <span className="button-text">Start Chat</span>
                 </button>
-                {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a> */}
               </div>
             </div>
           </div>
           :
           <li ref={chatRef} id='chat-zeft' className="clearfix2 mt-4 px-10" style={{paddingTop:'90px'}}>
-
             { chatData && conversation && conversation.user_chats && 
               chatData.map((item,i)=>(
             <React.Fragment key={i}>
@@ -300,8 +279,6 @@ const handleStopReading = () => {
                           <span className="block" dangerouslySetInnerHTML={{ __html: item.question }} />
                         </MathJax>
                       </MathJaxContext>
-
-                        {/* <span className="block text-right " style={{fontSize:'0.5rem'}}>{item.created_at}10:32pm</span> */}
                     </div>
                   </div>
                   <div className='flex mb-3 justify-end'>
@@ -320,8 +297,6 @@ const handleStopReading = () => {
                   </div>
                 </div>
             </div>
-
-
             <div className='relative'>
                 <div className='code' style={{width: (elementWidth - 40)+'px'}}>
                 {item?.answer?.includes('//') && <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
@@ -342,32 +317,25 @@ const handleStopReading = () => {
                     </div>
                   </span>}
                 </div>
-
                 <div>
-                  <div className='chat_userName'>BYLD AI</div>
+                  <div className='chat_userName'><img src={Logo.src} style={{width: '30px'}} alt='logo' /></div>
                   <div className="w-full flex justify-start chat_card" >
-                  <div 
-                      className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
-                      >
-                        {responseId == item.id ? <h4 className='text-black'>loading..</h4>:
-                      <>
-                      {/* {console.log(item.answer,'item answer')} */}
-                      {item?.answer ?     
-                        <span className="block chat_box" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: textHandler(item.answer) }} /> :  
-                        
+                    <div 
+                        className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card"
+                        >
+                        {responseId == item.id ?           
+                          <img src={loadingImg.src} className='loading_icon' alt='laoding' />
+                        :
                         <>
-                        <div className="flex space-x-2 animate-pulse">
-                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-                        </div>
+                          {item?.answer?     
+                            <span className="block chat_box" style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{ __html: textHandler(item.answer) }} /> :  
+                            <div>
+                              <img className='m-auto' src={loadingImg.src} style={{width:'70px'}} alt='loading' />
+                            </div>
+                          }
                         </>
-                        
-                      }
-                      {/* <span className="block text-right" style={{fontSize:'0.5rem'}}>10:30pm</span> */}
-                      </>
                         }
-                  </div>
+                    </div>
                   </div>
                   {item?.answer ?
                   <div className='flex mb-3'>
@@ -375,7 +343,6 @@ const handleStopReading = () => {
                       <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
                       <path d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
                     </svg>
-
                     {isSpeaking && i == copID &&(
                         <svg onClick={handleStopReading} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="size-3.5 ml-2 cursor-pointer">
                         <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z" clipRule="evenodd" />
@@ -401,7 +368,6 @@ const handleStopReading = () => {
                     </svg>
                   </div>:
                     ''
-
                   }
                 </div>
             </div>
@@ -414,22 +380,17 @@ const handleStopReading = () => {
         }
         </div>
       </div>
-
     </div>
-    
     {pathName.slice(0,9) == "/sharable"? "" :
       conversation && Object.entries(conversation).length != 0 &&
       <div style={{width: '100%',position:'absolute',bottom:'0'}}>
         <ChatInput storedCode={storedCode} />
       </div>
-
       }
-
     {
     dislike &&
       <Dislike handleDislike={handleDislike} setDislikeMessage={setDislikeMessage} setDislike={setDislike} dislike={dislike} />
     }
-
   </div>
   )
 }

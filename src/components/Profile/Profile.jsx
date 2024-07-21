@@ -144,7 +144,7 @@ function Profile() {
       />
       <div className="h-screen flex flex-col justify-center overflow-auto" style={{ paddingTop: "100px" }}>
         <div className=" pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
-          <div className="mt-2 mb-8 w-full">
+          <div className="mt-2 mb-4 w-full">
             <h4 className="px-2 text-xl font-bold text-black dark:text-white">Profile Data</h4>
             <p className="mt-2 px-2 text-base text-gray-600">
                 There is no option to update name and email .
@@ -165,9 +165,6 @@ function Profile() {
                 <label className={labelClass}>
                   Name
                 </label>
-                {/* {profileFormik.touched.name && profileFormik.errors.name ? (
-                  <div className="text-red-500 text-xs">{profileFormik.errors.name}</div>
-                ) : null} */}
               </div>
             </div>
             <div className="w-100 mb-4">
@@ -183,14 +180,8 @@ function Profile() {
                 <label className={labelClass}>
                   Email
                 </label>
-                {/* {profileFormik.touched.email && profileFormik.errors.email ? (
-                  <div className="text-red-500 text-xs">{profileFormik.errors.email}</div>
-                ) : null} */}
               </div>
             </div>
-            {/* <button type="submit" className="px-3 md:px-4 py-1 md:py-2 bg-blue-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
-              <i className="fa-solid fa-arrow-right-to-bracket"></i> Save
-            </button> */}
           </form>
         </div>
 

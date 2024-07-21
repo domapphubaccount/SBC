@@ -1,32 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ArchiveAccordion from './ArchiveAccordions';
 
-
-function Icon({ id, open }) {
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className={`${id === open ? "rotate-180" : ""} h-5 w-5 transition-transform`}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-      </svg>
-    );
-  }
-
 function Archive() {
     const [archiveToggle, setArchiveToggle] = useState(false);
     const archiveRef = useRef(null);
-
     const handleClickOutside = (event) => {
         if (archiveRef.current && !archiveRef.current.contains(event.target)) {
             setArchiveToggle(false);
         }
     };
-
     useEffect(() => {
         if (archiveToggle) {
             document.addEventListener('mousedown', handleClickOutside);
@@ -40,19 +22,6 @@ function Archive() {
 
     return (
         <>
-            {/* <svg
-                style={{color:'#fff !important'}}
-                xmlns="http://www.w3.org/2000/svg"
-                onClick={() => setArchiveToggle(!archiveToggle)}
-                width={25}
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6 cursor-pointer text-white"
-            >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg> */}
             <button className="Btn_history" onClick={() => setArchiveToggle(!archiveToggle)}>
                 <div className="svgWrapper">
                     <svg
@@ -91,7 +60,7 @@ function Archive() {
                     tabIndex="-1"
                 >
                     <div className="py-1" role="none">
-                        <ArchiveAccordion                        />
+                        <ArchiveAccordion />
                     </div>
                 </div>
             )}

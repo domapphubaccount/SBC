@@ -9,6 +9,8 @@ import { redirect, usePathname } from 'next/navigation'
 import { choseChate, get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
 import { useDispatch } from 'react-redux'
 import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
+import Logo from "/public/logo.png"
+import Image from 'next/image'
 
 function Header({path,setStoredCode,storedCode}) {
   const [ userName , setUserName] = useState("");
@@ -64,7 +66,9 @@ function Header({path,setStoredCode,storedCode}) {
       <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
 
         <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
-          <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">BYLD</Link>
+          <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">
+            <img width={100} height={100} quality={100} src={Logo.src} alt="logo" />
+          </Link>
         </div>
       {pathname.slice(0,9) == "/sharable" ? "" :
         <>
@@ -76,21 +80,12 @@ function Header({path,setStoredCode,storedCode}) {
         :
         <div>PROFILE</div>
         }
-
-        <div className="flex  items-center shadow-none  bg-darkBlue" >
-          
+        <div className="flex  items-center shadow-none  bg-darkBlue" > 
           <ul className="flex justify-between list-none ml-auto items-center">
             <li className='mr-3' title='timeline'>
               <Archive/>
             </li>
-            {/* <li title='start new chat' className='mr-3' >
-              <div>
-                  <svg style={{color:'#fff !important'}} xmlns="http://www.w3.org/2000/svg" width={25} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer text-white">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-              </div>
-            </li> */}
-              {/* start start new chat */}
+            {/* start start new chat */}
             <li title='start new chat' className='mr-3' onClick={handleStartNewChat}>
               <div>
                 <div tabindex="0" className="plusButton">

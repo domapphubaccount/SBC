@@ -7,6 +7,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { config } from '@/config/config';
 import { useRouter } from 'next/navigation';
+import Logo from "@/assets/logo/Logo.png"
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -25,8 +26,6 @@ function Page() {
   const [message, setMessage] = useState("")
   const [loading,setLoading] = useState(false)
   const router = useRouter()
-
-
 
     useEffect(()=>{
       if(JSON.parse(localStorage.getItem("data"))){
@@ -79,6 +78,9 @@ function Page() {
         </div>
         }
         <div className="form_container flex flex-col bg-white shadow-md px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-3xl w-50 max-w-md">
+        <div className='flex justify-center py-3'>
+          <img src={Logo.src} style={{width:'200px'}} alt='Logo' />
+        </div>
           <div className="font-medium self-center text-xl sm:text-3xl text-gray-800">
             Join us Now
           </div>
@@ -102,7 +104,7 @@ function Page() {
                 </label>
                 <div className="relative">
                   <div className="inline-flex items-center justify-center absolute left-0 top-0 h-full w-10 text-gray-400">
-                    <i className="fas fa-user text-blue-500"></i>
+                    <i className="fas fa-user text-secondar-color"></i>
                   </div>
                   <input
                     style={{ color: 'black' }}
@@ -128,7 +130,7 @@ function Page() {
                 </label>
                 <div className="relative">
                   <div className="inline-flex items-center justify-center absolute left-0 top-0 h-full w-10 text-gray-400">
-                    <i className="fas fa-at text-blue-500"></i>
+                    <i className="fas fa-at text-secondar-color"></i>
                   </div>
                   <input
                     style={{ color: 'black' }}
@@ -155,7 +157,7 @@ function Page() {
                 <div className="relative">
                   <div className="inline-flex items-center justify-center absolute left-0 top-0 h-full w-10 text-gray-400">
                     <span>
-                      <i className="fas fa-lock text-blue-500"></i>
+                      <i className="fas fa-lock text-secondar-color"></i>
                     </span>
                   </div>
                   <input
@@ -180,7 +182,7 @@ function Page() {
               <div className="flex w-full">
                 <button
                   type="submit"
-                  className="flex mt-2 items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-blue-500 hover:bg-blue-600 rounded-2xl py-2 w-full transition duration-150 ease-in"
+                  className="flex mt-2 items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-secondary-color hover:bg-blue-600 rounded-2xl py-2 w-full transition duration-150 ease-in"
                 >
                   <span className="mr-2 uppercase">Sign Up</span>
                   <span>
@@ -202,9 +204,9 @@ function Page() {
           </div>
         </div>
         <div className="flex justify-center items-center mt-6">
-          <span className="ml-2 text-gray-700 font-medium text-xs text-center">
+          <span className="ml-2 text-secondar-color font-medium text-xs text-center">
             You have an account?
-            <Link href="/signIn" className="text-xs ml-2 text-blue-500 font-semibold">
+            <Link href="/signIn" className="text-xs ml-2 font-semibold ">
               Login here
             </Link>
           </span>

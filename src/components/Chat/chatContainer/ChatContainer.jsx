@@ -15,9 +15,6 @@ function ChatContainer({storedCode}) {
   const updates = useSelector(state => state.updateSlice.state)
   const [token, setToken] = useState("");
   const dispatch = useDispatch()
-
-  
-
     
   useEffect(()=>{
     console.log('page')
@@ -39,9 +36,7 @@ function ChatContainer({storedCode}) {
           }
         }
       ).catch(e => console.log(e))
-    
     }}
-
   },[])
   
   const [elementWidth,setElementWidth] = useState()
@@ -49,11 +44,8 @@ function ChatContainer({storedCode}) {
     const updateElementWidth = () => {
       setElementWidth(document.getElementById("listRef").offsetWidth);
     }
-
     updateElementWidth(); // Set initial width
-
     window.addEventListener('resize', updateElementWidth);
-
     return () => {
       window.removeEventListener('resize', updateElementWidth);
     }

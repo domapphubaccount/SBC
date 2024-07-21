@@ -1,13 +1,23 @@
 
 :root{
-
+  --primary-color: #1E293B;
+  --secondary-color: #1FB7FC;
 }
 *{
     box-sizing: border-box;
 }
 .bg-darkBlue{
     background-color: #1E293B;
-}
+  }
+  .bg-primary-color{
+    background-color: var(--primary-color);
+  }
+  .bg-secondary-color{
+    background-color: var(--secondary-color);
+  }
+  .text-secondar-color{
+    color: var(--secondary-color);
+  }
 
 /* start login */
 .log-bannar{
@@ -48,12 +58,16 @@
     position: relative;
 }
 .chat_userName{
-    border-left: 3px solid blue;
+    border-left: 3px solid var(--secondary-color);
     color: black;
     font-size: 12px;
     font-weight: 700;
     padding: 0 10px;
 }
+/* .chat_userName::after{
+  content: '';
+  background-image: url('../assets/logo/Logo.png');
+} */
 .chat_userName_2{
     border-right: 3px solid rgb(8, 8, 124);
     color: black;
@@ -85,6 +99,19 @@
     position: absolute;
     bottom: 0;
     right: 0;
+}
+.chat_input ::-webkit-resizer {
+  border: 2px solid black;
+  background: red;
+  box-shadow: 0 0 5px 5px blue;
+  outline: 2px solid yellow;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+.chat_input textarea {
+  resize: none;
 }
 /* end chat input */
 
@@ -457,3 +484,12 @@ button {
 }
 
   /* end #chat  carousal */
+
+  /* start loading */
+  .loading_logo{
+    width: 300px;
+  }
+  .loading_icon{
+    width: 100px;
+  }
+  /* end loading */
