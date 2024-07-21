@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { loading_chat, updateSlice, update_archive } from '@/app/Redux/Features/Update/UpdateSlice';
 import { choseChate, getChatHistory, getConversation } from '@/app/Redux/Features/Chat/ChatSlice';
+import Logo from '@/assets/logo/icon.png'
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -172,8 +173,10 @@ function TailwindAccordion() {
         ))
         : 
         <>
-              <div className='h-100 w-100 text-black text-center'>
-                No History Yet
+              <div className='h-100 w-100 text-black flex justify-center'>
+                <div>
+                  <img className='w-20' src={Logo.src} alt='logo' /> No History Yet 
+                </div>
               </div>
         </>
         }

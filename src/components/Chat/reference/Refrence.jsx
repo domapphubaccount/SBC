@@ -33,7 +33,7 @@ function Refrence({setElementWidth}) {
               <span className="block ml-2 text-sm text-gray-600">15 minutes</span>
             </div>
             <span className="block ml-2 text-sm text-gray-600">I am fine</span>
-          </div>
+        </div>
         </a>
 
         <a className="hover:bg-gray-100 border-b border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
@@ -43,7 +43,7 @@ function Refrence({setElementWidth}) {
               <span className="block ml-2 text-sm text-gray-600">1 hour</span>
             </div>
             <span className="block ml-2 text-sm text-gray-600">Last message</span>
-          </div>
+        </div>
         </a> */}         
 
          {/* <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	'>powered by <span className='font-semibold'>CPVARABIA</span></div> */}
@@ -53,7 +53,7 @@ function Refrence({setElementWidth}) {
       </li>
     </ul>
 
-  </div>
+    </div>
   )
 }
 

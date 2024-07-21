@@ -247,12 +247,14 @@ function MainChat({elementWidth,storedCode}) {
         :
         <ul>
           {conversation && Object.entries(conversation).length == 0 ?
-          <div className='pt-4' style={{paddingTop:'200px'}}>
+          <div className='pt-3' style={{paddingTop:'200px'}}>
             <div className="text-center">
-              <div className='m-auto mb-5' style={{width:'100px'}}><img src={StartLogo.src} className='w-100' alt=''  /></div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1>
-              <p className="mt-6 text-lg leading-8 text-gray-600">you can start new session or chose previous chat.</p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
+
+              <div className='m-auto mb-2' style={{width:'200px'}}><img src={StartLogo.src} className='w-100' alt=''  /></div>
+              
+              {/* <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1> */}
+              <p className="mt-3 text-xs leading-8 text-gray-600">you can start new session or chose previous chat.</p>
+              <div className="mt-6 flex items-center justify-center gap-x-6">
                 <button onClick={handleStartNewChat} className="learn-more start">
                   <span className="circle" aria-hidden="true">
                   <span className="icon arrow"></span>
@@ -260,6 +262,8 @@ function MainChat({elementWidth,storedCode}) {
                   <span className="button-text">Start Chat</span>
                 </button>
               </div>
+
+
             </div>
           </div>
           :
