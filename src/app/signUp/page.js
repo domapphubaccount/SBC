@@ -182,7 +182,7 @@ function Page() {
               <div className="flex w-full">
                 <button
                   type="submit"
-                  className="flex mt-2 items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-secondary-color hover:bg-blue-600 rounded-2xl py-2 w-full transition duration-150 ease-in"
+                  className="flex mt-2 items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-primary-color hover:bg-blue-600 rounded-2xl py-2 w-full transition duration-150 ease-in"
                 >
                   <span className="mr-2 uppercase">Sign Up</span>
                   <span>
@@ -204,7 +204,7 @@ function Page() {
           </div>
         </div>
         <div className="flex justify-center items-center mt-6">
-          <span className="ml-2 text-secondar-color font-medium text-xs text-center">
+          <span className="ml-2 text-primary-color font-medium text-xs text-center">
             You have an account?
             <Link href="/signIn" className="text-xs ml-2 font-semibold ">
               Login here

@@ -137,11 +137,11 @@ function Page() {
               </div>
               <div className="flex items-center mb-6 -mt-4">
                 <div className="flex ml-auto">
-                  <Link href="#" className="inline-flex text-xs sm:text-sm text-secondar-color hover:text-blue-700">Forgot Your Password?</Link>
+                  <Link href="#" className="inline-flex text-xs sm:text-sm text-primary-color hover:text-blue-700">Forgot Your Password?</Link>
                 </div>
               </div>
               <div className="flex w-full">
-                <button type="submit" className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-secondary-color hover:bg-blue-700 rounded py-2 w-full transition duration-150 ease-in">
+                <button type="submit" className="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-primary-color hover:bg-blue-700 rounded py-2 w-full transition duration-150 ease-in">
                   <span className="mr-2 uppercase">Login</span>
                   <span>
                     <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,7 +159,7 @@ function Page() {
                   <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
               </span>
-              <span className="ml-2">You don't have an account?</span>
+              <span className="ml-2 text-primary-color">You don't have an account?</span>
             </Link>
           </div>
         </div>
