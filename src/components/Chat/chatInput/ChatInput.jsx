@@ -1,5 +1,6 @@
 "use client"
 import { getChatData, send_failed } from '@/app/Redux/Features/Chat/ChatSlice';
+import { setTypeValue } from '@/app/Redux/Features/type/typeSlice';
 import { update } from '@/app/Redux/Features/Update/UpdateSlice';
 import { Popover, PopoverContent, PopoverHandler } from '@material-tailwind/react';
 import axios from 'axios';
@@ -53,6 +54,7 @@ function ChatInput({storedCode}) {
     .then(response => {
       console.log(response.data.success);
       if(response.data.success){
+        dispatch(setTypeValue(true))
         dispatch(update())
         setMessage('')
       }else{

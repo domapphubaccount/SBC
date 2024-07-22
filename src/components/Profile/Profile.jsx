@@ -250,7 +250,7 @@ function Profile() {
                 ) : null}
               </div>
             </div>
-            <button type="submit" className="px-3 md:px-4 py-1 md:py-2 bg-blue-600 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
+            <button type="submit" className="px-3 md:px-4 py-1 md:py-2 bg-blue-800 border border-sky-600 text-white rounded-lg hover:bg-sky-700">
               <i className="fa-solid fa-arrow-right-to-bracket"></i> Save
             </button>
           </form>
@@ -327,7 +327,7 @@ function Profile() {
         </div>
       }
   <div className='m-auto text-center py-1 text-white	footer-text'>Verify crucial details for accuracy by cross-referencing with reliable sources.  </div>
-  <div className='mx-auto text-white py-2 text-center footer-text' style={{color: "#545454"}}>Powered By <span className='font-semibold'><span style={{color:'#162C4C'}}>CPV</span><span style={{color: "#2C518E"}}>ARABIA</span></span></div>    </div>
+  <div className='mx-auto text-white py-2 text-center footer-text' style={{color: "rgb(170 169 169)"}}>Powered By <span className='font-semibold'><span style={{color:'#fff'}}>CPV</span><span style={{color: "rgb(52 113 215)"}}>ARABIA</span></span></div>    </div>
   );
 }
 

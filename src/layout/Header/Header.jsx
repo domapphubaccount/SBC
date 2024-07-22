@@ -10,7 +10,6 @@ import { choseChate, get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
 import { useDispatch } from 'react-redux'
 import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 import Logo from "/public/logo.png"
-import Image from 'next/image'
 
 function Header({path,setStoredCode,storedCode}) {
   const [ userName , setUserName] = useState("");
@@ -74,9 +73,9 @@ function Header({path,setStoredCode,storedCode}) {
         <>
         {
           !path ?
-                <div>
-                  <MultipleSelect setStoredCode={setStoredCode} storedCode={storedCode} />
-                </div>
+            <div>
+              <MultipleSelect setStoredCode={setStoredCode} storedCode={storedCode} />
+            </div>
         :
         <div>PROFILE</div>
         }
