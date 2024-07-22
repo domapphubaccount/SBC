@@ -114,6 +114,7 @@ function TailwindAccordion() {
   };
   const handleGetChat = (chat_id, share_name) => {
     dispatch(choseChate(chat_id));
+    dispatch(loading_chat(true));
     localStorage.setItem("chat", chat_id);
   };
   const handleDeleteChate = (handleChat) => {
@@ -152,8 +153,8 @@ function TailwindAccordion() {
 
   return (
     <div
-      className="w-full bg-gray-50 rounded-lg shadow-lg p-2 "
-      style={{ maxHeight: "80vh", overflowY: "auto", minHeight: "400px" }}
+      className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 "
+   
     >
       <div className="accordion">
         {dashboardData.chat_history &&
@@ -172,7 +173,7 @@ function TailwindAccordion() {
                     open === 2 ? "rotate-180" : "rotate-0"
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
+                  fill="black"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >

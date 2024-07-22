@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { getCode } from '@/app/Redux/Features/Code/CodeSlice'
 import { getChatData, getConversation } from '@/app/Redux/Features/Chat/ChatSlice'
+import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 
 function ChatContainer({storedCode}) {
   const dashboardData = useSelector(state => state.chatSlice.value)
@@ -65,10 +66,9 @@ function ChatContainer({storedCode}) {
           })
           .then(response => {
             if(response.data.success){
-              // setInsideChat(response.data.data[0]);
               dispatch(getConversation(response.data.data[0]))
               dispatch(getChatData(response.data.data[0].user_chats))
-              // setChatData(response.data.data[0].user_chats)
+              dispatch(loading_chat(false))
             }
           })
           .catch(error => {
@@ -89,6 +89,7 @@ function ChatContainer({storedCode}) {
             if(response.data.success){
               dispatch(getConversation(response.data.data[0]))
               dispatch(getChatData(response.data.data[0].user_chats))
+              dispatch(loading_chat(false))
             }
           })
           .catch(error => {

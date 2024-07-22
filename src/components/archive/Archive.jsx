@@ -4,21 +4,23 @@ import ArchiveAccordion from './ArchiveAccordions';
 function Archive() {
     const [archiveToggle, setArchiveToggle] = useState(false);
     const archiveRef = useRef(null);
-    // const handleClickOutside = (event) => {
-    //     if (archiveRef.current && !archiveRef.current.contains(event.target)) {
-    //         setArchiveToggle(false);
-    //     }
-    // };
-    // useEffect(() => {
-        // if (archiveToggle) {
-        //     document.addEventListener('mousedown', handleClickOutside);
-        // } else {
-        //     document.removeEventListener('mousedown', handleClickOutside);
-        // }
-        // return () => {
-        //     document.removeEventListener('mousedown', handleClickOutside);
-        // };
-    // }, [archiveToggle]);
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                archiveRef.current &&
+                !archiveRef.current.contains(event.target) &&
+                event.target.tagName !== 'LI'
+            ) {
+                setArchiveToggle(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [archiveRef]);
+
 
     return (
         <>

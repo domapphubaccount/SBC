@@ -12,7 +12,7 @@ import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 import Logo from "/public/logo.png"
 
 function Header({path,setStoredCode,storedCode}) {
-  const [ userName , setUserName] = useState("");
+  const [userName , setUserName] = useState("");
   const dispatch = useDispatch()
   const pathname = usePathname()
 
@@ -62,7 +62,7 @@ function Header({path,setStoredCode,storedCode}) {
     }
 
     <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg bg-darkBlue">
-      <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
+      <div className="w-full px-12 mx-auto flex flex-wrap items-center justify-between">
 
         <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
           <Link className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="/">
@@ -81,7 +81,7 @@ function Header({path,setStoredCode,storedCode}) {
         }
         <div className="flex  items-center shadow-none  bg-darkBlue" > 
           <ul className="flex justify-between list-none ml-auto items-center">
-            <li className='mr-3' title='timeline'>
+            <li className='mr-3 relative' title='timeline'>
               <Archive/>
             </li>
             {/* start start new chat */}

@@ -1,108 +1,123 @@
-
-:root{
+:root {
   --primary-color: #1E293B;
   --secondary-color: #1FB7FC;
 }
-*{
-    box-sizing: border-box;
+
+* {
+  box-sizing: border-box;
 }
-.bg-darkBlue{
-    background-color: #1E293B;
-  }
-  .bg-primary-color{
-    background-color: var(--primary-color);
-  }
-  .bg-secondary-color{
-    background-color: var(--secondary-color);
-  }
-  .text-primary-color{
-    color: var(--primary-color);
-  }
-  .text-secondar-color{
-    color: var(--secondary-color);
-  }
+
+.bg-darkBlue {
+  background-color: #1E293B;
+}
+
+.bg-primary-color {
+  background-color: var(--primary-color);
+}
+
+.bg-secondary-color {
+  background-color: var(--secondary-color);
+}
+
+.text-primary-color {
+  color: var(--primary-color);
+}
+
+.text-secondar-color {
+  color: var(--secondary-color);
+}
 
 /* start login */
-.log-bannar{
-    background-image: url("../assets/login/bannar.jpg");
-}
-.log-bannar-2{
-    background-image: url("../assets/login/layer2.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-
-}
-.login_backdrop{
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-    z-index: 1;
-    width: 350px;
+.log-bannar {
+  background-image: url("../assets/login/bannar.jpg");
 }
 
-.form_container{
-    z-index: 2;
-    position: relative;
+.log-bannar-2 {
+  background-image: url("../assets/login/layer2.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+}
+
+.login_backdrop {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 1;
+  width: 350px;
+}
+
+.form_container {
+  z-index: 2;
+  position: relative;
 }
 
 /* end login */
 
 /* start reference */
-.referense_side{
-    width: 300px;
-    position: relative;
+.referense_side {
+  width: 300px;
+  position: relative;
 }
+
 /* end reference */
 
 /* start chat */
-.chat_container{
-    width: calc(100% - 300px);
-    position: relative;
+.chat_container {
+  width: calc(100% - 300px);
+  position: relative;
 }
-.chat_userName{
-    border-left: 3px solid var(--secondary-color);
-    color: black;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 0 10px;
+
+.chat_userName {
+  border-left: 3px solid var(--secondary-color);
+  color: black;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 10px;
 }
+
 /* .chat_userName::after{
   content: '';
   background-image: url('../assets/logo/Logo.png');
 } */
-.chat_userName_2{
-    border-right: 3px solid rgb(8, 8, 124);
-    color: black;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 0 10px;
+.chat_userName_2 {
+  border-right: 3px solid rgb(8, 8, 124);
+  color: black;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 10px;
 }
-.code{
-    position: absolute;
-    left: -60px;
-    /* background-color: #1E293B; */
-    width: 200px;
-    height: 100px;
-    top: 20px;
-    transform: translateX(-100%);
+
+.code {
+  position: absolute;
+  left: -60px;
+  /* background-color: #1E293B; */
+  width: 200px;
+  height: 100px;
+  top: 20px;
+  transform: translateX(-100%);
 }
-.dislike{
-    position: absolute;
-    top: -5px;
-    right: -5px;
+
+.dislike {
+  position: absolute;
+  top: -5px;
+  right: -5px;
 }
-.chat_card{
-    min-width: 150px;
+
+.chat_card {
+  min-width: 150px;
 }
+
 /* end chat */
 
 /* start chat input */
-.chat_input{
-    position: absolute;
-    bottom: 0;
-    right: 0;
+.chat_input {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
+
 .chat_input ::-webkit-resizer {
   border: 2px solid black;
   background: red;
@@ -113,9 +128,11 @@
   left: 0;
   display: none;
 }
+
 .chat_input textarea {
   resize: none;
 }
+
 /* end chat input */
 
 /* start archive */
@@ -124,12 +141,13 @@
 } */
 
 .accordion .flipY {
-    transform: rotate3d(1, 0, 0, 180deg);
+  transform: rotate3d(1, 0, 0, 180deg);
 }
 
 .accordion svg {
-    transition: all 1s cubic-bezier(0, .5, 0, 1);
+  transition: all 1s cubic-bezier(0, .5, 0, 1);
 }
+
 /* end archive */
 
 /* start profile */
@@ -148,94 +166,92 @@
 } */
 /* end profile */
 button {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    outline: none;
-    border: 0;
-    vertical-align: middle;
-    text-decoration: none;
-    background: transparent;
-    padding: 0;
-    font-size: inherit;
-    font-family: inherit;
-   }
-   
-   button.learn-more {
-    width: 12rem;
-    height: auto;
-   }
-   
-   button.learn-more .circle {
-    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
-    position: relative;
-    display: block;
-    margin: 0;
-    width: 3rem;
-    height: 3rem;
-    background: #282936;
-    border-radius: 1.625rem;
-   }
-   
-   button.learn-more .circle .icon {
-    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background: #fff;
-   }
-   
-   button.learn-more .circle .icon.arrow {
-    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
-    left: 0.625rem;
-    width: 1.125rem;
-    height: 0.125rem;
-    background: none;
-   }
-   
-   button.learn-more .circle .icon.arrow::before {
-    position: absolute;
-    content: "";
-    top: -0.29rem;
-    right: 0.0625rem;
-    width: 0.625rem;
-    height: 0.625rem;
-    border-top: 0.125rem solid #fff;
-    border-right: 0.125rem solid #fff;
-    transform: rotate(45deg);
-   }
-   
-   button.learn-more .button-text {
-    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0.75rem 0;
-    margin: 0 0 0 1.85rem;
-    color: #282936;
-    font-weight: 700;
-    line-height: 1.6;
-    text-align: center;
-    text-transform: uppercase;
-   }
-   
-   button:hover .circle {
-    width: 100%;
-   }
-   
-   button:hover .circle .icon.arrow {
-    background: #fff;
-    transform: translate(1rem, 0);
-   }
-   
-   button:hover .button-text {
-    color: #fff;
-   }
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  text-decoration: none;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
 
-   
+button.learn-more {
+  width: 12rem;
+  height: auto;
+}
+
+button.learn-more .circle {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  position: relative;
+  display: block;
+  margin: 0;
+  width: 3rem;
+  height: 3rem;
+  background: #282936;
+  border-radius: 1.625rem;
+}
+
+button.learn-more .circle .icon {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: #fff;
+}
+
+button.learn-more .circle .icon.arrow {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  left: 0.625rem;
+  width: 1.125rem;
+  height: 0.125rem;
+  background: none;
+}
+
+button.learn-more .circle .icon.arrow::before {
+  position: absolute;
+  content: "";
+  top: -0.29rem;
+  right: 0.0625rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top: 0.125rem solid #fff;
+  border-right: 0.125rem solid #fff;
+  transform: rotate(45deg);
+}
+
+button.learn-more .button-text {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.75rem 0;
+  margin: 0 0 0 1.85rem;
+  color: #282936;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+button:hover .circle {
+  width: 100%;
+}
+
+button:hover .circle .icon.arrow {
+  background: #fff;
+  transform: translate(1rem, 0);
+}
+
+button:hover .button-text {
+  color: #fff;
+}
 
 
 
@@ -244,255 +260,316 @@ button {
 
 
 
-   .button-back {
-    display: flex;
-    height: 3em;
-    width: 100px;
-    align-items: center;
-    justify-content: center;
-    background-color: #eeeeee4b;
-    border-radius: 3px;
-    letter-spacing: 1px;
-    transition: all 0.2s linear;
-    cursor: pointer;
-    border: none;
-    background: #fff;
-   }
-   
-   .button-back > svg {
-    margin-right: 5px;
-    margin-left: 5px;
-    font-size: 20px;
-    transition: all 0.4s ease-in;
-   }
-   
-   .button-back:hover > svg {
-    font-size: 1.2em;
-    transform: translateX(-5px);
-   }
-   
-   .button-back:hover {
-    box-shadow: -1px -1px 33px #d1d1d117, 1px 1px 33px #ffffff1f;
-    transform: translateY(-2px);
-   }
-   .chat_box p{
-    margin-bottom: 10px;
-   }
-   .chat_box table{
-    border: 4px solid gray;
-   }
 
-      /* start new chat button */
-   /* Note that you only needs to edit the config to customize the button! */
+
+.button-back {
+  display: flex;
+  height: 3em;
+  width: 100px;
+  align-items: center;
+  justify-content: center;
+  background-color: #eeeeee4b;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  transition: all 0.2s linear;
+  cursor: pointer;
+  border: none;
+  background: #fff;
+}
+
+.button-back>svg {
+  margin-right: 5px;
+  margin-left: 5px;
+  font-size: 20px;
+  transition: all 0.4s ease-in;
+}
+
+.button-back:hover>svg {
+  font-size: 1.2em;
+  transform: translateX(-5px);
+}
+
+.button-back:hover {
+  box-shadow: -1px -1px 33px #d1d1d117, 1px 1px 33px #ffffff1f;
+  transform: translateY(-2px);
+}
+
+.chat_box p {
+  margin-bottom: 10px;
+}
+
+.chat_box table {
+  border: 4px solid gray;
+}
+
+/* start new chat button */
+/* Note that you only needs to edit the config to customize the button! */
 
 .plusButton {
-    /* Config start */
-    --plus_sideLength: 2.5rem;
-    --plus_topRightTriangleSideLength: 0.9rem;
-    /* Config end */
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* border: 1px solid white;
+  /* Config start */
+  --plus_sideLength: 2.5rem;
+  --plus_topRightTriangleSideLength: 0.9rem;
+  /* Config end */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid white;
     width: var(--plus_sideLength);
     height: var(--plus_sideLength); */
-    overflow: hidden;
-  }
+  overflow: hidden;
+}
 
-  .plusButton::before {
-    position: absolute;
-    content: "";
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
-    border-style: solid;
-    border-color: transparent white transparent transparent;
-    transition-timing-function: ease-in-out;
-    transition-duration: 0.2s;
-  }
+.plusButton::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+}
 
-  .plusButton:hover {
-    cursor: pointer;
-  }
+.plusButton:hover {
+  cursor: pointer;
+}
 
-  .plusButton:hover::before {
-    --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
-  }
+.plusButton:hover::before {
+  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+}
 
-  .plusButton:focus-visible::before {
-    --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
-  }
+.plusButton:focus-visible::before {
+  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+}
 
-  .plusButton>.plusIcon {
-    fill: white;
-    width: calc(var(--plus_sideLength) * 0.7);
-    height: calc(var(--plus_sideLength) * 0.7);
-    z-index: 1;
-    transition-timing-function: ease-in-out;
-    transition-duration: 0.2s;
-  }
+.plusButton>.plusIcon {
+  fill: white;
+  width: calc(var(--plus_sideLength) * 0.7);
+  height: calc(var(--plus_sideLength) * 0.7);
+  z-index: 1;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+}
 
-  .plusButton:hover>.plusIcon {
-    fill: black;
-    transform: rotate(180deg);
-  }
+.plusButton:hover>.plusIcon {
+  fill: black;
+  transform: rotate(180deg);
+}
 
-  .plusButton:focus-visible>.plusIcon {
-    fill: black;
-    transform: rotate(180deg);
-  }
-   /* end new chat button */
+.plusButton:focus-visible>.plusIcon {
+  fill: black;
+  transform: rotate(180deg);
+}
 
-   /* start history chat button */
-   .Btn_history {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 45px;
-    height: 45px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-duration: 0.3s;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
-    background-color: transparent
-  }
+/* end new chat button */
 
-  /* plus sign */
-  .svgWrapper {
-    width: 100%;
-    transition-duration: 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+/* start history chat button */
+.Btn_history {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background-color: transparent
+}
 
-  .svgIcon {
-    width: 17px;
-  }
+.history_card {
+  max-height: 80vh; /* Adjust as needed */
+  overflow-y: auto;
+  min-height: 400px; /* Enable vertical scrolling */
+}
 
-  /* text */
-  .text {
-    position: absolute;
-    right: 0%;
-    width: 0%;
-    opacity: 0;
-    color: white;
-    font-size: 1.2em;
-    font-weight: 600;
-    transition-duration: 0.3s;
-  }
-  /* hover effect on button width */
-  .Btn_history:hover {
-    width: 125px;
-    border-radius: 40px;
-    transition-duration: 0.3s;
-  }
+/* WebKit-based browsers (Chrome, Safari) */
+.history_card::-webkit-scrollbar {
+  width: 10px; /* Adjust scrollbar width */
+}
 
-  .Btn_history:hover .svgWrapper {
-    width: 30%;
-    transition-duration: 0.3s;
-    padding-left: 20px;
-  }
-  /* hover effect button's text */
-  .Btn_history:hover .text {
-    opacity: 1;
-    width: 70%;
-    font-size: 12px;
-    transition-duration: 0.3s;
-    padding-right: 10px;
-  }
-  /* button click effect*/
-  .Btn_history:active {
-    transform: translate(2px, 2px);
-  }
+.history_card::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
 
-   /* end history chat button */
+.history_card::-webkit-scrollbar-thumb {
+  background: #888; /* Thumb color */
+  border-radius: 5px; /* Adjust as needed */
+}
+
+.history_card::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Thumb hover color */
+}
+
+/* Firefox */
+.history_card {
+  scrollbar-width: thin; /* Thin scrollbar */
+  scrollbar-color: #888 #f1f1f1; /* Thumb and track color */
+}
+
+/* Optional: Add additional styles for better appearance */
+.history_card {
+  padding: 10px; /* Adjust padding as needed */
+  border: 1px solid #ddd; /* Adjust border as needed */
+  border-radius: 5px; /* Adjust border radius as needed */
+}
 
 
-   /* start table */
-   table{
-    border: 4px solid #282828;
-  }
-  table th{
-    border: 4px solid #000;
-    padding: 5px 5px;
+/* plus sign */
+.svgWrapper {
+  width: 100%;
+  transition-duration: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  }
-  table tr td{
-     border: 4px solid #282828;
-     padding: 5px 5px;
+.svgIcon {
+  width: 17px;
+}
 
-   }
-   /* end table */
+/* text */
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  transition-duration: 0.3s;
+}
+
+/* hover effect on button width */
+.Btn_history:hover {
+  width: 125px;
+  border-radius: 40px;
+  transition-duration: 0.3s;
+}
+
+.Btn_history:hover .svgWrapper {
+  width: 30%;
+  transition-duration: 0.3s;
+  padding-left: 20px;
+}
+
+/* hover effect button's text */
+.Btn_history:hover .text {
+  opacity: 1;
+  width: 70%;
+  font-size: 12px;
+  transition-duration: 0.3s;
+  padding-right: 10px;
+}
+
+/* button click effect*/
+.Btn_history:active {
+  transform: translate(2px, 2px);
+}
+
+/* end history chat button */
 
 
-   /* start list */
-   ul {
-    list-style: none;
-    padding-left: 0;
-  }
+/* start table */
+table {
+  border: 4px solid #282828;
+}
 
-  /* Define counter for list items */
-  ul.roman-numerals {
-    counter-reset: list-counter;
-  }
+table th {
+  border: 4px solid #000;
+  padding: 5px 5px;
 
-  /* Style list items with Roman numerals */
-  ul.roman-numerals li {
-    position: relative;
-    counter-increment: list-counter;
-    padding-left: 2em; /* Adjust as needed */
-  }
+}
 
-  ul.roman-numerals li:before {
-    content: counter(list-counter, lower-roman);
-    position: absolute;
-    left: 0;
-  }
-   /* end list */
-   .footer-text{
-    font-size: 9.5px;
-   }
+table tr td {
+  border: 4px solid #282828;
+  padding: 5px 5px;
 
-  /* start #chat carousal */
+}
+
+/* end table */
+
+
+/* start list */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Define counter for list items */
+ul.roman-numerals {
+  counter-reset: list-counter;
+}
+
+/* Style list items with Roman numerals */
+ul.roman-numerals li {
+  position: relative;
+  counter-increment: list-counter;
+  padding-left: 2em;
+  /* Adjust as needed */
+}
+
+ul.roman-numerals li:before {
+  content: counter(list-counter, lower-roman);
+  position: absolute;
+  left: 0;
+}
+
+/* end list */
+.footer-text {
+  font-size: 9.5px;
+}
+
+/* start #chat carousal */
 /* For Chrome, Edge, and Safari */
 #chat::-webkit-scrollbar {
-  width: 12px; /* Width of the scrollbar */
+  width: 12px;
+  /* Width of the scrollbar */
 }
 
 #chat::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Background of the scrollbar track */
+  background: #f1f1f1;
+  /* Background of the scrollbar track */
 }
 
 #chat::-webkit-scrollbar-thumb {
-  background-color: #888; /* Color of the scrollbar thumb */
-  border-radius: 10px; /* Roundness of the scrollbar thumb */
-  border: 3px solid #f1f1f1; /* Space around the scrollbar thumb */
+  background-color: #888;
+  /* Color of the scrollbar thumb */
+  border-radius: 10px;
+  /* Roundness of the scrollbar thumb */
+  border: 3px solid #f1f1f1;
+  /* Space around the scrollbar thumb */
 }
 
 #chat::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color of the scrollbar thumb when hovered */
+  background: #555;
+  /* Color of the scrollbar thumb when hovered */
 }
 
 /* For Firefox */
 #chat {
-  scrollbar-width: thin; /* Width of the scrollbar */
-  scrollbar-color: #888 #f1f1f1; /* Colors of the scrollbar thumb and track */
+  scrollbar-width: thin;
+  /* Width of the scrollbar */
+  scrollbar-color: #888 #f1f1f1;
+  /* Colors of the scrollbar thumb and track */
 }
 
-  /* end #chat  carousal */
+/* end #chat  carousal */
 
-  /* start loading */
-  .loading_logo{
-    width: 300px;
-  }
-  .loading_icon{
-    width: 100px;
-  }
-  /* end loading */
+/* start loading */
+.loading_logo {
+  width: 300px;
+}
+
+.loading_icon {
+  width: 100px;
+}
+
+/* end loading */

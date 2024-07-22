@@ -37,8 +37,6 @@ function MainChat({ elementWidth, storedCode }) {
   const typeComplete = useSelector(state => state.typeSlice.value)
   const chatRef = useRef();
   const [responseId, setResponseId] = useState("");
-  const [typingComplete, setTypingComplete] = useState(0);
-
 
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
@@ -229,17 +227,19 @@ function MainChat({ elementWidth, storedCode }) {
     return item; // Return the original item if no match is found
   };
   // Scroll to the bottom
-  useEffect(() => {
+  const scrollToBottom = () => {
     const element = document.getElementById("chat");
-    element.scrollTop = element.scrollHeight;
-    window.MathJax && window.MathJax.typeset();
-  }, [conversation, chatData]);
-
-  const typesetMathJax = () => {
-    if (window.MathJax) {
-      window.MathJax.typeset();
+    if (element) {
+      setTimeout(() => {
+        element.scrollTop = element.scrollHeight - element.clientHeight;
+      }, 100); // Adjust delay if needed
     }
   };
+  
+  useEffect(() => {
+    scrollToBottom();
+    window.MathJax && window.MathJax.typeset();
+  }, [conversation, chatData]);
 
   return (
     <div className="col-span-3 bg-white relative">
