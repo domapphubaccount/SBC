@@ -6,8 +6,10 @@ import LoginImg from '@/assets/login/login.png';
 import Link from 'next/link';
 import axios from 'axios';
 import { config } from '@/config/config';
-import { useRouter } from 'next/navigation';
 import Logo from "@/assets/logo/Logo.png"
+import { useDispatch, useSelector } from 'react-redux';
+import { signupAction } from '../Redux/Slices/AuthSlice/AuthSlice';
+import { redirect } from 'next/navigation';
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -23,10 +25,12 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
-  const [message, setMessage] = useState("")
-  const [loading,setLoading] = useState(false)
-  const router = useRouter()
+  const loading = useSelector(state => state.AuthSlice.loading)
+  const message = useSelector(state => state.AuthSlice.error)
+  const dispatch = useDispatch()
+  const state = useSelector(state => state)
 
+  console.log(state)
     useEffect(()=>{
       if(JSON.parse(localStorage.getItem("data"))){
           redirect('/')
@@ -41,21 +45,7 @@ function Page() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      setLoading(true)
-      setMessage(false)
-
-      axios.post(`${config.api}user-create`,values)
-      .then(res=>
-      {
-        if(res.data.status === "SUCCESS"){
-          router.push('/signIn')
-          setMessage("")
-          setLoading(false)
-       }else if(res.data.status === "ERROR"){
-          setMessage(res.data.message)
-          setLoading(false)
-       }
-    }).catch(e=>{ setLoading(false); console.log(e)})
+      dispatch(signupAction(values))
     },
   });
 

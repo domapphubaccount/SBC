@@ -8,6 +8,8 @@ import axios from 'axios';
 import { config } from '@/config/config';
 import { redirect, useRouter } from 'next/navigation';
 import Logo from "@/assets/logo/Logo.png"
+import { loginAction } from '../Redux/Slices/AuthSlice/AuthSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -15,15 +17,19 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
-    const [message, setMessage] = useState("")
-    const [loading,setLoading] = useState(false)
-    const router = useRouter()
+    const dispatch = useDispatch()
+    const loading = useSelector(state => state.AuthSlice.loading)
+    const message = useSelector(state => state.AuthSlice.error)
+    const state = useSelector(state => state)
+
+    console.log(state)
 
    useEffect(()=>{
       if(JSON.parse(localStorage.getItem("data"))){
           redirect('/')
         }
     },[])
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -31,24 +37,7 @@ function Page() {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-      setMessage("")
-      setLoading(true)
-      axios.post(`${config.api}login`,values)
-      .then(res => {
-         if(res.data.status === "SUCCESS"){
-            localStorage.setItem("data",JSON.stringify(res.data.data))
-            router.push('/')
-            setMessage("")
-            console.log("router")
-            setLoading(false)
-         }else if(res.data.status === "ERROR"){
-            setMessage(res.data.message)
-            setLoading(false)
-         }
-        }
-        )
-      .catch(e=>console.log(e))
+      dispatch(loginAction(values));
     },
   });
 
