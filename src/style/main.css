@@ -152,9 +152,9 @@ nav{
 }
 .archive_card{
   position: absolute;
-  left: 0;
+  right: 0;
   z-index: 1;
-  width: 360px;
+  width: 400px;
 }
 
 .code_card{
@@ -177,7 +177,7 @@ nav{
 @media (max-width: 600px) {
   .archive_card{
     position: absolute;
-    right: -50px;
+    left: 0px;
     width: 300px;
   }
   .code_card{
