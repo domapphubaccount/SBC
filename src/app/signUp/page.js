@@ -51,13 +51,12 @@ function Page() {
 
   return (
     <section className='log-bannar'>
-      <link
+      {/* <link
         rel="stylesheet"
         href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
         crossOrigin="anonymous"
-      />
-
+      /> */}
       <div className="min-h-screen flex flex-col items-center justify-center">
       {message &&
         <div className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4" role="alert">

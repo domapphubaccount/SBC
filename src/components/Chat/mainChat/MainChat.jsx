@@ -18,7 +18,7 @@ import Logo from "@/assets/logo/icon.png";
 import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 
-function MainChat({ elementWidth, storedCode }) {
+function MainChat() {
   const pathName = usePathname();
   const [copyIcon, setCopyIcon] = useState(false);
   const [user, setUser] = useState("");
@@ -49,9 +49,7 @@ function MainChat({ elementWidth, storedCode }) {
     updates,
     copyIcon,
     isSpeaking,
-    elementWidth,
     chatData,
-    storedCode,
     conversation,
     dislikeMessage,
     loadingMessage,
@@ -242,43 +240,31 @@ function MainChat({ elementWidth, storedCode }) {
   }, [conversation, chatData]);
 
   return (
-    <div className="col-span-3 bg-white relative">
+    <div className="relative">
       <div
-        className="w-full log-bannar-2"
-        style={{ paddingTop: "100px", height: "100vh" }}
+        className="w-full"
       >
         <div
-          className="w-full grid grid-cols-4"
+          className="w-full"
           id="chat"
-          style={{
-            height: "calc(100vh - 120px)",
-            width: windhtchat - 10 + "px",
-            position: "absolute",
-            right: 0,
-            top: 0,
-            overflowY: "scroll",
-          }}
         >
-          <div
-            className="col-span-1"
-            style={{ width: elementWidth + "px" }}
-          ></div>
           {/* relative */}
-          <div className="col-span-3 py-5">
+          <div className="py-5">
             {loading ? (
-              <div className="flex items-center justify-center min-h-screen">
+              <div className="flex items-center justify-center">
                 <img
+                  width={300}
                   src={loadingImg.src}
                   className="loading_icon"
                   alt="laoding"
                 />
               </div>
             ) : (
-              <ul>
+              <div>
                 {conversation && Object.entries(conversation).length == 0 ? (
-                  <div className="pt-3" style={{ paddingTop: "200px" }}>
-                    <div className="text-center">
-                      <div className="m-auto mb-2" style={{ width: "200px" }}>
+                  <div className="pt-3">
+                    <div className="text-center h-100">
+                      <div className="m-auto mb-2" style={{ width: "300px" }}>
                         <img src={StartLogo.src} className="w-100" alt="" />
                       </div>
 
@@ -300,11 +286,10 @@ function MainChat({ elementWidth, storedCode }) {
                     </div>
                   </div>
                 ) : (
-                  <li
+                  <div
                     ref={chatRef}
                     id="chat-zeft"
-                    className="clearfix2 mt-4 px-10"
-                    style={{ paddingTop: "90px" }}
+                    className="clearfix2 mt-4"
                   >
                     {chatData &&
                       conversation &&
@@ -373,7 +358,6 @@ function MainChat({ elementWidth, storedCode }) {
                           <div className="relative">
                             <div
                               className="code"
-                              style={{ width: elementWidth - 40 + "px" }}
                             >
                               {item?.answer?.includes("//") && (
                                 <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
@@ -551,9 +535,9 @@ function MainChat({ elementWidth, storedCode }) {
                           </div>
                         </React.Fragment>
                       ))}
-                  </li>
+                  </div>
                 )}
-              </ul>
+                </div>
             )}
           </div>
         </div>
@@ -563,7 +547,7 @@ function MainChat({ elementWidth, storedCode }) {
         : conversation &&
           Object.entries(conversation).length != 0 && (
             <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              <ChatInput storedCode={storedCode} />
+              <ChatInput />
             </div>
           )}
       {dislike && (

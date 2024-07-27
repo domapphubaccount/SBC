@@ -1,76 +1,65 @@
 "use client";
-import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Dropdown } from "flowbite-react";
 
 function DropDown({ userName }) {
-    const [dropDownToggle, setDropDownToggle] = useState(false);
-    const router = useRouter();
-    const dropdownRef = useRef(null);
-    const handleDropDown = () => {
-        setDropDownToggle(!dropDownToggle);
-    };
-    const handleLogout = () => {
-        localStorage.removeItem("data");
-        router.push('/signIn');
-    };
-    const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setDropDownToggle(false);
-        }
-    };
-    useEffect(() => {
-        if (dropDownToggle) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [dropDownToggle]);
+  const [dropDownToggle, setDropDownToggle] = useState(false);
+  const router = useRouter();
+  const dropdownRef = useRef(null);
 
-    return (
-        <div className="relative inline-block text-left">
-            <div>
-                <button
-                    type="button"
-                    onClick={handleDropDown}
-                    style={{ fontSize: '.8rem', width: '25px', height: "25px" }}
-                    className="inline-flex items-center w-full justify-center text-sm gap-x-1.5 rounded-full font-semibold shadow-sm hover:bg-gray-950 text-white border-2 border-sky-500 rounded-full"
-                    id="menu-button"
-                    aria-expanded="true"
-                    aria-haspopup="true"
-                >
-                    {userName.substring(0, 2).toUpperCase()}
-                </button>
-            </div>
-            {dropDownToggle && (
-                <div
-                    ref={dropdownRef}
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="menu-button"
-                    tabIndex="-1"
-                >
-                    <div className="py-1" role="none">
-                        <Link href="/profile" className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-0">Profile</Link>
-                        <button
-                            type="submit"
-                            onClick={handleLogout}
-                            className="text-gray-700 block w-full px-4 py-2 text-left text-sm hover:bg-slate-200"
-                            role="menuitem"
-                            tabIndex="-1"
-                            id="menu-item-3"
-                        >
-                            Sign out
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+  const handleLogout = () => {
+    localStorage.removeItem("data");
+    router.push("/signIn");
+  };
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropDownToggle(false);
+    }
+  };
+
+  return (
+    <Dropdown
+      label={userName.substring(0, 2).toUpperCase()}
+      dismissOnClick={false}
+    >
+      <Dropdown.Item onClick={()=>router.push("/profile")}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="size-6 mr-3"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+        Profile
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleLogout}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="size-6 mr-3"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+          />
+        </svg>
+        Sign out
+      </Dropdown.Item>
+    </Dropdown>
+  );
 }
 
 export default DropDown;

@@ -16,6 +16,8 @@
     "axios": "^1.7.2",
     "better-react-mathjax": "^2.0.3",
     "bootstrap": "^5.3.3",
+    "flowbite": "^2.4.1",
+    "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
     "katex": "^0.16.10",
     "mathjax": "^3.2.2",

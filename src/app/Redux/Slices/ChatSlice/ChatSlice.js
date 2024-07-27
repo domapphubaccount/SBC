@@ -4,22 +4,25 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const startChat = createAsyncThunk(
-  "chat/sendReports",
+  "chat/startChat",
   async (arg, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
-    axios
-      .post(`https://sbc.designal.cc/api/get-chat/`, {
+    const state = thunkAPI.getState();
+    const token = state.data.token; // Assuming the token is stored in the auth slice under `state.auth.token`
+    
+    try {
+      const response = await axios.post(`https://sbc.designal.cc/api/get-chat`, {
+        chat_id: arg.id,
+        share_name: "1",
+      }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: {
-          chat_id: catchChat,
-          share_name: "1",
-        },
-      })
-      .then((res) => res)
-      .catch((e) => rejectWithValue(e.message));
+      });
       
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
   }
 );
 
@@ -32,7 +35,7 @@ const initialState = {
   catchReport: null,
 };
 
-const reports = createSlice({
+const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
@@ -43,14 +46,22 @@ const reports = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(sendReports.pending, (state, action) => {
-        console.log(action);
+      .addCase(startChat.pending, (state) => {
+        state.isLoading = true;
+        console.log('pending');
       })
-      .addCase(sendReports.fulfilled, (state, action) => {
-        console.log(action);
+      .addCase(startChat.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.reportDetails = action.payload;
+        console.log('success');
       })
-      .addCase(sendReports.rejected, (state, action) => {
-        console.log(action);
+      .addCase(startChat.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        console.log('rejected');
       });
   },
 });
+
+export default chatSlice.reducer;
+export const chatActions = chatSlice.actions;

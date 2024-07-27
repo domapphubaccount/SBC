@@ -3,6 +3,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+let isBrouse = typeof window !== "undefined"
+
 
 // start login action
 export const loginAction = createAsyncThunk(
@@ -55,7 +57,7 @@ export const signupAction = createAsyncThunk(
 const initialState = {
   loading: false,
   error: '',
-  data: {},
+  data:  isBrouse && localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')) || {},
 };
 
 const authSlice = createSlice({
@@ -77,7 +79,8 @@ const authSlice = createSlice({
 
         state.loading = false;
         state.data = action.payload.data;
-        localStorage.setItem("data" , JSON.stringify(action.payload.data))
+        localStorage.setItem("data" , JSON.stringify(action.payload.data));
+        window.next.router.push("/");
 
         console.log('success');
       })
@@ -104,7 +107,7 @@ const authSlice = createSlice({
   
           state.loading = false;
           state.data = action.payload.data;
-          localStorage.setItem("data" , JSON.stringify(action.payload.data))
+          localStorage.setItem("data" , JSON.stringify(action.payload.data));
   
           console.log('success');
         })
