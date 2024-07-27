@@ -27,6 +27,13 @@
   color: var(--secondary-color);
 }
 
+/* start nav */
+nav{
+  padding: 10px 30px;
+}
+
+/* end nav */
+
 /* start login */
 .log-bannar {
   background-image: url("../assets/login/bannar.jpg");
@@ -140,12 +147,53 @@
     display: none;
 } */
 
+.break_nav{
+  display: none;
+}
+.archive_card{
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  width: 360px;
+}
+
+.code_card{
+  z-index: 20;
+  position: absolute;
+  right: 0;
+  max-height: 400px; 
+    overflow-y: auto;
+ 
+}
+
 .accordion .flipY {
   transform: rotate3d(1, 0, 0, 180deg);
 }
 
 .accordion svg {
   transition: all 1s cubic-bezier(0, .5, 0, 1);
+}
+
+@media (max-width: 600px) {
+  .archive_card{
+    position: absolute;
+    right: -50px;
+    width: 300px;
+  }
+  .code_card{
+    right: 0px;
+  }
+  .break_nav{
+    display: block;
+  }
+  .code{
+    padding: 5px;
+  }
+  .code > span{
+    padding: 0;
+    overflow: auto;
+    font-size: 10px;
+  }
 }
 
 /* end archive */

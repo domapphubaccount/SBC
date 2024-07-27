@@ -11,7 +11,7 @@ function DropDown({ userName }) {
         setDropDownToggle(!dropDownToggle);
     };
     const handleLogout = () => {
-        localStorage.removeItem("data");
+        localStorage.clear();
         router.push('/signIn');
     };
     const handleClickOutside = (event) => {

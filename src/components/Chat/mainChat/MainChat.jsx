@@ -387,7 +387,7 @@ function MainChat({ elementWidth, storedCode }) {
                                         item.answer
                                           .match(pattern)
                                           ?.map((item3, i) => (
-                                            <p className="w-100 my-3" key={i}>
+                                            <p className="w-100 my-3"  key={i}>
                                               {item3}
                                             </p>
                                           ))
