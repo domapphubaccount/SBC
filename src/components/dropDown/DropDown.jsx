@@ -2,16 +2,21 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { chat_out } from '@/app/Redux/Features/Chat/ChatSlice';
 
 function DropDown({ userName }) {
     const [dropDownToggle, setDropDownToggle] = useState(false);
     const router = useRouter();
     const dropdownRef = useRef(null);
+    const dispatch = useDispatch()
+
     const handleDropDown = () => {
         setDropDownToggle(!dropDownToggle);
     };
     const handleLogout = () => {
         localStorage.clear();
+        dispatch(chat_out())
         router.push('/signIn');
     };
     const handleClickOutside = (event) => {

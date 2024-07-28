@@ -46,9 +46,18 @@ export const chatSlice = createSlice({
       state.loading = false;
     },
 
+    chat_out: (state , action) => {
+      return {
+        ...state,
+        value: 0,
+        chat_data:[],
+        conversation: [],
+        get_chat:''
+      }
+    }
   },
 })
 
-export const { getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success , send_failed} = chatSlice.actions
+export const { getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success , send_failed , chat_out} = chatSlice.actions
 
 export default chatSlice.reducer
