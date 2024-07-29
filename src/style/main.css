@@ -163,7 +163,11 @@ nav{
   right: 0;
   max-height: 400px; 
     overflow-y: auto;
+  max-width: 360px;
  
+}
+.code_card label{
+  text-align: left;
 }
 
 .accordion .flipY {
