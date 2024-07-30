@@ -22,6 +22,7 @@ function DropDown({ userName }) {
   return (
     <Dropdown
       label={userName.substring(0, 2).toUpperCase()}
+      className="dark:bg-white"
       dismissOnClick={false}
     >
       <Dropdown.Item onClick={()=>router.push("/profile")}>

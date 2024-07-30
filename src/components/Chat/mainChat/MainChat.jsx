@@ -17,6 +17,7 @@ import StartLogo from "@/assets/logo/start_logo.png";
 import Logo from "@/assets/logo/icon.png";
 import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
+import Reference from "./reference/Reference";
 
 function MainChat() {
   const pathName = usePathname();
@@ -34,7 +35,7 @@ function MainChat() {
   const updates = useSelector((state) => state.updateSlice.state);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const loading = useSelector((state) => state.updateSlice.loading_chat);
-  const typeComplete = useSelector(state => state.typeSlice.value)
+  const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
   const [responseId, setResponseId] = useState("");
 
@@ -53,7 +54,7 @@ function MainChat() {
     conversation,
     dislikeMessage,
     loadingMessage,
-    typeComplete
+    typeComplete,
   ]);
   const dislikeToggle = (id) => {
     setItemId(id);
@@ -233,7 +234,7 @@ function MainChat() {
       }, 100); // Adjust delay if needed
     }
   };
-  
+
   useEffect(() => {
     scrollToBottom();
     window.MathJax && window.MathJax.typeset();
@@ -241,13 +242,8 @@ function MainChat() {
 
   return (
     <div className="relative">
-      <div
-        className="w-full"
-      >
-        <div
-          className="w-full"
-          id="chat"
-        >
+      <div className="w-full px-5 ">
+        <div className="w-full" id="chat">
           {/* relative */}
           <div className="py-5">
             {loading ? (
@@ -260,7 +256,7 @@ function MainChat() {
                 />
               </div>
             ) : (
-              <div>
+              <div id="chat_conversation">
                 {conversation && Object.entries(conversation).length == 0 ? (
                   <div className="pt-3">
                     <div className="text-center h-100">
@@ -286,11 +282,7 @@ function MainChat() {
                     </div>
                   </div>
                 ) : (
-                  <div
-                    ref={chatRef}
-                    id="chat-zeft"
-                    className="clearfix2 mt-4"
-                  >
+                  <div ref={chatRef} id="chat-zeft" className="clearfix2 mt-4">
                     {chatData &&
                       conversation &&
                       conversation.user_chats &&
@@ -355,17 +347,11 @@ function MainChat() {
                               </div>
                             </div>
                           </div>
-                          <div className="relative">
-                            <div
-                              className="code"
-                            >
-                              {item?.answer?.includes("//") && (
+                          <div className="chat_cols_answer">
+                            <div>
+                              {/* {item?.answer?.includes("//") && (
                                 <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                   <div className="w-full pb-2">
-                                    <div className="flex justify-between">
-                                      {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
-                                      {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
-                                    </div>
                                     <span className="block ml-2 text-sm text-gray-600  font-semibold">
                                       {item.answer.match(pattern) ? (
                                         item.answer
@@ -381,8 +367,28 @@ function MainChat() {
                                     </span>
                                   </div>
                                 </span>
+                              )} */}
+                              {item?.answer?.includes("//") && (
+                                <span className="hover:bg-gray-100 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                  <div className="w-full pb-2">
+                                    <span className="block ml-2 text-sm text-gray-600  font-semibold">
+                                      {item.answer.match(pattern) ? (
+                                        item.answer
+                                          .match(pattern)
+                                          ?.map((item3, i) => (
+                                            <Reference data={item3} key={i} />
+                                          ))
+                                      ) : (
+                                        <div>No Reference</div>
+                                      )}
+                                    </span>
+                                  </div>
+                                </span>
                               )}
+                              
                             </div>
+
+                            {/* start main chat answers */}
                             <div>
                               <div className="chat_userName">
                                 <img
@@ -402,18 +408,18 @@ function MainChat() {
                                   ) : (
                                     <>
                                       {item?.answer ? (
-                                        chatData.length - 1 === i && typeComplete ?                                         
-                                        (
+                                        chatData.length - 1 === i &&
+                                        typeComplete ? (
                                           <ReactTyped
                                             strings={[textHandler(item.answer)]}
                                             showCursor={false}
-                                            onComplete={()=>disaptch(setTypeValue(false))} 
+                                            onComplete={() =>
+                                              disaptch(setTypeValue(false))
+                                            }
                                             backSpeed={50}
                                             typeSpeed={5}
                                           />
-                                        )
-                                        : 
-                                        (
+                                        ) : (
                                           <span
                                             className="block chat_box"
                                             style={{ overflowX: "auto" }}
@@ -422,9 +428,7 @@ function MainChat() {
                                             }}
                                           />
                                         )
-                                      )
-                                      : 
-                                      (
+                                      ) : (
                                         <div>
                                           <img
                                             className="m-auto"
@@ -532,12 +536,17 @@ function MainChat() {
                                 ""
                               )}
                             </div>
+                            {/* end main chat answers */}
+
+
+
+                            
                           </div>
                         </React.Fragment>
                       ))}
                   </div>
                 )}
-                </div>
+              </div>
             )}
           </div>
         </div>

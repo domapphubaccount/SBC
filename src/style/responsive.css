@@ -5,4 +5,7 @@
     .history_profile{
         display: none;
     }
+    .chat_cols_answer{
+        display: block;
+    }
 }

@@ -197,6 +197,22 @@ nav{
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  display: flex;
+}
+#chat_conversation{
+  height: calc(100vh - 90px);
+  overflow-y: auto;
+}
+.chat_container > div{
+  flex: 1;
+}
+.chat_container > div > div , .chat_container > div > div > div {
+  height: 100%;
+}
+
+.chat_cols_answer{
+  display: grid;
+  grid-template-columns: 23% 77%;
 }
 
 .chat_userName {
@@ -615,7 +631,6 @@ nav{
 .chat_card {
   min-width: 150px;
 }
-
 /* end chat */
 
 /* start chat input */
@@ -1080,4 +1095,90 @@ ul.roman-numerals li:before {
 }
 
 /* end loading */
+@media (prefers-color-scheme: dark) {
+  .dark\:bg-gray-700 {
+      --tw-bg-opacity: 1;
+      background-color: #fff !important;
+  }
+}
 
+@media (prefers-color-scheme: dark) {
+  .dark\:hover\:bg-gray-600:hover {
+      --tw-bg-opacity: 1;
+      background-color: rgb(230 233 238) !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dark\:text-white {
+      --tw-text-opacity: 1;
+      color: rgb(76 76 76) !important;
+  }
+}
+
+/* start reference */
+/* The switch - the box around the slider */
+.switch_ref {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.switch_ref .chk {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.switch_ref .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 50%;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.switch_ref .slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 2.5px;
+  left: 0.3em;
+  bottom: 0.3em;
+  background-color: white;
+  transition: .4s;
+  scale: 0;
+}
+
+.switch_ref .chk:checked + .slider {
+  background-color: #0C4A6E;
+  transform: scale(0.7);
+  border-radius: 50%;
+}
+
+.switch_ref .chk:checked + .slider:before {
+  transform: rotateZ(360deg);
+  scale: 1;
+  border-radius: 50%;
+}
+
+.ref_answer{
+  /* max-width:350px */
+  box-shadow: 0px 1px 3px 0px #797979;
+  /* margin: 0 10px; */
+  padding: 10px;
+  border-radius: 10px;
+}
+/* end reference */
