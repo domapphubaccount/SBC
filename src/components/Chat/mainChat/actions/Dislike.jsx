@@ -11,7 +11,7 @@ function Dislike({handleDislike, setDislikeMessage, setDislike, dislike}) {
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4" style={{height:'200px'}}>
               <div className="sm:items-start">
                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <h3 className="text-base font-semibold leading-6 text-gray-900" id="modal-title">Leave Comment for Dislike</h3>
+                  <h3 className="text-base font-semibold leading-6 text-gray-900" id="modal-title">Leave Comment for Feedback</h3>
                   <div className="mt-2">
                     <div className="relative h-10 w-full">
                       <textarea
