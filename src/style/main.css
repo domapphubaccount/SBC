@@ -125,6 +125,15 @@ nav{
   right: 0;
 }
 
+.custom_textarea::placeholder {
+  color: #a0aec0; /* Example: Change placeholder text color */
+  /* font-style: italic; Example: Make placeholder text italic */
+  font-size: 14px; /* Example: Change placeholder text size */
+  /* Add any other styles you need */
+  text-align: center;
+}
+
+
 .chat_input ::-webkit-resizer {
   border: 2px solid black;
   background: red;

@@ -20,6 +20,8 @@ function ChatInput({ storedCode }) {
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
+  const [dir,setDir] = useState(false);
+
   const dispatch = useDispatch();
 
   let errorsStore = ["error 1", "error 2", "error 3", "error 4", "error 5"];
@@ -30,7 +32,6 @@ function ChatInput({ storedCode }) {
       setToken(storedData.token);
     }
   }, []);
-  console.log(storedCode);
   const handleSendMessage = () => {
     if (storedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
@@ -87,6 +88,20 @@ function ChatInput({ storedCode }) {
     }
   };
 
+  function isEnglish(text) {
+    // Remove non-alphabetic characters for a better accuracy
+    const cleanedText = text.replace(/[^a-zA-Z]/g, '');
+    // Calculate the percentage of alphabetic characters that are English
+    const englishCharCount = cleanedText.length;
+    const totalCharCount = text.length;
+  
+    // Determine the percentage of English characters
+    const percentageEnglish = (englishCharCount / totalCharCount) * 100;
+  
+    // Check if the percentage is above a certain threshold (e.g., 50%)
+    setDir(percentageEnglish > 50);
+  }
+
   return (
     <>
       <div className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300">
@@ -102,13 +117,15 @@ function ChatInput({ storedCode }) {
           <>
             <TextareaAutosize
               onChange={(e) => {
+                isEnglish(e.target.value)
                 setMessage(e.target.value);
               }}
-              className="py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
+              className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
               onKeyDown={handleKeyDown}
               disabled={!conversation.id}
+              dir={dir ? 'ltr' : 'rtl'}
               placeholder={
-                !conversation?.id ? "start new chat first" : "start question"
+                !conversation?.id ? "start new chat first / إبدأ محادثة جديدة" : "start question / إبدأ بسؤال"
               }
               maxRows={8}
             />
