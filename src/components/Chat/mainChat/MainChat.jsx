@@ -37,6 +37,8 @@ function MainChat() {
   const loading = useSelector((state) => state.updateSlice.loading_chat);
   const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
+  const chatContainerRef = useRef();
+  const inputRef = useRef()
   const [responseId, setResponseId] = useState("");
 
   useEffect(() => {
@@ -242,10 +244,10 @@ function MainChat() {
 
   return (
     <div className="relative">
-      <div className="w-full px-5 ">
+      <div ref={chatContainerRef} className="w-full px-5 ">
         <div className="w-full" id="chat">
           {/* relative */}
-          <div className="py-5">
+          <div>
             {loading ? (
               <div className="flex items-center justify-center">
                 <img
@@ -555,7 +557,7 @@ function MainChat() {
         ? ""
         : conversation &&
           Object.entries(conversation).length != 0 && (
-            <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
+            <div ref={inputRef}>
               <ChatInput />
             </div>
           )}
