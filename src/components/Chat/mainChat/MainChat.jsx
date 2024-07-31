@@ -322,8 +322,9 @@ function MainChat({ elementWidth, storedCode }) {
                                     <MathJax dynamic>
                                       <span
                                         className="block"
+                                    
                                         dangerouslySetInnerHTML={{
-                                          __html: item.question,
+                                          __html: item.question.replaceAll('\n','<br/>'),
                                         }}
                                       />
                                     </MathJax>
@@ -421,7 +422,7 @@ function MainChat({ elementWidth, storedCode }) {
                                         chatData.length - 1 === i &&
                                         typeComplete ? (
                                           <ReactTyped
-                                            strings={[textHandler(item.answer)]}
+                                            strings={[textHandler(item.answer.replaceAll('\n','<br/>'))]}
                                             showCursor={false}
                                             onComplete={() =>
                                               disaptch(setTypeValue(false))
@@ -434,7 +435,7 @@ function MainChat({ elementWidth, storedCode }) {
                                             className="block chat_box"
                                             style={{ overflowX: "auto" }}
                                             dangerouslySetInnerHTML={{
-                                              __html: textHandler(item.answer),
+                                              __html: textHandler(item.answer.replaceAll('\n','<br/>')),
                                             }}
                                           />
                                         )
