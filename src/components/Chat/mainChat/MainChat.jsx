@@ -434,7 +434,7 @@ function MainChat({ elementWidth, storedCode }) {
                                     <>
                                       {item?.answer ? (
                                         chatData.length - 1 === i &&
-                                        typeComplete ? (
+                                        false ? (
                                           <ReactTyped
                                             strings={[textHandler(item.answer.replaceAll('\n','<br/>'))]}
                                             showCursor={false}
