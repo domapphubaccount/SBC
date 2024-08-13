@@ -15,7 +15,6 @@
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
     "better-react-mathjax": "^2.0.3",
-    "bootstrap": "^5.3.3",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
     "katex": "^0.16.10",
@@ -28,7 +27,6 @@
     "react-textarea-autosize": "^8.5.3",
     "react-type-animation": "^3.2.0",
     "react-typed": "^2.0.12",
-    "reactstrap": "^9.2.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {

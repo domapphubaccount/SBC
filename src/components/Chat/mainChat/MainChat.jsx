@@ -40,14 +40,14 @@ function MainChat({ elementWidth, storedCode }) {
 
   function isEnglish(text) {
     // Remove non-alphabetic characters for a better accuracy
-    const cleanedText = text.replace(/[^a-zA-Z]/g, '');
+    const cleanedText = text.replace(/[^a-zA-Z]/g, "");
     // Calculate the percentage of alphabetic characters that are English
     const englishCharCount = cleanedText.length;
     const totalCharCount = text.length;
-  
+
     // Determine the percentage of English characters
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
-  
+
     // Check if the percentage is above a certain threshold (e.g., 50%)
     return percentageEnglish > 50;
   }
@@ -336,9 +336,16 @@ function MainChat({ elementWidth, storedCode }) {
                                     <MathJax dynamic>
                                       <span
                                         className="block"
-                                        dir={isEnglish(item.question) ? 'ltr' : 'rtl'}
+                                        dir={
+                                          isEnglish(item.question)
+                                            ? "ltr"
+                                            : "rtl"
+                                        }
                                         dangerouslySetInnerHTML={{
-                                          __html: item.question.replaceAll('\n','<br/>'),
+                                          __html: item.question.replaceAll(
+                                            "\n",
+                                            "<br/>"
+                                          ),
                                         }}
                                       />
                                     </MathJax>
@@ -433,10 +440,16 @@ function MainChat({ elementWidth, storedCode }) {
                                   ) : (
                                     <>
                                       {item?.answer ? (
-                                        chatData.length - 1 === i &&
-                                        false ? (
+                                        chatData.length - 1 === i && false ? (
                                           <ReactTyped
-                                            strings={[textHandler(item.answer.replaceAll('\n','<br/>'))]}
+                                            strings={[
+                                              textHandler(
+                                                item.answer.replaceAll(
+                                                  "\n",
+                                                  "<br/>"
+                                                )
+                                              ),
+                                            ]}
                                             showCursor={false}
                                             onComplete={() =>
                                               disaptch(setTypeValue(false))
@@ -448,9 +461,18 @@ function MainChat({ elementWidth, storedCode }) {
                                           <span
                                             className="block chat_box"
                                             style={{ overflowX: "auto" }}
-                                            dir={isEnglish(item.answer) ? 'ltr' : 'rtl'}
+                                            dir={
+                                              isEnglish(item.answer)
+                                                ? "ltr"
+                                                : "rtl"
+                                            }
                                             dangerouslySetInnerHTML={{
-                                              __html: textHandler(item.answer.replaceAll('\n','<br/>')),
+                                              __html: textHandler(
+                                                item.answer.replaceAll(
+                                                  "\n",
+                                                  "<br/>"
+                                                )
+                                              ),
                                             }}
                                           />
                                         )
@@ -593,7 +615,7 @@ function MainChat({ elementWidth, storedCode }) {
         : conversation &&
           Object.entries(conversation).length != 0 && (
             <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              <ChatInput storedCode={storedCode}/>
+              <ChatInput storedCode={storedCode} />
             </div>
           )}
       {dislike && (
