@@ -165,28 +165,34 @@ function MultipleSelect({ setStoredCode, storedCode }) {
     });
   };
 
-  const handleSelectAllChange = () => {
-    if (selectAll) {
-      setStoredCode((prevState) =>
-        prevState.filter(
-          (item) => !code[0].pdfs.map((pdf) => pdf.id).includes(item)
-        )
-      );
-    } else {
-      // Select all items
-      setStoredCode((prevState) => [
-        ...new Set([...prevState, ...code[0].pdfs.map((pdf) => pdf.id)]),
-      ]);
-    }
-    setSelectAll(!selectAll);
-  };
+  // const handleSelectAllChange = () => {
+  //   if (selectAll) {
+  //     setStoredCode((prevState) =>
+  //       prevState.filter(
+  //         (item) => !code[0].pdfs.map((pdf) => pdf.id).includes(item)
+  //       )
+  //     );
+  //   } else {
+  //     // Select all items
+  //     setStoredCode((prevState) => [
+  //       ...new Set([...prevState, ...code[0].pdfs.map((pdf) => pdf.id)]),
+  //     ]);
+  //   }
+  //   setSelectAll(!selectAll);
+  // };
+
+  console.log(code);
 
   return (
     <>
       <Dropdown label="CODE" dismissOnClick={false} className="code_card">
-        {code[0] && (
-          <>
-            <Dropdown.Item className="p-1">
+        {code &&
+          code.map((item, i) => (
+            <>
+              <div>
+                <h5 className="px-3 py-2">{item.name}</h5>
+              </div>
+              {/* <Dropdown.Item className="p-1">
               <div className="flex items-center ps-2 text-black px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                 <div class="checkbox-wrapper-11">
                   <input
@@ -196,29 +202,38 @@ function MultipleSelect({ setStoredCode, storedCode }) {
                     id="02-11"
                     onChange={handleSelectAllChange}
                   />
-                  <label for="02-11">{code[0].name}</label>
+                  <label for="02-11">{item.name}</label>
                 </div>
               </div>
-            </Dropdown.Item>
-            {code[0].pdfs.map((item, i) => (
-              <Dropdown.Item key={i} className="p-1">
-                <div class="checkbox-wrapper-11">
-                  <input
-                    value={i}
-                    name={i + "r"}
-                    type="checkbox"
-                    id={i + "-11"}
-                    checked={storedCode.includes(item.id)}
-                    onChange={() => {
-                      handleCheckboxChange(item.id);
-                    }}
-                  />
-                  <label for={i + "-11"}>{item.name}</label>
-                </div>
-              </Dropdown.Item>
-            ))}
-          </>
-        )}
+            </Dropdown.Item> */}
+              {item.pdfs.map((item, i) => (
+                <Dropdown.Item key={i} className="p-1">
+                  <div class="checkbox-wrapper-11 px-5">
+                    <input
+                      value={i}
+                      name={i + "r"}
+                      type="checkbox"
+                      id={i + "-11"}
+                      checked={storedCode.includes(item.chatgpt_file_id)}
+                      onChange={() => {
+                        handleCheckboxChange(item.chatgpt_file_id);
+                      }}
+                    />
+                    <label for={i + "-11"}>{item.name}</label>
+
+                    <div className="px-3">
+                      <ul>
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                      </ul>
+                    </div>
+                  </div>
+                </Dropdown.Item>
+              ))}
+            </>
+          ))}
       </Dropdown>
     </>
   );

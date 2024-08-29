@@ -339,6 +339,8 @@ nav{
 }
 
 .checkbox-wrapper-11 input[type=checkbox] {
+  border-color: #2c2722f7;
+  border: 2px solid !important;
   -webkit-appearance: none;
   -moz-appearance: none;
   position: relative;
@@ -354,12 +356,13 @@ nav{
 }
 
 .checkbox-wrapper-11 input[type=checkbox]:checked{
-  border-color: transparent;
+  border-color: #2c2722f7;
+  border: 2px solid;
   background-color: transparent;
 }
 .checkbox-wrapper-11 input[type=checkbox]:hover{
-  border-color: transparent;
-  background-color: transparent;
+  border-color: #2c2722f7;
+  border: 2px solid;  background-color: transparent;
 }
 
 .checkbox-wrapper-11 input[type=checkbox]::before, .checkbox-wrapper-11 input[type=checkbox]::after {
