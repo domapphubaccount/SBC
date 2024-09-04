@@ -41,14 +41,46 @@ function DropDown({ userName }) {
         <button
           type="button"
           onClick={handleDropDown}
-          style={{ fontSize: ".8rem", width: "25px", height: "25px" }}
-          className="inline-flex items-center w-full justify-center text-sm gap-x-1.5 rounded-full font-semibold shadow-sm hover:bg-gray-950 text-white border-2 border-sky-500 rounded-full"
+          className="inline-flex p-3 items-center w-full justify-center text-sm gap-x-1.5 rounded-full font-semibold shadow-sm hover:bg-gray-950 text-white border-2 border-sky-500 rounded-full"
           id="menu-button"
           aria-expanded="true"
           aria-haspopup="true"
         >
-          {userName.substring(0, 2).toUpperCase()}
+          {/* {userName.substring(0, 2).toUpperCase()} */}
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+            </svg>
         </button>
+
+        {/* <button className="p-3">
+          <span >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 mr-3"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+            </svg>
+          </span>
+        </button> */}
       </div>
       {dropDownToggle && (
         <div

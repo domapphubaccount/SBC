@@ -5,7 +5,7 @@ import React from 'react'
 function page() {
 
   return (
-    <div className="bg-sky-950	">
+    <div className="bg-sky-950">
         <Profile />
     </div>
   )
