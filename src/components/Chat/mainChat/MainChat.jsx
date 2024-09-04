@@ -18,7 +18,7 @@ import Logo from "@/assets/logo/icon.png";
 import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 
-function MainChat({ elementWidth, storedCode }) {
+function MainChat({ elementWidth }) {
   const pathName = usePathname();
   const [copyIcon, setCopyIcon] = useState(false);
   const [user, setUser] = useState("");
@@ -65,7 +65,6 @@ function MainChat({ elementWidth, storedCode }) {
     isSpeaking,
     elementWidth,
     chatData,
-    storedCode,
     conversation,
     dislikeMessage,
     loadingMessage,
@@ -134,6 +133,7 @@ function MainChat({ elementWidth, storedCode }) {
       });
     setTimeout(() => setCopyIcon(false), 500);
   };
+  
   const handleResendMessage = (id) => {
     setResponseId(id);
 
@@ -615,7 +615,7 @@ function MainChat({ elementWidth, storedCode }) {
         : conversation &&
           Object.entries(conversation).length != 0 && (
             <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              <ChatInput storedCode={storedCode} />
+              <ChatInput />
             </div>
           )}
       {dislike && (

@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TextareaAutosize from "react-textarea-autosize";
 
-function ChatInput({ storedCode }) {
+function ChatInput() {
   const [message, setMessage] = useState("");
   const [token, setToken] = useState("");
   const [sendMessage, setSendMessage] = useState(false);
@@ -21,6 +21,7 @@ function ChatInput({ storedCode }) {
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
   const [dir,setDir] = useState(false);
+  const storedCode = useSelector(state => state.codeSlice.storedCode)
 
   const dispatch = useDispatch();
 

@@ -2,10 +2,10 @@ import ChatContainer from '@/components/Chat/chatContainer/ChatContainer'
 import Refrence from '@/components/Chat/reference/Refrence'
 import React from 'react'
 
-function DashLayout({storedCode}) {
+function DashLayout() {
   return (
     <main >
-        <ChatContainer storedCode={storedCode}/>
+        <ChatContainer />
     </main>
   )
 }
