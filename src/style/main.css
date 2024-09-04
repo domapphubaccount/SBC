@@ -1034,4 +1034,75 @@ ul.roman-numerals li:before {
   background-position: center;
   background-size: cover;
 }
+
+
+/* From Uiverse.io by Cornerstone-04 */ 
+.box_profile {
+  width: 140px;
+  height: auto;
+  float: left;
+  transition: .5s linear;
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding: 8px;
+  text-align: center;
+  margin: 0 5px;
+  background: transparent;
+  /* text-transform: uppercase; */
+  font-weight: 600;
+}
+
+.box_profile:before {
+  position: absolute;
+  content: '';
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 100%;
+  border-bottom: 2px solid transparent;
+  border-left: 2px solid transparent;
+  box-sizing: border-box;
+  transform: translateX(100%);
+}
+
+.box_profile:after {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  border-top: 2px solid transparent;
+  border-right: 2px solid transparent;
+  box-sizing: border-box;
+  transform: translateX(-100%);
+}
+
+/* .box_profile:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+} */
+
+/* .box_profile:hover:before {
+  border-color: #ffffff;
+  height: 100%;
+  transform: translateX(0);
+  transition: .3s transform linear, .3s height linear .3s;
+}
+
+.box_profile:hover:after {
+  border-color: #ffffff;
+  height: 100%;
+  transform: translateX(0);
+  transition: .3s transform linear, .3s height linear .5s;
+} */
+
+.profile_btn {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background: transparent;
+}
 /* end profile */
