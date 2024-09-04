@@ -28,17 +28,6 @@ function ChatContainer() {
       setToken(storedData.token);
 
       dispatch(getCodeAction({token: storedData.token}))
-
-    // axios.get('https://sbc.designal.cc/api/sections',{
-    //   headers: {
-    //     Authorization: `Bearer ${storedData.token}`
-    //   }}).then(res => 
-    //     {
-    //       if(res.data.success){
-    //         dispatch(getCode(res.data.data))
-    //       }
-    //     }
-    //   ).catch(e => console.log(e))
     }}
   },[])
   

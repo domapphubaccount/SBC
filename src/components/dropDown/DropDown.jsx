@@ -41,12 +41,11 @@ function DropDown({ userName }) {
         <button
           type="button"
           onClick={handleDropDown}
-          className="inline-flex p-3 items-center w-full justify-center text-sm gap-x-1.5 rounded-full font-semibold shadow-sm hover:bg-gray-950 text-white border-2 border-sky-500 rounded-full"
+          className="inline-flex p-2 items-center w-full justify-center text-sm gap-x-1.5 rounded-full font-semibold shadow-sm hover:bg-gray-950 text-white border-2 border-sky-500 rounded-full"
           id="menu-button"
           aria-expanded="true"
           aria-haspopup="true"
         >
-          {/* {userName.substring(0, 2).toUpperCase()} */}
           <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -151,7 +150,7 @@ function DropDown({ userName }) {
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
-                stroke="currentColor"
+                stroke="red"
                 className="size-5 mr-3"
               >
                 <path
