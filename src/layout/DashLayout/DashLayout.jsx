@@ -4,9 +4,7 @@ import React from 'react'
 
 function DashLayout() {
   return (
-    <main >
         <ChatContainer />
-    </main>
   )
 }
 

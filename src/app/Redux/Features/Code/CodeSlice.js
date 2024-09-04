@@ -1,6 +1,29 @@
 "use client";
 
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from "axios"
+
+// start get chat
+export const getCodeAction = createAsyncThunk(
+  "code/getCodeAction",
+  async (arg, { rejectWithValue }) => {
+    const { token } = arg;
+    try {
+      const response = await axios.get('https://sbc.designal.cc/api/sections',{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }})
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get chat
 
 const initialState = {
   value: '',
@@ -8,7 +31,7 @@ const initialState = {
 }
 
 export const codeSlice = createSlice({
-  name: 'counter',
+  name: 'code',
   initialState,
   reducers: {
     getCode: (state , action) => {
@@ -21,6 +44,24 @@ export const codeSlice = createSlice({
         state.storedCode.push(action.payload);
       }
     }
+  },
+
+  extraReducers: (builder) => {
+    builder
+      //start get chat
+      .addCase(getCodeAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCodeAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.value = action.payload
+      })
+      .addCase(getCodeAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    // end get chat
   },
 })
 

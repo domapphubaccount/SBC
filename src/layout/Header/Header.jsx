@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux'
 import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 import Logo from "/public/logo.png"
 
-function Header({path,setStoredCode,storedCode}) {
+function Header({path}) {
   const [userName , setUserName] = useState("");
   const dispatch = useDispatch()
   const pathname = usePathname()
@@ -74,7 +74,7 @@ function Header({path,setStoredCode,storedCode}) {
         {
           !path ?
             <div>
-              <MultipleSelect setStoredCode={setStoredCode} storedCode={storedCode} />
+              <MultipleSelect />
             </div>
         :
         <div>PROFILE</div>
