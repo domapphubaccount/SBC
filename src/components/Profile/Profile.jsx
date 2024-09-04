@@ -4,14 +4,17 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { redirect, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { updatePasswordAction } from "@/app/Redux/Features/Profile/ProfileSlice";
 
 function Profile() {
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(3);
   const [actionToggle, setActionToggle] = useState(false);
-  const [userData, setUserData] = useState({ name: "", email: "" , role: "" });
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [userData, setUserData] = useState({ name: "", email: "", role: "" });
+  const loading = useSelector((state) => state.profileSlice.loading);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (localStorage.getItem("data")) {
@@ -20,7 +23,7 @@ function Profile() {
       setUserData({
         name: data.name,
         email: data.email,
-        role: data.role
+        role: data.role,
       });
     }
   }, []);
@@ -39,6 +42,7 @@ function Profile() {
       setTimeout(handleTimer, 1000);
     }
   };
+
   useEffect(() => {
     handleLogout();
   }, [actionToggle]);
@@ -93,26 +97,34 @@ function Profile() {
     }),
     onSubmit: (values) => {
       console.log("Password data submitted:", values);
-
-      axios
-        .post("https://sbc.designal.cc/api/update-password", values, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      dispatch(
+        updatePasswordAction({
+          token,
+          current_password: values.current_password,
+          new_password: values.new_password,
+          confirm_password: values.confirm_password,
         })
-        .then((response) => {
-          if (response.data.success) {
-            console.log(response);
-            setActionToggle(true);
-          } else {
-            setErrorMsg(true);
+      );
 
-            setTimeout(() => setErrorMsg(false), 2000);
-          }
-        })
-        .catch((error) => {
-          console.error("There was an error making the request!", error);
-        });
+      // axios
+      //   .post("https://sbc.designal.cc/api/update-password", values, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //   .then((response) => {
+      //     if (response.data.success) {
+      //       console.log(response);
+      //       setActionToggle(true);
+      //     } else {
+      //       setErrorMsg(true);
+
+      //       setTimeout(() => setErrorMsg(false), 2000);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error("There was an error making the request!", error);
+      //   });
     },
   });
 
@@ -229,6 +241,15 @@ function Profile() {
                         stay secure.
                       </p>
                     </div>
+
+                    {loading && (
+                      <div className="flex space-x-2 animate-pulse mb-4">
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                      </div>
+                    )}
+
                     <form
                       className="px-4 w-full"
                       onSubmit={passwordFormik.handleSubmit}
