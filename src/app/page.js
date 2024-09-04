@@ -8,12 +8,11 @@ import { useSelector } from "react-redux";
 export default function Home() {
   const [storedCode ,setStoredCode] = useState([])
   const state = useSelector(state => state)
-  console.log(state)
 
   return (
     <main >
         <Header setStoredCode={setStoredCode} storedCode={storedCode}/>
-        <DashLayout storedCode={storedCode} />
+        <DashLayout />
     </main>
   );
 }

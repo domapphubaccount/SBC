@@ -10,7 +10,7 @@ import { getCode } from '@/app/Redux/Features/Code/CodeSlice'
 import { getChatData, getConversation } from '@/app/Redux/Features/Chat/ChatSlice'
 import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 
-function ChatContainer({storedCode}) {
+function ChatContainer() {
   const dashboardData = useSelector(state => state.chatSlice.value)
   const catchChat = useSelector(state => state.chatSlice.get_chat)
   const updates = useSelector(state => state.updateSlice.state)
@@ -109,7 +109,7 @@ function ChatContainer({storedCode}) {
         <div className=" border rounded" style={{ minHeight: '80vh'}}>
           <div className='grid grid-cols-4 min-w-full'>
             <Refrence setElementWidth={setElementWidth}/>
-            <MainChat elementWidth={elementWidth} storedCode={storedCode}/>
+            <MainChat />
           </div>
         </div>
       </div>
