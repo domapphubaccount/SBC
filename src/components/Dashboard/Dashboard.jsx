@@ -43,7 +43,7 @@ function Dashboard() {
                     </thead>
                     <tbody>
                     {new Array(5).fill(null).map((_, i) =>(
-                      <tr className="user_row">
+                      <tr key={i} className="user_row">
                         <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
