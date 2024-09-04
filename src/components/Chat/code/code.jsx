@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dropdown } from "flowbite-react";
 import { set_stored_code } from "@/app/Redux/Features/Code/CodeSlice";
+import loadingImg from "@/assets/logo/loading.gif";
 
 function MultipleSelect() {
   const [selectedOptions, setSelectedOptions] = useState(false);
@@ -31,7 +32,7 @@ function MultipleSelect() {
   return (
     <>
       <Dropdown label="CODE" dismissOnClick={false} className="code_card">
-        {code &&
+        {code ? (
           code.map((item, i) => (
             <>
               <div>
@@ -64,7 +65,12 @@ function MultipleSelect() {
                 </Dropdown.Item>
               ))}
             </>
-          ))}
+          ))
+        ) : (
+          <div>
+            <img src={loadingImg.src} alt="loading" className="loading_logo" />
+          </div>
+        )}
       </Dropdown>
     </>
   );
