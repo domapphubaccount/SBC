@@ -7,12 +7,14 @@ import updateSlice from "./Features/Update/UpdateSlice";
 import typeSlice from "./Features/type/typeSlice";
 import loginSlice from "./Features/Auth/AuthSlice";
 import conversationSlice from "./Features/Conversation/ConversationSlice";
+import profileSlice from "./Features/Profile/ProfileSlice";
 
 export const store = configureStore({
   reducer: {
     loginSlice,
     conversationSlice,
     codeSlice,
+    profileSlice,
     chatSlice,
     updateSlice,
     typeSlice,
