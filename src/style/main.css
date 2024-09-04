@@ -1024,3 +1024,14 @@ ul.roman-numerals li:before {
 }
 
 /* end loading */
+
+/* start profile */
+#profile_bannar{
+  background-color: #000;
+  width: 100%;
+  background-image: url('../assets/profile/profile_bannar.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+/* end profile */

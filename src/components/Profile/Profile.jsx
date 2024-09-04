@@ -9,7 +9,7 @@ function Profile() {
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(3);
   const [actionToggle, setActionToggle] = useState(false);
-  const [userData, setUserData] = useState({ name: "", email: "" });
+  const [userData, setUserData] = useState({ name: "", email: "" , role: "" });
   const [errorMsg, setErrorMsg] = useState(false);
   const router = useRouter();
 
@@ -20,6 +20,7 @@ function Profile() {
       setUserData({
         name: data.name,
         email: data.email,
+        role: data.role
       });
     }
   }, []);
@@ -123,7 +124,7 @@ function Profile() {
 
   return (
     <div>
-      <div
+      {/* <div
         className="position-absolute pt-20"
         style={{ position: "absolute", top: "80px", left: "40px" }}
       >
@@ -141,16 +142,175 @@ function Profile() {
             <span className="text-black">Back</span>
           </button>
         </div>
-      </div>
+      </div> */}
 
-      <div  className="p-5 rounded">
-        <div className="bg-white">
-          
+      <div className="p-5 pt-20 rounded min-h-screen">
+        <div className="bg-white rounded">
+          <div>
+            <div id="profile_bannar" className="p-4"></div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 text-black">
+              <div className="col-span-1 lg:col-span-4 p-5 border flex flex-col	justify-between">
+                <div>
+                  <div className="font-bold">
+                    <h6 className="mb-5">Name: {userData.name}</h6>
+                    <h6 className="mb-5">Email: {userData.email} </h6>
+                    <h6 className="mb-5">Role: {userData.role}</h6>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    className="mx-auto text-white py-2 text-center footer-text bg-slate-950"
+                    style={{ color: "rgb(170 169 169)" }}
+                  >
+                    Powered By{" "}
+                    <span className="font-semibold">
+                      <span style={{ color: "#fff" }}>CPV</span>
+                      <span style={{ color: "rgb(52 113 215)" }}>ARABIA</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-span-1 lg:col-span-8 bg-slate-200	">
+                <div className="p-5">
+                  <div className=" pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
+                    <div className="mt-2 mb-4 w-full">
+                      <h4 className="px-2 text-xl font-bold text-black dark:text-white">
+                        Profile Data
+                      </h4>
+                      <p className="mt-2 px-2 text-base text-gray-600">
+                        There is no option to update name and email .
+                      </p>
+                    </div>
+
+                    <form
+                      className="px-4 w-full"
+                      onSubmit={profileFormik.handleSubmit}
+                    >
+                      <div className="w-100 mb-4">
+                        <div className="relative h-10 w-full min-w-[200px]">
+                          <input
+                            className={inputClass}
+                            placeholder=" "
+                            name="name"
+                            onChange={profileFormik.handleChange}
+                            onBlur={profileFormik.handleBlur}
+                            value={userData.name}
+                            disabled
+                          />
+                          <label className={labelClass}>Name</label>
+                        </div>
+                      </div>
+                      <div className="w-100 mb-4">
+                        <div className="relative h-10 w-full min-w-[200px]">
+                          <input
+                            className={inputClass}
+                            placeholder=" "
+                            name="email"
+                            onChange={profileFormik.handleChange}
+                            onBlur={profileFormik.handleBlur}
+                            value={userData.email}
+                            disabled
+                          />
+                          <label className={labelClass}>Email</label>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div className="pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
+                    <div className="mt-2 mb-8 w-full">
+                      <h4 className="px-2 text-xl font-bold text-black dark:text-white">
+                        Update Password
+                      </h4>
+                      <p className="mt-2 px-2 text-base text-gray-600">
+                        Ensure your account is using a long, random password to
+                        stay secure.
+                      </p>
+                    </div>
+                    <form
+                      className="px-4 w-full"
+                      onSubmit={passwordFormik.handleSubmit}
+                    >
+                      <div className="w-100 mb-4">
+                        <div className="relative h-10 w-full min-w-[200px]">
+                          <input
+                            className={inputClass}
+                            placeholder=" "
+                            name="current_password"
+                            type="password"
+                            onChange={passwordFormik.handleChange}
+                            onBlur={passwordFormik.handleBlur}
+                            value={passwordFormik.values.current_password}
+                          />
+                          <label className={labelClass}>Current Password</label>
+                          {passwordFormik.touched.current_password &&
+                          passwordFormik.errors.current_password ? (
+                            <div className="text-red-500 text-xs">
+                              {passwordFormik.errors.current_password}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="w-100 mb-4">
+                        <div className="relative h-10 w-full min-w-[200px]">
+                          <input
+                            className={inputClass}
+                            placeholder=" "
+                            name="new_password"
+                            type="password"
+                            onChange={passwordFormik.handleChange}
+                            onBlur={passwordFormik.handleBlur}
+                            value={passwordFormik.values.new_password}
+                          />
+                          <label className={labelClass}>New Password</label>
+                          {passwordFormik.touched.new_password &&
+                          passwordFormik.errors.new_password ? (
+                            <div className="text-red-500 text-xs">
+                              {passwordFormik.errors.new_password}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="w-100 mb-4">
+                        <div className="relative h-10 w-full min-w-[200px]">
+                          <input
+                            className={inputClass}
+                            placeholder=" "
+                            name="confirm_password"
+                            type="password"
+                            onChange={passwordFormik.handleChange}
+                            onBlur={passwordFormik.handleBlur}
+                            value={passwordFormik.values.confirm_password}
+                          />
+                          <label className={labelClass}>Confirm Password</label>
+                          {passwordFormik.touched.confirm_password &&
+                          passwordFormik.errors.confirm_password ? (
+                            <div className="text-red-500 text-xs">
+                              {passwordFormik.errors.confirm_password}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        className="px-3 md:px-4 py-1 md:py-2 bg-blue-800 border border-sky-600 text-white rounded-lg hover:bg-sky-700"
+                      >
+                        <i className="fa-solid fa-arrow-right-to-bracket"></i>{" "}
+                        Save
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="profile_bannar" className="p-4"></div>
+          </div>
         </div>
       </div>
 
-
-      <div
+      {/* <div
         className="h-screen flex flex-col justify-center overflow-auto"
         style={{ paddingTop: "100px" }}
       >
@@ -389,7 +549,7 @@ function Profile() {
           <span style={{ color: "#fff" }}>CPV</span>
           <span style={{ color: "rgb(52 113 215)" }}>ARABIA</span>
         </span>
-      </div>{" "}
+      </div> */}
     </div>
   );
 }
