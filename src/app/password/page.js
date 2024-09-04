@@ -33,10 +33,10 @@ function Page() {
 
   return (
     <section className="log-bannar">
-      <link
+      {/* <link
         rel="stylesheet"
         href="https://kit-pro.fontawesome.com/releases/v5.15.1/css/pro.min.css"
-      />
+      /> */}
       <div className="min-h-screen flex flex-col items-center justify-center">
         {true &&
         <div className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4" role="alert">

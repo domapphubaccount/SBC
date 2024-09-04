@@ -5,6 +5,7 @@
 
 * {
   box-sizing: border-box;
+  transition: .5s;
 }
 
 .bg-darkBlue {
@@ -1106,3 +1107,15 @@ ul.roman-numerals li:before {
   background: transparent;
 }
 /* end profile */
+
+/* start dashboard */
+.dashboard table , table th , table tr , table tr td {
+  border: none;
+}
+/* end dashboard */
+#code .bg-cyan-700{
+  background-color: transparent !important;
+}
+.user_row{
+  border-bottom: 1px solid rgb(201, 201, 201);
+}

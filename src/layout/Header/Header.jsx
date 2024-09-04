@@ -56,8 +56,8 @@ function Header({path}) {
   return (
     <>      
     {pathname == "/profile" ? "" :<> 
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" />
+    {/* <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" /> */}
     </>
     }
 
@@ -73,11 +73,11 @@ function Header({path}) {
         <>
         {
           !path ?
-            <div>
+            <div id='code'>
               <MultipleSelect />
             </div>
         :
-        <div>PROFILE</div>
+        <div className='text-white'>PROFILE</div>
         }
         <div className='break_nav w-full'></div>
         <div className="flex items-center shadow-none  bg-darkBlue" > 
