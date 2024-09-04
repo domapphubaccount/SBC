@@ -116,26 +116,6 @@ function Profile() {
 
   return (
     <div>
-      {/* <div
-        className="position-absolute pt-20"
-        style={{ position: "absolute", top: "80px", left: "40px" }}
-      >
-        <div>
-          <button className="button-back" onClick={() => router.push("/")}>
-            <svg
-              height="16"
-              width="16"
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              viewBox="0 0 1024 1024"
-            >
-              <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path>
-            </svg>
-            <span className="text-black">Back</span>
-          </button>
-        </div>
-      </div> */}
-
       <div className="p-5 pt-20 rounded min-h-screen">
         <div className="bg-white rounded">
           <div>
@@ -181,31 +161,70 @@ function Profile() {
                       onSubmit={profileFormik.handleSubmit}
                     >
                       <div className="w-100 mb-4">
-                        <div className="relative h-10 w-full min-w-[200px]">
-                          <input
-                            className={inputClass}
-                            placeholder=" "
-                            name="name"
-                            onChange={profileFormik.handleChange}
-                            onBlur={profileFormik.handleBlur}
-                            value={userData.name}
-                            disabled
-                          />
-                          <label className={labelClass}>Name</label>
+                        <div className="flex">
+                          <div className="flex items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="black"
+                              className="size-5 mr-3"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                              />
+                            </svg>
+                          </div>
+
+                          <div className="relative h-10 w-full min-w-[200px]">
+                            <input
+                              className={inputClass}
+                              placeholder=" "
+                              name="name"
+                              onChange={profileFormik.handleChange}
+                              onBlur={profileFormik.handleBlur}
+                              value={userData.name}
+                              disabled
+                            />
+                            <label className={labelClass}>Name</label>
+                          </div>
                         </div>
                       </div>
+
                       <div className="w-100 mb-4">
-                        <div className="relative h-10 w-full min-w-[200px]">
-                          <input
-                            className={inputClass}
-                            placeholder=" "
-                            name="email"
-                            onChange={profileFormik.handleChange}
-                            onBlur={profileFormik.handleBlur}
-                            value={userData.email}
-                            disabled
-                          />
-                          <label className={labelClass}>Email</label>
+                        <div className="flex">
+                          <div className="flex items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="black"
+                              className="size-5 mr-3"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                              />
+                            </svg>
+                          </div>
+
+                          <div className="relative h-10 w-full min-w-[200px]">
+                            <input
+                              className={inputClass}
+                              placeholder=" "
+                              name="email"
+                              onChange={profileFormik.handleChange}
+                              onBlur={profileFormik.handleBlur}
+                              value={userData.email}
+                              disabled
+                            />
+                            <label className={labelClass}>Email</label>
+                          </div>
                         </div>
                       </div>
                     </form>
