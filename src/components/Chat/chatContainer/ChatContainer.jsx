@@ -6,16 +6,16 @@ import MainChat from '../mainChat/MainChat'
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { getCode } from '@/app/Redux/Features/Code/CodeSlice'
+import { getCode, getCodeAction } from '@/app/Redux/Features/Code/CodeSlice'
 import { getChatData, getConversation } from '@/app/Redux/Features/Chat/ChatSlice'
 import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 
 function ChatContainer() {
-  const dashboardData = useSelector(state => state.chatSlice.value)
-  const catchChat = useSelector(state => state.chatSlice.get_chat)
-  const updates = useSelector(state => state.updateSlice.state)
+  const dashboardData = useSelector(state => state.chatSlice.value);
+  const catchChat = useSelector(state => state.chatSlice.get_chat);
+  const updates = useSelector(state => state.updateSlice.state);
   const [token, setToken] = useState("");
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
     
   useEffect(()=>{
     console.log('page')
@@ -27,16 +27,18 @@ function ChatContainer() {
       const storedData = JSON.parse(localStorage.getItem("data"));
       setToken(storedData.token);
 
-    axios.get('https://sbc.designal.cc/api/sections',{
-      headers: {
-        Authorization: `Bearer ${storedData.token}`
-      }}).then(res => 
-        {
-          if(res.data.success){
-            dispatch(getCode(res.data.data))
-          }
-        }
-      ).catch(e => console.log(e))
+      dispatch(getCodeAction({token: storedData.token}))
+
+    // axios.get('https://sbc.designal.cc/api/sections',{
+    //   headers: {
+    //     Authorization: `Bearer ${storedData.token}`
+    //   }}).then(res => 
+    //     {
+    //       if(res.data.success){
+    //         dispatch(getCode(res.data.data))
+    //       }
+    //     }
+    //   ).catch(e => console.log(e))
     }}
   },[])
   

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dropdown } from "flowbite-react";
 import { set_stored_code } from "@/app/Redux/Features/Code/CodeSlice";
 
-function MultipleSelect({ setStoredCode, storedCode }) {
+function MultipleSelect() {
   const [selectedOptions, setSelectedOptions] = useState(false);
   const dropdownRef = useRef(null);
   const code = useSelector((state) => state.codeSlice.value);
@@ -25,17 +25,7 @@ function MultipleSelect({ setStoredCode, storedCode }) {
   }, [dropdownRef]);
 
   const handleCheckboxChange = (itemName) => {
-    dispatch(set_stored_code(itemName))
-    // console.log(itemName);
-
-
-    // setStoredCode((prevState) => {
-    //   if (prevState.includes(itemName)) {
-    //     return prevState.filter((item) => item !== itemName);
-    //   } else {
-    //     return [...prevState, itemName];
-    //   }
-    // });
+    dispatch(set_stored_code(itemName));
   };
 
   return (
