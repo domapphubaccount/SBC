@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 
+const isBrouse = typeof window !== "undefined"
+
 // start login
 export const loginAction = createAsyncThunk(
   "login/loginAction",
@@ -32,10 +34,15 @@ export const logoutAction = createAsyncThunk(
   "login/logoutAction",
   async (arg, { rejectWithValue }) => {
     const { token } = arg;
+    console.log(token)
     try {
-      const response = await axios.post(`${config.api}logout`, {
-        Token: token,
-      });
+      const response = await axios.post(`${config.api}logout`,{}, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,  
+            Accept: "application/json",        
+          },
+        });
 
       if (response.data.error) {
         return new Error(response.data.error);
@@ -134,13 +141,11 @@ export const registerAction = createAsyncThunk(
 
 const initialState = {
   value: "",
-
-
-  // start password
   loading: false,
-  auth: null,
-
-
+  auth: isBrouse && localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).access_token ? JSON.parse(localStorage.getItem('data'))  : null,
+  logged: isBrouse && localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).access_token ? true : false,
+  
+  // start password
   password:{
     step: 1,
     loading: false,
@@ -164,20 +169,17 @@ export const loginSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.auth = action.payload.data;
-        
+        state.logged = true;
+
+        if(isBrouse && action.payload.data){
+          localStorage.setItem('data',JSON.stringify(action.payload.data))
+        }
       })
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })
       // end login
-
-
-
-
-
-
-
 
       // start logout
       .addCase(logoutAction.pending, (state) => {
@@ -186,12 +188,20 @@ export const loginSlice = createSlice({
       })
       .addCase(logoutAction.fulfilled, (state, action) => {
         state.loading = false;
+        state.auth = null;
+        if(isBrouse){
+          localStorage.clear();
+        }
+        state.logged = false;
       })
       .addCase(logoutAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       // end logout
+
+
+      
 
       // start forget password
       .addCase(forgetPasswordAction.pending, (state) => {

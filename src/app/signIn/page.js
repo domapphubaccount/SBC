@@ -1,16 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import LoginImg from "@/assets/login/login.png";
 import Link from "next/link";
-import axios from "axios";
-import { config } from "@/config/config";
 import { redirect, useRouter } from "next/navigation";
 import Logo from "@/assets/logo/Logo.png";
 import { loginAction } from "../Redux/Features/Auth/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -20,20 +16,23 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
-  const navigate = useRouter()
-  const state = useSelector((state) => state);
-  console.log(state);
   const message = useSelector((state) => state.loginSlice.error);
-  // const [message, setMessage] = useState("");
   const loading = useSelector((state) => state.loginSlice.loading);
-  const router = useRouter();
   const dispatch = useDispatch();
+  const isLogged = useSelector(state => state.loginSlice.logged)
+  const state = useSelector((state) => state);
+  console.log(state , 'loggin');
 
-  useEffect(() => {
-    if (JSON.parse(localStorage.getItem("data"))) {
-      redirect("/");
+
+
+  useLayoutEffect(() => {
+    if(isLogged){
+      redirect('/')
     }
-  }, []);
+  }, [isLogged]);
+
+
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -45,12 +44,10 @@ function Page() {
     },
   });
 
+
+
   return (
     <section className="log-bannar">
-      {/* <link
-        rel="stylesheet"
-        href="https://kit-pro.fontawesome.com/releases/v5.15.1/css/pro.min.css"
-      /> */}
       <div className="min-h-screen flex flex-col items-center justify-center">
         {message && (
           <div

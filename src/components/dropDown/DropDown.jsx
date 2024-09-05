@@ -2,23 +2,31 @@
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { chat_out } from "@/app/Redux/Features/Chat/ChatSlice";
+import { logoutAction } from "@/app/Redux/Features/Auth/AuthSlice";
 
-function DropDown({ userName }) {
-  const [dropDownToggle, setDropDownToggle] = useState(false);
+function DropDown() {
   const router = useRouter();
+  const [dropDownToggle, setDropDownToggle] = useState(false);
+  const token = useSelector(state => state.loginSlice.auth?.access_token)
+  const state = useSelector(state => state.loginSlice)
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
+  console.log(token)
 
   const handleDropDown = () => {
     setDropDownToggle(!dropDownToggle);
   };
+
   const handleLogout = () => {
-    localStorage.clear();
-    dispatch(chat_out());
-    router.push("/signIn");
+    dispatch(logoutAction({token}))
+
+
+    // router.push("/signIn");
   };
+
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropDownToggle(false);
@@ -47,39 +55,20 @@ function DropDown({ userName }) {
           aria-haspopup="true"
         >
           <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-              />
-            </svg>
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            />
+          </svg>
         </button>
-
-        {/* <button className="p-3">
-          <span >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6 mr-3"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-              />
-            </svg>
-          </span>
-        </button> */}
       </div>
       {dropDownToggle && (
         <div
