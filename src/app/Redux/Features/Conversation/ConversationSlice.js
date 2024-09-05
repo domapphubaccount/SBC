@@ -8,13 +8,9 @@ export const getChatAction = createAsyncThunk(
   async (arg, { rejectWithValue }) => {
     const { token , chat_id } = arg;
     try {
-      const response = await axios.post(`${config.api}get-chat/`, {
+      const response = await axios.post(`${config.api}get_chat/${chat_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
-        params: {
-          chat_id,
-          share_name: "1",
         },
       });
 
@@ -28,6 +24,32 @@ export const getChatAction = createAsyncThunk(
   }
 );
 // end get chat
+
+// start create section
+export const startSectionAction = createAsyncThunk(
+  "conversation/startSectionAction",
+  async (arg, { rejectWithValue }) => {
+    const { token , chat_id } = arg;
+    try {
+      const response = await axios.post(`${config.api}get_chat/${chat_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end create section
+
+
+
 
 const initialState = {
   value: "",

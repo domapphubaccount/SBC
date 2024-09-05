@@ -9,7 +9,8 @@ import { config } from "@/config/config";
 import { redirect, useRouter } from "next/navigation";
 import Logo from "@/assets/logo/Logo.png";
 import { loginAction } from "../Redux/Features/Auth/AuthSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -19,10 +20,14 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useRouter()
+  const state = useSelector((state) => state);
+  console.log(state);
+  const message = useSelector((state) => state.loginSlice.error);
+  // const [message, setMessage] = useState("");
+  const loading = useSelector((state) => state.loginSlice.loading);
   const router = useRouter();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (JSON.parse(localStorage.getItem("data"))) {
@@ -36,25 +41,7 @@ function Page() {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-       dispatch(loginAction(values))
-      setMessage("");
-      setLoading(true);
-      axios
-        .post(`${config.api}login`, values)
-        .then((res) => {
-          if (res.data.status === "SUCCESS") {
-            localStorage.setItem("data", JSON.stringify(res.data.data));
-            router.push("/");
-            setMessage("");
-            console.log("router");
-            setLoading(false);
-          } else if (res.data.status === "ERROR") {
-            setMessage(res.data.message);
-            setLoading(false);
-          }
-        })
-        .catch((e) => console.log(e));
+      dispatch(loginAction(values));
     },
   });
 

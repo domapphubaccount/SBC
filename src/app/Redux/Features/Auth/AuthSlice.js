@@ -138,6 +138,7 @@ const initialState = {
 
   // start password
   loading: false,
+  auth: null,
 
 
   password:{
@@ -161,12 +162,22 @@ export const loginSlice = createSlice({
       })
       .addCase(loginAction.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
+        state.auth = action.payload.data;
+        
       })
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload.message;
       })
       // end login
+
+
+
+
+
+
+
 
       // start logout
       .addCase(logoutAction.pending, (state) => {

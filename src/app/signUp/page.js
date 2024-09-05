@@ -1,66 +1,83 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import LoginImg from '@/assets/login/login.png';
-import Link from 'next/link';
-import axios from 'axios';
-import { config } from '@/config/config';
-import { useRouter } from 'next/navigation';
-import Logo from "@/assets/logo/Logo.png"
+"use client";
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import LoginImg from "@/assets/login/login.png";
+import Link from "next/link";
+import axios from "axios";
+import { config } from "@/config/config";
+import { useRouter } from "next/navigation";
+import Logo from "@/assets/logo/Logo.png";
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(50, 'Name must be 50 characters or less')
-    .required('Name is required'),
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be 50 characters or less")
+    .required("Name is required"),
   email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required'),
+    .email("Invalid email address")
+    .required("Email is required"),
   password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
 });
 
 function Page() {
-  const [message, setMessage] = useState("")
-  const [loading,setLoading] = useState(false)
-  const router = useRouter()
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-    useEffect(()=>{
-      if(JSON.parse(localStorage.getItem("data"))){
-          redirect('/')
-        }
-    },[])
-  
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem("data"))) {
+      redirect("/");
+    }
+  }, []);
+
   const formik = useFormik({
     initialValues: {
-      name: '',
-      email: '',
-      password: '',
+      name: "ahmed",
+      email: "ahmed@gmail.com",
+      password: "test1234",
+      password_confirmation: "test1234",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      setLoading(true)
-      setMessage(false)
+      setLoading(true);
+      setMessage(false);
 
-      axios.post(`${config.api}user-create`,values)
-      .then(res=>
-      {
-        if(res.data.status === "SUCCESS"){
-          router.push('/signIn')
-          setMessage("")
-          setLoading(false)
-       }else if(res.data.status === "ERROR"){
-          setMessage(res.data.message)
-          setLoading(false)
-       }
-    }).catch(e=>{ setLoading(false); console.log(e)})
+      axios
+        .post(`https://chatpdf.designal.cc/api/v1/register`, values, {
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "X-Content-Type-Options": "nosniff",
+            "X-Frame-Options": "DENY",
+            "X-XSS-Protection": "1; mode=block",
+            "Referrer-Policy": "strict-origin",
+            "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'"
+        
+        }})
+        .then((res) => {
+          if (res.data.status === "SUCCESS") {
+            router.push("/signIn");
+            setMessage("");
+            setLoading(false);
+          } else if (res.data.status === "ERROR") {
+            setMessage(res.data.message);
+            setLoading(false);
+          }
+        })
+        .catch((e) => {
+          setLoading(false);
+          console.log(e);
+        });
     },
   });
 
   return (
-    <section className='log-bannar'>
+    <section className="log-bannar">
       {/* <link
         rel="stylesheet"
         href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
@@ -69,37 +86,55 @@ function Page() {
       /> */}
 
       <div className="min-h-screen flex flex-col items-center justify-center">
-      {message &&
-        <div className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4" role="alert">
-            <svg className="w-100 h-5 inline mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+        {message && (
+          <div
+            className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4"
+            role="alert"
+          >
+            <svg
+              className="w-100 h-5 inline mr-3"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
             <div>
-                <span className="font-medium">ERROR!</span> {message}
+              <span className="font-medium">ERROR!</span> {message}
             </div>
-        </div>
-        }
+          </div>
+        )}
         <div className="form_container flex flex-col bg-white shadow-md px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-3xl w-50 max-w-md">
-        <div className='flex justify-center py-3'>
-          <img src={Logo.src} style={{width:'200px'}} alt='Logo' />
-        </div>
+          <div className="flex justify-center py-3">
+            <img src={Logo.src} style={{ width: "200px" }} alt="Logo" />
+          </div>
           <div className="font-medium self-center text-xl sm:text-3xl text-gray-800">
             Join us Now
           </div>
-          {
-            loading ?
-            <div className='flex justify-center pt-3'>
-            <div className="w-12 h-12 rounded-full animate-spin
-            border-2 border-dashed border-blue-500 border-t-transparent"></div>
+          {loading ? (
+            <div className="flex justify-center pt-3">
+              <div
+                className="w-12 h-12 rounded-full animate-spin
+            border-2 border-dashed border-blue-500 border-t-transparent"
+              ></div>
             </div>
-            :
-          <div className="mt-4 self-center text-xl sm:text-sm text-gray-800">
-            Enter your credentials to get access account
-          </div>
-          }
+          ) : (
+            <div className="mt-4 self-center text-xl sm:text-sm text-gray-800">
+              Enter your credentials to get access account
+            </div>
+          )}
 
           <div className="mt-10">
             <form onSubmit={formik.handleSubmit}>
               <div className="flex flex-col mb-5">
-                <label htmlFor="name" className="mb-1 text-xs tracking-wide text-gray-600">
+                <label
+                  htmlFor="name"
+                  className="mb-1 text-xs tracking-wide text-gray-600"
+                >
                   Name:
                 </label>
                 <div className="relative">
@@ -107,12 +142,14 @@ function Page() {
                     <i className="fas fa-user text-secondar-color"></i>
                   </div>
                   <input
-                    style={{ color: 'black' }}
+                    style={{ color: "black" }}
                     id="name"
                     type="text"
                     name="name"
                     className={`text-sm placeholder-gray-500 pl-10 pr-4 rounded-2xl border w-full py-2 focus:outline-none ${
-                      formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-400'
+                      formik.touched.name && formik.errors.name
+                        ? "border-red-500"
+                        : "border-gray-400"
                     }`}
                     placeholder="Enter your name"
                     onChange={formik.handleChange}
@@ -120,12 +157,17 @@ function Page() {
                     value={formik.values.name}
                   />
                 </div>
-                  {formik.touched.name && formik.errors.name ? (
-                    <div className="text-red-500 text-xs mt-1">{formik.errors.name}</div>
-                  ) : null}
+                {formik.touched.name && formik.errors.name ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.name}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-col mb-5">
-                <label htmlFor="email" className="mb-1 text-xs tracking-wide text-gray-600">
+                <label
+                  htmlFor="email"
+                  className="mb-1 text-xs tracking-wide text-gray-600"
+                >
                   E-Mail Address:
                 </label>
                 <div className="relative">
@@ -133,12 +175,14 @@ function Page() {
                     <i className="fas fa-at text-secondar-color"></i>
                   </div>
                   <input
-                    style={{ color: 'black' }}
+                    style={{ color: "black" }}
                     id="email"
                     type="email"
                     name="email"
                     className={`text-sm placeholder-gray-500 pl-10 pr-4 rounded-2xl border w-full py-2 focus:outline-none ${
-                      formik.touched.email && formik.errors.email ? 'border-red-500' : 'border-gray-400'
+                      formik.touched.email && formik.errors.email
+                        ? "border-red-500"
+                        : "border-gray-400"
                     }`}
                     placeholder="Enter your email"
                     onChange={formik.handleChange}
@@ -146,12 +190,17 @@ function Page() {
                     value={formik.values.email}
                   />
                 </div>
-                  {formik.touched.email && formik.errors.email ? (
-                    <div className="text-red-500 text-xs mt-1">{formik.errors.email}</div>
-                  ) : null}
+                {formik.touched.email && formik.errors.email ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.email}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-col mb-6">
-                <label htmlFor="password" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+                <label
+                  htmlFor="password"
+                  className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
+                >
                   Password:
                 </label>
                 <div className="relative">
@@ -161,12 +210,14 @@ function Page() {
                     </span>
                   </div>
                   <input
-                    style={{ color: 'black' }}
+                    style={{ color: "black" }}
                     id="password"
                     type="password"
                     name="password"
                     className={`text-sm placeholder-gray-500 pl-10 pr-4 rounded-2xl border w-full py-2 focus:outline-none ${
-                      formik.touched.password && formik.errors.password ? 'border-red-500' : 'border-gray-400'
+                      formik.touched.password && formik.errors.password
+                        ? "border-red-500"
+                        : "border-gray-400"
                     }`}
                     placeholder="Enter your password"
                     onChange={formik.handleChange}
@@ -174,9 +225,11 @@ function Page() {
                     value={formik.values.password}
                   />
                 </div>
-                  {formik.touched.password && formik.errors.password ? (
-                    <div className="text-red-500 text-xs mt-1">{formik.errors.password}</div>
-                  ) : null}
+                {formik.touched.password && formik.errors.password ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.password}
+                  </div>
+                ) : null}
               </div>
 
               <div className="flex w-full">
