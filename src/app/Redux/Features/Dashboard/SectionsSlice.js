@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
-import { updateAction } from "./DashboardSlice";
 
-// start login
+// start get section
 export const getSectionsAction = createAsyncThunk(
   "sections/getSectionsAction",
   async (arg, { rejectWithValue }) => {
@@ -20,19 +19,18 @@ export const getSectionsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      dispatch(updateAction())
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-// end login
+// end get section
 
 // start add section
 export const addSectionAction = createAsyncThunk(
   "sections/addSectionAction",
-  async (arg, { rejectWithValue , dispatch }) => {
+  async (arg, { rejectWithValue, dispatch }) => {
     const { token, name } = arg;
     console.log(token);
     try {
@@ -51,6 +49,7 @@ export const addSectionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      console.log(response);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -59,16 +58,97 @@ export const addSectionAction = createAsyncThunk(
 );
 // end add section
 
+// start delete section
+export const deleteSectionAction = createAsyncThunk(
+  "sections/deleteSectionAction",
+  async (arg, { rejectWithValue }) => {
+    const { token, id } = arg;
+    console.log("delete section", token);
+    try {
+      const response = await axios.delete(`${config.api}admin/sections/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end delete section
+
+// start edit section
+export const editSectionAction = createAsyncThunk(
+  "sections/editSectionAction",
+  async (arg, { rejectWithValue }) => {
+    const { token, id ,name} = arg;
+    console.log('test edit actions')
+    try {
+      const response = await axios.put(`${config.api}admin/sections/${id}`, {
+        name
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end edit section
+
 const initialState = {
   sections: [],
   loading: false,
   error: false,
+  updates: false,
+
+  section_ID: {
+    id: null,
+    name: null,
+  },
+
+  addModule: false,
+  deleteModule: false,
+  editModule: false,
+
+  viewModule: false,
 };
 
 export const sectionsSlice = createSlice({
   name: "sections",
   initialState,
-  reducers: {},
+  reducers: {
+    getSectionId: (state, action) => {
+      state.section_ID = {
+        id: action.payload.id,
+        name: action.payload.name,
+      };
+    },
+    addModule: (state, action) => {
+      state.addModule = action.payload;
+    },
+    editModule: (state, action) => {
+      state.editModule = action.payload;
+    },
+    deleteModule: (state, action) => {
+      state.deleteModule = action.payload;
+    },
+    viewModule: (state, action) => {
+      state.viewModule = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       //start get all sections
@@ -78,6 +158,7 @@ export const sectionsSlice = createSlice({
       })
       .addCase(getSectionsAction.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload);
         state.sections = action.payload;
       })
       .addCase(getSectionsAction.rejected, (state, action) => {
@@ -94,14 +175,55 @@ export const sectionsSlice = createSlice({
       .addCase(addSectionAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = false;
-
+        state.updates = !state.updates;
+        state.addModule = false;
       })
       .addCase(addSectionAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // end add new section
+
+      //start delete section
+      .addCase(deleteSectionAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSectionAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.updates = !state.updates;
+        state.deleteModule = false;
+        state.section_ID = {id:null,name:null};
+      })
+      .addCase(deleteSectionAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // end delete section
+
+      //start edit section
+      .addCase(editSectionAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editSectionAction.fulfilled, (state, action) => {
+        console.log('test edit');
+        state.loading = false;
+        state.error = false;
+        state.updates = !state.updates;
+        state.section_ID = {id:null,name:null};
+        state.editModule = false;
+      })
+      .addCase(editSectionAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
-    // end add new section
+    // end edit section
   },
 });
+
+export const { editModule, deleteModule, viewModule, addModule, getSectionId } =
+  sectionsSlice.actions;
 
 export default sectionsSlice.reducer;

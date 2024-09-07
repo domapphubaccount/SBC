@@ -38,7 +38,7 @@ export function ViewUser({ openView, handleClose }) {
                     type="text"
                     required
                     disabled
-                    value={`User : ${userData.id}`}
+                    value={`User ID: ${userData.id}`}
                   />
                 </div>
                 <div className="mb-2">
