@@ -1,14 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import LoginImg from "@/assets/login/login.png";
 import Link from "next/link";
 import axios from "axios";
 import { config } from "@/config/config";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Logo from "@/assets/logo/Logo.png";
+import { useDispatch, useSelector } from "react-redux";
+import { registerAction } from "../Redux/Features/Auth/AuthSlice";
 
+// Validation schema with password confirmation
 const validationSchema = Yup.object({
   name: Yup.string()
     .min(2, "Name must be at least 2 characters")
@@ -20,71 +23,71 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
+  password_confirmation: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Password confirmation is required"),
 });
 
 function Page() {
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const loading = useSelector(state => state.loginSlice.loading);
+  const updates = useSelector(state => state.loginSlice.updates)
 
-  useEffect(() => {
-    if (JSON.parse(localStorage.getItem("data"))) {
+  const dispatch = useDispatch()
+
+  const isLogged = useSelector((state) => state.loginSlice.logged);
+
+  useLayoutEffect(() => {
+    if (isLogged) {
       redirect("/");
     }
-  }, []);
+  }, [isLogged]);
 
   const formik = useFormik({
     initialValues: {
-      name: "ahmed",
-      email: "ahmed@gmail.com",
-      password: "test1234",
-      password_confirmation: "test1234",
+      name: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      setLoading(true);
-      setMessage(false);
+      dispatch(registerAction(values))
 
-      axios
-        .post(`https://chatpdf.designal.cc/api/v1/register`, values, {
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Connection": "keep-alive",
-            "X-Content-Type-Options": "nosniff",
-            "X-Frame-Options": "DENY",
-            "X-XSS-Protection": "1; mode=block",
-            "Referrer-Policy": "strict-origin",
-            "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'"
-        
-        }})
-        .then((res) => {
-          if (res.data.status === "SUCCESS") {
-            router.push("/signIn");
-            setMessage("");
-            setLoading(false);
-          } else if (res.data.status === "ERROR") {
-            setMessage(res.data.message);
-            setLoading(false);
-          }
-        })
-        .catch((e) => {
-          setLoading(false);
-          console.log(e);
-        });
+      // axios
+      //   .post(`https://chatpdf.designal.cc/api/v1/register`, values, {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Accept: "*/*",
+      //       "Accept-Encoding": "gzip, deflate, br",
+      //       Connection: "keep-alive",
+      //       "X-Content-Type-Options": "nosniff",
+      //       "X-Frame-Options": "DENY",
+      //       "X-XSS-Protection": "1; mode=block",
+      //       "Referrer-Policy": "strict-origin",
+      //       "Content-Security-Policy":
+      //         "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'",
+      //     },
+      //   })
+      //   .then((res) => {
+      //     if (res.data.status === "SUCCESS") {
+      //       router.push("/signIn");
+      //       setMessage("");
+      //       setLoading(false);
+      //     } else if (res.data.status === "ERROR") {
+      //       setMessage(res.data.message);
+      //       setLoading(false);
+      //     }
+      //   })
+      //   .catch((e) => {
+      //     setLoading(false);
+      //     console.log(e);
+      //   });
     },
   });
 
   return (
     <section className="log-bannar">
-      {/* <link
-        rel="stylesheet"
-        href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
-        crossOrigin="anonymous"
-      /> */}
-
       <div className="min-h-screen flex flex-col items-center justify-center">
         {message && (
           <div
@@ -98,9 +101,9 @@ function Page() {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               ></path>
             </svg>
             <div>
@@ -130,6 +133,7 @@ function Page() {
 
           <div className="mt-10">
             <form onSubmit={formik.handleSubmit}>
+              {/* Name Field */}
               <div className="flex flex-col mb-5">
                 <label
                   htmlFor="name"
@@ -163,6 +167,8 @@ function Page() {
                   </div>
                 ) : null}
               </div>
+
+              {/* Email Field */}
               <div className="flex flex-col mb-5">
                 <label
                   htmlFor="email"
@@ -196,6 +202,8 @@ function Page() {
                   </div>
                 ) : null}
               </div>
+
+              {/* Password Field */}
               <div className="flex flex-col mb-6">
                 <label
                   htmlFor="password"
@@ -232,10 +240,51 @@ function Page() {
                 ) : null}
               </div>
 
+              {/* Password Confirmation Field */}
+              <div className="flex flex-col mb-6">
+                <label
+                  htmlFor="password_confirmation"
+                  className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
+                >
+                  Confirm Password:
+                </label>
+                <div className="relative">
+                  <div className="inline-flex items-center justify-center absolute left-0 top-0 h-full w-10 text-gray-400">
+                    <span>
+                      <i className="fas fa-lock text-secondar-color"></i>
+                    </span>
+                  </div>
+                  <input
+                    style={{ color: "black" }}
+                    id="password_confirmation"
+                    type="password"
+                    name="password_confirmation"
+                    className={`text-sm placeholder-gray-500 pl-10 pr-4 rounded-2xl border w-full py-2 focus:outline-none ${
+                      formik.touched.password_confirmation &&
+                      formik.errors.password_confirmation
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    }`}
+                    placeholder="Confirm your password"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password_confirmation}
+                  />
+                </div>
+                {formik.touched.password_confirmation &&
+                formik.errors.password_confirmation ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.password_confirmation}
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Submit Button */}
               <div className="flex w-full">
                 <button
                   type="submit"
-                  className="flex mt-2 items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-primary-color hover:bg-blue-600 rounded-2xl py-2 w-full transition duration-150 ease-in"
+                  className="flex mt-2 items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-blue-500 hover:bg-blue-600 rounded-2xl py-2 w-full transition duration-150 ease-in"
+                  disabled={loading}
                 >
                   <span className="mr-2 uppercase">Sign Up</span>
                   <span>
@@ -248,25 +297,22 @@ function Page() {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path d="M16 17l-4 4m0 0l-4-4m4 4V3"></path>
                     </svg>
                   </span>
                 </button>
               </div>
             </form>
           </div>
-        </div>
-        <div className="flex justify-center items-center mt-6">
-          <span className="ml-2 text-primary-color font-medium text-xs text-center">
-            You have an account?
-            <Link href="/signIn" className="text-xs ml-2 font-semibold ">
-              Login here
+          <div className="flex justify-center items-center mt-6">
+            <Link
+              href="/signIn"
+              className="inline-flex items-center font-bold text-blue-500 hover:text-blue-700 text-xs text-center"
+            >
+              <span className="ml-2">Already have an account?</span>
             </Link>
-          </span>
+          </div>
         </div>
-        {/* <div>
-          <img src={LoginImg.src} className="login_backdrop" alt="login bannar" />
-        </div> */}
       </div>
     </section>
   );

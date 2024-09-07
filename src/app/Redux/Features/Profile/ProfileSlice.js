@@ -1,5 +1,6 @@
 "use client";
 
+import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -10,7 +11,7 @@ export const updatePasswordAction = createAsyncThunk(
     const { token, current_password, new_password, confirm_password } = arg;
     try {
       const response = await axios.post(
-        "https://sbc.designal.cc/api/update-password",
+        `${config.api}profile`,
         { current_password, new_password, confirm_password },
         {
           headers: {
@@ -30,10 +31,33 @@ export const updatePasswordAction = createAsyncThunk(
 );
 // end update password
 
+// start get profile
+export const getProfileAction = createAsyncThunk(
+  "profile/getProfileAction",
+  async (arg, { rejectWithValue }) => {
+    const { token } = arg;
+    try {
+      const response = await axios.get(`${config.api}profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.error) {
+        return new Error(response.data.message);
+      }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get profile
+
 const initialState = {
   loading: false,
   value: "",
   error: "",
+  profile: {}
 };
 
 export const profileSlice = createSlice({
@@ -56,11 +80,25 @@ export const profileSlice = createSlice({
       .addCase(updatePasswordAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // end update password
+
+      // start get profile
+      .addCase(getProfileAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProfileAction.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload)
+        state.profile = action.payload
+      })
+      .addCase(getProfileAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
-    // end update password
+    // end get profile
   },
 });
-
-// export const { getCode , set_stored_code } = profileSlice.actions
 
 export default profileSlice.reducer;

@@ -1,12 +1,16 @@
-import React, { useState } from "react";
-import { DeleteUser } from "../DashModules/User/Delete";
+import React, { useEffect, useState } from "react";
+import { DeleteUser } from "../DashModules/UserComments/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
 import { WarnUser } from "../DashModules/User/Warn";
 import { Button } from "flowbite-react";
 import { AddUser } from "../DashModules/User/AddUser";
+import { useDispatch, useSelector } from "react-redux";
+import { getCommentsAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 
 function Users_comments() {
+  const dispatch = useDispatch()
+  const token = useSelector(state => state.loginSlice.auth)
   const [openDelete, setOpenDelete] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [openWarn, setOpenWarn] = useState(false);
@@ -14,6 +18,13 @@ function Users_comments() {
   const handleOpenDelete = () => setOpenDelete(!openDelete);
   const handleOpenView = () => setOpenView(!openView);
   const handleOpenWarn = () => setOpenWarn(!openWarn);
+
+  useEffect(()=>{
+    dispatch(getCommentsAction({token}))
+  },[])
+
+
+
   return (
     <>
       <section>

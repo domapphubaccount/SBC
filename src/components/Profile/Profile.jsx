@@ -3,49 +3,35 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { updatePasswordAction } from "@/app/Redux/Features/Profile/ProfileSlice";
+import {
+  getProfileAction,
+  updatePasswordAction,
+} from "@/app/Redux/Features/Profile/ProfileSlice";
+import { Label, TextInput } from "flowbite-react";
 
 function Profile() {
-  const [token, setToken] = useState("");
-  const [timer, setTimer] = useState(3);
+  // const [token, setToken] = useState("");
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [actionToggle, setActionToggle] = useState(false);
   const [userData, setUserData] = useState({ name: "", email: "", role: "" });
   const loading = useSelector((state) => state.profileSlice.loading);
-  const router = useRouter();
+  const profileData = useSelector((state) => state.profileSlice.profile);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getProfileAction({ token }));
+
     if (localStorage.getItem("data")) {
-      setToken(JSON.parse(localStorage.getItem("data")).token);
       const data = JSON.parse(localStorage.getItem("data"));
       setUserData({
-        name: data.name,
-        email: data.email,
-        role: data.role,
+        name: profileData.name,
+        email: profileData.email,
+        role: profileData.role,
       });
     }
   }, []);
-
-  const handleLogout = () => {
-    if (actionToggle) {
-      const handleTimer = () => {
-        setTimer((prev) => (prev = timer - 1));
-
-        setTimeout(() => {
-          localStorage.removeItem("data");
-          // redirect('/signIn')
-          router.push("/signIn");
-        }, 3000);
-      };
-      setTimeout(handleTimer, 1000);
-    }
-  };
-
-  useEffect(() => {
-    handleLogout();
-  }, [actionToggle]);
 
   const profileFormik = useFormik({
     initialValues: {
@@ -125,8 +111,8 @@ function Profile() {
               <div className="col-span-1 lg:col-span-4 p-5 border flex flex-col	justify-between">
                 <div>
                   <div className="font-bold">
-                    <h6 className="mb-5">Name: {userData.name}</h6>
-                    <h6 className="mb-5">Email: {userData.email} </h6>
+                    <h6 className="mb-5">Name: {profileData.name}</h6>
+                    <h6 className="mb-5">Email: {profileData.email} </h6>
                     <h6 className="mb-5">Role: {userData.role}</h6>
                   </div>
                 </div>
@@ -186,7 +172,7 @@ function Profile() {
                               name="name"
                               onChange={profileFormik.handleChange}
                               onBlur={profileFormik.handleBlur}
-                              value={userData.name}
+                              value={profileData.name}
                               disabled
                             />
                             <label className={labelClass}>Name</label>
@@ -220,7 +206,7 @@ function Profile() {
                               name="email"
                               onChange={profileFormik.handleChange}
                               onBlur={profileFormik.handleBlur}
-                              value={userData.email}
+                              value={profileData.email}
                               disabled
                             />
                             <label className={labelClass}>Email</label>
@@ -228,10 +214,10 @@ function Profile() {
                         </div>
                       </div>
                     </form>
-                  </div>
+                    <div className="py-3"></div>
 
-                  <div className="pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3">
-                    <div className="mt-2 mb-8 w-full">
+                    {/* <div className="pb-4 mb-4 relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:text-white dark:!shadow-none p-3"> */}
+                    {/*                    <div className="mt-2 mb-8 w-full">
                       <h4 className="px-2 text-xl font-bold text-black dark:text-white">
                         Update Password
                       </h4>
@@ -239,7 +225,7 @@ function Profile() {
                         Ensure your account is using a long, random password to
                         stay secure.
                       </p>
-                    </div>
+                    </div> */}
 
                     {loading && (
                       <div className="flex space-x-2 animate-pulse mb-4">
@@ -254,17 +240,26 @@ function Profile() {
                       onSubmit={passwordFormik.handleSubmit}
                     >
                       <div className="w-100 mb-4">
-                        <div className="relative h-10 w-full min-w-[200px]">
-                          <input
-                            className={inputClass}
-                            placeholder=" "
-                            name="current_password"
-                            type="password"
-                            onChange={passwordFormik.handleChange}
-                            onBlur={passwordFormik.handleBlur}
-                            value={passwordFormik.values.current_password}
-                          />
-                          <label className={labelClass}>Current Password</label>
+                        <div className="relative  w-full min-w-[200px]">
+                          <div>
+                            <div className="mb-2 block">
+                              <Label
+                                htmlFor="password"
+                                value="Your Current Password"
+                              />
+                            </div>
+                            <TextInput
+                              id="password"
+                              type="password"
+                              name="current_password"
+                              placeholder="password"
+                              onChange={passwordFormik.handleChange}
+                              onBlur={passwordFormik.handleBlur}
+                              value={passwordFormik.values.current_password}
+                              required
+                            />
+                          </div>
+
                           {passwordFormik.touched.current_password &&
                           passwordFormik.errors.current_password ? (
                             <div className="text-red-500 text-xs">
@@ -274,6 +269,63 @@ function Profile() {
                         </div>
                       </div>
                       <div className="w-100 mb-4">
+                        <div className="relative  w-full min-w-[200px]">
+                          <div>
+                            <div className="mb-2 block">
+                              <Label
+                                htmlFor="password"
+                                value="New Password"
+                              />
+                            </div>
+                            <TextInput
+                              placeholder="New password"
+                              name="new_password"
+                              type="password"
+                              onChange={passwordFormik.handleChange}
+                              onBlur={passwordFormik.handleBlur}
+                              value={passwordFormik.values.new_password}
+                              required
+                            />
+                          </div>
+
+                          {passwordFormik.touched.new_password &&
+                          passwordFormik.errors.new_password ? (
+                            <div className="text-red-500 text-xs">
+                              {passwordFormik.errors.new_password}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="w-100 mb-4">
+                        <div className="relative  w-full min-w-[200px]">
+                          <div>
+                            <div className="mb-2 block">
+                              <Label
+                                htmlFor="password"
+                                value="Confirm New Password"
+                              />
+                            </div>
+                            <TextInput
+                              placeholder="Confirm password"
+                              name="confirm_password"
+                              type="password"
+                              onChange={passwordFormik.handleChange}
+                              onBlur={passwordFormik.handleBlur}
+                              value={passwordFormik.values.confirm_password}
+                              required
+                            />
+                          </div>
+
+                          {passwordFormik.touched.confirm_password &&
+                          passwordFormik.errors.confirm_password ? (
+                            <div className="text-red-500 text-xs">
+                              {passwordFormik.errors.confirm_password}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      {/* <div className="w-100 mb-4">
                         <div className="relative h-10 w-full min-w-[200px]">
                           <input
                             className={inputClass}
@@ -292,8 +344,8 @@ function Profile() {
                             </div>
                           ) : null}
                         </div>
-                      </div>
-                      <div className="w-100 mb-4">
+                      </div> */}
+                      {/* <div className="w-100 mb-4">
                         <div className="relative h-10 w-full min-w-[200px]">
                           <input
                             className={inputClass}
@@ -312,7 +364,7 @@ function Profile() {
                             </div>
                           ) : null}
                         </div>
-                      </div>
+                      </div> */}
                       <button
                         type="submit"
                         className="px-3 md:px-4 py-1 md:py-2 bg-blue-800 border border-sky-600 text-white rounded-lg hover:bg-sky-700"

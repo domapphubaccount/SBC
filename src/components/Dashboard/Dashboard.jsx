@@ -3,16 +3,22 @@ import React, { useState } from "react";
 import Users from "./DashContent/Users";
 import Users_comments from "./DashContent/Users_comments";
 import Users_chat from "./DashContent/Users_chat";
+import Pdfs from "./DashContent/Pdfs";
+import Sections from "./DashContent/Sections";
 
 function Dashboard({ page }) {
   function handlePage() {
     switch (page) {
       case 1:
-        return <Users />;
+        return <Users/>;
       case 2:
         return <Users_comments />;
       case 3:
         return <Users_chat />;
+      case 4:
+        return <Pdfs />;
+      case 5:
+        return <Sections />;
       default:
         return <Users />;
     }

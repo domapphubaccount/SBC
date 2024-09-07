@@ -8,6 +8,9 @@ import typeSlice from "./Features/type/typeSlice";
 import loginSlice from "./Features/Auth/AuthSlice";
 import conversationSlice from "./Features/Conversation/ConversationSlice";
 import profileSlice from "./Features/Profile/ProfileSlice";
+import usersSlice from "./Features/Dashboard/UsersSlice";
+import userCommentsSlice from "./Features/Dashboard/UsersCommentsSlice";
+import sectionsSlice from "./Features/Dashboard/SectionsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +18,9 @@ export const store = configureStore({
     conversationSlice,
     codeSlice,
     profileSlice,
+    usersSlice,
+    sectionsSlice,
+    userCommentsSlice,
     chatSlice,
     updateSlice,
     typeSlice,

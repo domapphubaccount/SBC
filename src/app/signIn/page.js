@@ -16,22 +16,16 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
+  const dispatch = useDispatch();
   const message = useSelector((state) => state.loginSlice.error);
   const loading = useSelector((state) => state.loginSlice.loading);
-  const dispatch = useDispatch();
-  const isLogged = useSelector(state => state.loginSlice.logged)
-  const state = useSelector((state) => state);
-  console.log(state , 'loggin');
-
-
+  const isLogged = useSelector(state => state.loginSlice.logged);
 
   useLayoutEffect(() => {
     if(isLogged){
       redirect('/')
     }
   }, [isLogged]);
-
-
 
   const formik = useFormik({
     initialValues: {
@@ -43,8 +37,6 @@ function Page() {
       dispatch(loginAction(values));
     },
   });
-
-
 
   return (
     <section className="log-bannar">

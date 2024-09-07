@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 
-const isBrouse = typeof window !== "undefined"
+const isBrouse = typeof window !== "undefined";
 
 // start login
 export const loginAction = createAsyncThunk(
@@ -11,7 +11,7 @@ export const loginAction = createAsyncThunk(
     const { email, password } = arg;
     try {
       const response = await axios.post(
-        `${config.api}login?email=${email}&password=${password}`,
+        `${config.api}login`,
         {
           email: email,
           password: password,
@@ -34,15 +34,18 @@ export const logoutAction = createAsyncThunk(
   "login/logoutAction",
   async (arg, { rejectWithValue }) => {
     const { token } = arg;
-    console.log(token)
+    console.log(token);
     try {
-      const response = await axios.post(`${config.api}logout`,{}, 
+      const response = await axios.post(
+        `${config.api}logout`,
+        {},
         {
           headers: {
-            Authorization: `Bearer ${token}`,  
-            Accept: "application/json",        
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
-        });
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
@@ -122,12 +125,23 @@ export const resetpasswordAction = createAsyncThunk(
 export const registerAction = createAsyncThunk(
   "register/registerAction",
   async (arg, { rejectWithValue }) => {
-    const { username, email, password, password_confirmation } = arg;
+    const { name, email, password, password_confirmation } = arg;
     try {
       const response = await axios.post(
-        `${config.api}register?name=${username}&email=${email}&password=${password}&password_confirmation=${password_confirmation}`
+        `${config.api}register`,
+        {
+          name,
+          email,
+          password,
+          password_confirmation,
+        },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json", 
+          },
+        }
       );
-
       if (response.data.error) {
         return new Error(response.data.error);
       }
@@ -137,21 +151,34 @@ export const registerAction = createAsyncThunk(
     }
   }
 );
+
 // end register
 
 const initialState = {
   value: "",
   loading: false,
-  auth: isBrouse && localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).access_token ? JSON.parse(localStorage.getItem('data'))  : null,
-  logged: isBrouse && localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).access_token ? true : false,
-  
+  auth:
+    isBrouse &&
+    localStorage.getItem("data") &&
+    JSON.parse(localStorage.getItem("data")).access_token
+      ? JSON.parse(localStorage.getItem("data"))
+      : null,
+  logged:
+    isBrouse &&
+    localStorage.getItem("data") &&
+    JSON.parse(localStorage.getItem("data")).access_token
+      ? true
+      : false,
+
   // start password
-  password:{
+  password: {
     step: 1,
     loading: false,
     error: null,
-  }
+  },
   // end password
+
+  updates: false,
 };
 
 export const loginSlice = createSlice({
@@ -171,8 +198,8 @@ export const loginSlice = createSlice({
         state.auth = action.payload.data;
         state.logged = true;
 
-        if(isBrouse && action.payload.data){
-          localStorage.setItem('data',JSON.stringify(action.payload.data))
+        if (isBrouse && action.payload.data) {
+          localStorage.setItem("data", JSON.stringify(action.payload.data));
         }
       })
       .addCase(loginAction.rejected, (state, action) => {
@@ -189,7 +216,7 @@ export const loginSlice = createSlice({
       .addCase(logoutAction.fulfilled, (state, action) => {
         state.loading = false;
         state.auth = null;
-        if(isBrouse){
+        if (isBrouse) {
           localStorage.clear();
         }
         state.logged = false;
@@ -200,27 +227,23 @@ export const loginSlice = createSlice({
       })
       // end logout
 
-
-      
-
       // start forget password
       .addCase(forgetPasswordAction.pending, (state) => {
-        console.log('pending')
+        console.log("pending");
         state.password.loading = true;
         state.password.error = null;
       })
       .addCase(forgetPasswordAction.fulfilled, (state, action) => {
-        console.log('full')
+        console.log("full");
         state.password.loading = false;
         state.password.step = 2;
         state.password.error = null;
-
       })
       .addCase(forgetPasswordAction.rejected, (state, action) => {
-        console.log('error')
+        console.log("error");
         state.password.step = 2;
         state.password.loading = false;
-        state.password.error = 'error';
+        state.password.error = "error";
       })
       // end forget password
 
@@ -250,12 +273,9 @@ export const loginSlice = createSlice({
       })
       .addCase(resetpasswordAction.rejected, (state, action) => {
         state.password.loading = false;
-        state.password.error = 'error';
+        state.password.error = "error";
       })
       // end reset password
-
-
-
 
       // start register
       .addCase(registerAction.pending, (state) => {
@@ -264,6 +284,8 @@ export const loginSlice = createSlice({
       })
       .addCase(registerAction.fulfilled, (state, action) => {
         state.loading = false;
+        state.auth = action.payload.data;
+        state.logged = true
       })
       .addCase(registerAction.rejected, (state, action) => {
         state.loading = false;
@@ -273,4 +295,4 @@ export const loginSlice = createSlice({
   },
 });
 
-export default loginSlice.reducer
+export default loginSlice.reducer;

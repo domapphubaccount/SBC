@@ -27,15 +27,19 @@ export const dashboardAction = createAsyncThunk(
 );
 // end login
 
-
 const initialState = {
-  values: null
+  values: null,
+  updates: false,
 };
 
 export const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
-  reducers: {},
+  reducers: {
+    updateAction: (state, action) => {
+      state.updates = !state.updates;
+    },
+  },
   extraReducers: (builder) => {
     builder
       //start login
@@ -49,10 +53,10 @@ export const dashboardSlice = createSlice({
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-      // end login
-
+      });
+    // end login
   },
 });
+export const { updateAction } = dashboardSlice.actions;
 
-export default dashboardSlice.reducer
+export default dashboardSlice.reducer;

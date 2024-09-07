@@ -16,20 +16,6 @@ function Header({path}) {
   const dispatch = useDispatch()
   const pathname = usePathname()
 
-  useEffect(()=>{
-    if(localStorage.getItem("data")){
-    const token =  JSON.parse(localStorage.getItem("data")).token
-    }else{
-      if( pathname.slice(0,9) != "/sharable"){
-      redirect('/signIn')
-      }
-    }
-
-    if(localStorage.getItem("data")){
-      setUserName(JSON.parse(localStorage.getItem("data")).name)
-    }
-  },[])
-
   const handleStartNewChat = () => {
     dispatch(loading_chat(true))
     const token = JSON.parse(localStorage.getItem("data")).token
@@ -55,12 +41,6 @@ function Header({path}) {
   
   return (
     <>      
-    {pathname == "/profile" ? "" :<> 
-    {/* <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css" />
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" /> */}
-    </>
-    }
-
     <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue">
       <div className="w-full mx-auto flex flex-wrap items-center justify-between">
 

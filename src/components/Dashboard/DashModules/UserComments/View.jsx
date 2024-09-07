@@ -5,14 +5,14 @@ import { useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
 
-export function ViewUser({ openView, handleClose }) {
+export function ViewUserComment({ openView, setOpenView }) {
   const userData = useSelector((state) => state.usersSlice.user);
   const loading = useSelector((state) => state.usersSlice.loading);
 
 
   return (
     <>
-      <Modal show={openView} size="md" popup onClose={handleClose}>
+      <Modal show={openView} size="md" popup onClose={() => setOpenView(false)}>
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
@@ -65,7 +65,7 @@ export function ViewUser({ openView, handleClose }) {
             )}
 
             <div className="w-full">
-              <Button onClick={handleClose}>CLOSE</Button>
+              <Button onClick={() => setOpenView(false)}>CLOSE</Button>
             </div>
           </div>
         </Modal.Body>

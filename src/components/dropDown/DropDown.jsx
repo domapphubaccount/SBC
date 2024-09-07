@@ -21,9 +21,6 @@ function DropDown() {
 
   const handleLogout = () => {
     dispatch(logoutAction({token}))
-
-
-    // router.push("/signIn");
   };
 
 
