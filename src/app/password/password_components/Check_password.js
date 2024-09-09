@@ -6,7 +6,7 @@ import LoginImg from "@/assets/login/login.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { forgetPasswordAction } from "@/app/Redux/Features/Auth/AuthSlice";
 
 const validationSchema = Yup.object({
@@ -14,8 +14,9 @@ const validationSchema = Yup.object({
 });
 
 function Forget_password() {
-  const dispatch = useDispatch()
-  const router = useRouter();
+  const dispatch = useDispatch();
+  const errorMessage = useSelector((state) => state.loginSlice.password.error);
+  console.log(errorMessage)
 
   const formik = useFormik({
     initialValues: {
@@ -23,31 +24,36 @@ function Forget_password() {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-
-      dispatch(forgetPasswordAction(values))
-
-      //   setMessage("");
-      //   setLoading(true);
-      // axios
-      //   .post(`${config.api}forgot-password`, values)
-      //   .then((res) => {
-      //     if (res.data.status === "SUCCESS") {
-      //       localStorage.setItem("data", JSON.stringify(res.data.data));
-            // router.push("/");
-            // setMessage("");
-            // setLoading(false);
-          // } else if (res.data.status === "ERROR") {
-            // setMessage(res.data.message);
-            // setLoading(false);
-        //   }
-        // })
-        // .catch((e) => console.log(e));
+      dispatch(forgetPasswordAction(values));
     },
   });
 
   return (
     <div>
+        {errorMessage &&
+        (
+          <div
+            className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4"
+            role="alert"
+          >
+            <svg
+              className="w-100 h-5 inline mr-3"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <div>
+              <span className="font-medium">ERROR! {errorMessage}</span>
+            </div>
+          </div>
+        )
+        }
       <div className="relative h-px bg-gray-300 mb-6">
         <div className="absolute left-0 top-0  w-full -mt-2">
           <span className="bg-white px-4 text-xs text-gray-500 uppercase">

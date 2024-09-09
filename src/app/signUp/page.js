@@ -9,7 +9,7 @@ import { config } from "@/config/config";
 import { redirect, useRouter } from "next/navigation";
 import Logo from "@/assets/logo/Logo.png";
 import { useDispatch, useSelector } from "react-redux";
-import { registerAction } from "../Redux/Features/Auth/AuthSlice";
+import { islogged, registerAction } from "../Redux/Features/Auth/AuthSlice";
 
 // Validation schema with password confirmation
 const validationSchema = Yup.object({
@@ -29,9 +29,9 @@ const validationSchema = Yup.object({
 });
 
 function Page() {
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const loading = useSelector(state => state.loginSlice.loading);
-  const updates = useSelector(state => state.loginSlice.updates)
+  const message = useSelector(state => state.loginSlice.error)
 
   const dispatch = useDispatch()
 
@@ -53,36 +53,6 @@ function Page() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       dispatch(registerAction(values))
-
-      // axios
-      //   .post(`https://chatpdf.designal.cc/api/v1/register`, values, {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Accept: "*/*",
-      //       "Accept-Encoding": "gzip, deflate, br",
-      //       Connection: "keep-alive",
-      //       "X-Content-Type-Options": "nosniff",
-      //       "X-Frame-Options": "DENY",
-      //       "X-XSS-Protection": "1; mode=block",
-      //       "Referrer-Policy": "strict-origin",
-      //       "Content-Security-Policy":
-      //         "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'",
-      //     },
-      //   })
-      //   .then((res) => {
-      //     if (res.data.status === "SUCCESS") {
-      //       router.push("/signIn");
-      //       setMessage("");
-      //       setLoading(false);
-      //     } else if (res.data.status === "ERROR") {
-      //       setMessage(res.data.message);
-      //       setLoading(false);
-      //     }
-      //   })
-      //   .catch((e) => {
-      //     setLoading(false);
-      //     console.log(e);
-      //   });
     },
   });
 

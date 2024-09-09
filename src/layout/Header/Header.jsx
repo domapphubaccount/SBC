@@ -7,26 +7,31 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { redirect, usePathname } from 'next/navigation'
 import { choseChate, get_chat } from '@/app/Redux/Features/Chat/ChatSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loading_chat } from '@/app/Redux/Features/Update/UpdateSlice'
 import Logo from "/public/logo.png"
+import { config } from '@/config/config'
 
 function Header({path}) {
   const [userName , setUserName] = useState("");
-  const dispatch = useDispatch()
-  const pathname = usePathname()
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
+
+  console.log(token,'token')
+
+  const pathname = usePathname();
 
   const handleStartNewChat = () => {
     dispatch(loading_chat(true))
-    const token = JSON.parse(localStorage.getItem("data")).token
-      axios.get("https://sbc.designal.cc/api/start-chat", {
+    // const token = JSON.parse(localStorage.getItem("data")).token
+      axios.post(`${config.api}create_thread`, {},{
       headers: {
         Authorization: `Bearer ${token}`
       },
-      params: {
-        chat_id: "",
-        share_name: "1"
-      }
+      // params: {
+      //   chat_id: "",
+      //   share_name: "1"
+      // }
     })
     .then(response => {
       dispatch(choseChate(response.data.data.id))

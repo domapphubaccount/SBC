@@ -5,62 +5,52 @@ import { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { editUserAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
+import { editUserAction, updateRoleAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { editSectionAction } from "@/app/Redux/Features/Dashboard/SectionsSlice";
 
-export function EditSections({ openEdit, handleClose }) {
+export function UserRole({ openRole, handleClose }) {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.sectionsSlice.loading);
+  const userData = useSelector((state) => state.usersSlice.user);
+  const loading = useSelector((state) => state.usersSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const sectionData = useSelector(state => state.sectionsSlice.section_ID);
 
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      name: sectionData.name,
+      role: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
+      role: Yup.string().required("role is required"),
     }),
     onSubmit: (values) => {
-      dispatch(editSectionAction({ token, id: sectionData.id, ...values }));
+      dispatch(updateRoleAction({ token, id: userData.id, ...values }));
     },
   });
 
-  // Update formik values when userData changes
-  useEffect(() => {
-    if (sectionData.name) {
-      formik.setValues({
-        name: sectionData.name || "",
-      });
-    }
-  }, [sectionData]);
-
   return (
     <>
-      <Modal show={openEdit} size="md" popup onClose={handleClose}>
+      <Modal show={openRole} size="md" popup onClose={handleClose}>
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Edit Section Details
+              Edit User Role
             </h3>
             {!loading ? (
               <>
                 <div>
-                  <Label htmlFor="name" value="Section Name" />
-                  <TextInput
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder={sectionData.name}
+                  <Label htmlFor="role" value="User Role: " />
+                  <select
+                    className="border-0"
+                    id="role"
                     onChange={formik.handleChange}
-                    value={formik.values.name}
-                    required
-                  />
-                  {formik.touched.name && formik.errors.name ? (
-                    <div className="text-red-600">{formik.errors.name}</div>
+                    value={formik.values.role}
+                  >
+                    <option value={"admin"}>Admin</option>
+                    <option value={"user"}>User</option>
+                  </select>
+                  {formik.touched.role && formik.errors.role ? (
+                    <div className="text-red-600">{formik.errors.role}</div>
                   ) : null}
                 </div>
               </>

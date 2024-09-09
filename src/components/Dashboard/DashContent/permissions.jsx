@@ -7,90 +7,109 @@ import { Button } from "flowbite-react";
 import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addModule,
-  deleteModule,
-  editModule,
   getUserByIDAction,
-  getUsersAction,
   removeUser,
   roleModule,
-  viewModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
+import {
+  getRoleByIDAction,
+  getRolesAction,
+} from "@/app/Redux/Features/Dashboard/RolesSlice";
 
-function Users({}) {
+import { EditRole } from "../DashModules/Roles/Edit";
+import {
+  addModule,
+  closeView,
+  deleteModule,
+  editModule,
+  getPermissionByIDAction,
+  getPermissionsAction,
+  getPermmisionsAction,
+  viewModule,
+} from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
+import { ViewPermission } from "../DashModules/permissions/View";
+import { AddPermmision } from "../DashModules/permissions/AddPermmision";
+import { DeletePermission } from "../DashModules/permissions/Delete";
+import { EditPermission } from "../DashModules/permissions/Edit";
+
+function Permmisions({}) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const usersData = useSelector((state) => state.usersSlice.users);
-  const updateUsersData = useSelector((state) => state.usersSlice.updates);
-
-  // const [openDelete, setOpenDelete] = useState(false);
-  // const [openEdit, setOpenEdit] = useState(false);
-  // const [openView, setOpenView] = useState(false);
+  const permissionsData = useSelector(
+    (state) => state.permissionsSlice.permissions
+  );
+  const updatePermisionsData = useSelector(
+    (state) => state.permissionsSlice.updates
+  );
   const [openWarn, setOpenWarn] = useState(false);
-  // const [openAdd, setOpenAdd] = useState(false);
 
-  const openAdd = useSelector(state => state.usersSlice.addModule)
-  const openEdit = useSelector((state) => state.usersSlice.editModule);
-  const openDelete = useSelector((state) => state.usersSlice.deleteModule);
-  const openView = useSelector((state) => state.usersSlice.viewModule);
+  const openView = useSelector((state) => state.permissionsSlice.viewModule);
+
+  const openEdit = useSelector((state) => state.permissionsSlice.editModule);
+  const openDelete = useSelector(
+    (state) => state.permissionsSlice.deleteModule
+  );
   const openRole = useSelector((state) => state.usersSlice.roleModule);
 
-  const handleClose = () => {
-    dispatch(removeUser());
+  const openAdd = useSelector((state) => state.permissionsSlice.addModule);
 
-    dispatch(addModule(false))
+  const handleClose = () => {
+    // dispatch(removeUser());
+    dispatch(closeView());
+
+    dispatch(viewModule(false));
+
     dispatch(editModule(false));
     dispatch(deleteModule(false));
-    dispatch(viewModule(false));
-    dispatch(roleModule(false));
-
-    // setOpenWarn(false);
-    // setOpenAdd(false);
+    // dispatch(roleModule(false));
+    dispatch(addModule(false));
   };
 
   // start open delete
   const handleOpenDelete = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
+    dispatch(getPermissionByIDAction({ token, id }));
     dispatch(deleteModule(true));
   };
   // end open delete
 
   // start open edit
   const handleOpenEdit = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
+    dispatch(getPermissionByIDAction({ token, id }));
     dispatch(editModule(true));
   };
   // end open edit
 
+  //   start add role
+  const handleOpenAdd = () => {
+    dispatch(addModule(true));
+  };
+  //   end add role
+
   // start open view
   const handleOpenView = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
+    dispatch(getPermissionByIDAction({ token, id }));
     dispatch(viewModule(true));
   };
   // end open view
 
-  // start open role
-  const handleOpenRole = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
-    dispatch(roleModule(true));
-  };
-  // end open role
-
-  // const handleOpenWarn = () => {
-  //   setOpenWarn(!openWarn);
-  // };
-  const handleOpenAdd = () => {dispatch(addModule(true))};
-
   useEffect(() => {
-    dispatch(getUsersAction({ token }));
-  }, [updateUsersData]);
+    dispatch(getPermissionsAction({ token }));
+  }, [
+    /* updates */
+    updatePermisionsData,
+  ]);
+
+  console.log(openAdd);
 
   return (
     <>
       <section>
         <div>
-          <div class="flex py-3 pt-8 text-white rounded-lg" aria-label="Breadcrumb">
+          <div
+            class="flex py-3 pt-8 text-white rounded-lg"
+            aria-label="Breadcrumb"
+          >
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
               <li>
                 <div class="flex items-center">
@@ -120,7 +139,7 @@ function Users({}) {
                     />
                   </svg>
                   <span class="ms-1 text-sm font-medium text-white md:ms-2">
-                    Users
+                    Permisions
                   </span>
                 </div>
               </li>
@@ -128,11 +147,11 @@ function Users({}) {
           </div>
           <div className="flex justify-between my-5">
             <div>
-              <h1 className="text-white text-4xl">USERS</h1>
+              <h1 className="text-white text-4xl">PERMISIONS</h1>
             </div>
             <div>
               <Button color="blue" onClick={handleOpenAdd}>
-                Add User
+                Add PERMISSION
               </Button>
             </div>
           </div>
@@ -148,19 +167,13 @@ function Users({}) {
                         Name
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Role
-                      </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {usersData.length > 0 &&
-                      usersData.map((item, index) => (
+                    {permissionsData.length > 0 &&
+                      permissionsData.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">
@@ -176,7 +189,7 @@ function Users({}) {
                                   <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                                    d="M7.864 4.243A7.5 7.5 0 0 1 19.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 0 0 4.5 10.5a7.464 7.464 0 0 1-1.15 3.993m1.989 3.559A11.209 11.209 0 0 0 8.25 10.5a3.75 3.75 0 1 1 7.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 0 1-3.6 9.75m6.633-4.596a18.666 18.666 0 0 1-2.485 5.33"
                                   />
                                 </svg>
                               </div>
@@ -187,18 +200,6 @@ function Users({}) {
                               </div>
                             </div>
                           </td>
-                          <td className="px-2 py-2  border-b border-gray-200 bg-white text-sm">
-                            <p className="text-gray-900 whitespace-no-wrap">
-                              {item.email}
-                            </p>
-                          </td>
-                          {/* start role */}
-                          <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
-                            <div className="hover:font-bold cursor-pointer">
-                              <Button color="gray" onClick={()=>handleOpenRole(item.id)}>Admin</Button>
-                            </div>
-                          </td>
-                          {/* end role */}
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex gap-2 justify-start">
                               {/* start view */}
@@ -284,26 +285,21 @@ function Users({}) {
         </div>
       </section>
 
-      {openDelete && <DeleteUser handleClose={handleClose} openDelete={openDelete} />}
-      {openEdit && <EditUser handleClose={handleClose} openEdit={openEdit} />}
-      {openView && <ViewUser handleClose={handleClose} openView={openView} />}
-      {openWarn && (
-        <WarnUser
-          role={role}
-          handleClose={handleClose}
-        />
+      {openDelete && (
+        <DeletePermission handleClose={handleClose} openDelete={openDelete} />
       )}
-      {openAdd && (
-        <AddUser
-          handleOpenAdd={handleOpenAdd}
-          openAdd={openAdd}
-          handleClose = {handleClose}
-          // setOpenAdd={setOpenAdd}
-        />
+      {openView && (
+        <ViewPermission handleClose={handleClose} openView={openView} />
       )}
+      {openAdd && <AddPermmision openAdd={openAdd} handleClose={handleClose} />}
+      {openEdit && (
+        <EditPermission handleClose={handleClose} openEdit={openEdit} />
+      )}
+
+      {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
     </>
   );
 }
 
-export default Users;
+export default Permmisions;

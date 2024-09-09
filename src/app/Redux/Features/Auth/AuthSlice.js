@@ -86,7 +86,9 @@ export const checkCodeAction = createAsyncThunk(
     const { code } = arg;
     try {
       const response = await axios.post(
-        `${config.api}password/code/check?code=${code}`
+        `${config.api}password/code/check`,{
+          code,
+        }
       );
 
       if (response.data.error) {
@@ -137,7 +139,7 @@ export const registerAction = createAsyncThunk(
         },
         {
           headers: {
-            Accept: "*/*",
+            Accept: "application/json",
             "Content-Type": "application/json", 
           },
         }
@@ -175,6 +177,7 @@ const initialState = {
     step: 1,
     loading: false,
     error: null,
+    code: null
   },
   // end password
 
@@ -184,7 +187,14 @@ const initialState = {
 export const loginSlice = createSlice({
   name: "login",
   initialState,
-  reducers: {},
+  reducers: {
+    storedCode: (state , action)=>{
+      state.password.code = action.payload
+    },
+    islogged: (state , action)=>{
+      state.logged = true
+    }
+  },
   extraReducers: (builder) => {
     builder
       //start login
@@ -241,9 +251,8 @@ export const loginSlice = createSlice({
       })
       .addCase(forgetPasswordAction.rejected, (state, action) => {
         console.log("error");
-        state.password.step = 2;
         state.password.loading = false;
-        state.password.error = "error";
+        state.password.error = action.payload.message;
       })
       // end forget password
 
@@ -253,13 +262,14 @@ export const loginSlice = createSlice({
         state.password.error = null;
       })
       .addCase(checkCodeAction.fulfilled, (state, action) => {
-        state.password.step = 3;
         state.password.loading = false;
+        state.password.step = 3;
       })
       .addCase(checkCodeAction.rejected, (state, action) => {
-        state.password.step = 3;
+        // state.password.step = 3
+        state.password.code = null;
         state.password.loading = false;
-        // state.error = action.payload;
+        state.password.error = action.payload.message;
       })
       // end check code
 
@@ -284,15 +294,18 @@ export const loginSlice = createSlice({
       })
       .addCase(registerAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.auth = action.payload.data;
-        state.logged = true
+        state.error = null;
+        // state.auth = action.payload.data;
+        window.location.pathname = 'signIn'
       })
       .addCase(registerAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload.message;
       });
     // end register
   },
 });
+
+export const { storedCode , islogged } = loginSlice.actions
 
 export default loginSlice.reducer;

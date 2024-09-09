@@ -1,6 +1,7 @@
 "use client";
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { config } from "@/config/config";
 import axios from "axios"
 
 // start get chat
@@ -8,8 +9,9 @@ export const getCodeAction = createAsyncThunk(
   "code/getCodeAction",
   async (arg, { rejectWithValue }) => {
     const { token } = arg;
+    console.log('code action ' , token)
     try {
-      const response = await axios.get('https://sbc.designal.cc/api/sections',{
+      const response = await axios.get(`https://sbc.designal.cc/api/sections`,{
       headers: {
         Authorization: `Bearer ${token}`
       }})

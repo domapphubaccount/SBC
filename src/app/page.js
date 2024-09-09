@@ -7,9 +7,10 @@ import { useSelector } from "react-redux";
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged);
+  console.log(isLogged)
 
   useLayoutEffect(() => {
-    if (!isLogged) {
+    if (isLogged == false) {
       redirect("/signIn");
     }
   }, [isLogged]);

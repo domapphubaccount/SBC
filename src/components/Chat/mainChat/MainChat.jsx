@@ -17,6 +17,7 @@ import StartLogo from "@/assets/logo/start_logo.png";
 import Logo from "@/assets/logo/icon.png";
 import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
+import { config } from "@/config/config";
 
 function MainChat({ elementWidth }) {
   const pathName = usePathname();
@@ -190,7 +191,7 @@ function MainChat({ elementWidth }) {
     disaptch(loading_chat(true));
     const token = JSON.parse(localStorage.getItem("data")).token;
     axios
-      .get("https://sbc.designal.cc/api/start-chat", {
+      .get(`${config.api}create_thread`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

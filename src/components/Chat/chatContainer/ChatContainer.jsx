@@ -14,7 +14,10 @@ function ChatContainer() {
   const dashboardData = useSelector(state => state.chatSlice.value);
   const catchChat = useSelector(state => state.chatSlice.get_chat);
   const updates = useSelector(state => state.updateSlice.state);
-  const [token, setToken] = useState("");
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
+
+
+  // const [token, setToken] = useState("");
   const dispatch = useDispatch();
     
   useEffect(()=>{
@@ -23,12 +26,13 @@ function ChatContainer() {
       redirect('/signIn')
     }
     else{
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
-      setToken(storedData.token);
+    // if (typeof window !== "undefined" && localStorage.getItem("data")) {
+    //   const storedData = JSON.parse(localStorage.getItem("data"));
+    //   setToken(storedData.token);
 
-      dispatch(getCodeAction({token: storedData.token}))
-    }}
+      dispatch(getCodeAction({token}))
+    // }
+    }
   },[])
   
   const [elementWidth,setElementWidth] = useState()

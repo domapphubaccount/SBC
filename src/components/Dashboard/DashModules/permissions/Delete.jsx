@@ -5,36 +5,27 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { deleteSectionAction } from "@/app/Redux/Features/Dashboard/SectionsSlice";
+import { deletePermissionAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 
-export function DeleteSections({ openDelete, handleClose }) {
+export function DeletePermission({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const sectionData = useSelector((state) => state.sectionsSlice.section_ID.id);
-  const loading = useSelector((state) => state.sectionsSlice.loading);
-
-
+  const permissionData = useSelector((state) => state.permissionsSlice.permission);
   const dispatch = useDispatch();
-  console.log(sectionData)
 
   const handleDelete = () => {
-    dispatch(deleteSectionAction({ token, id: sectionData }));
+    dispatch(deletePermissionAction({ token, id: permissionData.id }));
   };
 
   return (
     <>
-      <Modal
-        show={openDelete}
-        size="md"
-        onClose={handleClose}
-        popup
-      >
+      <Modal show={openDelete} size="md" onClose={handleClose} popup>
         <Modal.Header />
         <Modal.Body>
-          {!loading ? (
+          {permissionData?.id ? (
             <div className="text-center">
               <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Are you sure you want to delete this Section?
+                Are you sure you want to delete this Role?
               </h3>
               <div className="flex justify-center gap-4">
                 <Button color="failure" onClick={handleDelete}>

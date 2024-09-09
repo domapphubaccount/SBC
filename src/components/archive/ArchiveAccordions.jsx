@@ -14,6 +14,7 @@ import {
   getConversation,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import Logo from "@/assets/logo/icon.png";
+import { config } from "@/config/config";
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -25,33 +26,36 @@ function TailwindAccordion() {
   const [shareName, setShareName] = useState("0");
   const [shareToggle, setShareToggle] = useState(false);
   const [sharableChat, setSharableChat] = useState([]);
-  const token =
-    localStorage.getItem("data") &&
-    JSON.parse(localStorage.getItem("data")).token;
+
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
+
   const dispatch = useDispatch();
-  const dashboardData = useSelector((state) => state.chatSlice.value);
+  const dashboardData = useSelector((state) => state.chatSlice.value[0]);
+
+  console.log(dashboardData);
+
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
+    if (token) {
       axios
-        .get("https://sbc.designal.cc/api/dashboard", {
+        .get(`${config.api}chat_history`, {
           headers: {
-            Authorization: `Bearer ${storedData.token}`,
+            Accept: "*/*",
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((res) => {
-          if (res.data.success) {
-            // setDashboardData(res.data.data)
+          if (res.data) {
             dispatch(getChatHistory(res.data.data));
           }
         })
         .catch((e) => console.log(e));
     }
     window.MathJax && window.MathJax.typeset();
-  }, [updates, updateDashboard]);
+  }, [updates, updateDashboard, token]);
+
   const handleAction = () => {
     setActionAlert(true);
     setTimeout(() => setActionAlert(false), 4000);
@@ -152,43 +156,42 @@ function TailwindAccordion() {
   };
 
   return (
-    <div
-      className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 "
-   
-    >
+    <div className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 ">
       <div className="accordion">
-        {dashboardData.chat_history &&
-        Object.entries(dashboardData.chat_history).length >= 1 ? (
-          Object.entries(dashboardData.chat_history).map((item, i) => (
+        {dashboardData?.section_details &&
+        dashboardData.section_details.length >= 1 ? (
+          dashboardData.section_details.map((item, i) => (
             <div className="border-b border-gray-200" key={item[0]}>
               <div
                 className="cursor-pointer py-4 flex justify-between items-center"
                 onClick={() => toggle(i)}
               >
                 <span className="text-sm font-bold text-gray-800">
-                  {item[0]}
+                  {item.name}
                 </span>
-                <svg
-                  className={`w-5 h-5 transform transition-transform duration-300 ${
-                    open === 2 ? "rotate-180" : "rotate-0"
-                  }`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="black"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                {item?.pdfs?.length > 0 && (
+                  <svg
+                    className={`w-5 h-5 transform transition-transform duration-300 ${
+                      open === 2 ? "rotate-180" : "rotate-0"
+                    }`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="black"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                )}
               </div>
               {open === i && (
                 <div className="pb-2 text-sm font-bold text-gray-700">
                   <ul>
-                    {item[1].map((item, i) => (
+                    {item.pdfs.map((item, i) => (
                       <li
                         key={i}
                         className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"

@@ -11,6 +11,9 @@ import profileSlice from "./Features/Profile/ProfileSlice";
 import usersSlice from "./Features/Dashboard/UsersSlice";
 import userCommentsSlice from "./Features/Dashboard/UsersCommentsSlice";
 import sectionsSlice from "./Features/Dashboard/SectionsSlice";
+import rolesSlice from "./Features/Dashboard/RolesSlice";
+import permissionsSlice from "./Features/Dashboard/PermmisionsSlice";
+import pdfsSlice from "./Features/Dashboard/PdfsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +22,9 @@ export const store = configureStore({
     codeSlice,
     profileSlice,
     usersSlice,
+    rolesSlice,
+    pdfsSlice,
+    permissionsSlice,
     sectionsSlice,
     userCommentsSlice,
     chatSlice,

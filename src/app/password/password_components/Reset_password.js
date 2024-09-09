@@ -7,36 +7,44 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
-const validationSchema = Yup.object({
-  code: Yup.string().required("Required"),
-  newPassword: Yup.string()
-    .required("Required")
-    .min(8, "Password must be at least 8 characters"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-    .required("Required"),
-});
 
-function ResetPassword() {
-  const router = useRouter();
-  const state = useSelector(state => state)
-  console.log(state)
+function ResetPassword({storedCode}) {
+  const validationSchema = Yup.object({
+    password: Yup.string()
+      .required("Required")
+      .min(8, "Password must be at least 8 characters"),
+      password_confirmation: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .required("Required"),
+  });
+  const navigate = useRouter()
+  const state = useSelector((state) => state);
+  console.log(state);
 
   const formik = useFormik({
     initialValues: {
-      code: "",
-      newPassword: "",
-      confirmPassword: "",
+      password: "",
+      password_confirmation: "",
     },
     validationSchema,
     onSubmit: (values) => {
       console.log(values);
       axios
-        .post(`${config.api}reset-password`, {
-          code: values.code,
-          newPassword: values.newPassword,
-        })
+        .post(
+          `${config.api}reset-password`,
+          {
+            ...values,
+            code: storedCode,
+          },
+          {
+            headers: {
+              Accept: "application/json",
+            },
+          }
+        )
         .then((res) => {
+          navigate.push('/login')
+
           if (res.data.status === "SUCCESS") {
             localStorage.setItem("data", JSON.stringify(res.data.data));
             // router.push("/");
@@ -90,7 +98,7 @@ function ResetPassword() {
         {/* New Password Input */}
         <div className="flex flex-col mb-6">
           <label
-            htmlFor="newPassword"
+            htmlFor="password"
             className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
           >
             New Password:
@@ -98,19 +106,19 @@ function ResetPassword() {
           <div className="relative">
             <input
               style={{ color: "black" }}
-              id="newPassword"
+              id="password"
               type="password"
-              name="newPassword"
+              name="password"
               className="text-sm sm:text-base placeholder-gray-500 pl-4 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
               placeholder="Enter new password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.newPassword}
+              value={formik.values.password}
             />
           </div>
-          {formik.touched.newPassword && formik.errors.newPassword ? (
+          {formik.touched.password && formik.errors.password ? (
             <div className="text-red-500 text-xs mt-1">
-              {formik.errors.newPassword}
+              {formik.errors.password}
             </div>
           ) : null}
         </div>
@@ -118,7 +126,7 @@ function ResetPassword() {
         {/* Confirm Password Input */}
         <div className="flex flex-col mb-6">
           <label
-            htmlFor="confirmPassword"
+            htmlFor="password_confirmation"
             className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
           >
             Confirm Password:
@@ -126,19 +134,20 @@ function ResetPassword() {
           <div className="relative">
             <input
               style={{ color: "black" }}
-              id="confirmPassword"
+              id="password_confirmation"
               type="password"
-              name="confirmPassword"
+              name="password_confirmation"
               className="text-sm sm:text-base placeholder-gray-500 pl-4 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
               placeholder="Confirm your new password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.confirmPassword}
+              value={formik.values.password_confirmation}
             />
           </div>
-          {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+          {formik.touched.password_confirmation &&
+          formik.errors.password_confirmation ? (
             <div className="text-red-500 text-xs mt-1">
-              {formik.errors.confirmPassword}
+              {formik.errors.password_confirmation}
             </div>
           ) : null}
         </div>

@@ -5,6 +5,8 @@ import Users_comments from "./DashContent/Users_comments";
 import Users_chat from "./DashContent/Users_chat";
 import Pdfs from "./DashContent/Pdfs";
 import Sections from "./DashContent/Sections";
+import Roles from "./DashContent/Roles";
+import Permmisions from "./DashContent/permissions";
 
 function Dashboard({ page }) {
   function handlePage() {
@@ -19,6 +21,10 @@ function Dashboard({ page }) {
         return <Pdfs />;
       case 5:
         return <Sections />;
+      case 6:
+        return <Roles />;
+      case 7:
+        return <Permmisions />;
       default:
         return <Users />;
     }
