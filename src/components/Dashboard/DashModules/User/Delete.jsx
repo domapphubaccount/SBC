@@ -17,7 +17,7 @@ export function DeleteUser({ openDelete, handleClose }) {
   };
 
 
-  console.log(userData,'userData')
+  // console.log(userData,'userData')
   return (
     <>
       <Modal

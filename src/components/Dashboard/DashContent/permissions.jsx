@@ -100,8 +100,19 @@ function Permmisions({}) {
     updatePermisionsData,
   ]);
 
-  console.log(openAdd);
+  // Step 1: State for search input
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // Step 2: Handle input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  // Step 3: Filter the rows based on the search term
+  const filteredData = permissionsData.filter((item) => {
+    return item.name.toLowerCase().includes(searchTerm);
+    // item.email.toLowerCase().includes(searchTerm)
+  });
   return (
     <>
       <section>
@@ -159,6 +170,13 @@ function Permmisions({}) {
         <div className="bg-white p-8 rounded-md w-full m-auto">
           <div>
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+              <div className="mb-5">
+                <input
+                  type="text"
+                  placeholder="SERACH"
+                  onChange={handleSearchChange}
+                />
+              </div>
               <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table className="min-w-full leading-normal font-semibold">
                   <thead>
@@ -173,7 +191,7 @@ function Permmisions({}) {
                   </thead>
                   <tbody>
                     {permissionsData.length > 0 &&
-                      permissionsData.map((item, index) => (
+                      filteredData.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">

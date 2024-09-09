@@ -175,7 +175,7 @@ function TailwindAccordion() {
                       open === 2 ? "rotate-180" : "rotate-0"
                     }`}
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="black"
+                    fill="white"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >

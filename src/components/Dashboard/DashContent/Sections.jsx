@@ -20,26 +20,19 @@ function Sections() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sections = useSelector((state) => state.sectionsSlice.sections);
   const updates = useSelector((state) => state.sectionsSlice.updates);
-
-  console.log(sections);
-
-  // const [openDelete, setOpenDelete] = useState(false);
-  // const [openEdit, setOpenEdit] = useState(false);
-  // const [openView, setOpenView] = useState(false);
   const [openWarn, setOpenWarn] = useState(false);
-  // const [openAdd, setOpenAdd] = useState(false);
 
   const openAdd = useSelector((state) => state.sectionsSlice.addModule);
   const openDelete = useSelector((state) => state.sectionsSlice.deleteModule);
   const openEdit = useSelector((state) => state.sectionsSlice.editModule);
 
   const handleOpenDelete = (id) => {
-    dispatch(getSectionId({id}));
+    dispatch(getSectionId({ id }));
     dispatch(deleteModule(true));
   };
-  const handleOpenEdit = (id,name) => {
-    dispatch(getSectionId({id,name}))
-    dispatch(editModule(true))
+  const handleOpenEdit = (id, name) => {
+    dispatch(getSectionId({ id, name }));
+    dispatch(editModule(true));
   };
   // const handleOpenView = () => setOpenView(!openView);
   const handleOpenWarn = () => setOpenWarn(!openWarn);
@@ -65,11 +58,28 @@ function Sections() {
     dispatch(getSectionsAction({ token }));
   }, [updates]);
 
+  // Step 1: State for search input
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Step 2: Handle input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  // Step 3: Filter the rows based on the search term
+  const filteredData = sections.filter((item) => {
+    return item.name.toLowerCase().includes(searchTerm);
+    // item.email.toLowerCase().includes(searchTerm)
+  });
+
   return (
     <>
       <section>
         <div>
-          <div class="flex py-3 pt-8 text-white rounded-lg" aria-label="Breadcrumb">
+          <div
+            class="flex py-3 pt-8 text-white rounded-lg"
+            aria-label="Breadcrumb"
+          >
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
               <li>
                 <div class="flex items-center">
@@ -119,6 +129,13 @@ function Sections() {
         <div className="bg-white p-8 rounded-md w-full m-auto">
           <div>
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+              <div className="mb-5">
+                <input
+                  type="text"
+                  placeholder="SERACH"
+                  onChange={handleSearchChange}
+                />
+              </div>
               <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table className="min-w-full leading-normal font-semibold">
                   <thead>
@@ -133,7 +150,7 @@ function Sections() {
                   </thead>
                   <tbody>
                     {sections.length > 0 ? (
-                      sections.map((item, index) => (
+                      filteredData.map((item, index) => (
                         <tr key={index} className="user_row">
                           <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm">
                             <div
@@ -157,7 +174,9 @@ function Sections() {
                                   strokeWidth={1.5}
                                   stroke="currentColor"
                                   className="size-4"
-                                  onClick={() => handleOpenEdit(item.id , item.name)}
+                                  onClick={() =>
+                                    handleOpenEdit(item.id, item.name)
+                                  }
                                 >
                                   <path
                                     strokeLinecap="round"

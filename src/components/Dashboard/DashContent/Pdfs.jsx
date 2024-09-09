@@ -27,6 +27,7 @@ import { DeleteRole } from "../DashModules/Roles/Delete";
 import { EditRole } from "../DashModules/Roles/Edit";
 import { getPdfsAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import { Addpdfs } from "../DashModules/Pdfs/AddPdfs";
+import { DeletePdfs } from "../DashModules/Pdfs/Delete";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -280,7 +281,7 @@ function Pdfs({}) {
       </section>
 
       {openDelete && (
-        <DeleteRole fileId={fileId} handleClose={handleClose} openDelete={openDelete} />
+        <DeletePdfs fileId={fileId} handleClose={handleClose} openDelete={openDelete} />
       )}
 
       {openEdit && <EditRole handleClose={handleClose} openEdit={openEdit} />}

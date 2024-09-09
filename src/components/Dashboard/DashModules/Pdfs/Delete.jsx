@@ -5,19 +5,18 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { deleteRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
+import { deletePdfAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 
-export function DeleteRole({ openDelete, handleClose }) {
+export function DeletePdfs({ openDelete, handleClose , fileId }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const roleData = useSelector((state) => state.rolesSlice.role);
 
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    dispatch(deleteRoleAction({ token, id: roleData.id }));
+    dispatch(deletePdfAction({ token, id: fileId }));
   };
 
-  console.log(roleData);
   return (
     <>
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
