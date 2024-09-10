@@ -46,21 +46,13 @@ function MultipleSelect() {
                       name={i + "r"}
                       type="checkbox"
                       id={i + "-11"}
-                      checked={state.includes(item.id)}
+                      checked={state.includes(item.chatgpt_file_id)}
                       onChange={() => {
-                        handleCheckboxChange(item.id);
+                        console.log(item)
+                        handleCheckboxChange(item.chatgpt_file_id);
                       }}
                     />
                     <label for={i + "-11"}>{item.name}</label>
-
-                    <div className="px-3">
-                      <ul>
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li>4</li>
-                      </ul>
-                    </div>
                   </div>
                 </Dropdown.Item>
               ))}

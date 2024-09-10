@@ -155,21 +155,25 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
 
+  console.log(
+    dashboardData && Object.entries(dashboardData?.chat_history)
+  );
+
   return (
     <div className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 ">
       <div className="accordion">
-        {dashboardData?.section_details &&
-        dashboardData.section_details.length >= 1 ? (
-          dashboardData.section_details.map((item, i) => (
+        {dashboardData?.chat_history &&
+        Object.entries(dashboardData.chat_history).length >= 1 ? (
+          Object.entries(dashboardData.chat_history).map((item, i) => (
             <div className="border-b border-gray-200" key={item[0]}>
               <div
                 className="cursor-pointer py-4 flex justify-between items-center"
                 onClick={() => toggle(i)}
               >
                 <span className="text-sm font-bold text-gray-800">
-                  {item.name}
+                  {item[0]}
                 </span>
-                {item?.pdfs?.length > 0 && (
+                {item[1]?.question && (
                   <svg
                     className={`w-5 h-5 transform transition-transform duration-300 ${
                       open === 2 ? "rotate-180" : "rotate-0"
@@ -191,16 +195,22 @@ function TailwindAccordion() {
               {open === i && (
                 <div className="pb-2 text-sm font-bold text-gray-700">
                   <ul>
-                    {item.pdfs.map((item, i) => (
+                    {item[1].map((item, i) => (
                       <li
                         key={i}
                         className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleGetChat(item.id, item.share_name);
+                          handleGetChat(
+                            item.master_user_chat_id,
+                            item.share_name
+                          );
                         }}
                       >
-                        -- {item.name}
+                        --{" "}
+                        {item.question.length > 20
+                          ? item.question.slice(0, 20)
+                          : item.question}
                         <ArchiveSettings
                           item={item}
                           setRenameToggle={setRenameToggle}

@@ -2,6 +2,7 @@
 import { getChatData, send_failed } from "@/app/Redux/Features/Chat/ChatSlice";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { update } from "@/app/Redux/Features/Update/UpdateSlice";
+import { config } from "@/config/config";
 import {
   Popover,
   PopoverContent,
@@ -14,7 +15,6 @@ import TextareaAutosize from "react-textarea-autosize";
 
 function ChatInput() {
   const [message, setMessage] = useState("");
-  const [token, setToken] = useState("");
   const [sendMessage, setSendMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const chatData = useSelector((state) => state.chatSlice.chat_data);
@@ -22,43 +22,43 @@ function ChatInput() {
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
   const [dir,setDir] = useState(false);
   const storedCode = useSelector(state => state.codeSlice.storedCode)
-
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const dispatch = useDispatch();
-
+  
   let errorsStore = ["error 1", "error 2", "error 3", "error 4", "error 5"];
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
       const storedData = JSON.parse(localStorage.getItem("data"));
-      setToken(storedData.token);
     }
   }, []);
+
   const handleSendMessage = () => {
     if (storedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       setLoading(true);
       axios
         .post(
-          "https://sbc.designal.cc/api/send-message",
+          `${config.api}ask_question`,
           {
             question: message,
-            master_chat_id: conversation && conversation.id,
-            selected_pdf: storedCode && storedCode,
+            thread_id: conversation && conversation.chatgpt_id || chatCode && chatCode ,
+            "file_ids[]": storedCode && storedCode.join(","),
           },
           {
             headers: {
+              Accept: "*/*",
               Authorization: `Bearer ${token}`,
             },
           }
         )
         .then((response) => {
-          console.log(response.data.success);
-          if (response.data.success) {
+          if (response.data) {
             dispatch(setTypeValue(true));
             dispatch(update());
             setMessage("");
           } else {
-            console.log("works", storedCode);
             setSendMessage(true);
             dispatch(
               send_failed(
@@ -123,7 +123,7 @@ function ChatInput() {
               }}
               className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
               onKeyDown={handleKeyDown}
-              disabled={!conversation.id}
+              // disabled={!conversation.id || chatCode}
               dir={dir ? 'ltr' : 'rtl'}
               placeholder={
                 !conversation?.id ? "start new chat first / إبدأ محادثة جديدة" : "start question / إبدأ بسؤال"

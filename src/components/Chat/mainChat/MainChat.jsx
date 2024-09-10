@@ -25,7 +25,7 @@ function MainChat({ elementWidth }) {
   const [user, setUser] = useState("");
   const [dislike, setDislike] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(false);
-  const [token, setToken] = useState("");
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [itemId, setItemId] = useState(null);
   const [dislikeMessage, setDislikeMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
@@ -34,10 +34,16 @@ function MainChat({ elementWidth }) {
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const updates = useSelector((state) => state.updateSlice.state);
   const conversation = useSelector((state) => state.chatSlice.conversation);
+  const getchat = useSelector((state) => state.chatSlice.get_chat);
   const loading = useSelector((state) => state.updateSlice.loading_chat);
   const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
   const [responseId, setResponseId] = useState("");
+
+  const chatCode = useSelector((state) => state.chatSlice.chat_code);
+
+  const state = useSelector((state) => state);
+  console.log(state, "state");
 
   function isEnglish(text) {
     // Remove non-alphabetic characters for a better accuracy
@@ -52,7 +58,6 @@ function MainChat({ elementWidth }) {
     // Check if the percentage is above a certain threshold (e.g., 50%)
     return percentageEnglish > 50;
   }
-
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [
@@ -78,7 +83,6 @@ function MainChat({ elementWidth }) {
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
       const storedData = JSON.parse(localStorage.getItem("data"));
-      setToken(storedData.token);
     }
   }, []);
   const handleReadText = async (textRead, id) => {
@@ -134,7 +138,7 @@ function MainChat({ elementWidth }) {
       });
     setTimeout(() => setCopyIcon(false), 500);
   };
-  
+
   const handleResendMessage = (id) => {
     setResponseId(id);
 
@@ -166,13 +170,14 @@ function MainChat({ elementWidth }) {
   const handleDislike = (data) => {
     axios
       .post(
-        "https://sbc.designal.cc/api/dislike",
+        `${config.api}dislike/message`,
         {
-          chat_id: itemId,
+          user_chat_id: itemId,
           comment: dislikeMessage,
         },
         {
           headers: {
+            Accept: "*/*",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -189,21 +194,21 @@ function MainChat({ elementWidth }) {
   };
   const handleStartNewChat = () => {
     disaptch(loading_chat(true));
-    const token = JSON.parse(localStorage.getItem("data")).token;
     axios
-      .get(`${config.api}create_thread`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          chat_id: "",
-          share_name: "1",
-        },
-      })
+      .post(
+        `${config.api}create_thread`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
-        disaptch(choseChate(response.data.data.id));
-        localStorage.setItem("chat", response.data.data.id);
-        disaptch(loading_chat(false));
+        console.log(response);
+        dispatch(choseChate(response.data.data[0]));
+        dispatch(loading_chat(false));
+        localStorage.setItem("chat", response.data.data[0]);
       })
       .catch((error) => {
         disaptch(loading_chat(false));
@@ -256,6 +261,25 @@ function MainChat({ elementWidth }) {
     window.MathJax && window.MathJax.typeset();
   }, [conversation, chatData]);
 
+  console.log(conversation && Object.entries(conversation).length === 0);
+  console.log(chatCode);
+
+  function handleShowStart() {
+    console.log(chatCode.length > 0);
+    if (chatCode) {
+      return false;
+    } else if (conversation && Object.entries(conversation).length === 0) {
+      return true;
+    }
+  }
+  function handleShowInput() {
+    if (chatCode.length == 0) {
+      return false;
+    } else if (conversation && Object.entries(conversation).length === 0) {
+      return true;
+    }
+  }
+
   return (
     <div className="col-span-3 bg-white relative">
       <div
@@ -290,7 +314,7 @@ function MainChat({ elementWidth }) {
               </div>
             ) : (
               <ul>
-                {conversation && Object.entries(conversation).length == 0 ? (
+                {handleShowStart() ? (
                   <div className="pt-3" style={{ paddingTop: "200px" }}>
                     <div className="text-center">
                       <div className="m-auto mb-2" style={{ width: "200px" }}>
@@ -323,13 +347,13 @@ function MainChat({ elementWidth }) {
                   >
                     {chatData &&
                       conversation &&
-                      conversation.user_chats &&
+                      conversation.userChats &&
                       chatData.map((item, i) => (
                         <React.Fragment key={i}>
                           <div className="flex justify-end relative">
                             <div>
                               <div className="chat_userName_2 text-right">
-                                {user}
+                                {user}ff
                               </div>
                               <div className="flex justify-end">
                                 <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card">
@@ -401,10 +425,7 @@ function MainChat({ elementWidth }) {
                               {item?.answer?.includes("//") && (
                                 <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                   <div className="w-full pb-2">
-                                    <div className="flex justify-between">
-                                      {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
-                                      {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
-                                    </div>
+                                    <div className="flex justify-between"></div>
                                     <span className="block ml-2 text-sm text-gray-600  font-semibold">
                                       {item.answer.match(pattern) ? (
                                         item.answer
@@ -556,7 +577,7 @@ function MainChat({ elementWidth }) {
                                       </svg>
                                     )
                                   )}
-                                  <svg
+                                  {/* <svg
                                     onClick={(e) =>
                                       handleResendMessage(item.id)
                                     }
@@ -570,17 +591,7 @@ function MainChat({ elementWidth }) {
                                       d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
                                       clipRule="evenodd"
                                     />
-                                  </svg>
-                                  {/* <svg
-                                    onClick={() => dislikeToggle(item.id)}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="black"
-                                    className="size-3.5 ml-2 cursor-pointer"
-                                  >
-                                    <path d="M15.73 5.5h1.035A7.465 7.465 0 0 1 18 9.625a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v.633A.75.75 0 0 1 9 22a2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 0 1 1.5 12.25c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23ZM21.669 14.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.958 8.958 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227Z" />
                                   </svg> */}
-
                                   <svg
                                     onClick={() => dislikeToggle(item.id)}
                                     xmlns="http://www.w3.org/2000/svg"

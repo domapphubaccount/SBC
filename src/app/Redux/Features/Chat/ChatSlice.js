@@ -6,13 +6,17 @@ const initialState = {
   value: 0,
   chat_data:[],
   conversation: [],
-  get_chat:''
+  get_chat: '',
+  chat_code: ''
 }
 
 export const chatSlice = createSlice({
-  name: 'counter',
+  name: 'chat',
   initialState,
   reducers: {
+    getChatCode: (state , action) => {
+      state.chat_code = action.payload
+    },
     getChatHistory: (state , action) => {
       state.value = action.payload
     },
@@ -58,6 +62,6 @@ export const chatSlice = createSlice({
   },
 })
 
-export const { getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success , send_failed , chat_out} = chatSlice.actions
+export const { getChatCode , getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success , send_failed , chat_out} = chatSlice.actions
 
 export default chatSlice.reducer

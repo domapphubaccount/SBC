@@ -11,7 +11,7 @@ export const getCodeAction = createAsyncThunk(
     const { token } = arg;
     console.log('code action ' , token)
     try {
-      const response = await axios.get(`https://sbc.designal.cc/api/sections`,{
+      const response = await axios.get(`${config.api}admin/section_pdf`,{
       headers: {
         Authorization: `Bearer ${token}`
       }})
