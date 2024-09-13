@@ -7,10 +7,13 @@ import Pdfs from "./DashContent/Pdfs";
 import Sections from "./DashContent/Sections";
 import Roles from "./DashContent/Roles";
 import Permmisions from "./DashContent/permissions";
+import DashboardData from "./DashContent/Dashboard";
 
 function Dashboard({ page }) {
   function handlePage() {
     switch (page) {
+      case 8:
+        return <DashboardData />;
       case 1:
         return <Users/>;
       case 2:
@@ -26,7 +29,7 @@ function Dashboard({ page }) {
       case 7:
         return <Permmisions />;
       default:
-        return <Users />;
+        return <DashboardData />;
     }
   }
 

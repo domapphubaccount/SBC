@@ -9,11 +9,12 @@ import loginSlice from "./Features/Auth/AuthSlice";
 import conversationSlice from "./Features/Conversation/ConversationSlice";
 import profileSlice from "./Features/Profile/ProfileSlice";
 import usersSlice from "./Features/Dashboard/UsersSlice";
-import userCommentsSlice from "./Features/Dashboard/UsersCommentsSlice";
 import sectionsSlice from "./Features/Dashboard/SectionsSlice";
 import rolesSlice from "./Features/Dashboard/RolesSlice";
 import permissionsSlice from "./Features/Dashboard/PermmisionsSlice";
 import pdfsSlice from "./Features/Dashboard/PdfsSlice";
+import userCommentsSlice from "./Features/Dashboard/UsersCommentsSlice";
+import historySlice from "./Features/Chat_History/historySlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     pdfsSlice,
     permissionsSlice,
     sectionsSlice,
+    historySlice,
     userCommentsSlice,
     chatSlice,
     updateSlice,

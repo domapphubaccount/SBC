@@ -13,7 +13,6 @@ function DropDown() {
   const state = useSelector(state => state.loginSlice)
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
-  console.log(token)
 
   const handleDropDown = () => {
     setDropDownToggle(!dropDownToggle);

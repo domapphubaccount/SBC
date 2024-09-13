@@ -15,6 +15,7 @@ import {
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import Logo from "@/assets/logo/icon.png";
 import { config } from "@/config/config";
+import { getHistoryAction } from "@/app/Redux/Features/Chat_History/historySlice";
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -26,35 +27,33 @@ function TailwindAccordion() {
   const [shareName, setShareName] = useState("0");
   const [shareToggle, setShareToggle] = useState(false);
   const [sharableChat, setSharableChat] = useState([]);
-
+  // const dashboardData = useSelector(state => state.chatSlice.chat_history[0])
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-
-  const dispatch = useDispatch();
-  const dashboardData = useSelector((state) => state.chatSlice.value[0]);
-
-  console.log(dashboardData);
-
+  const dashboardData = useSelector((state) => state.historySlice.chat_history[0]);
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (token) {
-      axios
-        .get(`${config.api}chat_history`, {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          if (res.data) {
-            dispatch(getChatHistory(res.data.data));
-          }
-        })
-        .catch((e) => console.log(e));
-    }
-    window.MathJax && window.MathJax.typeset();
-  }, [updates, updateDashboard, token]);
+  // useEffect(() => {
+  //   // dispatch(getHistoryAction({ token }));
+  //   if (token) {
+  //     axios
+  //       .get(`${config.api}chat_history`, {
+  //         headers: {
+  //           Accept: "*/*",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((res) => {
+  //         if (res.data) {
+  //           console.log(res.data.data)
+  //           dispatch(getChatHistory(res.data.data));
+  //         }
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
+  //   window.MathJax && window.MathJax.typeset();
+  // }, [updates, updateDashboard, token]);
 
   const handleAction = () => {
     setActionAlert(true);
@@ -91,7 +90,7 @@ function TailwindAccordion() {
   const handleRename = (handleChat) => {
     axios
       .post(
-        "https://sbc.designal.cc/api/rename-chat",
+        `${config.api}rename-chat`,
         {
           chat_id: handleChat.id,
           new_name: inputName,
@@ -117,6 +116,7 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
   const handleGetChat = (chat_id, share_name) => {
+    console.log("get chat");
     dispatch(choseChate(chat_id));
     dispatch(loading_chat(true));
     localStorage.setItem("chat", chat_id);
@@ -125,7 +125,7 @@ function TailwindAccordion() {
     dispatch(loading_chat(true));
     axios
       .post(
-        "https://sbc.designal.cc/api/delete-chat",
+        `${config.api}delete-chat`,
         {
           chat_id: handleChat.id,
           archive: handleChat.is_archive,
@@ -138,10 +138,8 @@ function TailwindAccordion() {
       )
       .then((response) => {
         if (response.data.success) {
-          // setCatchChat(null)
           dispatch(update_archive());
           dispatch(choseChate(null));
-          console.log("test");
           setHandleChat({});
           setOpen(false);
           dispatch(loading_chat(false));
@@ -154,10 +152,6 @@ function TailwindAccordion() {
       });
     window.MathJax && window.MathJax.typeset();
   };
-
-  console.log(
-    dashboardData && Object.entries(dashboardData?.chat_history)
-  );
 
   return (
     <div className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 ">
@@ -173,7 +167,7 @@ function TailwindAccordion() {
                 <span className="text-sm font-bold text-gray-800">
                   {item[0]}
                 </span>
-                {item[1]?.question && (
+                {item[1]?.id && (
                   <svg
                     className={`w-5 h-5 transform transition-transform duration-300 ${
                       open === 2 ? "rotate-180" : "rotate-0"
@@ -195,31 +189,31 @@ function TailwindAccordion() {
               {open === i && (
                 <div className="pb-2 text-sm font-bold text-gray-700">
                   <ul>
-                    {item[1].map((item, i) => (
-                      <li
-                        key={i}
-                        className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleGetChat(
-                            item.master_user_chat_id,
-                            item.share_name
-                          );
-                        }}
-                      >
-                        --{" "}
-                        {item.question.length > 20
-                          ? item.question.slice(0, 20)
-                          : item.question}
-                        <ArchiveSettings
-                          item={item}
-                          setRenameToggle={setRenameToggle}
-                          setDeleteToggle={setDeleteToggle}
-                          setHandleChat={setHandleChat}
-                          setShareToggle={setShareToggle}
-                        />
-                      </li>
-                    ))}
+                    {console.log(Object.entries(item[1]))}
+                    {item[1] &&
+                      Object.entries(item[1]).map((item, i) => (
+                        <li
+                          key={i}
+                          className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleGetChat(item[1].id, item[1].share_name);
+                          }}
+                        >
+                          --{" "}
+                          {item[1].id
+                            ? item[1].name
+                            : // ? item[1].id.slice(0, 20)
+                              item[1].name}
+                          <ArchiveSettings
+                            item={item[1]}
+                            setRenameToggle={setRenameToggle}
+                            setDeleteToggle={setDeleteToggle}
+                            setHandleChat={setHandleChat}
+                            setShareToggle={setShareToggle}
+                          />
+                        </li>
+                      ))}
                   </ul>
                 </div>
               )}

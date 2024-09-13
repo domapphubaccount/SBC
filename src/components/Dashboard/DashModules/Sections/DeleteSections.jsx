@@ -14,7 +14,7 @@ export function DeleteSections({ openDelete, handleClose }) {
 
 
   const dispatch = useDispatch();
-  console.log(sectionData)
+
 
   const handleDelete = () => {
     dispatch(deleteSectionAction({ token, id: sectionData }));

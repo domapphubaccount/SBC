@@ -9,7 +9,9 @@ import { deletePdfAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 
 export function DeletePdfs({ openDelete, handleClose , fileId }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const roleData = useSelector((state) => state.rolesSlice.role);
+  const loading = useSelector(state => state.pdfsSlice.loading)
+
+  // const pdfData = useSelector((state) => state.pdfSlice.pdf);
 
   const dispatch = useDispatch();
 
@@ -22,11 +24,11 @@ export function DeletePdfs({ openDelete, handleClose , fileId }) {
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
         <Modal.Header />
         <Modal.Body>
-          {roleData?.id ? (
+          {!loading && fileId ? (
             <div className="text-center">
               <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Are you sure you want to delete this Role?
+                Are you sure you want to delete this File?
               </h3>
               <div className="flex justify-center gap-4">
                 <Button color="failure" onClick={handleDelete}>

@@ -213,10 +213,8 @@ function Sections() {
                         </tr>
                       ))
                     ) : (
-                      <div className="flex justify-center w-full p-3">
-                        <div>
-                          <h4>NO DATA YET ..</h4>
-                        </div>
+                      <div className="p-4">
+                        <h4>NO DATA YET.</h4>
                       </div>
                     )}
                   </tbody>

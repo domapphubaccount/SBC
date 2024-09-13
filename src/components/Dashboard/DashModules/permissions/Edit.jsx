@@ -49,7 +49,7 @@ export function EditPermission({ openEdit, handleClose }) {
             {!loading ? (
               <>
                 <div>
-                  <Label htmlFor="name" value="User Name" />
+                  <Label htmlFor="name" value="Permission Name" />
                   <TextInput
                     id="name"
                     name="name"

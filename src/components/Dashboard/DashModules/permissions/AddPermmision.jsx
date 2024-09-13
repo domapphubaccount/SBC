@@ -48,7 +48,7 @@ export function AddPermmision({ openAdd, handleClose }) {
             ) : (
             <>
             <div>
-              <Label htmlFor="name" value="Role Name" />
+              <Label htmlFor="name" value="Permission Name" />
               <TextInput
                 id="name"
                 name="name"

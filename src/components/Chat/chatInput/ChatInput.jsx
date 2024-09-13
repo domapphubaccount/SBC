@@ -1,5 +1,9 @@
 "use client";
-import { getChatData, send_failed } from "@/app/Redux/Features/Chat/ChatSlice";
+import {
+  choseChate,
+  getChatData,
+  send_failed,
+} from "@/app/Redux/Features/Chat/ChatSlice";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { update } from "@/app/Redux/Features/Update/UpdateSlice";
 import { config } from "@/config/config";
@@ -20,12 +24,13 @@ function ChatInput() {
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
-  const [dir,setDir] = useState(false);
-  const storedCode = useSelector(state => state.codeSlice.storedCode)
+  const [dir, setDir] = useState(false);
+  const storedCode = useSelector((state) => state.codeSlice.storedCode);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
+  const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
-  
+
   let errorsStore = ["error 1", "error 2", "error 3", "error 4", "error 5"];
 
   useEffect(() => {
@@ -43,7 +48,9 @@ function ChatInput() {
           `${config.api}ask_question`,
           {
             question: message,
-            thread_id: conversation && conversation.chatgpt_id || chatCode && chatCode ,
+            thread_id:
+              (conversation && conversation.chatgpt_id) ||
+              (chatCode && chatCode),
             "file_ids[]": storedCode && storedCode.join(","),
           },
           {
@@ -57,6 +64,10 @@ function ChatInput() {
           if (response.data) {
             dispatch(setTypeValue(true));
             dispatch(update());
+            if (!chatslice) {
+              localStorage.setItem("chat", response.data.data.master_chat_id);
+              dispatch(choseChate(response.data.data.master_chat_id));
+            }
             setMessage("");
           } else {
             setSendMessage(true);
@@ -91,14 +102,14 @@ function ChatInput() {
 
   function isEnglish(text) {
     // Remove non-alphabetic characters for a better accuracy
-    const cleanedText = text.replace(/[^a-zA-Z]/g, '');
+    const cleanedText = text.replace(/[^a-zA-Z]/g, "");
     // Calculate the percentage of alphabetic characters that are English
     const englishCharCount = cleanedText.length;
     const totalCharCount = text.length;
-  
+
     // Determine the percentage of English characters
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
-  
+
     // Check if the percentage is above a certain threshold (e.g., 50%)
     setDir(percentageEnglish > 50);
   }
@@ -118,15 +129,17 @@ function ChatInput() {
           <>
             <TextareaAutosize
               onChange={(e) => {
-                isEnglish(e.target.value)
+                isEnglish(e.target.value);
                 setMessage(e.target.value);
               }}
               className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
               onKeyDown={handleKeyDown}
               // disabled={!conversation.id || chatCode}
-              dir={dir ? 'ltr' : 'rtl'}
+              dir={dir ? "ltr" : "rtl"}
               placeholder={
-                !conversation?.id ? "start new chat first / إبدأ محادثة جديدة" : "start question / إبدأ بسؤال"
+                !conversation?.id
+                  ? "start new chat first / إبدأ محادثة جديدة"
+                  : "start question / إبدأ بسؤال"
               }
               maxRows={8}
             />

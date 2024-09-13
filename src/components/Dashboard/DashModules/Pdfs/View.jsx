@@ -8,8 +8,6 @@ export function ViewRole({ openView, handleClose }) {
   const roleData = useSelector((state) => state.rolesSlice.role);
   const loading = useSelector((state) => state.usersSlice.loading);
 
-  console.log(roleData, "roledata");
-
   return (
     <>
       <Modal show={openView} size="md" popup onClose={handleClose}>

@@ -186,7 +186,7 @@ export const permissionsSlice = createSlice({
       })
       .addCase(getPermissionsAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload;
       })
       // end get permisionss
 

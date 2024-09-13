@@ -74,9 +74,7 @@ function Roles({}) {
 
   //   start add role             ####DONE
   const handleOpenAdd = () => {
-    console.log("w");
     dispatch(addModule(true));
-    console.log("w2");
   };
   //   end add role
 
@@ -104,10 +102,8 @@ function Roles({}) {
 
   // Step 3: Filter the rows based on the search term
   const filteredData = rolesData.filter((item) => {
-    return (
-      item.name.toLowerCase().includes(searchTerm) 
-      // item.email.toLowerCase().includes(searchTerm)
-    );
+    return item.name.toLowerCase().includes(searchTerm);
+    // item.email.toLowerCase().includes(searchTerm)
   });
 
   return (
@@ -167,7 +163,6 @@ function Roles({}) {
         <div className="bg-white p-8 rounded-md w-full m-auto">
           <div>
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-
               <div className="mb-5">
                 <input
                   type="text"
@@ -189,7 +184,7 @@ function Roles({}) {
                     </tr>
                   </thead>
                   <tbody>
-                    {rolesData.length > 0 &&
+                    {rolesData.length > 0 ? (
                       filteredData.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
@@ -293,7 +288,12 @@ function Roles({}) {
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      <div className="p-4">
+                        <h4>NO DATA YET.</h4>
+                      </div>
+                    )}
                   </tbody>
                 </table>
               </div>

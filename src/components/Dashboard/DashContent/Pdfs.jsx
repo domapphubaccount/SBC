@@ -13,19 +13,15 @@ import {
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
 import {
-  addModule,
   closeView,
-  deleteModule,
   editModule,
   getRoleByIDAction,
   getRolesAction,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/RolesSlice";
-import { AddRole } from "../DashModules/Roles/AddRole";
 import { ViewRole } from "../DashModules/Roles/View";
-import { DeleteRole } from "../DashModules/Roles/Delete";
 import { EditRole } from "../DashModules/Roles/Edit";
-import { getPdfsAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
+import { addModule, deleteModule, getPdfsAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import { Addpdfs } from "../DashModules/Pdfs/AddPdfs";
 import { DeletePdfs } from "../DashModules/Pdfs/Delete";
 
@@ -33,17 +29,17 @@ function Pdfs({}) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const pdfsData = useSelector((state) => state.pdfsSlice.pdfs);
-  const updateRolesData = useSelector((state) => state.rolesSlice.updates);
+  const updatePdfsData = useSelector((state) => state.pdfsSlice.updates);
   const [openWarn, setOpenWarn] = useState(false);
 
   const [fileId,setFileID] = useState('')
 
-  const openEdit = useSelector((state) => state.rolesSlice.editModule);
-  const openDelete = useSelector((state) => state.rolesSlice.deleteModule);
+  const openEdit = useSelector((state) => state.pdfsSlice.editModule);
+  const openDelete = useSelector((state) => state.pdfsSlice.deleteModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
 
-  const openAdd = useSelector((state) => state.rolesSlice.addModule);
-  const openView = useSelector((state) => state.rolesSlice.viewModule);
+  const openAdd = useSelector((state) => state.pdfsSlice.addModule);
+  const openView = useSelector((state) => state.pdfsSlice.viewModule);
 
   const handleClose = () => {
     dispatch(closeView());
@@ -94,7 +90,7 @@ function Pdfs({}) {
     dispatch(getPdfsAction({ token }));
   }, [
     /* updates */
-    updateRolesData,
+    updatePdfsData,
   ]);
 
   return (
@@ -167,7 +163,7 @@ function Pdfs({}) {
                     </tr>
                   </thead>
                   <tbody>
-                    {pdfsData.length > 0 &&
+                    {pdfsData.length > 0 ?
                       pdfsData.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
@@ -197,60 +193,11 @@ function Pdfs({}) {
                           </td>
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex gap-2 justify-start">
-                              {/* start view */}
-                              <button
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
-                                onClick={() => handleOpenView(item.id)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="white"
-                                  className="size-4"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                                  />
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                  />
-                                </svg>
-                              </button>
-                              {/* end view */}
-                              {/* start edit */}
-                              <button
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="size-4"
-                                  onClick={() => handleOpenEdit(item.id)}
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                  />
-                                </svg>
-                              </button>
-                              {/* end edit */}
                               {/* start delete */}
                               <button
                                 type="button"
                                 className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                                onClick={() => handleOpenDelete(item.id)}
+                                onClick={() => handleOpenDelete(item.chatgpt_file_id)}
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +218,10 @@ function Pdfs({}) {
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    :
+                    <div className="p-4"><h4>NO DATA YET.</h4></div>
+                    }
                   </tbody>
                 </table>
               </div>

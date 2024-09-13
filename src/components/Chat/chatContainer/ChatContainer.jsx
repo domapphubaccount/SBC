@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { getCode, getCodeAction } from "@/app/Redux/Features/Code/CodeSlice";
 import {
+  chatSlice_loading,
+  getChatAction,
   getChatData,
   getConversation,
 } from "@/app/Redux/Features/Chat/ChatSlice";
@@ -20,14 +22,12 @@ function ChatContainer() {
   const updates = useSelector((state) => state.updateSlice.state);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
+  console.log('render')
 
-  
-  console.log(token)
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("page");
     if (!JSON.parse(localStorage.getItem("data"))) {
       redirect("/signIn");
     } else {
@@ -50,8 +50,9 @@ function ChatContainer() {
   useEffect(() => {
     if (token) {
       if (catchChat || localStorage.getItem("chat") || chatCode) {
+        dispatch(chatSlice_loading(true))
         axios
-          .get(`${config.api}get_chat/${localStorage.getItem("chat")&&localStorage.getItem("chat")}`,{
+          .get(`${config.api}get_chat/${localStorage.getItem("chat")&&localStorage.getItem("chat") || catchChat}`,{
             headers: {
               Accept: "*/*",
               Authorization: `Bearer ${token}`,
@@ -59,16 +60,17 @@ function ChatContainer() {
           })
           .then((response) => {
             if (response.data) {
-              console.log(response.data.data)
               dispatch(getConversation(response.data.data));
-
               dispatch(getChatData(response.data.data.userChats));
               dispatch(loading_chat(false));
+              dispatch(chatSlice_loading(false))
             }
           })
           .catch((error) => {
+            dispatch(chatSlice_loading(false))
             console.error("There was an error making the request!", error);
           });
+        // dispatch(getChatAction({token,chat_id: catchChat || localStorage.getItem("chat")&&localStorage.getItem("chat")}))
       } else if (
         dashboardData.chat_history&&
         Object.entries(dashboardData.chat_history).length >= 1 &&
@@ -83,7 +85,6 @@ function ChatContainer() {
             },
           })
           .then((response) => {
-            console.log('test2',response)
             if (response) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));

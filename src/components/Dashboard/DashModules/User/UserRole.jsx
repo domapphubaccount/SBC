@@ -46,6 +46,7 @@ export function UserRole({ openRole, handleClose }) {
                     onChange={formik.handleChange}
                     value={formik.values.role}
                   >
+                    <option value={""}>None</option>
                     <option value={"admin"}>Admin</option>
                     <option value={"user"}>User</option>
                   </select>

@@ -11,7 +11,11 @@ import {
   loading_chat,
   updateSlice,
 } from "@/app/Redux/Features/Update/UpdateSlice";
-import { choseChate } from "@/app/Redux/Features/Chat/ChatSlice";
+import {
+  chat_out,
+  choseChate,
+  getChatCode,
+} from "@/app/Redux/Features/Chat/ChatSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import StartLogo from "@/assets/logo/start_logo.png";
 import Logo from "@/assets/logo/icon.png";
@@ -31,31 +35,27 @@ function MainChat({ elementWidth }) {
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
   const [copID, setCopId] = useState();
   const disaptch = useDispatch();
-  const chatData = useSelector((state) => state.chatSlice.chat_data);
   const updates = useSelector((state) => state.updateSlice.state);
+  const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const getchat = useSelector((state) => state.chatSlice.get_chat);
   const loading = useSelector((state) => state.updateSlice.loading_chat);
+  const chatSlice_loading = useSelector((state) => state.chatSlice.loading);
   const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
   const [responseId, setResponseId] = useState("");
-
+  const dispatch = useDispatch();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
 
-  const state = useSelector((state) => state);
-  console.log(state, "state");
+
+  const [windhtchat, setwidthchat] = useState();
+
 
   function isEnglish(text) {
-    // Remove non-alphabetic characters for a better accuracy
     const cleanedText = text.replace(/[^a-zA-Z]/g, "");
-    // Calculate the percentage of alphabetic characters that are English
     const englishCharCount = cleanedText.length;
     const totalCharCount = text.length;
-
-    // Determine the percentage of English characters
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
-
-    // Check if the percentage is above a certain threshold (e.g., 50%)
     return percentageEnglish > 50;
   }
   useEffect(() => {
@@ -80,24 +80,14 @@ function MainChat({ elementWidth }) {
     setItemId(id);
     setDislike(!dislike);
   };
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
-    }
-  }, []);
   const handleReadText = async (textRead, id) => {
     setCopId(id);
     try {
-      // Check if the text is in Arabic
       const isArabic = /[^\u0000-\u007F]/.test(textRead);
-
       if (isArabic) {
-        // Translate Arabic text to English
         const { text } = await translate(textRead, { to: "en" });
         textRead = text;
       }
-
-      // Speak the text in English
       if ("speechSynthesis" in window) {
         const utterance = new SpeechSynthesisUtterance(textRead);
         utterance.lang = "en-US"; // Set language to English (United States)
@@ -138,10 +128,8 @@ function MainChat({ elementWidth }) {
       });
     setTimeout(() => setCopyIcon(false), 500);
   };
-
   const handleResendMessage = (id) => {
     setResponseId(id);
-
     setLoadingMessage(true);
     axios
       .post(
@@ -156,7 +144,6 @@ function MainChat({ elementWidth }) {
         }
       )
       .then((response) => {
-        console.log(response.data);
         disaptch(updateSlice());
         setLoadingMessage(false);
         setResponseId("");
@@ -183,7 +170,6 @@ function MainChat({ elementWidth }) {
         }
       )
       .then((response) => {
-        console.log(response.data);
         setLoadingMessage(false);
         setDislike(!dislike);
       })
@@ -193,7 +179,8 @@ function MainChat({ elementWidth }) {
       });
   };
   const handleStartNewChat = () => {
-    disaptch(loading_chat(true));
+    dispatch(chat_out());
+    dispatch(loading_chat(true));
     axios
       .post(
         `${config.api}create_thread`,
@@ -205,10 +192,9 @@ function MainChat({ elementWidth }) {
         }
       )
       .then((response) => {
-        console.log(response);
-        dispatch(choseChate(response.data.data[0]));
+        dispatch(getChatCode(response.data.data[0]));
         dispatch(loading_chat(false));
-        localStorage.setItem("chat", response.data.data[0]);
+        // localStorage.setItem("chat", response.data.data[0]);
       })
       .catch((error) => {
         disaptch(loading_chat(false));
@@ -220,7 +206,6 @@ function MainChat({ elementWidth }) {
       setUser(JSON.parse(localStorage.getItem("data")).name);
     }
   }, []);
-  const [windhtchat, setwidthchat] = useState();
   useEffect(() => {
     setwidthchat(window.innerWidth);
     window.onresize = () => {
@@ -228,6 +213,7 @@ function MainChat({ elementWidth }) {
       window.MathJax && window.MathJax.typeset();
     };
   }, []);
+
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [windhtchat]);
@@ -235,6 +221,7 @@ function MainChat({ elementWidth }) {
     window.MathJax && window.MathJax.typeset();
   }, [conversation]);
   const pattern = /SBC.*?\/\//g;
+
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);
@@ -261,24 +248,21 @@ function MainChat({ elementWidth }) {
     window.MathJax && window.MathJax.typeset();
   }, [conversation, chatData]);
 
-  console.log(conversation && Object.entries(conversation).length === 0);
-  console.log(chatCode);
-
   function handleShowStart() {
-    console.log(chatCode.length > 0);
     if (chatCode) {
       return false;
     } else if (conversation && Object.entries(conversation).length === 0) {
       return true;
     }
   }
-  function handleShowInput() {
-    if (chatCode.length == 0) {
-      return false;
-    } else if (conversation && Object.entries(conversation).length === 0) {
-      return true;
+
+
+
+  useEffect(() => {
+    if (localStorage.getItem("data")) {
+      setUser(JSON.parse(localStorage.getItem("data")).name);
     }
-  }
+  }, []);
 
   return (
     <div className="col-span-3 bg-white relative">
@@ -304,7 +288,7 @@ function MainChat({ elementWidth }) {
           ></div>
           {/* relative */}
           <div className="col-span-3 py-5">
-            {loading ? (
+            {chatSlice_loading ? (
               <div className="flex items-center justify-center min-h-screen">
                 <img
                   src={loadingImg.src}
@@ -320,7 +304,6 @@ function MainChat({ elementWidth }) {
                       <div className="m-auto mb-2" style={{ width: "200px" }}>
                         <img src={StartLogo.src} className="w-100" alt="" />
                       </div>
-
                       {/* <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1> */}
                       <p className="mt-3 text-xs leading-8 text-gray-600">
                         you can start new session or chose previous chat.
@@ -353,7 +336,7 @@ function MainChat({ elementWidth }) {
                           <div className="flex justify-end relative">
                             <div>
                               <div className="chat_userName_2 text-right">
-                                {user}ff
+                                {user}
                               </div>
                               <div className="flex justify-end">
                                 <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card">
@@ -577,21 +560,6 @@ function MainChat({ elementWidth }) {
                                       </svg>
                                     )
                                   )}
-                                  {/* <svg
-                                    onClick={(e) =>
-                                      handleResendMessage(item.id)
-                                    }
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="black"
-                                    className="size-3.5 ml-2 cursor-pointer"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg> */}
                                   <svg
                                     onClick={() => dislikeToggle(item.id)}
                                     xmlns="http://www.w3.org/2000/svg"
@@ -622,14 +590,16 @@ function MainChat({ elementWidth }) {
           </div>
         </div>
       </div>
-      {pathName.slice(0, 9) == "/sharable"
-        ? ""
-        : conversation &&
-          Object.entries(conversation).length != 0 && (
-            <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              <ChatInput />
-            </div>
-          )}
+      {pathName.slice(0, 9) == "/sharable" ? (
+        ""
+      ) : (conversation && Object.entries(conversation).length !== 0) ||
+        chatCode.length > 0 ? (
+        <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
+          <ChatInput />
+        </div>
+      ) : (
+        <div></div>
+      )}
       {dislike && (
         <Dislike
           handleDislike={handleDislike}

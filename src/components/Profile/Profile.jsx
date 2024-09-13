@@ -45,7 +45,6 @@ function Profile() {
         .required("Email is required"),
     }),
     onSubmit: (values) => {
-      console.log("Profile data submitted:", values);
       axios
         .post("https://sbc.designal.cc/api/update-profile", values, {
           headers: {
@@ -82,7 +81,6 @@ function Profile() {
         .required("Confirm password is required"),
     }),
     onSubmit: (values) => {
-      console.log("Password data submitted:", values);
       dispatch(
         updatePasswordAction({
           token,

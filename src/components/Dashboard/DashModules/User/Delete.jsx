@@ -9,6 +9,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 export function DeleteUser({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const userData = useSelector((state) => state.usersSlice.user);
+  const loading = useSelector((state) => state.usersSlice.loading);
 
   const dispatch = useDispatch();
 
@@ -28,7 +29,7 @@ export function DeleteUser({ openDelete, handleClose }) {
       >
         <Modal.Header />
         <Modal.Body>
-          {userData.id ? (
+          {userData.id && !loading ? (
             <div className="text-center">
               <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">

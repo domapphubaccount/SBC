@@ -60,7 +60,7 @@ export const deletePdfAction = createAsyncThunk(
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/roles/${id}`, {
+      const response = await axios.delete(`${config.api}admin/force_delete_file/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -214,7 +214,7 @@ export const pdfsSlice = createSlice({
       })
       // end add pdf file
 
-      //start delete role
+      //start delete pdf file
       .addCase(deletePdfAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -229,7 +229,7 @@ export const pdfsSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       })
-      // end delete role
+      // end delete pdf file
 
 
 

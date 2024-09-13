@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
-import { choseChate, get_chat, getChatCode } from "@/app/Redux/Features/Chat/ChatSlice";
+import { chat_out, choseChate, get_chat, getChatCode } from "@/app/Redux/Features/Chat/ChatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import Logo from "/public/logo.png";
@@ -19,6 +19,7 @@ function Header({ path }) {
   const pathname = usePathname();
 
   const handleStartNewChat = () => {
+    dispatch(chat_out())
     dispatch(loading_chat(true));
     axios
       .post(
@@ -33,6 +34,7 @@ function Header({ path }) {
       .then((response) => {
         dispatch(getChatCode(response.data.data[0]));
         dispatch(loading_chat(false));
+        
         // localStorage.setItem("chat_code", response.data.data[0]);
       })
       .catch((error) => {

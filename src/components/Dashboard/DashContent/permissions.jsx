@@ -190,7 +190,7 @@ function Permmisions({}) {
                     </tr>
                   </thead>
                   <tbody>
-                    {permissionsData.length > 0 &&
+                    {permissionsData.length > 0 ? (
                       filteredData.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
@@ -294,7 +294,12 @@ function Permmisions({}) {
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      <div className="p-4">
+                        <h4>NO DATA YET.</h4>
+                      </div>
+                    )}
                   </tbody>
                 </table>
               </div>

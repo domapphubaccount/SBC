@@ -221,7 +221,8 @@ function Users({}) {
                                 color="gray"
                                 onClick={() => handleOpenRole(item.id)}
                               >
-                                Admin
+                                {item.roles[0]?.name ? item.roles[0]?.name : 'NAN' }
+                                {/* Admin */}
                               </Button>
                             </div>
                           </td>

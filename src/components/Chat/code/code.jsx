@@ -48,7 +48,6 @@ function MultipleSelect() {
                       id={i + "-11"}
                       checked={state.includes(item.chatgpt_file_id)}
                       onChange={() => {
-                        console.log(item)
                         handleCheckboxChange(item.chatgpt_file_id);
                       }}
                     />
