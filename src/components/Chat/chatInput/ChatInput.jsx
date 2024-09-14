@@ -1,5 +1,6 @@
 "use client";
 import {
+  addQuestionAction,
   choseChate,
   getChatData,
   send_failed,
@@ -92,6 +93,29 @@ function ChatInput() {
       setSendMessage(true);
     }
   };
+
+  // const handleSendMessage = () => {
+  //   if (storedCode.length > 0 && message.length > 0) {
+  //     console.log({
+  //           token,
+  //           question: message,
+  //           thread_id:
+  //             (conversation && conversation.chatgpt_id) || (chatCode && chatCode),
+  //           files: storedCode
+  //         })
+  //     dispatch(
+  //       addQuestionAction({
+  //         token,
+  //         question: message,
+  //         thread_id:
+  //           (conversation && conversation.chatgpt_id) || (chatCode && chatCode),
+  //         files: storedCode
+  //       })
+  //     );
+  //   } else if (storedCode.length === 0) {
+  //     setSendMessage(true);
+  //   }
+  // };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

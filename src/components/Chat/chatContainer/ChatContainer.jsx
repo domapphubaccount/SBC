@@ -1,20 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Refrence from "../reference/Refrence";
-import ChatInput from "../chatInput/ChatInput";
 import MainChat from "../mainChat/MainChat";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { getCode, getCodeAction } from "@/app/Redux/Features/Code/CodeSlice";
+import { getCodeAction } from "@/app/Redux/Features/Code/CodeSlice";
 import {
-  chatSlice_loading,
-  getChatAction,
   getChatData,
   getConversation,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import { config } from "@/config/config";
+import { loading_get_chat_history } from "@/app/Redux/Features/Chat_History/historySlice";
 
 function ChatContainer() {
   const dashboardData = useSelector((state) => state.chatSlice.value);
@@ -22,9 +20,7 @@ function ChatContainer() {
   const updates = useSelector((state) => state.updateSlice.state);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
-  console.log('render')
-
-
+  const state = useSelector(state => state)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -35,22 +31,10 @@ function ChatContainer() {
     }
   }, []);
 
-  const [elementWidth, setElementWidth] = useState();
-  useEffect(() => {
-    const updateElementWidth = () => {
-      setElementWidth(document.getElementById("listRef").offsetWidth);
-    };
-    updateElementWidth(); // Set initial width
-    window.addEventListener("resize", updateElementWidth);
-    return () => {
-      window.removeEventListener("resize", updateElementWidth);
-    };
-  }, []);
-
   useEffect(() => {
     if (token) {
       if (catchChat || localStorage.getItem("chat") || chatCode) {
-        dispatch(chatSlice_loading(true))
+        // dispatch(chatSlice_loading(true))
         axios
           .get(`${config.api}get_chat/${localStorage.getItem("chat")&&localStorage.getItem("chat") || catchChat}`,{
             headers: {
@@ -62,12 +46,13 @@ function ChatContainer() {
             if (response.data) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
-              dispatch(loading_chat(false));
-              dispatch(chatSlice_loading(false))
+              // dispatch(loading_chat(false));
+              dispatch(loading_get_chat_history(false))
+              // dispatch(chatSlice_loading(false))
             }
           })
           .catch((error) => {
-            dispatch(chatSlice_loading(false))
+            // dispatch(chatSlice_loading(false))
             console.error("There was an error making the request!", error);
           });
         // dispatch(getChatAction({token,chat_id: catchChat || localStorage.getItem("chat")&&localStorage.getItem("chat")}))
@@ -88,7 +73,8 @@ function ChatContainer() {
             if (response) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
-              dispatch(loading_chat(false));
+              // dispatch(loading_chat(false));
+              dispatch(loading_get_chat_history(false))
             }
           })
           .catch((error) => {
@@ -96,7 +82,6 @@ function ChatContainer() {
           });
       }
     }
-    // window.MathJax && window.MathJax.typesecatchChatt();
   }, [token, dashboardData, updates, catchChat]);
 
   return (
@@ -105,7 +90,7 @@ function ChatContainer() {
         <div className="w-screen" style={{ overflowX: "hidden" }}>
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
             <div className="grid grid-cols-4 min-w-full">
-              <Refrence setElementWidth={setElementWidth} />
+              <Refrence />
               <MainChat />
             </div>
           </div>

@@ -15,7 +15,8 @@ import {
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import Logo from "@/assets/logo/icon.png";
 import { config } from "@/config/config";
-import { getHistoryAction } from "@/app/Redux/Features/Chat_History/historySlice";
+import { getHistoryAction, loading_get_chat_history } from "@/app/Redux/Features/Chat_History/historySlice";
+import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -32,28 +33,29 @@ function TailwindAccordion() {
   const dashboardData = useSelector((state) => state.historySlice.chat_history[0]);
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
+  const loading = useSelector(state => state.chatActionsSlice.loading)
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   // dispatch(getHistoryAction({ token }));
-  //   if (token) {
-  //     axios
-  //       .get(`${config.api}chat_history`, {
-  //         headers: {
-  //           Accept: "*/*",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((res) => {
-  //         if (res.data) {
-  //           console.log(res.data.data)
-  //           dispatch(getChatHistory(res.data.data));
-  //         }
-  //       })
-  //       .catch((e) => console.log(e));
-  //   }
-  //   window.MathJax && window.MathJax.typeset();
-  // }, [updates, updateDashboard, token]);
+  useEffect(() => {
+    dispatch(getHistoryAction({ token }));
+    // if (token) {
+    //   axios
+    //     .get(`${config.api}chat_history`, {
+    //       headers: {
+    //         Accept: "*/*",
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       if (res.data) {
+    //         console.log(res.data.data)
+    //         dispatch(getChatHistory(res.data.data));
+    //       }
+    //     })
+    //     .catch((e) => console.log(e));
+    // }
+    // window.MathJax && window.MathJax.typeset();
+  }, [updates, updateDashboard, token]);
 
   const handleAction = () => {
     setActionAlert(true);
@@ -88,6 +90,7 @@ function TailwindAccordion() {
     setOpen((prevId) => (prevId === id ? null : id));
   };
   const handleRename = (handleChat) => {
+    dispatch(loading_chat_action(true))
     axios
       .post(
         `${config.api}rename-chat`,
@@ -102,15 +105,17 @@ function TailwindAccordion() {
         }
       )
       .then((response) => {
-        if (response.data.success) {
-          setRenameToggle(false);
+        if (response.data) {
           setHandleChat({});
           handleAction();
           dispatch(update_archive());
+          dispatch(loading_chat_action(false))
+          setRenameToggle(false);
           setOpen(false);
         }
       })
       .catch((error) => {
+        dispatch(loading_chat_action(false))
         console.error("There was an error making the request!", error);
       });
     window.MathJax && window.MathJax.typeset();
@@ -118,7 +123,8 @@ function TailwindAccordion() {
   const handleGetChat = (chat_id, share_name) => {
     console.log("get chat");
     dispatch(choseChate(chat_id));
-    dispatch(loading_chat(true));
+    // dispatch(loading_chat(true));
+    dispatch(loading_get_chat_history(true))
     localStorage.setItem("chat", chat_id);
   };
   const handleDeleteChate = (handleChat) => {
@@ -189,7 +195,6 @@ function TailwindAccordion() {
               {open === i && (
                 <div className="pb-2 text-sm font-bold text-gray-700">
                   <ul>
-                    {console.log(Object.entries(item[1]))}
                     {item[1] &&
                       Object.entries(item[1]).map((item, i) => (
                         <li
@@ -269,6 +274,7 @@ function TailwindAccordion() {
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
+                    disabled={loading}
                     onClick={() => handleRename(handleChat)}
                     type="button"
                     class="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500	 sm:ml-3 sm:w-auto"

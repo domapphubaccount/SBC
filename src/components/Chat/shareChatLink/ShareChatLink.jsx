@@ -3,6 +3,7 @@ import axios from 'axios';
 import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import React, { useEffect, useState } from 'react';
 import Logo from "@/assets/logo/icon.png"
+import { config } from '@/config/config';
 
 
 function Example({ shareName, setShareName , setShareToggle , setSharableChat , sharableChat , shareToggle , handleCopyShare , handleChat ,token}) {
@@ -10,7 +11,7 @@ function Example({ shareName, setShareName , setShareToggle , setSharableChat , 
   const [copyAction,setCopyAction] = useState(false)
       // name toggle
   const toggleShare = () => { 
-    axios.get(`https://sbc.designal.cc/api/get-chat-by-hash/${handleChat.sharable_link}`,{
+    axios.get(`${config.api}/sharable/${handleChat.sharable_link}`,{
       headers: {
         Authorization: `Bearer ${token}`
       }            

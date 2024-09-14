@@ -15,6 +15,7 @@ import permissionsSlice from "./Features/Dashboard/PermmisionsSlice";
 import pdfsSlice from "./Features/Dashboard/PdfsSlice";
 import userCommentsSlice from "./Features/Dashboard/UsersCommentsSlice";
 import historySlice from "./Features/Chat_History/historySlice";
+import chatActionsSlice from "./Features/Chat/ChatActionsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -32,5 +33,6 @@ export const store = configureStore({
     chatSlice,
     updateSlice,
     typeSlice,
+    chatActionsSlice,
   },
 });

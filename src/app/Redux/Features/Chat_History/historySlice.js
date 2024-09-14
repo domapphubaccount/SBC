@@ -1,3 +1,4 @@
+"use client"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
@@ -36,7 +37,11 @@ const initialState = {
 export const historySlice = createSlice({
   name: "history",
   initialState,
-  reducers: {},
+  reducers: {
+    loading_get_chat_history: (state , action) => {
+      state.loading = action.payload
+    }
+  },
   extraReducers: (builder) => {
     builder
       //start get history
@@ -56,4 +61,6 @@ export const historySlice = createSlice({
       // end get history
   },
 });
+
+export const {loading_get_chat_history} = historySlice.actions 
 export default historySlice.reducer;

@@ -22,6 +22,7 @@ import Logo from "@/assets/logo/icon.png";
 import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { config } from "@/config/config";
+import { action_done, loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 
 function MainChat({ elementWidth }) {
   const pathName = usePathname();
@@ -155,6 +156,7 @@ function MainChat({ elementWidth }) {
       });
   };
   const handleDislike = (data) => {
+    dispatch(loading_chat_action(true))
     axios
       .post(
         `${config.api}dislike/message`,
@@ -171,10 +173,13 @@ function MainChat({ elementWidth }) {
       )
       .then((response) => {
         setLoadingMessage(false);
-        setDislike(!dislike);
+        disaptch(loading_chat_action(false))
+        setDislike(false);
       })
       .catch((error) => {
         setLoadingMessage(false);
+        disaptch(loading_chat_action(false))
+        setDislike(false)
         console.error("There was an error making the request!", error);
       });
   };
@@ -200,7 +205,8 @@ function MainChat({ elementWidth }) {
         disaptch(loading_chat(false));
         console.error("There was an error making the request!", error);
       });
-  };
+    };
+    dispatch(action_done(true))
   useEffect(() => {
     if (localStorage.getItem("data")) {
       setUser(JSON.parse(localStorage.getItem("data")).name);
@@ -360,7 +366,7 @@ function MainChat({ elementWidth }) {
                                   </MathJaxContext>
                                 </div>
                               </div>
-                              <div className="flex mb-3 justify-end">
+                              <div className="flex mb-3 justify-end" style={{height:'20px'}}>
                                 {!copyIcon ? (
                                   <svg
                                     onClick={() =>
@@ -608,6 +614,7 @@ function MainChat({ elementWidth }) {
           dislike={dislike}
         />
       )}
+      
     </div>
   );
 }
