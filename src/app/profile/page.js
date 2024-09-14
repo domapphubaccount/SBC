@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import React, { useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux';
 
-function page() {
+function Page() {
   const isLogged = useSelector((state) => state.loginSlice.logged);
 
   useLayoutEffect(() => {
