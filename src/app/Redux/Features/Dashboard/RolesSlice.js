@@ -111,6 +111,37 @@ export const addRoleAction = createAsyncThunk(
 );
 // end add role
 
+
+// start assign permission to role
+export const assignPermissionAction = createAsyncThunk(
+  "users/assignPermissionAction",
+  async (arg, { rejectWithValue }) => {
+    console.log("dispatch");
+    const { token, id,permissions } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}admin/roles/${id}/assign-permissions`,
+        { permissions, },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end assign permission to role
+
 // start edit role
 export const updateRoleAction = createAsyncThunk(
   "roles/updateRoleAction",
@@ -153,6 +184,8 @@ const initialState = {
 
   editModule: false,
   roleModule: false,
+
+  editPermissionsModule: false
 };
 
 export const rolesSlice = createSlice({
@@ -167,6 +200,10 @@ export const rolesSlice = createSlice({
     },
     viewModule: (state, action) => {
       state.viewModule = action.payload;
+    },
+    editPermissionsModule: (state, action) => {
+      console.log(action.payload)
+      state.editPermissionsModule = action.payload;
     },
     closeView: (state, action) => {
       state.role = {};
@@ -191,7 +228,7 @@ export const rolesSlice = createSlice({
       })
       .addCase(getRolesAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end get roles
 
@@ -212,6 +249,23 @@ export const rolesSlice = createSlice({
         state.error = action.payload.message;
       })
       // end add role
+
+      // start assign PermissionAction
+      .addCase(assignPermissionAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(assignPermissionAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.editPermissionsModule = false;
+      })
+      .addCase(assignPermissionAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end assign PermissionAction
 
       //start get role by id
       .addCase(getRoleByIDAction.pending, (state) => {
@@ -266,7 +320,7 @@ export const rolesSlice = createSlice({
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule } =
+export const { addModule, viewModule, closeView, deleteModule, editModule , editPermissionsModule } =
   rolesSlice.actions;
 
 export default rolesSlice.reducer;

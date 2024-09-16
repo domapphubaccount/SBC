@@ -60,12 +60,12 @@ export const editUserAction = createAsyncThunk(
   "users/editUserAction",
   async (arg, { rejectWithValue }) => {
     console.log("dispatch");
-    const { token, id, name, email } = arg;
+    const { token, id, name, email , status } = arg;
 
     try {
       const response = await axios.put(
         `${config.api}admin/users/${id}`,
-        { name, email },
+        { name, email, status },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ export const updateRoleAction = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `${config.api}users/${id}/attach-role`,
+        `${config.api}admin/users/${id}/attach-role`,
         { role },
         {
           headers: {
@@ -236,7 +236,7 @@ export const usersSlice = createSlice({
       })
       .addCase(getUserByIDAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload;
       })
       // end get user by id
 

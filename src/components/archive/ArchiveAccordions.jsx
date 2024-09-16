@@ -33,28 +33,11 @@ function TailwindAccordion() {
   const dashboardData = useSelector((state) => state.historySlice.chat_history[0]);
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
-  const loading = useSelector(state => state.chatActionsSlice.loading)
+  const loading = useSelector(state => state.chatActionsSlice.loading);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getHistoryAction({ token }));
-    // if (token) {
-    //   axios
-    //     .get(`${config.api}chat_history`, {
-    //       headers: {
-    //         Accept: "*/*",
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       if (res.data) {
-    //         console.log(res.data.data)
-    //         dispatch(getChatHistory(res.data.data));
-    //       }
-    //     })
-    //     .catch((e) => console.log(e));
-    // }
-    // window.MathJax && window.MathJax.typeset();
   }, [updates, updateDashboard, token]);
 
   const handleAction = () => {
@@ -128,13 +111,15 @@ function TailwindAccordion() {
     localStorage.setItem("chat", chat_id);
   };
   const handleDeleteChate = (handleChat) => {
-    dispatch(loading_chat(true));
+    console.log(handleChat , "delete **************************")
+    dispatch(loading_chat_action(true))
+    // dispatch(loading_chat_action(false))
     axios
       .post(
-        `${config.api}delete-chat`,
+        `${config.api}archive-chat`,
         {
           chat_id: handleChat.id,
-          archive: handleChat.is_archive,
+          // archive: handleChat.is_archive,
         },
         {
           headers: {
@@ -143,17 +128,17 @@ function TailwindAccordion() {
         }
       )
       .then((response) => {
-        if (response.data.success) {
-          dispatch(update_archive());
-          dispatch(choseChate(null));
-          setHandleChat({});
-          setOpen(false);
-          dispatch(loading_chat(false));
+        if (response.data) {
+          dispatch(loading_chat_action(false))
           setDeleteToggle(false);
+          setHandleChat({});
+          dispatch(choseChate(null));
+          dispatch(update_archive());
+          setOpen(false);
         }
       })
       .catch((error) => {
-        dispatch(loading_chat(false));
+        dispatch(loading_chat_action(false))
         console.error("There was an error making the request!", error);
       });
     window.MathJax && window.MathJax.typeset();

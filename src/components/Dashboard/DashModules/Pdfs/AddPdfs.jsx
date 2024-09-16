@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Ensure the component is treated as a client component
 
 import {
   Button,
@@ -16,12 +16,11 @@ import { getSectionsAction } from "@/app/Redux/Features/Dashboard/SectionsSlice"
 import { addpdffileAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
-
 export function Addpdfs({ openAdd, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sections = useSelector((state) => state.sectionsSlice.sections);
-  const loading = useSelector(state => state.pdfsSlice.loading)
+  const loading = useSelector((state) => state.pdfsSlice.loading);
 
   // Formik setup
   const formik = useFormik({
@@ -30,7 +29,9 @@ export function Addpdfs({ openAdd, handleClose }) {
       file_path: null, // Initial value for the file
     },
     validationSchema: Yup.object({
-      section_id: Yup.string().required("Section is required"),
+      section_id: Yup.string()
+        .required("Section is required")
+        .notOneOf([""], "Selecting 'NONE' is not allowed"), // Add this line
       file_path: Yup.mixed()
         .required("A file is required")
         .test("fileType", "Only PDF files are allowed", (value) => {
@@ -80,9 +81,10 @@ export function Addpdfs({ openAdd, handleClose }) {
                       name="section_id"
                       onChange={formik.handleChange}
                       value={formik.values.section_id}
+                      onBlur={formik.handleBlur} // To trigger validation on blur
                       required
                     >
-                      <option value={''}>NONE</option>
+                      <option value={""}>NONE</option>
                       {sections?.map((section) => (
                         <option key={section.id} value={section.id}>
                           {section.name}

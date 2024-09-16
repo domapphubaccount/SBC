@@ -120,6 +120,7 @@ export const chatSlice = createSlice({
       state.loading = false;
     },
     chat_out: (state, action) => {
+      localStorage.removeItem("chat")
       return {
         ...state,
         value: 0,

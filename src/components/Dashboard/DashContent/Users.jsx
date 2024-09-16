@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
@@ -89,9 +91,11 @@ function Users({}) {
   const filteredData = usersData.filter((item) => {
     return (
       item.name.toLowerCase().includes(searchTerm) ||
-      item.email.toLowerCase().includes(searchTerm)
+      item.email.toLowerCase().includes(searchTerm) ||
+      item.status.toLowerCase().includes(searchTerm) 
     );
   });
+
 
   return (
     <>
@@ -150,7 +154,6 @@ function Users({}) {
         <div className="bg-white p-8 rounded-md w-full m-auto">
           <div>
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-              
               <div className="mb-5">
                 <input
                   type="text"
@@ -170,6 +173,9 @@ function Users({}) {
                         Email
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Role
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -178,7 +184,7 @@ function Users({}) {
                     </tr>
                   </thead>
                   <tbody>
-                    {usersData.length > 0 &&
+                    {usersData.length > 0 ? (
                       filteredData.map((item, index) => (
                         <tr
                           key={index}
@@ -214,6 +220,27 @@ function Users({}) {
                               {item.email}
                             </p>
                           </td>
+                          {/* start status */}
+                          <td className="px-2 py-2  border-b border-gray-200 bg-white text-sm">
+                            {item.status === "active" ? (
+                              <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                                {item.status}
+                              </span>
+                            ) : item.status === "suspend" ? (
+                              <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                                {item.status}
+                              </span>
+                            ) : (
+                              <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                                {item.status}
+                              </span>
+                            )}
+
+                            {/* <p className="text-gray-900 whitespace-no-wrap">
+                              {item.status}
+                            </p> */}
+                          </td>
+                          {/* end status */}
                           {/* start role */}
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="hover:font-bold cursor-pointer">
@@ -221,7 +248,9 @@ function Users({}) {
                                 color="gray"
                                 onClick={() => handleOpenRole(item.id)}
                               >
-                                {item.roles[0]?.name ? item.roles[0]?.name : 'NAN' }
+                                {item.roles[0]?.name
+                                  ? item.roles[0]?.name
+                                  : "NAN"}
                                 {/* Admin */}
                               </Button>
                             </div>
@@ -303,7 +332,10 @@ function Users({}) {
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      <tr ><td className="p-4">NO DATA YET</td></tr>
+                    )}
                   </tbody>
                 </table>
               </div>

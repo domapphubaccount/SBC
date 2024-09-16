@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import Logo from "/public/logo.png";
 import { config } from "@/config/config";
+import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 
 function Header({ path }) {
   const [userName, setUserName] = useState("");
@@ -20,6 +21,7 @@ function Header({ path }) {
 
   const handleStartNewChat = () => {
     dispatch(chat_out())
+    dispatch(loading_chat_action(true))
     dispatch(loading_chat(true));
     axios
       .post(
@@ -33,11 +35,13 @@ function Header({ path }) {
       )
       .then((response) => {
         dispatch(getChatCode(response.data.data[0]));
+        dispatch(loading_chat_action(false))
         dispatch(loading_chat(false));
         
         // localStorage.setItem("chat_code", response.data.data[0]);
       })
       .catch((error) => {
+        dispatch(loading_chat_action(false))
         dispatch(loading_chat(false));
         console.error("There was an error making the request!", error);
       });

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/UserComments/Delete";
 import { WarnUser } from "../DashModules/User/Warn";
@@ -154,8 +156,8 @@ function Sections() {
                         <tr key={index} className="user_row">
                           <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm">
                             <div
-                              className="hover:font-bold cursor-pointer"
-                              onClick={handleOpenWarn}
+                              className="hover:font-bold cursor-pointer p-2"
+                              // onClick={handleOpenWarn}
                             >
                               {item.name}
                             </div>

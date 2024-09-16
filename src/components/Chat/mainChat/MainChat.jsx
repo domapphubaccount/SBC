@@ -47,8 +47,6 @@ function MainChat({ elementWidth }) {
   const [responseId, setResponseId] = useState("");
   const dispatch = useDispatch();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
-
-
   const [windhtchat, setwidthchat] = useState();
 
 

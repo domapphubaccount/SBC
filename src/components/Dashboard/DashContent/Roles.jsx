@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
@@ -17,6 +19,7 @@ import {
   closeView,
   deleteModule,
   editModule,
+  editPermissionsModule,
   getRoleByIDAction,
   getRolesAction,
   viewModule,
@@ -25,6 +28,8 @@ import { AddRole } from "../DashModules/Roles/AddRole";
 import { ViewRole } from "../DashModules/Roles/View";
 import { DeleteRole } from "../DashModules/Roles/Delete";
 import { EditRole } from "../DashModules/Roles/Edit";
+import { RolesPermissions } from "../DashModules/Roles/RolesPermissions";
+
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -40,6 +45,8 @@ function Roles({}) {
   const openAdd = useSelector((state) => state.rolesSlice.addModule);
   const openView = useSelector((state) => state.rolesSlice.viewModule);
 
+  const permissionsModule = useSelector(state => state.rolesSlice.editPermissionsModule)
+
   const handleClose = () => {
     dispatch(removeUser());
     dispatch(closeView());
@@ -49,6 +56,7 @@ function Roles({}) {
     dispatch(viewModule(false));
     dispatch(roleModule(false));
     dispatch(addModule(false));
+    dispatch(editPermissionsModule(false));
   };
 
   // start open delete
@@ -65,13 +73,6 @@ function Roles({}) {
   };
   // end open edit
 
-  //   // start open role
-  //   const handleOpenRole = (id) => {
-  //     dispatch(getUserByIDAction({ token, id }));
-  //     dispatch(roleModule(true));
-  //   };
-  //   // end open role
-
   //   start add role             ####DONE
   const handleOpenAdd = () => {
     dispatch(addModule(true));
@@ -84,6 +85,15 @@ function Roles({}) {
     dispatch(viewModule(true));
   };
   // end open view
+  
+  // start open permissions 
+  const handlePermissionModule = (id) => {
+    // dispatch(editPermissionsModule({ token, id }));
+    
+    dispatch(getRoleByIDAction({ token, id }));
+    dispatch(editPermissionsModule(true))
+  }
+  // edit open permissions 
 
   useEffect(() => {
     dispatch(getRolesAction({ token }));
@@ -100,11 +110,13 @@ function Roles({}) {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
-  // Step 3: Filter the rows based on the search term
-  const filteredData = rolesData.filter((item) => {
-    return item.name.toLowerCase().includes(searchTerm);
-    // item.email.toLowerCase().includes(searchTerm)
-  });
+  console.log(rolesData, "*************************");
+
+  // // Step 3: Filter the rows based on the search term
+  // const filteredData = rolesData.filter((item) => {
+  //   return item.name.toLowerCase().includes(searchTerm);
+  //   // item.email.toLowerCase().includes(searchTerm)
+  // });
 
   return (
     <>
@@ -179,14 +191,17 @@ function Roles({}) {
                         Name
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Permissions
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {rolesData.length > 0 ? (
-                      filteredData.map((item, index) => (
-                        <tr key={index} className="user_row hover:bg-gray-200">
+                      rolesData.map((item, index) => (
+                        <tr key={index} className="user_row ">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">
                               <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
@@ -211,6 +226,15 @@ function Roles({}) {
                                 </p>
                               </div>
                             </div>
+                          </td>
+                          <td>
+                            <button
+                            onClick={()=>handlePermissionModule(item.id)}
+                              type="button"
+                              class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
+                            >
+                              {item.permissions.length}
+                            </button>
                           </td>
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex gap-2 justify-start">
@@ -312,6 +336,12 @@ function Roles({}) {
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openAdd && <AddRole openAdd={openAdd} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
+      {permissionsModule && <RolesPermissions handleClose={handleClose} openRole={permissionsModule} />}
+
+
+
+
+
     </>
   );
 }

@@ -36,7 +36,7 @@ export const getCommentByIDAction = createAsyncThunk(
     const { token, id } = arg;
 
     try {
-      const response = await axios.get(`${config.api}admin/roles/${id}`, {
+      const response = await axios.get(`${config.api}admin/chat-user-dislikes/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -55,14 +55,14 @@ export const getCommentByIDAction = createAsyncThunk(
 // end get comment by id
 
 // start delete role
-export const deleteRoleAction = createAsyncThunk(
+export const deleteCommentAction = createAsyncThunk(
   "roles/deleteRoleAction",
   async (arg, { rejectWithValue }) => {
     console.log("dispatch");
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/roles/${id}`, {
+      const response = await axios.delete(`${config.api}admin/chat-user-dislikes/force_delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -111,15 +111,15 @@ export const addRoleAction = createAsyncThunk(
 // end add role
 
 // start edit role
-export const updateRoleAction = createAsyncThunk(
-  "roles/updateRoleAction",
+export const updateCommentAction = createAsyncThunk(
+  "comments/updateCommentAction",
   async (arg, { rejectWithValue }) => {
-    const { token, id, name } = arg;
+    const { token, id, comment } = arg;
 
     try {
       const response = await axios.put(
-        `${config.api}admin/roles/${id}`,
-        { name },
+        `${config.api}admin/chat-user-dislikes/${id}`,
+        { "user_chat_id" : id,comment },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -190,7 +190,7 @@ export const userCommentsSlice = createSlice({
       })
       .addCase(getCommentsAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload;
       })
       // end get comment
 
@@ -228,41 +228,41 @@ export const userCommentsSlice = createSlice({
       })
       // end get comment by id
 
-      //start delete role
-      .addCase(deleteRoleAction.pending, (state) => {
+      //start delete comment
+      .addCase(deleteCommentAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteRoleAction.fulfilled, (state, action) => {
+      .addCase(deleteCommentAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.updates = !state.updates;
-        state.role = {};
+        state.comment = {};
         state.deleteModule = false;
       })
-      .addCase(deleteRoleAction.rejected, (state, action) => {
+      .addCase(deleteCommentAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })
-      // end delete role
+      // end delete comment
 
-      //start update user role
-      .addCase(updateRoleAction.pending, (state) => {
+      //start update user comment
+      .addCase(updateCommentAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateRoleAction.fulfilled, (state, action) => {
+      .addCase(updateCommentAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.updates = !state.updates;
         state.role = {};
         state.editModule = false;
       })
-      .addCase(updateRoleAction.rejected, (state, action) => {
+      .addCase(updateCommentAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload;
       });
-    // end update user role
+    // end update user comment
   },
 });
 export const { addModule, viewModule, closeView, deleteModule, editModule } =

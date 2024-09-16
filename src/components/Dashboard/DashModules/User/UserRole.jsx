@@ -1,18 +1,30 @@
 "use client";
 
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { editUserAction, updateRoleAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
+import {
+  editUserAction,
+  updateRoleAction,
+} from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
+import { getRolesAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 
 export function UserRole({ openRole, handleClose }) {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.usersSlice.user);
   const loading = useSelector((state) => state.usersSlice.loading);
+  const loading_roles = useSelector((state) => state.rolesSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const roles = useSelector((state) => state.rolesSlice.roles);
+
+  useLayoutEffect(() => {
+    dispatch(getRolesAction({ token }));
+  }, []);
+
+  console.log(roles);
 
   // Formik setup
   const formik = useFormik({
@@ -36,7 +48,7 @@ export function UserRole({ openRole, handleClose }) {
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
               Edit User Role
             </h3>
-            {!loading ? (
+            {!loading && !loading_roles ? (
               <>
                 <div>
                   <Label htmlFor="role" value="User Role: " />
@@ -47,8 +59,10 @@ export function UserRole({ openRole, handleClose }) {
                     value={formik.values.role}
                   >
                     <option value={""}>None</option>
-                    <option value={"admin"}>Admin</option>
-                    <option value={"user"}>User</option>
+                    {roles.length > 0 &&
+                      roles.map((item, index) => (
+                        <option key={index} value={item.name}>{item.name}</option>
+                      ))}
                   </select>
                   {formik.touched.role && formik.errors.role ? (
                     <div className="text-red-600">{formik.errors.role}</div>

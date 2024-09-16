@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { updateRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 
+import Select from 'react-select';
+
 export function EditRole({ openEdit, handleClose }) {
   const dispatch = useDispatch();
   const roleData = useSelector((state) => state.rolesSlice.role);
   const loading = useSelector((state) => state.rolesSlice.loading);
-  const token = useSelector(state => state.loginSlice.auth?.access_token);
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
 
   // Formik setup
   const formik = useFormik({
@@ -42,11 +44,11 @@ export function EditRole({ openEdit, handleClose }) {
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Edit Role Details
-            </h3>
             {!loading ? (
               <>
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                  Edit Role Details
+                </h3>
                 <div>
                   <Label htmlFor="name" value="User Name" />
                   <TextInput
@@ -62,6 +64,9 @@ export function EditRole({ openEdit, handleClose }) {
                     <div className="text-red-600">{formik.errors.name}</div>
                   ) : null}
                 </div>
+                <div className="w-full">
+                  <Button type="submit">Save Changes</Button>
+                </div>
               </>
             ) : (
               <div className="flex justify-center">
@@ -73,10 +78,6 @@ export function EditRole({ openEdit, handleClose }) {
                 />
               </div>
             )}
-
-            <div className="w-full">
-              <Button type="submit">Save Changes</Button>
-            </div>
           </form>
         </Modal.Body>
       </Modal>

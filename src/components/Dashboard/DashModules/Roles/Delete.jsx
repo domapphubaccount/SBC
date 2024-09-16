@@ -10,6 +10,7 @@ import { deleteRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 export function DeleteRole({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const roleData = useSelector((state) => state.rolesSlice.role);
+  const loading = useSelector(state => state.rolesSlice.loading)
 
   const dispatch = useDispatch();
 
@@ -22,7 +23,7 @@ export function DeleteRole({ openDelete, handleClose }) {
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
         <Modal.Header />
         <Modal.Body>
-          {roleData?.id ? (
+          {!loading && roleData?.id ? (
             <div className="text-center">
               <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">

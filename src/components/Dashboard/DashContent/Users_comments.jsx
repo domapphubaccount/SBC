@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
@@ -8,18 +9,16 @@ import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addModule,
-  deleteModule,
-  editModule,
+  
   getUserByIDAction,
   getUsersAction,
   removeUser,
   roleModule,
-  viewModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
 import { DeleteUserComment } from "../DashModules/UserComments/Delete";
 import { ViewUserComment } from "../DashModules/UserComments/View";
-import { getCommentsAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
+import { getCommentByIDAction, getCommentsAction, viewModule , editModule , deleteModule } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 
 function Users_comments({}) {
   const dispatch = useDispatch();
@@ -27,12 +26,12 @@ function Users_comments({}) {
   const usersCommentsData = useSelector(
     (state) => state.userCommentsSlice.comments
   );
-  const updateUsersData = useSelector((state) => state.usersSlice.updates);
-  const openAdd = useSelector((state) => state.usersSlice.addModule);
-  const openEdit = useSelector((state) => state.usersSlice.editModule);
-  const openDelete = useSelector((state) => state.usersSlice.deleteModule);
-  const openView = useSelector((state) => state.usersSlice.viewModule);
-  const openRole = useSelector((state) => state.usersSlice.roleModule);
+  const updateUsersData = useSelector((state) => state.userCommentsSlice.updates);
+  const openAdd = useSelector((state) => state.userCommentsSlice.addModule);
+  const openEdit = useSelector((state) => state.userCommentsSlice.editModule);
+  const openDelete = useSelector((state) => state.userCommentsSlice.deleteModule);
+  const openView = useSelector((state) => state.userCommentsSlice.viewModule);
+  const openRole = useSelector((state) => state.userCommentsSlice.roleModule);
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -44,19 +43,19 @@ function Users_comments({}) {
   };
   // start open delete
   const handleOpenDelete = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
+    dispatch(getCommentByIDAction({ token, id }));
     dispatch(deleteModule(true));
   };
   // end open delete
   // start open edit
   const handleOpenEdit = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
+    dispatch(getCommentByIDAction({ token, id })); 
     dispatch(editModule(true));
   };
   // end open edit
   // start open view
   const handleOpenView = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
+    dispatch(getCommentByIDAction({ token, id }));
     dispatch(viewModule(true));
   };
   // end open view
@@ -150,7 +149,6 @@ function Users_comments({}) {
                   onChange={handleSearchChange} // Handle search input change
                 />
               </div>
-
               <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table className="min-w-full leading-normal font-semibold">
                   <thead>
@@ -298,7 +296,6 @@ function Users_comments({}) {
           handleOpenAdd={handleOpenAdd}
           openAdd={openAdd}
           handleClose={handleClose}
-          // setOpenAdd={setOpenAdd}
         />
       )}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
