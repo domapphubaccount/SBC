@@ -214,21 +214,14 @@ function MultipleSelect({ setStoredCode, storedCode }) {
                       name={i + "r"}
                       type="checkbox"
                       id={i + "-11"}
-                      checked={storedCode.includes(item.chatgpt_file_id)}
+                      checked={storedCode.includes(item.id)}
                       onChange={() => {
-                        handleCheckboxChange(item.chatgpt_file_id);
+                        handleCheckboxChange(item.id);
                       }}
                     />
                     <label for={i + "-11"}>{item.name}</label>
 
-                    <div className="px-3">
-                      <ul>
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li>4</li>
-                      </ul>
-                    </div>
+                 
                   </div>
                 </Dropdown.Item>
               ))}
