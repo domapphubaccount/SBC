@@ -35,6 +35,7 @@ function TailwindAccordion() {
   const updates = useSelector((state) => state.updateSlice.state);
   const loading = useSelector(state => state.chatActionsSlice.loading);
   const dispatch = useDispatch();
+  const chatid = useSelector(state => state.chatSlice.get_chat)
 
   useEffect(() => {
     dispatch(getHistoryAction({ token }));
@@ -104,11 +105,12 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
   const handleGetChat = (chat_id, share_name) => {
-    console.log("get chat");
-    dispatch(choseChate(chat_id));
-    // dispatch(loading_chat(true));
-    dispatch(loading_get_chat_history(true))
-    localStorage.setItem("chat", chat_id);
+    if(chatid != chat_id){
+      dispatch(choseChate(chat_id));
+      // dispatch(loading_chat(true));
+      dispatch(loading_get_chat_history(true))
+      localStorage.setItem("chat", chat_id);
+    }
   };
   const handleDeleteChate = (handleChat) => {
     console.log(handleChat , "delete **************************")
