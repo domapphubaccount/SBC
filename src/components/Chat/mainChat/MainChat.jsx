@@ -76,6 +76,7 @@ function MainChat({ elementWidth }) {
     typeComplete,
   ]);
   const dislikeToggle = (id) => {
+    console.log(id)
     setItemId(id);
     setDislike(!dislike);
   };
@@ -157,7 +158,7 @@ function MainChat({ elementWidth }) {
     dispatch(loading_chat_action(true))
     axios
       .post(
-        `${config.api}dislike/message`,
+        `${config.api}admin/chat-user-dislikes`,
         {
           user_chat_id: itemId,
           comment: dislikeMessage,

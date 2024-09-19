@@ -5,6 +5,7 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { deleteUserAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
+import { deleteCommentAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 
 export function DeleteUserComment({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -14,7 +15,7 @@ export function DeleteUserComment({ openDelete, handleClose }) {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    dispatch(deleteUserAction({ token, id: commentData.user_chat_id }));
+    dispatch(deleteCommentAction({ token, id: commentData.id }));
   };
   return (
     <>
@@ -25,7 +26,7 @@ export function DeleteUserComment({ openDelete, handleClose }) {
             <div className="text-center">
               <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Are you sure you want to delete this User?
+                Are you sure you want to delete this Comment?
               </h3>
               <div className="flex justify-center gap-4">
                 <Button color="failure" onClick={handleDelete}>
