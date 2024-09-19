@@ -84,14 +84,26 @@ function ChatContainer() {
     }
   }, [token, dashboardData, updates, catchChat]);
 
+  const [elementWidth,setElementWidth] = useState()
+  useEffect(() => {
+    const updateElementWidth = () => {
+      setElementWidth(document.getElementById("listRef").offsetWidth);
+    }
+    updateElementWidth(); // Set initial width
+    window.addEventListener('resize', updateElementWidth);
+    return () => {
+      window.removeEventListener('resize', updateElementWidth);
+    }
+  }, []);
+
   return (
     <div className="h-screen chat_container">
       <div className="w-full bg-neutral-200 chat_input">
         <div className="w-screen" style={{ overflowX: "hidden" }}>
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
             <div className="grid grid-cols-4 min-w-full">
-              <Refrence />
-              <MainChat />
+              <Refrence setElementWidth={setElementWidth} />
+              <MainChat elementWidth={elementWidth}/>
             </div>
           </div>
         </div>
