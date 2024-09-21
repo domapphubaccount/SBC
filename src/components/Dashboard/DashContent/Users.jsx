@@ -102,24 +102,24 @@ function Users({}) {
       <section>
         <div>
           <div
-            class="flex py-3 pt-8 text-white rounded-lg"
+            className="flex py-3 pt-8 text-white rounded-lg"
             aria-label="Breadcrumb"
           >
-            <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
               <li>
-                <div class="flex items-center">
+                <div className="flex items-center">
                   <a
                     href="#"
-                    class="text-sm font-medium text-white hover:text-blue-600"
+                    className="text-sm font-medium text-white hover:text-blue-600"
                   >
                     Dashboard
                   </a>
                 </div>
               </li>
               <li aria-current="page">
-                <div class="flex items-center">
+                <div className="flex items-center">
                   <svg
-                    class="rtl:rotate-180  w-3 h-3 mx-1 text-gray-400"
+                    className="rtl:rotate-180  w-3 h-3 mx-1 text-gray-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -129,11 +129,11 @@ function Users({}) {
                       stroke="currentColor"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeWidth="2"
                       d="m1 9 4-4-4-4"
                     />
                   </svg>
-                  <span class="ms-1 text-sm font-medium text-white md:ms-2">
+                  <span className="ms-1 text-sm font-medium text-white md:ms-2">
                     Users
                   </span>
                 </div>
@@ -223,15 +223,15 @@ function Users({}) {
                           {/* start status */}
                           <td className="px-2 py-2  border-b border-gray-200 bg-white text-sm">
                             {item.status === "active" ? (
-                              <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                              <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                                 {item.status}
                               </span>
                             ) : item.status === "suspend" ? (
-                              <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                              <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                                 {item.status}
                               </span>
                             ) : (
-                              <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                              <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
                                 {item.status}
                               </span>
                             )}

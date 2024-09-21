@@ -2,11 +2,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { logout } from "../Auth/AuthSlice";
 
 // start get history
 export const getHistoryAction = createAsyncThunk(
   "history/getHistoryAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
     console.log(token);
     try {
@@ -22,6 +23,9 @@ export const getHistoryAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -47,11 +51,12 @@ export const historySlice = createSlice({
       //start get history
       .addCase(getHistoryAction.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = true;
       })
       .addCase(getHistoryAction.fulfilled, (state, action) => {
           state.error = null;
           state.loading = false;
+          console.log(action.payload)
           state.chat_history = action.payload;
       })
       .addCase(getHistoryAction.rejected, (state, action) => {

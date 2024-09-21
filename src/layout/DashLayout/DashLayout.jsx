@@ -1,3 +1,4 @@
+"use client"
 import ChatContainer from "@/components/Chat/chatContainer/ChatContainer";
 import React from "react";
 

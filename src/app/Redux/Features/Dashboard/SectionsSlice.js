@@ -3,11 +3,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { logout } from "../Auth/AuthSlice";
 
 // start get section
 export const getSectionsAction = createAsyncThunk(
   "sections/getSectionsAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
     console.log(token);
     try {
@@ -23,6 +24,9 @@ export const getSectionsAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -54,6 +58,9 @@ export const addSectionAction = createAsyncThunk(
       console.log(response);
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -63,7 +70,7 @@ export const addSectionAction = createAsyncThunk(
 // start delete section
 export const deleteSectionAction = createAsyncThunk(
   "sections/deleteSectionAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
     console.log("delete section", token);
     try {
@@ -78,6 +85,9 @@ export const deleteSectionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -87,7 +97,7 @@ export const deleteSectionAction = createAsyncThunk(
 // start edit section
 export const editSectionAction = createAsyncThunk(
   "sections/editSectionAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id ,name} = arg;
     console.log('test edit actions')
     try {
@@ -104,6 +114,9 @@ export const editSectionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

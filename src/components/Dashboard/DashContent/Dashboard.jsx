@@ -119,24 +119,24 @@ function DashboardData({}) {
       <section>
         <div>
           <div
-            class="flex py-3 pt-8 text-white rounded-lg"
+            className="flex py-3 pt-8 text-white rounded-lg"
             aria-label="Breadcrumb"
           >
-            <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
               <li>
-                <div class="flex items-center">
+                <div className="flex items-center">
                   <a
                     href="#"
-                    class="text-sm font-medium text-white hover:text-blue-600"
+                    className="text-sm font-medium text-white hover:text-blue-600"
                   >
                     Dashboard
                   </a>
                 </div>
               </li>
               <li aria-current="page">
-                <div class="flex items-center">
+                <div className="flex items-center">
                   <svg
-                    class="rtl:rotate-180  w-3 h-3 mx-1 text-gray-400"
+                    className="rtl:rotate-180  w-3 h-3 mx-1 text-gray-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -146,11 +146,11 @@ function DashboardData({}) {
                       stroke="currentColor"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeWidth="2"
                       d="m1 9 4-4-4-4"
                     />
                   </svg>
-                  <span class="ms-1 text-sm font-medium text-white md:ms-2">
+                  <span className="ms-1 text-sm font-medium text-white md:ms-2">
                     Roles
                   </span>
                 </div>

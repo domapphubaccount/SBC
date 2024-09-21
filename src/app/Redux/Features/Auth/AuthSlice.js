@@ -33,7 +33,7 @@ export const loginAction = createAsyncThunk(
 // start logout
 export const logoutAction = createAsyncThunk(
   "login/logoutAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
     console.log(token);
     try {
@@ -53,6 +53,9 @@ export const logoutAction = createAsyncThunk(
       }
       return response.data;
     } catch (error) {
+      // if(error?.response?.status === 401){
+      //   dispatch(logout())
+      // }
       return rejectWithValue(error.response.data);
     }
   }
@@ -124,6 +127,12 @@ export const resetpasswordAction = createAsyncThunk(
 );
 // end check code
 
+
+
+export const logoutFunction = (auth) => {
+  localStorage.clear();
+}
+
 // start register
 export const registerAction = createAsyncThunk(
   "register/registerAction",
@@ -194,7 +203,14 @@ export const loginSlice = createSlice({
     },
     islogged: (state , action)=>{
       state.logged = true
+    },
+    logout: (state , action) => {
+      state.logged = false;
+      isBrouse && localStorage.clear()
+      state.auth = null;
+      state.value = '';
     }
+
   },
   extraReducers: (builder) => {
     builder
@@ -307,6 +323,6 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { storedCode , islogged } = loginSlice.actions
+export const { storedCode , islogged , logout } = loginSlice.actions
 
 export default loginSlice.reducer;

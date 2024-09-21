@@ -3,11 +3,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { logout } from "../Auth/AuthSlice";
 
 // start get users
 export const getUsersAction = createAsyncThunk(
   "users/getUsersAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
     console.log(token);
     try {
@@ -23,6 +24,9 @@ export const getUsersAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -32,7 +36,7 @@ export const getUsersAction = createAsyncThunk(
 // start get user by id
 export const getUserByIDAction = createAsyncThunk(
   "users/getUserByIDAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
     console.log(arg)
 
@@ -49,6 +53,9 @@ export const getUserByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -58,7 +65,7 @@ export const getUserByIDAction = createAsyncThunk(
 // start edit user
 export const editUserAction = createAsyncThunk(
   "users/editUserAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     console.log("dispatch");
     const { token, id, name, email , status } = arg;
 
@@ -79,6 +86,9 @@ export const editUserAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -88,7 +98,7 @@ export const editUserAction = createAsyncThunk(
 // start add user
 export const addUserAction = createAsyncThunk(
   "users/addUserAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, name, email , password , password_confirmation } = arg;
 
     try {
@@ -108,6 +118,9 @@ export const addUserAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -117,7 +130,7 @@ export const addUserAction = createAsyncThunk(
 // start delete user
 export const deleteUserAction = createAsyncThunk(
   "users/deleteUserAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     console.log("dispatch");
     const { token, id } = arg;
 
@@ -134,6 +147,9 @@ export const deleteUserAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -143,7 +159,7 @@ export const deleteUserAction = createAsyncThunk(
 // start edit user role
 export const updateRoleAction = createAsyncThunk(
   "users/updateRoleAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     console.log("dispatch");
     const { token, id, role } = arg;
 
@@ -164,6 +180,9 @@ export const updateRoleAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

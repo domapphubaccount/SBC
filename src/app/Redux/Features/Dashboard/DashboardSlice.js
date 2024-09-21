@@ -3,11 +3,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { logout } from "../Auth/AuthSlice";
 
 // start login
 export const dashboardAction = createAsyncThunk(
   "dashboard/dashboardAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { email, password } = arg;
     try {
       const response = await axios.post(
@@ -23,6 +24,9 @@ export const dashboardAction = createAsyncThunk(
       }
       return response.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

@@ -3,6 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { logout } from "../Auth/AuthSlice";
 
 // start get comments
 export const getCommentsAction = createAsyncThunk(
@@ -32,7 +33,7 @@ export const getCommentsAction = createAsyncThunk(
 // start get comment by id
 export const getCommentByIDAction = createAsyncThunk(
   "roles/getRoleByIDAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -48,6 +49,9 @@ export const getCommentByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -57,7 +61,7 @@ export const getCommentByIDAction = createAsyncThunk(
 // start delete role
 export const deleteCommentAction = createAsyncThunk(
   "roles/deleteRoleAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     console.log("dispatch");
     const { token, id } = arg;
 
@@ -74,6 +78,9 @@ export const deleteCommentAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -83,7 +90,7 @@ export const deleteCommentAction = createAsyncThunk(
 // start add role
 export const addRoleAction = createAsyncThunk(
   "users/addRoleAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     console.log("dispatch");
     const { token, name } = arg;
 
@@ -104,6 +111,9 @@ export const addRoleAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -113,7 +123,7 @@ export const addRoleAction = createAsyncThunk(
 // start edit role
 export const updateCommentAction = createAsyncThunk(
   "comments/updateCommentAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id, comment } = arg;
 
     try {
@@ -133,6 +143,9 @@ export const updateCommentAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

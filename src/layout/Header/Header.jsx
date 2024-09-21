@@ -89,7 +89,7 @@ function Header({ path }) {
                     onClick={handleStartNewChat}
                   >
                     <div>
-                      <div tabindex="0" className="plusButton">
+                      <div tabIndex="0" className="plusButton">
                         <svg
                           className="plusIcon"
                           xmlns="http://www.w3.org/2000/svg"

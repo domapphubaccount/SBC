@@ -3,6 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { logout } from "../Auth/AuthSlice";
 
 // start get permission
 export const getPermissionsAction = createAsyncThunk(
@@ -32,7 +33,7 @@ export const getPermissionsAction = createAsyncThunk(
 // start get permission by id
 export const getPermissionByIDAction = createAsyncThunk(
   "permission/getPermissionByIDAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -48,6 +49,9 @@ export const getPermissionByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -57,7 +61,7 @@ export const getPermissionByIDAction = createAsyncThunk(
 // start delete permission
 export const deletePermissionAction = createAsyncThunk(
   "roles/deleteRoleAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -73,6 +77,9 @@ export const deletePermissionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -82,7 +89,7 @@ export const deletePermissionAction = createAsyncThunk(
 // start add permission
 export const addPermissionAction = createAsyncThunk(
   "users/addPermissionAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     console.log("dispatch");
     const { token, name } = arg;
 
@@ -103,6 +110,9 @@ export const addPermissionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -112,7 +122,7 @@ export const addPermissionAction = createAsyncThunk(
 // start edit role
 export const updatePermissionAction = createAsyncThunk(
   "roles/updatePermissionAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id, name } = arg;
 
     try {
@@ -132,6 +142,9 @@ export const updatePermissionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

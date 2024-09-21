@@ -3,11 +3,12 @@
 import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { logout } from "../Auth/AuthSlice";
 
 // start get pdfs
 export const getChatAction = createAsyncThunk(
   "chat/getChatAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, chat_id } = arg;
     console.log(token);
     try {
@@ -23,6 +24,9 @@ export const getChatAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

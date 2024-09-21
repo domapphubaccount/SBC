@@ -1,4 +1,5 @@
 "use client"
+
 import Dashboard from '@/components/Dashboard/Dashboard'
 import { Sidebar } from '@/components/Dashboard/Sidebar/Sidebar'
 import { redirect } from 'next/navigation';

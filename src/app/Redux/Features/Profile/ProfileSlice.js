@@ -3,11 +3,12 @@
 import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { logout } from "../Auth/AuthSlice";
 
 // start update password
 export const updatePasswordAction = createAsyncThunk(
   "profile/updatePasswordAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, current_password, new_password, confirm_password } = arg;
     try {
       const response = await axios.post(
@@ -25,6 +26,9 @@ export const updatePasswordAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -34,7 +38,7 @@ export const updatePasswordAction = createAsyncThunk(
 // start get profile
 export const getProfileAction = createAsyncThunk(
   "profile/getProfileAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
     try {
       const response = await axios.get(`${config.api}profile`, {
@@ -47,6 +51,9 @@ export const getProfileAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

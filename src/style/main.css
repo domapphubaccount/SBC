@@ -252,7 +252,7 @@ nav{
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke: #c8ccd4;
-  stroke-width: 1.5;
+  strokeWidth: 1.5;
   transform: translate3d(0, 0, 0);
   transition: all 0.2s ease;
 }
@@ -839,7 +839,7 @@ button:hover .button-text {
 .history_card {
   max-height: 80vh; /* Adjust as needed */
   overflow-y: auto;
-  min-height: 400px; /* Enable vertical scrolling */
+  /* min-height: 400px; Enable vertical scrolling */
 }
 
 /* WebKit-based browsers (Chrome, Safari) */

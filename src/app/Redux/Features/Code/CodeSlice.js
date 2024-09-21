@@ -3,11 +3,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { config } from "@/config/config";
 import axios from "axios"
+import { logout } from '../Auth/AuthSlice';
 
 // start get chat
 export const getCodeAction = createAsyncThunk(
   "code/getCodeAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
     console.log('code action ' , token)
     try {
@@ -21,6 +22,10 @@ export const getCodeAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
+      console.log(error?.response?.status)
       return rejectWithValue(error.response.data);
     }
   }
