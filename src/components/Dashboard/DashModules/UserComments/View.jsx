@@ -4,8 +4,7 @@ import { Button, Modal, Textarea, TextInput } from "flowbite-react";
 import { useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
-
-export function ViewUserComment({ openView, setOpenView , handleClose}) {
+export function ViewUserComment({ openView, setOpenView, handleClose }) {
   const commentData = useSelector((state) => state.userCommentsSlice.comment);
   const loading = useSelector((state) => state.userCommentsSlice.loading);
 
@@ -22,15 +21,19 @@ export function ViewUserComment({ openView, setOpenView , handleClose}) {
             {loading ? (
               <div className="flex justify-center">
                 <img
-                  style={{width: '100px'}}
+                  style={{ width: "100px" }}
                   src={loadingImg.src}
                   alt="loading"
                   className="loading_logo"
                 />
               </div>
             ) : (
+              <>
               <div>
-                <div className="mb-2">
+                <div className="mb-8">
+                  <div>
+                    <small>User Comment</small>
+                  </div>
                   <Textarea
                     rows={4}
                     id="comment id"
@@ -41,16 +44,23 @@ export function ViewUserComment({ openView, setOpenView , handleClose}) {
                     value={`User Comment : ${commentData.comment}`}
                   />
                 </div>
-                {/* <div className="mb-2">
-                  <TextInput
-                    id="comment name"
+
+                <div className="mb-5">
+                  <div>
+                    <small>Response</small>
+                  </div>
+                  <Textarea
+                    rows={3}
+                    placeholder="Write response ."
+                    id="response"
                     style={{ opacity: 1 }}
                     type="text"
                     required
-                    disabled
-                    value={`User : ${userData.name}`}
+                    // disabled
+                    // value={`User : ${userData.name}`}
                   />
                 </div>
+                {/*
                 <div>
                   <TextInput
                     id="user email"
@@ -62,11 +72,17 @@ export function ViewUserComment({ openView, setOpenView , handleClose}) {
                   />
                 </div> */}
               </div>
-            )}
 
-            <div className="w-full">
-              <Button onClick={handleClose}>CLOSE</Button>
+            <div className="flex justify-between">
+              <div className="w-full">
+                <Button onClick={handleClose}>CLOSE</Button>
+              </div>
+              <div className="w-full text-end">
+                <Button onClick={handleClose}>SUBMIT</Button>
+              </div>
             </div>
+            </>
+            )}
           </div>
         </Modal.Body>
       </Modal>

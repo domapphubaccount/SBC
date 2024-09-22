@@ -13,6 +13,10 @@ export function EditUser({ openEdit, handleClose }) {
   const userData = useSelector((state) => state.usersSlice.user);
   const loading = useSelector((state) => state.usersSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const roles = useSelector((state) => state.rolesSlice.roles);
+
+  // useLayoutEffect(() => {
+  // }, []);
 
   // Status options
   const status = ["active", "deactive", "suspend"];
@@ -22,7 +26,9 @@ export function EditUser({ openEdit, handleClose }) {
     initialValues: {
       name: userData?.name || "",
       email: userData?.email || "",
-      status: userData?.status || "active", // Default to "active" if undefined
+      status: userData?.status || "active",
+
+      // Default to "active" if undefined
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
@@ -33,6 +39,19 @@ export function EditUser({ openEdit, handleClose }) {
     }),
     onSubmit: (values) => {
       dispatch(editUserAction({ token, id: userData.id, ...values }));
+    },
+  });
+
+  // Formik setup
+  const formik_role = useFormik({
+    initialValues: {
+      role: "",
+    },
+    validationSchema: Yup.object({
+      role: Yup.string().required("role is required"),
+    }),
+    onSubmit: (values) => {
+      dispatch(updateRoleAction({ token, id: userData.id, ...values }));
     },
   });
 
@@ -109,6 +128,27 @@ export function EditUser({ openEdit, handleClose }) {
                   </select>
                   {formik.touched.status && formik.errors.status ? (
                     <div className="text-red-600">{formik.errors.status}</div>
+                  ) : null}
+                </div>
+
+                <div>
+                  <Label htmlFor="role" value="User Role: " />
+                  <select
+                    className="border-0"
+                    id="role"
+                    onChange={formik_role.handleChange}
+                    value={formik_role.values.role}
+                  >
+                    <option value={""}>None</option>
+                    {roles.length > 0 &&
+                      roles.map((item, index) => (
+                        <option key={index} value={item.name}>
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                  {formik_role.touched.role && formik.errors.role ? (
+                    <div className="text-red-600">{formik_role.errors.role}</div>
                   ) : null}
                 </div>
               </>

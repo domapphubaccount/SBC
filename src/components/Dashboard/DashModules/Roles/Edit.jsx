@@ -8,13 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { updateRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 
-import Select from 'react-select';
+import Select from "react-select";
 
 export function EditRole({ openEdit, handleClose }) {
   const dispatch = useDispatch();
   const roleData = useSelector((state) => state.rolesSlice.role);
   const loading = useSelector((state) => state.rolesSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const [permissionsOptions, setPermissionsOptions] = useState([]);
+  const permissionsData = useSelector(
+    (state) => state.permissionsSlice.permissions
+  );
+
 
   // Formik setup
   const formik = useFormik({
@@ -34,15 +39,29 @@ export function EditRole({ openEdit, handleClose }) {
     if (roleData) {
       formik.setValues({
         name: roleData.name || "",
+        permissions: roleData.permissions?.map((item) => item.id) || [],
+
       });
     }
   }, [roleData]);
+  
+    useEffect(()=>{
+      if(permissionsData){
+      // Set the options for the permissions
+        setPermissionsOptions(
+          permissionsData?.map((item) => ({
+            value: item.id,
+            label: item.name,
+          })) || []
+        );
+      }
+    },[permissionsData])
 
   return (
     <>
       <Modal show={openEdit} size="md" popup onClose={handleClose}>
         <Modal.Header />
-        <Modal.Body>
+        <Modal.Body className="overflow-visible">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {!loading ? (
               <>
@@ -64,6 +83,32 @@ export function EditRole({ openEdit, handleClose }) {
                     <div className="text-red-600">{formik.errors.name}</div>
                   ) : null}
                 </div>
+
+                <div>
+                  <Label htmlFor="permissions" value="Permissions" />
+                  <Select
+                    id="permissions"
+                    name="permissions"
+                    closeMenuOnSelect={false}
+                    isMulti
+                    options={permissionsOptions}
+                    value={permissionsOptions.filter((option) =>
+                      formik.values.permissions.includes(option.value)
+                    )}
+                    onChange={(selectedOptions) => {
+                      formik.setFieldValue(
+                        "permissions",
+                        selectedOptions.map((option) => option.value)
+                      );
+                    }}
+                  />
+                  {formik.touched.permissions && formik.errors.permissions ? (
+                    <div className="text-red-600">
+                      {formik.errors.permissions}
+                    </div>
+                  ) : null}
+                </div>
+
                 <div className="w-full">
                   <Button type="submit">Save Changes</Button>
                 </div>

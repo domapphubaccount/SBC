@@ -24,8 +24,6 @@ export function UserRole({ openRole, handleClose }) {
     dispatch(getRolesAction({ token }));
   }, []);
 
-  console.log(roles);
-
   // Formik setup
   const formik = useFormik({
     initialValues: {

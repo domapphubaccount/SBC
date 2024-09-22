@@ -9,7 +9,6 @@ import axios from "axios";
   "chat/getChatAction",
   async (arg, { rejectWithValue }) => {
     const { token, chat_id } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}get_chat/${chat_id}`, {
         headers: {

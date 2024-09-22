@@ -1,17 +1,24 @@
 "use client";
 
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { addRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
+import Select from "react-select";
+
 
 export function AddRole({ openAdd, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const loading = useSelector((state) => state.rolesSlice.loading);
+  const [permissionsOptions, setPermissionsOptions] = useState([]);
+  const [chosenPermissions,setChosenPermissions] = useState([])
+  const permissionsData = useSelector(
+    (state) => state.permissionsSlice.permissions
+  );
 
   // Formik setup
   const formik = useFormik({
@@ -26,17 +33,29 @@ export function AddRole({ openAdd, handleClose }) {
     },
   });
 
+  useEffect(() => {
+    if (permissionsData) {
+      // Set the options for the permissions
+      setPermissionsOptions(
+        permissionsData?.map((item) => ({
+          value: item.id,
+          label: item.name,
+        })) || []
+      );
+    }
+  }, [permissionsData]);
+
   return (
     <>
       <Modal show={openAdd} size="md" popup onClose={handleClose}>
         <Modal.Header />
-        <Modal.Body>
+        <Modal.Body className="overflow-visible">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {!loading ? (
               <>
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Add Role
-            </h3>
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                  Add Role
+                </h3>
                 <div>
                   <Label htmlFor="name" value="Role Name" />
                   <TextInput
@@ -51,6 +70,32 @@ export function AddRole({ openAdd, handleClose }) {
                     <div className="text-red-600">{formik.errors.name}</div>
                   ) : null}
                 </div>
+
+                <div>
+                  <Label htmlFor="permissions" value="Attach Permissions" />
+                  <Select
+                    id="permissions"
+                    name="permissions"
+                    closeMenuOnSelect={false}
+                    isMulti
+                    options={permissionsOptions}
+                    // value={permissionsOptions.filter((option) =>
+                    //   formik.values.permissions.includes(option.value)
+                    // )}
+                    onChange={(selectedOptions) => {
+                      formik.setFieldValue(
+                        "permissions",
+                        selectedOptions.map((option) => option.value)
+                      );
+                    }}
+                  />
+                  {/* {formik.touched.permissions && formik.errors.permissions ? (
+                    <div className="text-red-600">
+                      {formik.errors.permissions}
+                    </div>
+                  ) : null} */}
+                </div>
+
                 <div className="w-full">
                   <Button type="submit">Submit</Button>
                 </div>

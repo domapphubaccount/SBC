@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
-import { chat_out, choseChate, get_chat, getChatCode } from "@/app/Redux/Features/Chat/ChatSlice";
+import { chat_out, choseChate, get_chat, getChatCode, loading_main_chat } from "@/app/Redux/Features/Chat/ChatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import Logo from "/public/logo.png";
@@ -23,6 +23,8 @@ function Header({ path }) {
     dispatch(chat_out())
     dispatch(loading_chat_action(true))
     dispatch(loading_chat(true));
+    dispatch(loading_main_chat(true));
+
     axios
       .post(
         `${config.api}create_thread`,
@@ -37,12 +39,14 @@ function Header({ path }) {
         dispatch(getChatCode(response.data.data[0]));
         dispatch(loading_chat_action(false))
         dispatch(loading_chat(false));
+        dispatch(loading_main_chat(false));
         
         // localStorage.setItem("chat_code", response.data.data[0]);
       })
       .catch((error) => {
         dispatch(loading_chat_action(false))
         dispatch(loading_chat(false));
+        dispatch(loading_main_chat(false));
         console.error("There was an error making the request!", error);
       });
   };

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -8,9 +8,8 @@ import { logout } from "../Auth/AuthSlice";
 // start get Roles
 export const getRolesAction = createAsyncThunk(
   "roles/getRolesAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}admin/roles`, {
         headers: {
@@ -24,8 +23,8 @@ export const getRolesAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -36,7 +35,7 @@ export const getRolesAction = createAsyncThunk(
 // start get role by id
 export const getRoleByIDAction = createAsyncThunk(
   "roles/getRoleByIDAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -52,8 +51,8 @@ export const getRoleByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -64,8 +63,7 @@ export const getRoleByIDAction = createAsyncThunk(
 // start delete role
 export const deleteRoleAction = createAsyncThunk(
   "roles/deleteRoleAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -81,8 +79,8 @@ export const deleteRoleAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -90,13 +88,11 @@ export const deleteRoleAction = createAsyncThunk(
 );
 // end delete role
 
-
 // start add role
 export const addRoleAction = createAsyncThunk(
   "users/addRoleAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
-    const { token, name } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, name, permissions } = arg;
 
     try {
       const response = await axios.post(
@@ -113,10 +109,22 @@ export const addRoleAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      console.log(response.data);
+
+      if (permissions && response.data?.data?.id) {
+        dispatch(
+          assignPermissionAction({
+            token,
+            id: response.data?.data?.id,
+            permissions: permissions, // This should be sent as the array of permission IDs
+          })
+        );
+      }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -124,18 +132,15 @@ export const addRoleAction = createAsyncThunk(
 );
 // end add role
 
-
 // start assign permission to role
 export const assignPermissionAction = createAsyncThunk(
   "users/assignPermissionAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
-    const { token, id,permissions } = arg;
-
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, permissions } = arg;
     try {
       const response = await axios.post(
         `${config.api}admin/roles/${id}/assign-permissions`,
-        { permissions, },
+        { permissions },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -149,8 +154,8 @@ export const assignPermissionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -161,8 +166,8 @@ export const assignPermissionAction = createAsyncThunk(
 // start edit role
 export const updateRoleAction = createAsyncThunk(
   "roles/updateRoleAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, id, name } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, name, permissions } = arg;
 
     try {
       const response = await axios.put(
@@ -179,10 +184,20 @@ export const updateRoleAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      if (permissions && response.data?.message) {
+        dispatch(
+          assignPermissionAction({
+            token,
+            id,
+            permissions, 
+          })
+        );
+      }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -204,7 +219,7 @@ const initialState = {
   editModule: false,
   roleModule: false,
 
-  editPermissionsModule: false
+  editPermissionsModule: false,
 };
 
 export const rolesSlice = createSlice({
@@ -221,7 +236,6 @@ export const rolesSlice = createSlice({
       state.viewModule = action.payload;
     },
     editPermissionsModule: (state, action) => {
-      console.log(action.payload)
       state.editPermissionsModule = action.payload;
     },
     closeView: (state, action) => {
@@ -229,7 +243,6 @@ export const rolesSlice = createSlice({
     },
     addModule: (state, action) => {
       state.addModule = action.payload;
-      console.log("w3", action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -339,7 +352,13 @@ export const rolesSlice = createSlice({
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule , editPermissionsModule } =
-  rolesSlice.actions;
+export const {
+  addModule,
+  viewModule,
+  closeView,
+  deleteModule,
+  editModule,
+  editPermissionsModule,
+} = rolesSlice.actions;
 
 export default rolesSlice.reducer;

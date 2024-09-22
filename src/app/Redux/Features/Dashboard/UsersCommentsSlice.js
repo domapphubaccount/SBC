@@ -10,7 +10,6 @@ export const getCommentsAction = createAsyncThunk(
   "comments/getCommentsAction",
   async (arg, { rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}admin/chat-user-dislikes`, {
         headers: {
@@ -62,7 +61,6 @@ export const getCommentByIDAction = createAsyncThunk(
 export const deleteCommentAction = createAsyncThunk(
   "roles/deleteRoleAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
     const { token, id } = arg;
 
     try {
@@ -91,7 +89,6 @@ export const deleteCommentAction = createAsyncThunk(
 export const addRoleAction = createAsyncThunk(
   "users/addRoleAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
     const { token, name } = arg;
 
     try {
@@ -162,6 +159,7 @@ const initialState = {
   addModule: false,
   deleteModule: false,
   viewModule: false,
+  reviewerModel: false,
 
   editModule: false,
   roleModule: false,
@@ -185,8 +183,10 @@ export const userCommentsSlice = createSlice({
     },
     addModule: (state, action) => {
       state.addModule = action.payload;
-      console.log("w3", action.payload);
     },
+    reviewerModel: (state, action) => {
+      state.reviewerModel = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -278,7 +278,7 @@ export const userCommentsSlice = createSlice({
     // end update user comment
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, reviewerModel } =
 userCommentsSlice.actions;
 
 export default userCommentsSlice.reducer;

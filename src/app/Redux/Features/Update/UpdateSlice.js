@@ -14,11 +14,9 @@ export const updateSlice = createSlice({
   reducers: {
     update: (state , action) => {
       state.state = !state.state;
-      console.log('update')
     },
     update_archive: (state , action) => {
       state.archive = !state.archive;
-      console.log('update')
     },
     loading_chat: (state , action) => {
       state.loading_chat = action.payload

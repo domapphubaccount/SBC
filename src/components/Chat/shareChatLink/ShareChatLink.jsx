@@ -4,6 +4,7 @@ import { MathJax, MathJaxContext } from "better-react-mathjax";
 import React, { useEffect, useState } from "react";
 import Logo from "@/assets/logo/icon.png";
 import { config } from "@/config/config";
+import loadingImg from "@/assets/logo/loading_icon.gif";
 
 function Example({
   shareName,
@@ -17,8 +18,10 @@ function Example({
   token,
 }) {
   const [copyAction, setCopyAction] = useState(false);
+  const [loading, setLoading] = useState(false);
   // name toggle
   const toggleShare = () => {
+    setLoading(true);
     axios
       .get(`${config.api}sharable/${handleChat.sharable_link}`, {
         headers: {
@@ -27,11 +30,13 @@ function Example({
       })
       .then((res) => {
         if (res.data) {
+          setLoading(false);
           setSharableChat(res.data);
-          console.log(res.data.data);
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        setLoading(false);
+      });
   };
   useEffect(() => {
     toggleShare();
@@ -49,7 +54,6 @@ function Example({
       });
   };
 
-  console.log(sharableChat);
   return (
     <div>
       <div className="fixed z-10 inset-0 overflow-y-auto" x-cloak>
@@ -83,7 +87,7 @@ function Example({
                     <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
                   </svg>
                 </div>
-                {sharableChat.length >= 1 && (
+                {sharableChat.length >= 1 ? (
                   <>
                     <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                       {sharableChat[0].name}
@@ -215,6 +219,17 @@ function Example({
                       </button>
                     </div>
                   </>
+                ) : (
+                  loading && (
+                    <div className="text-center">
+                      <img
+                        src={loadingImg.src}
+                        alt="loading"
+                        className="w-20 loading_logo inline"
+                      />
+                      <div className="font-semibold">Loading..</div>
+                    </div>
+                  )
                 )}
                 <button
                   onClick={() => setShareToggle(false)}

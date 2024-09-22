@@ -30,12 +30,13 @@ function MultipleSelect() {
   };
 
   return (
-    <Dropdown label="CODE" dismissOnClick={false} className="code_card">
+    <Dropdown label="CODE" dismissOnClick={false} className="code_card" style={{minWidth:'200px'}}>
       {code.length > 0 ? (
         code.map((item, idx) => (
           <div key={idx}>
             <h5 className="px-3 py-2">{item.name}</h5>
-            {item.pdfs.map((pdf, i) => (
+            {item.pdfs.length > 0 ?
+             item.pdfs.map((pdf, i) => (
               <Dropdown.Item key={pdf.chatgpt_file_id} className="p-1">
                 <div className="checkbox-wrapper-11 px-5">
                   <input
@@ -49,11 +50,13 @@ function MultipleSelect() {
                   <label htmlFor={`checkbox-${pdf.chatgpt_file_id}`}>{pdf.name}</label>
                 </div>
               </Dropdown.Item>
-            ))}
+            ))
+            : <div className="p-3 pl-5"><small>NO Files Yet</small></div>
+          }
           </div>
         ))
       ) : (
-        <div className="p-3">...NO CODE YET</div>
+        <div className="p-3 py-5">...NO CODE YET</div>
       )}
     </Dropdown>
   );

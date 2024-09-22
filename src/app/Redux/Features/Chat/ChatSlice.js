@@ -10,7 +10,6 @@ export const getChatAction = createAsyncThunk(
   "chat/getChatAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token, chat_id } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}get_chat/${chat_id}`, {
         headers: {
@@ -38,7 +37,6 @@ export const addQuestionAction = createAsyncThunk(
   "chat/addQuestionAction",
   async (arg, { rejectWithValue }) => {
     const { token, question, thread_id, files } = arg;
-    console.log('errorororor' , {token, question, thread_id, files})
 
     try {
       const response = await axios.post(
@@ -88,7 +86,6 @@ export const chatSlice = createSlice({
       state.chat_code = action.payload;
     },
     getChatHistory: (state, action) => {
-      console.log(action.payload);
       state.value = action.payload;
     },
     getChatData: (state, action) => {
@@ -115,12 +112,10 @@ export const chatSlice = createSlice({
     },
     send_failed: (state, action) => {
       if (state.chat_data.length > 0) {
-        console.log("it works");
         state.chat_data[
           state.chat_data.length - 1
         ].answer = `<div style=font-weight:800> Sorry there is an ERROR please try again ${action.payload} </div>`;
       }
-      console.log("it works 2");
       state.loading = false;
     },
     chat_out: (state, action) => {
@@ -134,7 +129,9 @@ export const chatSlice = createSlice({
         chat_code: "",
       };
     },
-
+    loading_main_chat: (state , action) => {
+      state.loading = action.payload
+    },
     // loading chat
     chatSlice_loading: (state, action) => {
       state.loading = action.payload;
@@ -166,7 +163,6 @@ export const chatSlice = createSlice({
         state.input.error = null;
       })
       .addCase(addQuestionAction.fulfilled, (state, action) => {
-        console.log('errorororor')
         state.input.error = null;
         state.input.loading = false;
       })
@@ -189,6 +185,7 @@ export const {
   send_success,
   send_failed,
   chat_out,
+  loading_main_chat
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

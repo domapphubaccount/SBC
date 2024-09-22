@@ -35,7 +35,6 @@ export const logoutAction = createAsyncThunk(
   "login/logoutAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.post(
         `${config.api}logout`,
@@ -256,18 +255,15 @@ export const loginSlice = createSlice({
 
       // start forget password
       .addCase(forgetPasswordAction.pending, (state) => {
-        console.log("pending");
         state.password.loading = true;
         state.password.error = null;
       })
       .addCase(forgetPasswordAction.fulfilled, (state, action) => {
-        console.log("full");
         state.password.loading = false;
         state.password.step = 2;
         state.password.error = null;
       })
       .addCase(forgetPasswordAction.rejected, (state, action) => {
-        console.log("error");
         state.password.loading = false;
         state.password.error = action.payload.message;
       })

@@ -16,7 +16,6 @@ const validationSchema = Yup.object({
 function Forget_password() {
   const dispatch = useDispatch();
   const errorMessage = useSelector((state) => state.loginSlice.password.error);
-  console.log(errorMessage)
 
   const formik = useFormik({
     initialValues: {

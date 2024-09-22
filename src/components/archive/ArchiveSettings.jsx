@@ -35,7 +35,7 @@ function ArchiveSettings({
         </Button>
       </MenuHandler>
       <MenuList className="z-50">
-        <ul>
+        <ul onClick={(e)=>{e.stopPropagation()}}>
           <li
             onClick={() => {
               setShareToggle(true);

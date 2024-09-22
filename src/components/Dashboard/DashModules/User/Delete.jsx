@@ -10,6 +10,9 @@ export function DeleteUser({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const userData = useSelector((state) => state.usersSlice.user);
   const loading = useSelector((state) => state.usersSlice.loading);
+  const deleteErrorMSG = useSelector((state) => state.usersSlice.error);
+
+  console.log(deleteErrorMSG);
 
   const dispatch = useDispatch();
 
@@ -17,16 +20,18 @@ export function DeleteUser({ openDelete, handleClose }) {
     dispatch(deleteUserAction({ token, id: userData.id }));
   };
 
-
   // console.log(userData,'userData')
   return (
     <>
-      <Modal
-        show={openDelete}
-        size="md"
-        onClose={handleClose}
-        popup
-      >
+      <Modal show={openDelete} size="md" onClose={handleClose} popup>
+        {deleteErrorMSG && (
+          <div
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span class="font-medium">Error!</span> {deleteErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           {userData.id && !loading ? (

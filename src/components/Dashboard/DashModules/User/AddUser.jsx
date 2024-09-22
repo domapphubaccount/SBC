@@ -8,11 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUserAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
-
 export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const loading = useSelector((state) => state.usersSlice.loading);
+  const roles = useSelector((state) => state.rolesSlice.roles);
+
 
   // Formik setup
   const formik = useFormik({
@@ -35,7 +36,6 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
         .required("Password confirmation is required"),
     }),
     onSubmit: (values) => {
-      console.log("Form Submitted:", values);
       // Add your form submission logic here
       dispatch(addUserAction({ token, ...values }));
     },
@@ -115,6 +115,27 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   <div className="text-red-600">
                     {formik.errors.password_confirmation}
                   </div>
+                ) : null}
+              </div>
+
+              <div>
+                <Label htmlFor="role" value="User Role: " />
+                <select
+                  className="border-0"
+                  id="role"
+                  onChange={formik.handleChange}
+                  value={formik.values.role}
+                >
+                  <option value={""}>None</option>
+                  {roles.length > 0 &&
+                    roles.map((item, index) => (
+                      <option key={index} value={item.name}>
+                        {item.name}
+                      </option>
+                    ))}
+                </select>
+                {formik.touched.role && formik.errors.role ? (
+                  <div className="text-red-600">{formik.errors.role}</div>
                 ) : null}
               </div>
 

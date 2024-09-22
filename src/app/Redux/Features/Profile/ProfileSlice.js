@@ -81,7 +81,6 @@ export const profileSlice = createSlice({
       })
       .addCase(updatePasswordAction.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("updated succ");
         // state.value = action.payload
       })
       .addCase(updatePasswordAction.rejected, (state, action) => {
@@ -97,7 +96,6 @@ export const profileSlice = createSlice({
       })
       .addCase(getProfileAction.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload)
         state.profile = action.payload
       })
       .addCase(getProfileAction.rejected, (state, action) => {

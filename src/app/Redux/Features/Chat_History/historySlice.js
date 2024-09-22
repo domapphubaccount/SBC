@@ -9,7 +9,6 @@ export const getHistoryAction = createAsyncThunk(
   "history/getHistoryAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}chat_history`, {
         headers: {
@@ -56,7 +55,6 @@ export const historySlice = createSlice({
       .addCase(getHistoryAction.fulfilled, (state, action) => {
           state.error = null;
           state.loading = false;
-          console.log(action.payload)
           state.chat_history = action.payload;
       })
       .addCase(getHistoryAction.rejected, (state, action) => {

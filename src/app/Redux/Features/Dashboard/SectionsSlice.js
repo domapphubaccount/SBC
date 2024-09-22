@@ -10,7 +10,6 @@ export const getSectionsAction = createAsyncThunk(
   "sections/getSectionsAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}admin/sections`, {
         headers: {
@@ -38,7 +37,6 @@ export const addSectionAction = createAsyncThunk(
   "sections/addSectionAction",
   async (arg, { rejectWithValue, dispatch }) => {
     const { token, name } = arg;
-    console.log(token);
     try {
       const response = await axios.post(
         `${config.api}admin/sections`,
@@ -55,7 +53,6 @@ export const addSectionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      console.log(response);
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
@@ -72,7 +69,6 @@ export const deleteSectionAction = createAsyncThunk(
   "sections/deleteSectionAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
-    console.log("delete section", token);
     try {
       const response = await axios.delete(`${config.api}admin/sections/${id}`, {
         headers: {
@@ -99,7 +95,6 @@ export const editSectionAction = createAsyncThunk(
   "sections/editSectionAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token, id ,name} = arg;
-    console.log('test edit actions')
     try {
       const response = await axios.put(`${config.api}admin/sections/${id}`, {
         name
@@ -173,7 +168,6 @@ export const sectionsSlice = createSlice({
       })
       .addCase(getSectionsAction.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
         state.sections = action.payload;
       })
       .addCase(getSectionsAction.rejected, (state, action) => {
@@ -223,7 +217,6 @@ export const sectionsSlice = createSlice({
         state.error = null;
       })
       .addCase(editSectionAction.fulfilled, (state, action) => {
-        console.log('test edit');
         state.loading = false;
         state.error = false;
         state.updates = !state.updates;

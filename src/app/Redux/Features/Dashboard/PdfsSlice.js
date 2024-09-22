@@ -10,7 +10,6 @@ export const getPdfsAction = createAsyncThunk(
   "pdfs/getPdfsAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}admin/all_files`, {
         headers: {
@@ -62,7 +61,6 @@ export const getRoleByIDAction = createAsyncThunk(
 export const deletePdfAction = createAsyncThunk(
   "pdfs/deletePdfAction",
   async (arg, { rejectWithValue }) => {
-    console.log("dispatch");
     const { token, id } = arg;
 
     try {
@@ -216,7 +214,6 @@ export const pdfsSlice = createSlice({
       .addCase(addpdffileAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        console.log(action.payload)
       })
       // end add pdf file
 

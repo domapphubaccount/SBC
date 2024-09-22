@@ -10,7 +10,6 @@ export const getCodeAction = createAsyncThunk(
   "code/getCodeAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
-    console.log('code action ' , token)
     try {
       const response = await axios.get(`${config.api}admin/section_pdf`,{
       headers: {
@@ -25,7 +24,6 @@ export const getCodeAction = createAsyncThunk(
       if(error?.response?.status === 401){
         dispatch(logout())
       }
-      console.log(error?.response?.status)
       return rejectWithValue(error.response.data);
     }
   }

@@ -10,7 +10,6 @@ export const getUsersAction = createAsyncThunk(
   "users/getUsersAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}admin/users`, {
         headers: {
@@ -38,7 +37,6 @@ export const getUserByIDAction = createAsyncThunk(
   "users/getUserByIDAction",
   async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
-    console.log(arg)
 
     try {
       const response = await axios.get(`${config.api}admin/users/${id}`, {
@@ -66,7 +64,6 @@ export const getUserByIDAction = createAsyncThunk(
 export const editUserAction = createAsyncThunk(
   "users/editUserAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
     const { token, id, name, email , status } = arg;
 
     try {
@@ -131,7 +128,6 @@ export const addUserAction = createAsyncThunk(
 export const deleteUserAction = createAsyncThunk(
   "users/deleteUserAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
     const { token, id } = arg;
 
     try {
@@ -160,7 +156,6 @@ export const deleteUserAction = createAsyncThunk(
 export const updateRoleAction = createAsyncThunk(
   "users/updateRoleAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
     const { token, id, role } = arg;
 
     try {

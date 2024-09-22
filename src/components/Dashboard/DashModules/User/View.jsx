@@ -31,7 +31,7 @@ export function ViewUser({ openView, handleClose }) {
               </div>
             ) : (
               <div>
-                <div className="mb-2">
+                {/* <div className="mb-3">
                   <TextInput
                     id="user id"
                     style={{ opacity: 1 }}
@@ -40,8 +40,8 @@ export function ViewUser({ openView, handleClose }) {
                     disabled
                     value={`User ID: ${userData.id}`}
                   />
-                </div>
-                <div className="mb-2">
+                </div> */}
+                <div className="mb-3">
                   <TextInput
                     id="user name"
                     style={{ opacity: 1 }}
@@ -51,7 +51,7 @@ export function ViewUser({ openView, handleClose }) {
                     value={`User : ${userData.name}`}
                   />
                 </div>
-                <div>
+                <div className="mb-3">
                   <TextInput
                     id="user email"
                     style={{ opacity: 1 }}
@@ -59,6 +59,36 @@ export function ViewUser({ openView, handleClose }) {
                     required
                     disabled
                     value={`Email : ${userData.email}`}
+                  />
+                </div>
+                <div className="mb-3">
+                  <TextInput
+                    id="user role"
+                    style={{ opacity: 1 }}
+                    type="text"
+                    required
+                    disabled
+                    value={`User Role : Admin `}
+                  />
+                </div>
+                <div className="mb-3">
+                  <TextInput
+                    id="Last Seen"
+                    style={{ opacity: 1 }}
+                    type="text"
+                    required
+                    disabled
+                    value={`Last Seen : 25-11-2023 `}
+                  />
+                </div>
+                <div className="mb-3">
+                  <TextInput
+                    id="status"
+                    style={{ opacity: 1 }}
+                    type="text"
+                    required
+                    disabled
+                    value={`Status : active `}
                   />
                 </div>
               </div>

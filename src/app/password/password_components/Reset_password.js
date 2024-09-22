@@ -19,7 +19,6 @@ function ResetPassword({storedCode}) {
   });
   const navigate = useRouter()
   const state = useSelector((state) => state);
-  console.log(state);
 
   const formik = useFormik({
     initialValues: {
@@ -28,7 +27,6 @@ function ResetPassword({storedCode}) {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       axios
         .post(
           `${config.api}reset-password`,

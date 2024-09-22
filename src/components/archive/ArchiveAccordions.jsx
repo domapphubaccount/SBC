@@ -12,6 +12,7 @@ import {
   choseChate,
   getChatHistory,
   getConversation,
+  loading_main_chat,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import Logo from "@/assets/logo/icon.png";
 import { config } from "@/config/config";
@@ -34,15 +35,15 @@ function TailwindAccordion() {
   const [sharableChat, setSharableChat] = useState([]);
   // const dashboardData = useSelector(state => state.chatSlice.chat_history[0])
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const dashboardData = useSelector(
-    (state) => state.historySlice.chat_history
-  );
+  const dashboardData = useSelector((state) => state.historySlice.chat_history);
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
   const loading = useSelector((state) => state.chatActionsSlice.loading);
   const loadingHistory = useSelector((state) => state.historySlice.loading);
   const dispatch = useDispatch();
   const chatid = useSelector((state) => state.chatSlice.get_chat);
+  const conversation = useSelector((state) => state.chatSlice.conversation);
+  const disabledAction = useSelector((state) => state.chatActionsSlice.loading);
 
   useEffect(() => {
     dispatch(getHistoryAction({ token }));
@@ -70,7 +71,7 @@ function TailwindAccordion() {
       )
       .then((response) => {
         if (response.data.success) {
-          console.log(response.data);
+          // console.log(response.data);
         }
       })
       .catch((error) => {
@@ -114,15 +115,14 @@ function TailwindAccordion() {
   const handleGetChat = (chat_id, share_name) => {
     if (chatid != chat_id) {
       dispatch(choseChate(chat_id));
+      dispatch(loading_main_chat(true));
       // dispatch(loading_chat(true));
       dispatch(loading_get_chat_history(true));
       localStorage.setItem("chat", chat_id);
     }
   };
   const handleDeleteChate = (handleChat) => {
-    console.log(handleChat, "delete **************************");
     dispatch(loading_chat_action(true));
-    // dispatch(loading_chat_action(false))
     axios
       .post(
         `${config.api}archive-chat`,
@@ -140,8 +140,13 @@ function TailwindAccordion() {
         if (response.data) {
           dispatch(loading_chat_action(false));
           setDeleteToggle(false);
-          setHandleChat({});
-          dispatch(choseChate(null));
+
+          if (handleChat.id === conversation.id) {
+            localStorage.removeItem("chat");
+            setHandleChat({});
+            dispatch(choseChate(null));
+            dispatch(getConversation([]));
+          }
           dispatch(update_archive());
           setOpen(false);
         }
@@ -153,10 +158,31 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
 
-  console.log(dashboardData);
-
   return (
     <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
+      {/* {actionAlert && (
+        <div
+          className="flex bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
+          role="alert"
+        >
+          <svg
+            className="w-5 h-5 inline mr-3"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <div>
+            <span className="font-medium">Success!</span> Your action happened
+            successfully.
+          </div>
+        </div>
+      )} */}
       <div className="accordion h-full">
         {dashboardData?.chat_history &&
         Object.entries(dashboardData.chat_history).length >= 1 ? (
@@ -279,7 +305,7 @@ function TailwindAccordion() {
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
-                    disabled={loading}
+                    disabled={loading || disabledAction}
                     onClick={() => handleRename(handleChat)}
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500	 sm:ml-3 sm:w-auto"
@@ -351,6 +377,7 @@ function TailwindAccordion() {
                     onClick={() => handleDeleteChate(handleChat)}
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    disabled={disabledAction}
                   >
                     Delete
                   </button>
@@ -379,29 +406,6 @@ function TailwindAccordion() {
           setShareName={setShareName}
           shareName={shareName}
         />
-      )}
-      {actionAlert && (
-        <div
-          className="flex bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
-          role="alert"
-        >
-          <svg
-            className="w-5 h-5 inline mr-3"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <div>
-            <span className="font-medium">Success!</span> Your action happened
-            successfully.
-          </div>
-        </div>
       )}
     </div>
   );

@@ -9,6 +9,7 @@ import { getCodeAction } from "@/app/Redux/Features/Code/CodeSlice";
 import {
   getChatData,
   getConversation,
+  loading_main_chat,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import { config } from "@/config/config";
@@ -46,7 +47,7 @@ function ChatContainer() {
             if (response.data) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
-              // dispatch(loading_chat(false));
+              dispatch(dispatch(loading_main_chat(false)));
               dispatch(loading_get_chat_history(false))
               // dispatch(chatSlice_loading(false))
             }
@@ -73,6 +74,7 @@ function ChatContainer() {
             if (response) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
+              dispatch(dispatch(loading_main_chat(false)));
               // dispatch(loading_chat(false));
               dispatch(loading_get_chat_history(false))
             }

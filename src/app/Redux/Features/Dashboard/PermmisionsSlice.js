@@ -10,7 +10,6 @@ export const getPermissionsAction = createAsyncThunk(
   "permission/getPermissionsAction",
   async (arg, { rejectWithValue }) => {
     const { token } = arg;
-    console.log(token);
     try {
       const response = await axios.get(`${config.api}admin/permissions`, {
         headers: {
@@ -90,7 +89,6 @@ export const deletePermissionAction = createAsyncThunk(
 export const addPermissionAction = createAsyncThunk(
   "users/addPermissionAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    console.log("dispatch");
     const { token, name } = arg;
 
     try {
