@@ -1,6 +1,7 @@
 // pages/sharable/[chatId].js
 "use client"
 import { getChatData, getConversation } from "@/app/Redux/Features/Chat/ChatSlice";
+import { config } from "@/config/config";
 import DashLayout from "@/layout/DashLayout/DashLayout";
 import Header from "@/layout/Header/Header";
 import axios from "axios";
@@ -25,7 +26,7 @@ export default function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`https://sbc.designal.cc/get-chat-by-hash/${pathname.slice(10)}`,{
+    axios.get(`${config.api}sharable/${pathname.slice(10)}`,{
       headers:{
         Accept: "application/json",
         "Content-Type": "application/json",
