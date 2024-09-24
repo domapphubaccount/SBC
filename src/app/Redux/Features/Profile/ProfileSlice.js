@@ -11,12 +11,14 @@ export const updatePasswordAction = createAsyncThunk(
   async (arg, { dispatch , rejectWithValue }) => {
     const { token, current_password, new_password, confirm_password } = arg;
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${config.api}profile`,
         { current_password, new_password, confirm_password },
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -44,6 +46,8 @@ export const getProfileAction = createAsyncThunk(
       const response = await axios.get(`${config.api}profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       if (response.data.error) {

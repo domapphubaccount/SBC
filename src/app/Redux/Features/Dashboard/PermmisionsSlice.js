@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -15,6 +15,7 @@ export const getPermissionsAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -32,7 +33,7 @@ export const getPermissionsAction = createAsyncThunk(
 // start get permission by id
 export const getPermissionByIDAction = createAsyncThunk(
   "permission/getPermissionByIDAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -40,6 +41,7 @@ export const getPermissionByIDAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -48,8 +50,8 @@ export const getPermissionByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -60,24 +62,28 @@ export const getPermissionByIDAction = createAsyncThunk(
 // start delete permission
 export const deletePermissionAction = createAsyncThunk(
   "roles/deleteRoleAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/permissions/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+      const response = await axios.delete(
+        `${config.api}admin/permissions/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -88,7 +94,7 @@ export const deletePermissionAction = createAsyncThunk(
 // start add permission
 export const addPermissionAction = createAsyncThunk(
   "users/addPermissionAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, name } = arg;
 
     try {
@@ -99,6 +105,7 @@ export const addPermissionAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -108,8 +115,8 @@ export const addPermissionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -120,7 +127,7 @@ export const addPermissionAction = createAsyncThunk(
 // start edit role
 export const updatePermissionAction = createAsyncThunk(
   "roles/updatePermissionAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id, name } = arg;
 
     try {
@@ -131,6 +138,7 @@ export const updatePermissionAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -140,8 +148,8 @@ export const updatePermissionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -254,10 +262,6 @@ export const permissionsSlice = createSlice({
         state.error = action.payload.message;
       })
       // end delete permission
-
-
-
-
 
       //start update permission
       .addCase(updatePermissionAction.pending, (state) => {

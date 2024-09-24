@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 
-// start get comments
-export const getCommentsAction = createAsyncThunk(
-  "comments/getCommentsAction",
+// start get reviews
+export const getReviewsAction = createAsyncThunk(
+  "reviews/getReviewsAction",
   async (arg, { rejectWithValue }) => {
     const { token } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/chat-user-dislikes`, {
+      const response = await axios.get(`${config.api}admin/reviews`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -22,7 +22,7 @@ export const getCommentsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -31,46 +31,46 @@ export const getCommentsAction = createAsyncThunk(
 // end get comments
 
 // start get comment by id
-export const getCommentByIDAction = createAsyncThunk(
-  "roles/getRoleByIDAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, id } = arg;
+// export const getCommentByIDAction = createAsyncThunk(
+//   "roles/getRoleByIDAction",
+//   async (arg, { dispatch , rejectWithValue }) => {
+//     const { token, id } = arg;
 
-    try {
-      const response = await axios.get(`${config.api}admin/chat-user-dislikes/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-      });
+//     try {
+//       const response = await axios.get(`${config.api}admin/chat-user-dislikes/${id}`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           Accept: "application/json",
+//             "Content-Type": "application/json",
+//         },
+//       });
 
-      if (response.data.error) {
-        return new Error(response.data.error);
-      }
-      return response.data.data;
-    } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
-      }
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
+//       if (response.data.error) {
+//         return new Error(response.data.error);
+//       }
+//       return response.data.data;
+//     } catch (error) {
+//       if(error?.response?.status === 401){
+//         dispatch(logout())
+//       }
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 // end get comment by id
 
 // start delete role
-export const deleteCommentAction = createAsyncThunk(
-  "roles/deleteRoleAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+export const deleteReviewsAction = createAsyncThunk(
+  "reviews/deleteReviewsAction",
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/chat-user-dislikes/force_delete/${id}`, {
+      const response = await axios.delete(`${config.api}admin/reviews/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -79,8 +79,8 @@ export const deleteCommentAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -90,18 +90,14 @@ export const deleteCommentAction = createAsyncThunk(
 
 // start add review
 export const addReviewAction = createAsyncThunk(
-  "comments/addReviewAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, id , comment , status } = arg;
+  "reviews/addReviewAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, chat_user_dislike_id , comment_reviewer , comment_super_reviewer , super_reviewr_id , status } = arg;
 
     try {
       const response = await axios.post(
         `${config.api}admin/reviews`,
-        { 
-          chat_user_dislike_id: id,
-          comment_reviewr: comment,
-          status
-         },
+        { chat_user_dislike_id , comment_reviewer , comment_super_reviewer , super_reviewr_id , status },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -116,8 +112,8 @@ export const addReviewAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -126,15 +122,29 @@ export const addReviewAction = createAsyncThunk(
 // end add role
 
 // start edit role
-export const updateCommentAction = createAsyncThunk(
-  "comments/updateCommentAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, id, comment } = arg;
+export const updateReviewAction = createAsyncThunk(
+  "reviews/updateCommentAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const {
+      token,
+      id,
+      chat_user_dislike_id,
+      comment_reviewer,
+      comment_super_reviewer,
+      status,
+    } = arg;
+
+    console.log(arg)
 
     try {
       const response = await axios.put(
-        `${config.api}admin/chat-user-dislikes/${id}`,
-        { "user_chat_id" : id,comment },
+        `${config.api}admin/reviews/${id}`,
+        {
+          chat_user_dislike_id,
+          comment_reviewer,
+          comment_super_reviewer,
+          status,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -149,8 +159,8 @@ export const updateCommentAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -159,8 +169,8 @@ export const updateCommentAction = createAsyncThunk(
 // end edit user role
 
 const initialState = {
-  comments: [],
-  comment: {},
+  review: [],
+  reviews: [],
 
   loading: false,
   updates: false,
@@ -174,18 +184,23 @@ const initialState = {
   roleModule: false,
 };
 
-export const userCommentsSlice = createSlice({
-  name: "comments",
+export const ReviewSlice = createSlice({
+  name: "reviews",
   initialState,
   reducers: {
     editModule: (state, action) => {
       state.editModule = action.payload;
+      state.editModule = action.payload.open;
+      state.review = action.payload.review || "";
     },
     deleteModule: (state, action) => {
-      state.deleteModule = action.payload;
+      state.deleteModule = action.payload.open;
+      state.review = action.payload.review || "";
     },
     viewModule: (state, action) => {
-      state.viewModule = action.payload;
+      console.log(action.payload, "+-+-+");
+      state.viewModule = action.payload.open;
+      state.review = action.payload.review || "";
     },
     closeView: (state, action) => {
       state.role = {};
@@ -194,30 +209,30 @@ export const userCommentsSlice = createSlice({
       state.addModule = action.payload;
     },
     reviewerModel: (state, action) => {
-      state.reviewerModel = action.payload
-    }
+      state.reviewerModel = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
-      //start get comment
-      .addCase(getCommentsAction.pending, (state) => {
+      //start get reviews
+      .addCase(getReviewsAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getCommentsAction.fulfilled, (state, action) => {
+      .addCase(getReviewsAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        console.log(action.payload)
-        state.comments = action.payload;
+        console.log(action.payload);
+        state.reviews = action.payload;
         state.addModule = false;
       })
-      .addCase(getCommentsAction.rejected, (state, action) => {
+      .addCase(getReviewsAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      // end get comment
+      // end get reviews
 
-      // start add review
+      // start add role
       .addCase(addReviewAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -232,62 +247,68 @@ export const userCommentsSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       })
-      // end add review
+      // end add role
 
       //start get comment by id
-      .addCase(getCommentByIDAction.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getCommentByIDAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
-        state.comment = action.payload;
-      })
-      .addCase(getCommentByIDAction.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload.message;
-      })
+      // .addCase(getCommentByIDAction.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(getCommentByIDAction.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.error = null;
+      //   state.comment = action.payload;
+      // })
+      // .addCase(getCommentByIDAction.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload.message;
+      // })
       // end get comment by id
 
       //start delete comment
-      .addCase(deleteCommentAction.pending, (state) => {
+      .addCase(deleteReviewsAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteCommentAction.fulfilled, (state, action) => {
+      .addCase(deleteReviewsAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.updates = !state.updates;
         state.comment = {};
         state.deleteModule = false;
       })
-      .addCase(deleteCommentAction.rejected, (state, action) => {
+      .addCase(deleteReviewsAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })
       // end delete comment
 
       //start update user comment
-      .addCase(updateCommentAction.pending, (state) => {
+      .addCase(updateReviewAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateCommentAction.fulfilled, (state, action) => {
+      .addCase(updateReviewAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.updates = !state.updates;
         state.role = {};
         state.editModule = false;
       })
-      .addCase(updateCommentAction.rejected, (state, action) => {
+      .addCase(updateReviewAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
     // end update user comment
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, reviewerModel } =
-userCommentsSlice.actions;
+export const {
+  addModule,
+  viewModule,
+  closeView,
+  deleteModule,
+  editModule,
+  reviewerModel,
+} = ReviewSlice.actions;
 
-export default userCommentsSlice.reducer;
+export default ReviewSlice.reducer;

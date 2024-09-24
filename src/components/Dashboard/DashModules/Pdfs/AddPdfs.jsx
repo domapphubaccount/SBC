@@ -21,14 +21,20 @@ export function Addpdfs({ openAdd, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sections = useSelector((state) => state.sectionsSlice.sections);
   const loading = useSelector((state) => state.pdfsSlice.loading);
+  const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
 
   // Formik setup
   const formik = useFormik({
     initialValues: {
+      name: "", // Add name field to initial values
       section_id: sections[0]?.id,
       file_path: null, // Initial value for the file
     },
     validationSchema: Yup.object({
+      name: Yup.string()
+        .required("Name is required")
+        .min(3, "Name must be at least 3 characters")
+        .max(50, "Name must be at most 50 characters"), // Adjust min and max lengths as needed
       section_id: Yup.string()
         .required("Section is required")
         .notOneOf([""], "Selecting 'NONE' is not allowed"), // Add this line
@@ -54,6 +60,14 @@ export function Addpdfs({ openAdd, handleClose }) {
   return (
     <>
       <Modal show={openAdd} size="md" popup onClose={handleClose}>
+      {ErrorMSG && (
+          <div
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span class="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -71,6 +85,21 @@ export function Addpdfs({ openAdd, handleClose }) {
               </div>
             ) : (
               <>
+                <div>
+                  <Label htmlFor="name" value="File Name" />
+                  <TextInput
+                    id="name"
+                    name="name"
+                    type="text"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur} // Handle blur for validation
+                    value={formik.values.name}
+                    required
+                  />
+                  {formik.touched.name && formik.errors.name ? (
+                    <div className="text-red-600">{formik.errors.name}</div>
+                  ) : null}
+                </div>
                 <div>
                   <div className="max-w-md">
                     <div className="mb-2 block">

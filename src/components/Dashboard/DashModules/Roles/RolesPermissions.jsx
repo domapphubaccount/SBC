@@ -65,7 +65,7 @@ export function RolesPermissions({ openRole, handleClose }) {
   },[permissionsData])
 
   return (
-    <Modal show={openRole} size="md" popup onClose={handleClose}>
+    <Modal show={openRole} size="5xl" popup onClose={handleClose}>
       <Modal.Header />
       <Modal.Body className="overflow-visible">
         <form onSubmit={formik.handleSubmit} className="space-y-6">

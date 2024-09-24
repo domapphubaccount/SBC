@@ -15,6 +15,7 @@ export const getPdfsAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "*/*",
         },
       });
 
@@ -42,7 +43,8 @@ export const getRoleByIDAction = createAsyncThunk(
       const response = await axios.get(`${config.api}admin/roles/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+          Accept: "*/*",
+          "Content-Type": "*/*",
         },
       });
 
@@ -68,6 +70,7 @@ export const deletePdfAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -85,17 +88,16 @@ export const deletePdfAction = createAsyncThunk(
 
 // Start add PDF file
 export const addpdffileAction = createAsyncThunk(
-  "pdfs/addpdffileAction", // action name
+  "pdfs/addpdffileAction",
   async (arg, { rejectWithValue }) => {
-    const { token, section_id, file_path } = arg;
+    const { token, name, section_id, file_path } = arg;
 
     // Create FormData object to handle file upload
     const formData = new FormData();
-    formData.append("section_id", section_id);
-    
-    // Append each file to the FormData (assuming multiple files)
-      formData.append("file_path[]", file_path);
 
+    formData.append("section_id", section_id);
+    formData.append("name", name);
+    formData.append("file_path", file_path); // Adjust this if the backend expects a different name
 
     try {
       const response = await axios.post(
@@ -104,22 +106,23 @@ export const addpdffileAction = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "multipart/form-data", // Ensure correct content type
+            Accept: "*/*",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
       if (response.data.error) {
-        return new Error(response.data.error);
+        return rejectWithValue(new Error(response.data.error));
       }
 
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
 // End add PDF file
 
 // start edit role
@@ -136,6 +139,7 @@ export const updateRoleAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -164,6 +168,7 @@ const initialState = {
 
   editModule: false,
   roleModule: false,
+  error: null
 };
 
 export const pdfsSlice = createSlice({
@@ -179,6 +184,9 @@ export const pdfsSlice = createSlice({
     addModule: (state, action) => {
       state.addModule = action.payload;
     },
+    closePdfError: (state)=>{
+      state.error = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -195,7 +203,7 @@ export const pdfsSlice = createSlice({
       })
       .addCase(getPdfsAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end get pdfs
 
@@ -213,7 +221,7 @@ export const pdfsSlice = createSlice({
       })
       .addCase(addpdffileAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       })
       // end add pdf file
 
@@ -230,7 +238,7 @@ export const pdfsSlice = createSlice({
       })
       .addCase(deletePdfAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end delete pdf file
 
@@ -256,7 +264,7 @@ export const pdfsSlice = createSlice({
       })
       .addCase(getRoleByIDAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end get role by id
 
@@ -276,12 +284,12 @@ export const pdfsSlice = createSlice({
       })
       .addCase(updateRoleAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       });
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError } =
   pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

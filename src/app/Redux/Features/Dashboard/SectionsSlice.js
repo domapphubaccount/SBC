@@ -1,20 +1,22 @@
-"use client"
+"use client";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import { addpdffileAction } from "./PdfsSlice";
 
 // start get section
 export const getSectionsAction = createAsyncThunk(
   "sections/getSectionsAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token } = arg;
     try {
       const response = await axios.get(`${config.api}admin/sections`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -23,8 +25,8 @@ export const getSectionsAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -36,7 +38,7 @@ export const getSectionsAction = createAsyncThunk(
 export const addSectionAction = createAsyncThunk(
   "sections/addSectionAction",
   async (arg, { rejectWithValue, dispatch }) => {
-    const { token, name } = arg;
+    const { token, name, file_path , fileName } = arg;
     try {
       const response = await axios.post(
         `${config.api}admin/sections`,
@@ -47,16 +49,27 @@ export const addSectionAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      if (file_path && response.data?.data?.id) {
+        dispatch(
+          addpdffileAction({
+            name: fileName,
+            token,
+            section_id: response.data?.data?.id,
+            file_path,
+          })
+        );
+      }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -67,7 +80,7 @@ export const addSectionAction = createAsyncThunk(
 // start delete section
 export const deleteSectionAction = createAsyncThunk(
   "sections/deleteSectionAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
     try {
       const response = await axios.delete(`${config.api}admin/sections/${id}`, {
@@ -81,8 +94,8 @@ export const deleteSectionAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -93,24 +106,38 @@ export const deleteSectionAction = createAsyncThunk(
 // start edit section
 export const editSectionAction = createAsyncThunk(
   "sections/editSectionAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, id ,name} = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, name , file_path } = arg;
     try {
-      const response = await axios.put(`${config.api}admin/sections/${id}`, {
-        name
-      },{
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+      const response = await axios.put(
+        `${config.api}admin/sections/${id}`,
+        {
+          name,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      if (file_path && response.data?.data?.id) {
+        dispatch(
+          addpdffileAction({
+            token,
+            section_id: response.data?.data?.id,
+            file_path,
+          })
+        );
+      }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -158,6 +185,9 @@ export const sectionsSlice = createSlice({
     viewModule: (state, action) => {
       state.viewModule = action.payload;
     },
+    removeError: (state)=>{
+      state.error = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -172,7 +202,7 @@ export const sectionsSlice = createSlice({
       })
       .addCase(getSectionsAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       })
       // end get all sections
 
@@ -189,7 +219,7 @@ export const sectionsSlice = createSlice({
       })
       .addCase(addSectionAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       })
       // end add new section
 
@@ -203,11 +233,11 @@ export const sectionsSlice = createSlice({
         state.error = false;
         state.updates = !state.updates;
         state.deleteModule = false;
-        state.section_ID = {id:null,name:null};
+        state.section_ID = { id: null, name: null };
       })
       .addCase(deleteSectionAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       })
       // end delete section
 
@@ -220,18 +250,18 @@ export const sectionsSlice = createSlice({
         state.loading = false;
         state.error = false;
         state.updates = !state.updates;
-        state.section_ID = {id:null,name:null};
+        state.section_ID = { id: null, name: null };
         state.editModule = false;
       })
       .addCase(editSectionAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       });
     // end edit section
   },
 });
 
-export const { editModule, deleteModule, viewModule, addModule, getSectionId } =
+export const { editModule, deleteModule, viewModule, addModule, getSectionId, removeError } =
   sectionsSlice.actions;
 
 export default sectionsSlice.reducer;

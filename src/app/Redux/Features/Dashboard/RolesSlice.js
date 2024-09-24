@@ -15,6 +15,7 @@ export const getRolesAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -43,6 +44,7 @@ export const getRoleByIDAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -71,6 +73,7 @@ export const deleteRoleAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -102,6 +105,7 @@ export const addRoleAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -109,8 +113,6 @@ export const addRoleAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-
-      console.log(response.data);
 
       if (permissions && response.data?.data?.id) {
         dispatch(
@@ -145,6 +147,7 @@ export const assignPermissionAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -177,6 +180,7 @@ export const updateRoleAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -244,6 +248,9 @@ export const rolesSlice = createSlice({
     addModule: (state, action) => {
       state.addModule = action.payload;
     },
+    removeRolesError: (state) => {
+      state.error = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -278,7 +285,7 @@ export const rolesSlice = createSlice({
       })
       .addCase(addRoleAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end add role
 
@@ -311,7 +318,7 @@ export const rolesSlice = createSlice({
       })
       .addCase(getRoleByIDAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end get role by id
 
@@ -329,7 +336,7 @@ export const rolesSlice = createSlice({
       })
       .addCase(deleteRoleAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end delete role
 
@@ -347,7 +354,7 @@ export const rolesSlice = createSlice({
       })
       .addCase(updateRoleAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       });
     // end update user role
   },
@@ -359,6 +366,7 @@ export const {
   deleteModule,
   editModule,
   editPermissionsModule,
+  removeRolesError
 } = rolesSlice.actions;
 
 export default rolesSlice.reducer;

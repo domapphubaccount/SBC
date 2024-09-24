@@ -13,7 +13,9 @@ export const getCodeAction = createAsyncThunk(
     try {
       const response = await axios.get(`${config.api}admin/section_pdf`,{
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
       }})
 
       if (response.data.error) {

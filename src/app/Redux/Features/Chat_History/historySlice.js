@@ -14,6 +14,7 @@ export const getHistoryAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 

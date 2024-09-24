@@ -52,6 +52,9 @@ function MainChat({ elementWidth }) {
   const dispatch = useDispatch();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const [windhtchat, setwidthchat] = useState();
+  const loading_actions = useSelector(
+    (state) => state.chatActionsSlice.loading
+  );
 
   function isEnglish(text) {
     const cleanedText = text.replace(/[^a-zA-Z]/g, "");
@@ -142,6 +145,8 @@ function MainChat({ elementWidth }) {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       )
@@ -196,6 +201,8 @@ function MainChat({ elementWidth }) {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       )
@@ -269,7 +276,6 @@ function MainChat({ elementWidth }) {
     }
   }, []);
 
-  console.log(chatData , 'chatData' , conversation)
 
   return (
     <div className="col-span-3 bg-white relative">
@@ -321,15 +327,24 @@ function MainChat({ elementWidth }) {
                             you can start new session or chose previous chat.
                           </p>
                           <div className="mt-6 flex items-center justify-center gap-x-6">
-                            <button
-                              onClick={handleStartNewChat}
-                              className="learn-more start"
-                            >
-                              <span className="circle" aria-hidden="true">
-                                <span className="icon arrow"></span>
-                              </span>
-                              <span className="button-text">Start Chat</span>
-                            </button>
+                            {loading_actions ? (
+                              <div class="dot-wave">
+                                <div class="dot-wave__dot"></div>
+                                <div class="dot-wave__dot"></div>
+                                <div class="dot-wave__dot"></div>
+                                <div class="dot-wave__dot"></div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={handleStartNewChat}
+                                className="learn-more start"
+                              >
+                                <span className="circle" aria-hidden="true">
+                                  <span className="icon arrow"></span>
+                                </span>
+                                <span className="button-text">Start Chat</span>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -337,7 +352,7 @@ function MainChat({ elementWidth }) {
                       <li
                         ref={chatRef}
                         id="chat-zeft"
-                        className="clearfix2 mt-4 px-10"
+                        className="clearfix2 mt-4 px-10 w-full"
                         style={{ paddingTop: "90px" }}
                       >
                         {chatData &&
@@ -345,7 +360,7 @@ function MainChat({ elementWidth }) {
                           conversation.userChats &&
                           chatData.map((item, i) => (
                             <React.Fragment key={i}>
-                              <div className="flex justify-end relative">
+                              <div className="flex justify-end relative w-full">
                                 <div>
                                   <div className="chat_userName_2 text-right">
                                     {user}
@@ -415,7 +430,7 @@ function MainChat({ elementWidth }) {
                                   </div>
                                 </div>
                               </div>
-                              <div className="relative">
+                              <div className="relative w-full">
                                 <div
                                   className="code"
                                   style={{ width: elementWidth - 40 + "px" }}
@@ -588,6 +603,7 @@ function MainChat({ elementWidth }) {
                                           </svg>
                                         )
                                       )}
+                                      {pathName.trim().slice(0, 9) !== "/sharable" &&
                                       <svg
                                         onClick={() => dislikeToggle(item.id)}
                                         xmlns="http://www.w3.org/2000/svg"
@@ -602,7 +618,7 @@ function MainChat({ elementWidth }) {
                                           strokeLinejoin="round"
                                           d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                                         />
-                                      </svg>
+                                      </svg>}
                                     </div>
                                   ) : (
                                     ""

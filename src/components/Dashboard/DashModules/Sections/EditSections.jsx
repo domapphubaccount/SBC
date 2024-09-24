@@ -1,6 +1,13 @@
 "use client";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import {
+  Button,
+  Checkbox,
+  FileInput,
+  Label,
+  Modal,
+  TextInput,
+} from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -13,7 +20,8 @@ export function EditSections({ openEdit, handleClose }) {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.sectionsSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const sectionData = useSelector(state => state.sectionsSlice.section_ID);
+  const sectionData = useSelector((state) => state.sectionsSlice.section_ID);
+  const ErrorMSG = useSelector((state) => state.sectionsSlice.error);
 
   // Formik setup
   const formik = useFormik({
@@ -37,9 +45,23 @@ export function EditSections({ openEdit, handleClose }) {
     }
   }, [sectionData]);
 
+  const handleFileChange = (event) => {
+    formik.setFieldValue("file_path", event.currentTarget.files[0]);
+  };
+
+  console.log(sectionData)
+
   return (
     <>
       <Modal show={openEdit} size="md" popup onClose={handleClose}>
+        {ErrorMSG && (
+          <div
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span class="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -54,6 +76,7 @@ export function EditSections({ openEdit, handleClose }) {
                     id="name"
                     name="name"
                     type="text"
+                    defaultValue={sectionData.name}
                     placeholder={sectionData.name}
                     onChange={formik.handleChange}
                     value={formik.values.name}
@@ -62,6 +85,27 @@ export function EditSections({ openEdit, handleClose }) {
                   {formik.touched.name && formik.errors.name ? (
                     <div className="text-red-600">{formik.errors.name}</div>
                   ) : null}
+                </div>
+
+                {/* <hr />
+
+                <div>
+                  <Label htmlFor="file_path" value="Upload PDF file" />
+                  <FileInput
+                    id="file_path"
+                    name="file_path"
+                    accept=".pdf"
+                    onChange={handleFileChange}
+                    helperText="Only PDF files are allowed."
+                  />
+                  {formik.touched.file_path && formik.errors.file_path ? (
+                    <div className="text-red-600">
+                      {formik.errors.file_path}
+                    </div>
+                  ) : null}
+                </div> */}
+                <div className="w-full">
+                  <Button type="submit">Save Changes</Button>
                 </div>
               </>
             ) : (
@@ -74,10 +118,6 @@ export function EditSections({ openEdit, handleClose }) {
                 />
               </div>
             )}
-
-            <div className="w-full">
-              <Button type="submit">Save Changes</Button>
-            </div>
           </form>
         </Modal.Body>
       </Modal>

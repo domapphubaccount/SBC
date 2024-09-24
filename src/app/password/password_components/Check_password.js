@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { config } from "@/config/config";
-import axios from "axios";
 import LoginImg from "@/assets/login/login.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";

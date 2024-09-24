@@ -8,6 +8,17 @@ export function ViewRole({ openView, handleClose }) {
   const roleData = useSelector((state) => state.rolesSlice.role);
   const loading = useSelector((state) => state.usersSlice.loading);
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} At ${hours}:${minutes}`;
+  }
+
   return (
     <>
       <Modal show={openView} size="md" popup onClose={handleClose}>
@@ -31,6 +42,9 @@ export function ViewRole({ openView, handleClose }) {
               <div>
                 {roleData.name ? (
                   <>
+                  <div>
+                    <small>Created-At: {formatDate(roleData.created_at)}</small>
+                  </div>
                     <div className="mb-3">
                       <TextInput
                         id="role_name"
@@ -58,7 +72,7 @@ export function ViewRole({ openView, handleClose }) {
                                   key={index}
                                 >
                                   <Table.Cell className="p-1">
-                                    <div className="text-xs">{item.name}</div>
+                                    <div className="text-xs">{item.slug}</div>
                                   </Table.Cell>
                                 </Table.Row>
                               ))}

@@ -59,12 +59,18 @@ export function UserRole({ openRole, handleClose }) {
                     <option value={""}>None</option>
                     {roles.length > 0 &&
                       roles.map((item, index) => (
-                        <option key={index} value={item.name}>{item.name}</option>
+                        <option key={index} value={item.name}>
+                          {item.name}
+                        </option>
                       ))}
                   </select>
                   {formik.touched.role && formik.errors.role ? (
                     <div className="text-red-600">{formik.errors.role}</div>
                   ) : null}
+                </div>
+
+                <div className="w-full">
+                  <Button type="submit">Save Changes</Button>
                 </div>
               </>
             ) : (
@@ -77,10 +83,6 @@ export function UserRole({ openRole, handleClose }) {
                 />
               </div>
             )}
-
-            <div className="w-full">
-              <Button type="submit">Save Changes</Button>
-            </div>
           </form>
         </Modal.Body>
       </Modal>

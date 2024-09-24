@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Refrence from "../reference/Refrence";
 import MainChat from "../mainChat/MainChat";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { getCodeAction } from "@/app/Redux/Features/Code/CodeSlice";
 import {
@@ -23,9 +23,10 @@ function ChatContainer() {
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const state = useSelector(state => state)
   const dispatch = useDispatch();
+  const pathName = usePathname()
 
   useEffect(() => {
-    if (!JSON.parse(localStorage.getItem("data"))) {
+    if (!JSON.parse(localStorage.getItem("data")) && pathName.slice(0,9) != "/sharable" ) {
       redirect("/signIn");
     } else {
       dispatch(getCodeAction({ token }));
@@ -68,6 +69,8 @@ function ChatContainer() {
           .get(`${config.api}get-chat/${chat_id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
             },
           })
           .then((response) => {

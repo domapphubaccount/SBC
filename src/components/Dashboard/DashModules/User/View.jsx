@@ -4,11 +4,20 @@ import { Button, Modal, TextInput } from "flowbite-react";
 import { useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
-
 export function ViewUser({ openView, handleClose }) {
   const userData = useSelector((state) => state.usersSlice.user);
   const loading = useSelector((state) => state.usersSlice.loading);
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} At ${hours}:${minutes}`;
+  }
 
   return (
     <>
@@ -23,7 +32,7 @@ export function ViewUser({ openView, handleClose }) {
             {loading ? (
               <div className="flex justify-center">
                 <img
-                  style={{width: '100px'}}
+                  style={{ width: "100px" }}
                   src={loadingImg.src}
                   alt="loading"
                   className="loading_logo"
@@ -41,6 +50,9 @@ export function ViewUser({ openView, handleClose }) {
                     value={`User ID: ${userData.id}`}
                   />
                 </div> */}
+                <div className="mb-3">
+                  <small>Created-At: {formatDate(userData.created_at)}</small>
+                </div>
                 <div className="mb-3">
                   <TextInput
                     id="user name"
@@ -68,17 +80,7 @@ export function ViewUser({ openView, handleClose }) {
                     type="text"
                     required
                     disabled
-                    value={`User Role : Admin `}
-                  />
-                </div>
-                <div className="mb-3">
-                  <TextInput
-                    id="Last Seen"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`Last Seen : 25-11-2023 `}
+                    value={`User Role : ${userData.roles[0].name} `}
                   />
                 </div>
                 <div className="mb-3">
@@ -88,7 +90,17 @@ export function ViewUser({ openView, handleClose }) {
                     type="text"
                     required
                     disabled
-                    value={`Status : active `}
+                    value={`Last Seen : ${userData.last_seen}`}
+                  />
+                </div>
+                <div className="mb-3">
+                  <TextInput
+                    id="status"
+                    style={{ opacity: 1 }}
+                    type="text"
+                    required
+                    disabled
+                    value={`Status : ${userData.status}`}
                   />
                 </div>
               </div>

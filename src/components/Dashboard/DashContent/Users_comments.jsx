@@ -26,10 +26,12 @@ import {
   reviewerModel,
 } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 import { Reviewer } from "../DashModules/UserComments/Reviewer";
+import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 
 function Users_comments({}) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const loading = useSelector((state) => state.userCommentsSlice.loading);
   const usersCommentsData = useSelector(
     (state) => state.userCommentsSlice.comments
   );
@@ -42,7 +44,9 @@ function Users_comments({}) {
     (state) => state.userCommentsSlice.deleteModule
   );
   const openView = useSelector((state) => state.userCommentsSlice.viewModule);
-  const openReviewer = useSelector((state) => state.userCommentsSlice.reviewerModel);
+  const openReviewer = useSelector(
+    (state) => state.userCommentsSlice.reviewerModel
+  );
   const openRole = useSelector((state) => state.userCommentsSlice.roleModule);
 
   const handleClose = () => {
@@ -52,7 +56,7 @@ function Users_comments({}) {
     dispatch(deleteModule(false));
     dispatch(viewModule(false));
     dispatch(roleModule(false));
-    dispatch(reviewerModel(false))
+    dispatch(reviewerModel(false));
   };
   // start open delete
   const handleOpenDelete = (id) => {
@@ -75,11 +79,9 @@ function Users_comments({}) {
   // start open reviewer
   const handleOpenReviewer = (id) => {
     dispatch(getCommentByIDAction({ token, id }));
-    dispatch(reviewerModel(true))
-  }
+    dispatch(reviewerModel(true));
+  };
   // end open reviewer
-
-
 
   // start open role
   const handleOpenRole = (id) => {
@@ -112,8 +114,10 @@ function Users_comments({}) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
 
   return (
@@ -163,15 +167,15 @@ function Users_comments({}) {
             <div>
               <h1 className="text-white text-4xl">USERS COMMENTS</h1>
             </div>
-            <div>
+            {/* <div>
               <Button color="blue" onClick={handleOpenAdd}>
                 Add Comment
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-md w-full m-auto">
+        <div className="bg-white p-8 rounded-md w-full m-auto dashed">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
@@ -211,11 +215,14 @@ function Users_comments({}) {
                     Comment
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Comment by
+                    Status
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    reviewed by
+                    Comment by
                   </th>
+                  {/* <th scope="col" className="px-6 py-3">
+                    reviewed by
+                  </th> */}
                   <th scope="col" className="px-6 py-3">
                     date
                   </th>
@@ -225,7 +232,7 @@ function Users_comments({}) {
                 </tr>
               </thead>
               <tbody>
-                {usersCommentsData.length > 0 ? (
+                {usersCommentsData && usersCommentsData.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr
                       key={index}
@@ -253,10 +260,6 @@ function Users_comments({}) {
                             </svg>
                           </div>
                           <div className="ml-3">
-                            {/* <p className="text-gray-900 whitespace-no-wrap">
-                              {}
-                            </p> */}
-
                             <Popover
                               content={
                                 <Textarea
@@ -275,7 +278,7 @@ function Users_comments({}) {
                               {/* <Button>Popover bottom</Button> */}
                               <div className="hover:text-sky-700 cursor-pointer">
                                 {item.comment.length > 12
-                                  ? item.comment.slice(-12) + " ....."
+                                  ? item.comment.slice(0,12) + " ....."
                                   : item.comment}
                               </div>
                             </Popover>
@@ -283,15 +286,30 @@ function Users_comments({}) {
                         </div>
                       </th>
 
-                      <td className="px-6 py-4">need it</td>
-                      <td className="px-6 py-4">need it</td>
+                      <td className="px-6 py-4">
+                        {item.status === "accept" ? (
+                          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                            {item.status}
+                          </span>
+                        ) : item.status === "in_progress" ? (
+                          <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                            {item.status}
+                          </span>
+                        ) : (
+                          <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                            {item.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">{item.disliked_by.name}</td>
+                      {/* <td className="px-6 py-4">{item.disliked_by.name}</td> */}
                       <td className="px-6 py-4">
                         {formatDate(item.created_at)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
                           {/* start view */}
-                          <Tooltip content="View and Response">
+                          {/* <Tooltip content="View and Response">
                           <button
                             title="View"
                             type="button"
@@ -318,7 +336,7 @@ function Users_comments({}) {
                               />
                             </svg>
                           </button>
-                          </Tooltip>
+                          </Tooltip> */}
                           {/* end view */}
                           {/* start edit */}
                           {/* <button
@@ -344,27 +362,27 @@ function Users_comments({}) {
                           {/* end edit */}
                           {/* start delete */}
                           <Tooltip content="Delete Comment">
-                          <button
-                            title="Delete"
-                            type="button"
-                            className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                            onClick={() => handleOpenDelete(item.id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-4"
+                            <button
+                              title="Delete"
+                              type="button"
+                              className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                              onClick={() => handleOpenDelete(item.id)}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                              />
-                            </svg>
-                          </button>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="size-4"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                />
+                              </svg>
+                            </button>
                           </Tooltip>
                           {/* start delete */}
                           {/* start reviewer */}
@@ -414,7 +432,9 @@ function Users_comments({}) {
       {openView && (
         <ViewUserComment handleClose={handleClose} openView={openView} />
       )}
-      {openReviewer && <Reviewer handleClose={handleClose} openReviewer={openReviewer} />}
+      {openReviewer && (
+        <Reviewer handleClose={handleClose} openReviewer={openReviewer} />
+      )}
       {openAdd && (
         <AddUser
           handleOpenAdd={handleOpenAdd}
@@ -423,11 +443,9 @@ function Users_comments({}) {
         />
       )}
 
-
-
-
-
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
+
+      {loading && <SnackbarTooltip />}
     </>
   );
 }

@@ -12,8 +12,6 @@ export function DeleteUser({ openDelete, handleClose }) {
   const loading = useSelector((state) => state.usersSlice.loading);
   const deleteErrorMSG = useSelector((state) => state.usersSlice.error);
 
-  console.log(deleteErrorMSG);
-
   const dispatch = useDispatch();
 
   const handleDelete = () => {

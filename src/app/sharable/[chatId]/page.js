@@ -25,7 +25,12 @@ export default function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`https://sbc.designal.cc/get-chat-by-hash/${pathname.slice(10)}`)
+    axios.get(`https://sbc.designal.cc/get-chat-by-hash/${pathname.slice(10)}`,{
+      headers:{
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      }
+    })
       .then(response => {
         dispatch(getConversation(response.data.data[0]));
         dispatch(getChatData(response.data.data[0].user_chats));

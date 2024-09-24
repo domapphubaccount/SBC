@@ -22,6 +22,7 @@ import {
   editPermissionsModule,
   getRoleByIDAction,
   getRolesAction,
+  removeRolesError,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import { AddRole } from "../DashModules/Roles/AddRole";
@@ -30,6 +31,7 @@ import { DeleteRole } from "../DashModules/Roles/Delete";
 import { EditRole } from "../DashModules/Roles/Edit";
 import { RolesPermissions } from "../DashModules/Roles/RolesPermissions";
 import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
+import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -37,6 +39,7 @@ function Roles({}) {
   const rolesData = useSelector((state) => state.rolesSlice.roles);
   const updateRolesData = useSelector((state) => state.rolesSlice.updates);
   const [openWarn, setOpenWarn] = useState(false);
+  const loading = useSelector((state) => state.rolesSlice.loading);
 
   const openEdit = useSelector((state) => state.rolesSlice.editModule);
   const openDelete = useSelector((state) => state.rolesSlice.deleteModule);
@@ -52,6 +55,7 @@ function Roles({}) {
   const handleClose = () => {
     dispatch(removeUser());
     dispatch(closeView());
+    dispatch(removeRolesError())
 
     dispatch(editModule(false));
     dispatch(deleteModule(false));
@@ -118,6 +122,16 @@ function Roles({}) {
   //   return item.name.toLowerCase().includes(searchTerm);
   //   // item.email.toLowerCase().includes(searchTerm)
   // });
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} At ${hours}:${minutes}`;
+  }
 
   return (
     <>
@@ -174,7 +188,7 @@ function Roles({}) {
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-md w-full m-auto">
+        <div className="bg-white p-8 rounded-md w-full m-auto dashed">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
@@ -214,7 +228,13 @@ function Roles({}) {
                     Name
                   </th>
                   <th scope="col" className="px-6 py-3">
+                    Attached Users
+                  </th>
+                  <th scope="col" className="px-6 py-3">
                     Permissions
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Created-At
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
@@ -257,6 +277,9 @@ function Roles({}) {
                         </div>
                       </th>
                       <td className="px-6 py-4">
+                          {item.user_count}
+                      </td>
+                      <td className="px-6 py-4">
                         <button
                           onClick={() => handlePermissionModule(item.id)}
                           type="button"
@@ -264,6 +287,9 @@ function Roles({}) {
                         >
                           {item.permissions.length}
                         </button>
+                      </td>
+                      <td className="px-6 py-4">
+                          {formatDate(item.created_at)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
@@ -375,6 +401,8 @@ function Roles({}) {
           openRole={permissionsModule}
         />
       )}
+
+      {loading && <SnackbarTooltip />}
     </>
   );
 }

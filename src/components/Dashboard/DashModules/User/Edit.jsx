@@ -14,6 +14,7 @@ export function EditUser({ openEdit, handleClose }) {
   const loading = useSelector((state) => state.usersSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const roles = useSelector((state) => state.rolesSlice.roles);
+  const ErrorMSG = useSelector((state) => state.usersSlice.error);
 
   // useLayoutEffect(() => {
   // }, []);
@@ -21,12 +22,14 @@ export function EditUser({ openEdit, handleClose }) {
   // Status options
   const status = ["active", "deactive", "suspend"];
 
+
   // Formik setup
   const formik = useFormik({
     initialValues: {
       name: userData?.name || "",
       email: userData?.email || "",
       status: userData?.status || "active",
+      role_id: (userData.roles && userData?.roles[0]?.id) || "",
 
       // Default to "active" if undefined
     },
@@ -39,19 +42,7 @@ export function EditUser({ openEdit, handleClose }) {
     }),
     onSubmit: (values) => {
       dispatch(editUserAction({ token, id: userData.id, ...values }));
-    },
-  });
-
-  // Formik setup
-  const formik_role = useFormik({
-    initialValues: {
-      role: "",
-    },
-    validationSchema: Yup.object({
-      role: Yup.string().required("role is required"),
-    }),
-    onSubmit: (values) => {
-      dispatch(updateRoleAction({ token, id: userData.id, ...values }));
+      // console.log({ token, id: userData.id, ...values });
     },
   });
 
@@ -62,6 +53,7 @@ export function EditUser({ openEdit, handleClose }) {
         name: userData.name || "",
         email: userData.email || "",
         status: userData.status || "active",
+        role_id: (userData.roles && userData?.roles[0]?.id) || "",
       });
     }
   }, [userData]);
@@ -69,8 +61,17 @@ export function EditUser({ openEdit, handleClose }) {
   return (
     <>
       <Modal show={openEdit} size="md" popup onClose={handleClose}>
+      {ErrorMSG && (
+          <div
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span class="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
+          
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
               Edit User Details
@@ -132,24 +133,29 @@ export function EditUser({ openEdit, handleClose }) {
                 </div>
 
                 <div>
-                  <Label htmlFor="role" value="User Role: " />
+                  <Label htmlFor="role" value="User Role" />
                   <select
                     className="border-0"
                     id="role"
-                    onChange={formik_role.handleChange}
-                    value={formik_role.values.role}
+                    name="role_id"
+                    onChange={formik.handleChange}
+                    value={formik.values.role_id}
                   >
                     <option value={""}>None</option>
                     {roles.length > 0 &&
                       roles.map((item, index) => (
-                        <option key={index} value={item.name}>
+                        <option key={index} value={item.id}>
                           {item.name}
                         </option>
                       ))}
                   </select>
-                  {formik_role.touched.role && formik.errors.role ? (
-                    <div className="text-red-600">{formik_role.errors.role}</div>
+                  {formik.touched.role_id && formik.errors.role_id ? (
+                    <div className="text-red-600">{formik.errors.role_id}</div>
                   ) : null}
+                </div>
+
+                <div className="w-full">
+                  <Button type="submit">Save Changes</Button>
                 </div>
               </>
             ) : (
@@ -162,10 +168,6 @@ export function EditUser({ openEdit, handleClose }) {
                 />
               </div>
             )}
-
-            <div className="w-full">
-              <Button type="submit">Save Changes</Button>
-            </div>
           </form>
         </Modal.Body>
       </Modal>

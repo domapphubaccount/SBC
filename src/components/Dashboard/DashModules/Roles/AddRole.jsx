@@ -16,6 +16,8 @@ export function AddRole({ openAdd, handleClose }) {
   const loading = useSelector((state) => state.rolesSlice.loading);
   const [permissionsOptions, setPermissionsOptions] = useState([]);
   const [chosenPermissions,setChosenPermissions] = useState([])
+  const ErrorMSG = useSelector((state) => state.rolesSlice.error);
+
   const permissionsData = useSelector(
     (state) => state.permissionsSlice.permissions
   );
@@ -39,7 +41,7 @@ export function AddRole({ openAdd, handleClose }) {
       setPermissionsOptions(
         permissionsData?.map((item) => ({
           value: item.id,
-          label: item.name,
+          label: item.slug,
         })) || []
       );
     }
@@ -47,7 +49,15 @@ export function AddRole({ openAdd, handleClose }) {
 
   return (
     <>
-      <Modal show={openAdd} size="md" popup onClose={handleClose}>
+      <Modal show={openAdd} size="4xl" popup onClose={handleClose}>
+      {ErrorMSG && (
+          <div
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span class="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body className="overflow-visible">
           <form onSubmit={formik.handleSubmit} className="space-y-6">

@@ -6,7 +6,14 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
-import { chat_out, choseChate, get_chat, getChatCode, loading_main_chat } from "@/app/Redux/Features/Chat/ChatSlice";
+import {
+  chat_out,
+  choseChate,
+  error_start_chat,
+  get_chat,
+  getChatCode,
+  loading_main_chat,
+} from "@/app/Redux/Features/Chat/ChatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import Logo from "/public/logo.png";
@@ -20,8 +27,8 @@ function Header({ path }) {
   const pathname = usePathname();
 
   const handleStartNewChat = () => {
-    dispatch(chat_out())
-    dispatch(loading_chat_action(true))
+    dispatch(chat_out());
+    dispatch(loading_chat_action(true));
     dispatch(loading_chat(true));
     dispatch(loading_main_chat(true));
 
@@ -31,23 +38,31 @@ function Header({ path }) {
         {},
         {
           headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((response) => {
         dispatch(getChatCode(response.data.data[0]));
-        dispatch(loading_chat_action(false))
+        dispatch(loading_chat_action(false));
         dispatch(loading_chat(false));
         dispatch(loading_main_chat(false));
-        
+
         // localStorage.setItem("chat_code", response.data.data[0]);
       })
       .catch((error) => {
-        dispatch(loading_chat_action(false))
+        console.error("There was an error making the request!", error);
+        dispatch(loading_chat_action(false));
         dispatch(loading_chat(false));
         dispatch(loading_main_chat(false));
-        console.error("There was an error making the request!", error);
+        if(error.response.data.error){
+          dispatch(error_start_chat(error.response.data.error))
+        }else if(error.response.data.message){
+          dispatch(error_start_chat(error.response.data.message))
+        }
+        setTimeout(()=>dispatch(error_start_chat(null)),2000)
       });
   };
 
@@ -69,7 +84,7 @@ function Header({ path }) {
               />
             </Link>
           </div>
-          {pathname.slice(0, 9) == "/sharable" ? (
+          {pathname.trim().slice(0, 9) === "/sharable" ? (
             ""
           ) : (
             <>
@@ -78,35 +93,50 @@ function Header({ path }) {
                   <MultipleSelect />
                 </div>
               ) : (
-                <div className="text-white">PROFILE</div>
+                <div className="text-white">
+                  {pathname.trim().slice(0, 8) === "/profile"
+                    ? "PROFILE"
+                    : pathname.trim().slice(0, 10) === "/dashboard"
+                    ? "DASHBOARD"
+                    : ""}
+                </div>
               )}
               <div className="break_nav w-full"></div>
+
               <div className="flex items-center shadow-none  bg-darkBlue">
                 <ul className="flex justify-between list-none ml-auto items-center">
-                  <li className="mr-3 relative" title="timeline">
-                    <Archive />
-                  </li>
-                  {/* start start new chat */}
-                  <li
-                    title="start new chat"
-                    className="mr-3"
-                    onClick={handleStartNewChat}
-                  >
-                    <div>
-                      <div tabIndex="0" className="plusButton">
-                        <svg
-                          className="plusIcon"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 30 30"
-                        >
-                          <g mask="url(#mask0_21_345)">
-                            <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </li>
-                  {/* end start new chat */}
+                  {pathname.trim().slice(0, 8) === "/profile" ||
+                  pathname.trim().slice(0, 10) === "/dashboard" ? (
+                    ""
+                  ) : (
+                    <>
+                      <li className="mr-3 relative" title="timeline">
+                        <Archive />
+                      </li>
+                      {/* start start new chat */}
+                      <li
+                        title="start new chat"
+                        className="mr-3"
+                        onClick={handleStartNewChat}
+                      >
+                        <div>
+                          <div tabIndex="0" className="plusButton">
+                            <svg
+                              className="plusIcon"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 30 30"
+                            >
+                              <g mask="url(#mask0_21_345)">
+                                <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                              </g>
+                            </svg>
+                          </div>
+                        </div>
+                      </li>
+                      {/* end start new chat */}
+                    </>
+                  )}
+
                   <li title="profile">
                     <DropDown userName={userName} />
                   </li>

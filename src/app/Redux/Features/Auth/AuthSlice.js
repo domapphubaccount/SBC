@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
@@ -16,6 +16,12 @@ export const loginAction = createAsyncThunk(
         {
           email: email,
           password: password,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -33,7 +39,7 @@ export const loginAction = createAsyncThunk(
 // start logout
 export const logoutAction = createAsyncThunk(
   "login/logoutAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token } = arg;
     try {
       const response = await axios.post(
@@ -43,6 +49,7 @@ export const logoutAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -67,9 +74,18 @@ export const forgetPasswordAction = createAsyncThunk(
   async (arg, { rejectWithValue }) => {
     const { email } = arg;
     try {
-      const response = await axios.post(`${config.api}password/email`, {
-        email: email,
-      });
+      const response = await axios.post(
+        `${config.api}password/email`,
+        {
+          email: email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
@@ -89,8 +105,15 @@ export const checkCodeAction = createAsyncThunk(
     const { code } = arg;
     try {
       const response = await axios.post(
-        `${config.api}password/code/check`,{
+        `${config.api}password/code/check`,
+        {
           code,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -112,7 +135,14 @@ export const resetpasswordAction = createAsyncThunk(
     const { code, password, confirmPassword } = arg;
     try {
       const response = await axios.post(
-        `${config.api}password/reset?code=${code}&password=${password}&password_confirmation=${confirmPassword}`
+        `${config.api}password/reset?code=${code}&password=${password}&password_confirmation=${confirmPassword}`,
+        {},
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (response.data.error) {
@@ -126,11 +156,9 @@ export const resetpasswordAction = createAsyncThunk(
 );
 // end check code
 
-
-
 export const logoutFunction = (auth) => {
   localStorage.clear();
-}
+};
 
 // start register
 export const registerAction = createAsyncThunk(
@@ -149,7 +177,7 @@ export const registerAction = createAsyncThunk(
         {
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
         }
       );
@@ -186,7 +214,7 @@ const initialState = {
     step: 1,
     loading: false,
     error: null,
-    code: null
+    code: null,
   },
   // end password
 
@@ -197,19 +225,18 @@ export const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
-    storedCode: (state , action)=>{
-      state.password.code = action.payload
+    storedCode: (state, action) => {
+      state.password.code = action.payload;
     },
-    islogged: (state , action)=>{
-      state.logged = true
+    islogged: (state, action) => {
+      state.logged = true;
     },
-    logout: (state , action) => {
+    logout: (state, action) => {
       state.logged = false;
-      isBrouse && localStorage.clear()
+      isBrouse && localStorage.clear();
       state.auth = null;
-      state.value = '';
-    }
-
+      state.value = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -309,7 +336,7 @@ export const loginSlice = createSlice({
         state.loading = false;
         state.error = null;
         // state.auth = action.payload.data;
-        window.location.pathname = 'signIn'
+        window.location.pathname = "signIn";
       })
       .addCase(registerAction.rejected, (state, action) => {
         state.loading = false;
@@ -319,6 +346,6 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { storedCode , islogged , logout } = loginSlice.actions
+export const { storedCode, islogged, logout } = loginSlice.actions;
 
 export default loginSlice.reducer;

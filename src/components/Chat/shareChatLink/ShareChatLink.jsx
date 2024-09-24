@@ -26,6 +26,8 @@ function Example({
       .get(`${config.api}sharable/${handleChat.sharable_link}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -8,13 +8,14 @@ import { logout } from "../Auth/AuthSlice";
 // start get users
 export const getUsersAction = createAsyncThunk(
   "users/getUsersAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token } = arg;
     try {
       const response = await axios.get(`${config.api}admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -23,8 +24,8 @@ export const getUsersAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -35,7 +36,7 @@ export const getUsersAction = createAsyncThunk(
 // start get user by id
 export const getUserByIDAction = createAsyncThunk(
   "users/getUserByIDAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -43,6 +44,7 @@ export const getUserByIDAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -51,8 +53,8 @@ export const getUserByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -63,17 +65,18 @@ export const getUserByIDAction = createAsyncThunk(
 // start edit user
 export const editUserAction = createAsyncThunk(
   "users/editUserAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, id, name, email , status } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, name, email, status, role_id } = arg;
 
     try {
       const response = await axios.put(
         `${config.api}admin/users/${id}`,
-        { name, email, status },
+        { name, email, status, role_id:Number(role_id) },
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -81,10 +84,14 @@ export const editUserAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      // if(role && response.data?.data?.id){
+      //   dispatch(updateRoleAction({ token, id: response.data?.data?.id, role }));
+      // }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -95,17 +102,26 @@ export const editUserAction = createAsyncThunk(
 // start add user
 export const addUserAction = createAsyncThunk(
   "users/addUserAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, name, email , password , password_confirmation } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, name, email, password, password_confirmation, role_id } =
+      arg;
 
     try {
       const response = await axios.post(
         `${config.api}admin/users`,
-        { name, email , password , password_confirmation },
+        {
+          name,
+          email,
+          password,
+          password_confirmation,
+          role_id: Number(role_id),
+          status: "active",
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -113,10 +129,14 @@ export const addUserAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      // if(role && response.data?.data?.id){
+      //   dispatch(updateRoleAction({ token, id: response.data?.data?.id, role }));
+      // }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -127,7 +147,7 @@ export const addUserAction = createAsyncThunk(
 // start delete user
 export const deleteUserAction = createAsyncThunk(
   "users/deleteUserAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -135,6 +155,7 @@ export const deleteUserAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -143,8 +164,8 @@ export const deleteUserAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -155,7 +176,7 @@ export const deleteUserAction = createAsyncThunk(
 // start edit user role
 export const updateRoleAction = createAsyncThunk(
   "users/updateRoleAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id, role } = arg;
 
     try {
@@ -166,6 +187,7 @@ export const updateRoleAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -175,8 +197,8 @@ export const updateRoleAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        dispatch(logout());
       }
       return rejectWithValue(error.response.data);
     }
@@ -194,31 +216,31 @@ const initialState = {
   deleteModule: false,
   viewModule: false,
   roleModule: false,
-  addModule:false
+  addModule: false,
 };
 
 export const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    addModule: (state,action)=>{
-      state.addModule = action.payload 
+    addModule: (state, action) => {
+      state.addModule = action.payload;
     },
-    removeUser: (state,action)=>{
-      state.user = {}
+    removeUser: (state, action) => {
+      state.user = {};
     },
-    editModule: (state , action) => {
-      state.editModule = action.payload
+    editModule: (state, action) => {
+      state.editModule = action.payload;
     },
-    deleteModule: (state , action) => {
-      state.deleteModule = action.payload
+    deleteModule: (state, action) => {
+      state.deleteModule = action.payload;
     },
-    viewModule: (state , action) => {
-      state.viewModule = action.payload
+    viewModule: (state, action) => {
+      state.viewModule = action.payload;
     },
-    roleModule: (state , action) => {
-      state.roleModule = action.payload
-    }
+    roleModule: (state, action) => {
+      state.roleModule = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -264,11 +286,11 @@ export const usersSlice = createSlice({
         state.error = null;
         state.updates = !state.updates;
         state.user = {};
-        state.editModule = false
+        state.editModule = false;
       })
       .addCase(editUserAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end edit user
 
@@ -286,7 +308,7 @@ export const usersSlice = createSlice({
       })
       .addCase(deleteUserAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end delete user
 
@@ -308,7 +330,7 @@ export const usersSlice = createSlice({
       })
       // end update user role
 
-      //start add user 
+      //start add user
       .addCase(addUserAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -317,18 +339,22 @@ export const usersSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.updates = !state.updates;
-        state.addModule = false
+        state.addModule = false;
       })
       .addCase(addUserAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-      })
-      // end add user 
-
-
-
+      });
+    // end add user
   },
 });
-export const { removeUser , editModule , deleteModule , viewModule , roleModule , addModule } = usersSlice.actions
+export const {
+  removeUser,
+  editModule,
+  deleteModule,
+  viewModule,
+  roleModule,
+  addModule,
+} = usersSlice.actions;
 
 export default usersSlice.reducer;

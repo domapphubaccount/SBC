@@ -172,7 +172,7 @@ function Permmisions({}) {
 
 
 
-        <div className="bg-white p-8 rounded-md w-full m-auto">
+        <div className="bg-white p-8 rounded-md w-full m-auto dashed">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
@@ -258,7 +258,7 @@ function Permmisions({}) {
                           </div>
                           <div className="ml-3">
                             <p className="text-gray-900 whitespace-no-wrap">
-                              {item.name}
+                              {item.slug}
                             </p>
                           </div>
                         </div>

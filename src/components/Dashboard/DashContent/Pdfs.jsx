@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
 import { WarnUser } from "../DashModules/User/Warn";
-import { Button } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,9 +23,15 @@ import {
 } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import { ViewRole } from "../DashModules/Roles/View";
 import { EditRole } from "../DashModules/Roles/Edit";
-import { addModule, deleteModule, getPdfsAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
+import {
+  addModule,
+  closePdfError,
+  deleteModule,
+  getPdfsAction,
+} from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import { Addpdfs } from "../DashModules/Pdfs/AddPdfs";
 import { DeletePdfs } from "../DashModules/Pdfs/Delete";
+import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -34,7 +40,7 @@ function Pdfs({}) {
   const updatePdfsData = useSelector((state) => state.pdfsSlice.updates);
   const [openWarn, setOpenWarn] = useState(false);
 
-  const [fileId,setFileID] = useState('')
+  const [fileId, setFileID] = useState("");
 
   const openEdit = useSelector((state) => state.pdfsSlice.editModule);
   const openDelete = useSelector((state) => state.pdfsSlice.deleteModule);
@@ -42,6 +48,8 @@ function Pdfs({}) {
 
   const openAdd = useSelector((state) => state.pdfsSlice.addModule);
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
+
+  const loading = useSelector((state) => state.pdfsSlice.loading);
 
   const handleClose = () => {
     dispatch(closeView());
@@ -51,12 +59,13 @@ function Pdfs({}) {
     dispatch(viewModule(false));
     dispatch(roleModule(false));
     dispatch(addModule(false));
+    dispatch(closePdfError());
   };
 
   // start open delete
   const handleOpenDelete = (id) => {
     // dispatch(getRoleByIDAction({ token, id }));
-    setFileID(id)
+    setFileID(id);
     dispatch(deleteModule(true));
   };
   // end open delete
@@ -94,6 +103,17 @@ function Pdfs({}) {
     /* updates */
     updatePdfsData,
   ]);
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} At ${hours}:${minutes}`;
+  }
 
   return (
     <>
@@ -149,7 +169,7 @@ function Pdfs({}) {
             </div>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-md w-full m-auto">
+        <div className="bg-white p-8 rounded-md w-full m-auto dashed">
           <div>
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
               <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
@@ -160,12 +180,21 @@ function Pdfs({}) {
                         Name
                       </th>
                       <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        File
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Created At
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Created By
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {pdfsData.length > 0 ?
+                    {pdfsData.length > 0 ? (
                       pdfsData.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
@@ -194,12 +223,56 @@ function Pdfs({}) {
                             </div>
                           </td>
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
+                            <div className="flex items-center">
+                              <div className="ml-3">
+                                <Tooltip
+                                  content={item.file.replace(
+                                    "public/uploads/",
+                                    ""
+                                  )}
+                                >
+                                  <p className="text-gray-900 whitespace-no-wrap">
+                                    {item.file.replace("public/uploads/", "")
+                                      .length > 25
+                                      ? item.file
+                                          .replace("public/uploads/", "")
+                                          .slice(0, 25) + "..."
+                                      : item.file.replace(
+                                          "public/uploads/",
+                                          ""
+                                        )}
+                                  </p>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
+                            <div className="flex items-center">
+                              <div className="ml-3">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                {formatDate(item.created_at)}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
+                            <div className="flex items-center">
+                              <div className="ml-3">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                need it
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex gap-2 justify-start">
                               {/* start delete */}
                               <button
                                 type="button"
                                 className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                                onClick={() => handleOpenDelete(item.chatgpt_file_id)}
+                                onClick={() =>
+                                  handleOpenDelete(item.chatgpt_file_id)
+                                }
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -221,9 +294,11 @@ function Pdfs({}) {
                           </td>
                         </tr>
                       ))
-                    :
-                    <div className="p-4"><h4>NO DATA YET.</h4></div>
-                    }
+                    ) : (
+                      <div className="p-4">
+                        <h4>NO DATA YET.</h4>
+                      </div>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -233,7 +308,11 @@ function Pdfs({}) {
       </section>
 
       {openDelete && (
-        <DeletePdfs fileId={fileId} handleClose={handleClose} openDelete={openDelete} />
+        <DeletePdfs
+          fileId={fileId}
+          handleClose={handleClose}
+          openDelete={openDelete}
+        />
       )}
 
       {openEdit && <EditRole handleClose={handleClose} openEdit={openEdit} />}
@@ -242,6 +321,8 @@ function Pdfs({}) {
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openAdd && <Addpdfs openAdd={openAdd} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
+
+      {loading && <SnackbarTooltip />}
     </>
   );
 }

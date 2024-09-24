@@ -30,7 +30,7 @@ function MultipleSelect() {
   };
 
   return (
-    <Dropdown label="CODE" dismissOnClick={false} className="code_card" style={{minWidth:'200px'}}>
+    <Dropdown label="CODE" dismissOnClick={false} className="code_card" style={{minWidth:'150px'}}>
       {code.length > 0 ? (
         code.map((item, idx) => (
           <div key={idx}>

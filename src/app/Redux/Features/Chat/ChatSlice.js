@@ -15,6 +15,7 @@ export const getChatAction = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -50,6 +51,7 @@ export const addQuestionAction = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -137,6 +139,12 @@ export const chatSlice = createSlice({
       state.loading = action.payload;
     },
     // loading chat
+
+    // start chat error
+    error_start_chat: (state, action) => {
+      state.error = action.payload;
+    }
+    // end chat error
   },
   extraReducers: (builder) => {
     builder
@@ -185,7 +193,8 @@ export const {
   send_success,
   send_failed,
   chat_out,
-  loading_main_chat
+  loading_main_chat,
+  error_start_chat
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

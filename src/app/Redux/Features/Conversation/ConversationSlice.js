@@ -14,6 +14,8 @@ export const getChatAction = createAsyncThunk(
       const response = await axios.post(`${config.api}get_chat/${chat_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -40,6 +42,8 @@ export const startSectionAction = createAsyncThunk(
       const response = await axios.post(`${config.api}get_chat/${chat_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 

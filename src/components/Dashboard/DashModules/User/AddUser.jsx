@@ -13,6 +13,8 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const loading = useSelector((state) => state.usersSlice.loading);
   const roles = useSelector((state) => state.rolesSlice.roles);
+  const ErrorMSG = useSelector((state) => state.usersSlice.error);
+
 
 
   // Formik setup
@@ -22,6 +24,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
       email: "",
       password: "",
       password_confirmation: "",
+      role_id: 0,
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
@@ -44,6 +47,14 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
   return (
     <>
       <Modal show={openAdd} size="md" popup onClose={handleClose}>
+      {ErrorMSG && (
+          <div
+            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span class="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           {!loading ? (
@@ -123,13 +134,14 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                 <select
                   className="border-0"
                   id="role"
+                  name="role_id"
                   onChange={formik.handleChange}
                   value={formik.values.role}
                 >
                   <option value={""}>None</option>
                   {roles.length > 0 &&
                     roles.map((item, index) => (
-                      <option key={index} value={item.name}>
+                      <option key={index} value={Number(item.id)}>
                         {item.name}
                       </option>
                     ))}

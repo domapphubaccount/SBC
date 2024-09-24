@@ -36,7 +36,8 @@ function ResetPassword({storedCode}) {
           },
           {
             headers: {
-              Accept: "application/json",
+              Accept: "*/*",
+              "Content-Type": "application/json",
             },
           }
         )
