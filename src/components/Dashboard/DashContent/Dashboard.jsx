@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
@@ -28,7 +28,6 @@ import { ViewRole } from "../DashModules/Roles/View";
 import { DeleteRole } from "../DashModules/Roles/Delete";
 import { EditRole } from "../DashModules/Roles/Edit";
 import { Checkbox, Table } from "flowbite-react";
-
 
 function DashboardData({}) {
   const dispatch = useDispatch();
@@ -110,9 +109,7 @@ function DashboardData({}) {
     // item.email.toLowerCase().includes(searchTerm)
   });
 
-  useEffect(()=>{
-    
-  },[])
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -123,116 +120,22 @@ function DashboardData({}) {
             aria-label="Breadcrumb"
           >
             <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-              <li>
-                <div className="flex items-center">
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-white hover:text-blue-600"
-                  >
-                    Dashboard
-                  </a>
-                </div>
-              </li>
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <svg
-                    className="rtl:rotate-180  w-3 h-3 mx-1 text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                  <span className="ms-1 text-sm font-medium text-white md:ms-2">
-                    Roles
-                  </span>
-                </div>
-              </li>
+      
             </ol>
           </div>
           <div className="flex justify-between my-5">
             <div>
-              <h1 className="text-white text-4xl">ROLES</h1>
-            </div>
-            <div>
-              <Button color="blue" onClick={handleOpenAdd}>
-                Add Role
-              </Button>
+              <h1 className="text-white text-4xl">DASHBOARD</h1>
             </div>
           </div>
         </div>
-
         <div className="overflow-x-auto">
-      <Table hoverable>
-        <Table.Head>
-          <Table.HeadCell className="p-4">
-            <Checkbox />
-          </Table.HeadCell>
-          <Table.HeadCell>Product name</Table.HeadCell>
-          <Table.HeadCell>Color</Table.HeadCell>
-          <Table.HeadCell>Category</Table.HeadCell>
-          <Table.HeadCell>Price</Table.HeadCell>
-          <Table.HeadCell>
-            <span className="sr-only">Edit</span>
-          </Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="p-4">
-              <Checkbox />
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              {'Apple MacBook Pro 17"'}
-            </Table.Cell>
-            <Table.Cell>Sliver</Table.Cell>
-            <Table.Cell>Laptop</Table.Cell>
-            <Table.Cell>$2999</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="p-4">
-              <Checkbox />
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Microsoft Surface Pro
-            </Table.Cell>
-            <Table.Cell>White</Table.Cell>
-            <Table.Cell>Laptop PC</Table.Cell>
-            <Table.Cell>$1999</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="p-4">
-              <Checkbox />
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">Magic Mouse 2</Table.Cell>
-            <Table.Cell>Black</Table.Cell>
-            <Table.Cell>Accessories</Table.Cell>
-            <Table.Cell>$99</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
-    </div>
+          <div >
+            <h1 className="text-white text-4xl text-center my-5">
+              WORKING ON .
+            </h1>
+          </div>
+        </div>
       </section>
 
       {openDelete && (

@@ -75,11 +75,11 @@ export function Sidebar({ children, handlePage }) {
             </button>
           </div>
           <ul className="space-y-2 font-medium relative">
-            {/* <li>
+            <li>
               <a
                 href="#"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                onClick={() => handlePage(8)}
+                onClick={() => handlePage(9)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@ export function Sidebar({ children, handlePage }) {
 
                 <span className="ms-3">Dashboard</span>
               </a>
-            </li> */}
+            </li>
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
@@ -128,10 +128,10 @@ export function Sidebar({ children, handlePage }) {
                 </li>
               )}
 
-            {(profileData &&
+            {profileData &&
               profileData.roles &&
               (profileData.roles[0].id == "2" ||
-              profileData.roles[0].id == "1") && (
+                profileData.roles[0].id == "1") && (
                 <li>
                   <a
                     href="#"
@@ -158,11 +158,12 @@ export function Sidebar({ children, handlePage }) {
                     </span>
                   </a>
                 </li>
-              ))}
+              )}
 
             {profileData &&
               profileData.roles &&
-              profileData.roles[0].id == "2" && (
+              (profileData.roles[0].id == "2" ||
+                profileData.roles[0].id == "1") && (
                 <li>
                   <a
                     href="#"
@@ -191,6 +192,36 @@ export function Sidebar({ children, handlePage }) {
                 </li>
               )}
 
+            {profileData &&
+              profileData.roles &&
+              profileData.roles[0].id == "1" && (
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    onClick={() => handlePage(4)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                      />
+                    </svg>
+
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      Master User Chat
+                    </span>
+                  </a>
+                </li>
+              )}
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (

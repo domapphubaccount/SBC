@@ -24,7 +24,6 @@ export function Reviewer({ openReviewer, handleClose }) {
       status: "",
     }),
     onSubmit: (values) => {
-      console.log("Form Submitted with values: ", values);
       dispatch(
         addReviewAction({
           token,

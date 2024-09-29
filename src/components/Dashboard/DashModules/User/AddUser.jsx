@@ -15,8 +15,6 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
   const roles = useSelector((state) => state.rolesSlice.roles);
   const ErrorMSG = useSelector((state) => state.usersSlice.error);
 
-
-
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -24,10 +22,10 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
       email: "",
       password: "",
       password_confirmation: "",
-      role_id: 0,
+      role_id: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
+      name: Yup.string().max(30, "Shouldn't exceed 30").required("Name is required"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
@@ -37,9 +35,11 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
       password_confirmation: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Password confirmation is required"),
+      role_id: Yup.number()
+        .required("Role is required")
+        .min(1, "Please select a valid role"), // Ensures that role is not 0 or empty
     }),
     onSubmit: (values) => {
-      // Add your form submission logic here
       dispatch(addUserAction({ token, ...values }));
     },
   });
@@ -47,12 +47,12 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
   return (
     <>
       <Modal show={openAdd} size="md" popup onClose={handleClose}>
-      {ErrorMSG && (
+        {ErrorMSG && (
           <div
-            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
           >
-            <span class="font-medium">Error!</span> {ErrorMSG}
+            <span className="font-medium">Error!</span> {ErrorMSG}
           </div>
         )}
         <Modal.Header />
@@ -70,6 +70,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   name="name"
                   type="text"
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.name}
                   required
                 />
@@ -85,6 +86,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   name="email"
                   type="email"
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.email}
                   required
                 />
@@ -100,6 +102,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   name="password"
                   type="password"
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.password}
                   required
                 />
@@ -109,15 +112,13 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
               </div>
 
               <div>
-                <Label
-                  htmlFor="password_confirmation"
-                  value="Confirm Password"
-                />
+                <Label htmlFor="password_confirmation" value="Confirm Password" />
                 <TextInput
                   id="password_confirmation"
                   name="password_confirmation"
                   type="password"
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.password_confirmation}
                   required
                 />
@@ -130,24 +131,26 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
               </div>
 
               <div>
-                <Label htmlFor="role" value="User Role: " />
+                <Label htmlFor="role_id" value="User Role: " />
                 <select
                   className="border-0"
-                  id="role"
+                  id="role_id"
                   name="role_id"
                   onChange={formik.handleChange}
-                  value={formik.values.role}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.role_id}
+                  required
                 >
-                  <option value={""}>None</option>
+                  <option value="">Select Role</option>
                   {roles.length > 0 &&
-                    roles.map((item, index) => (
-                      <option key={index} value={Number(item.id)}>
+                    roles.map((item) => (
+                      <option key={item.id} value={item.id}>
                         {item.name}
                       </option>
                     ))}
                 </select>
-                {formik.touched.role && formik.errors.role ? (
-                  <div className="text-red-600">{formik.errors.role}</div>
+                {formik.touched.role_id && formik.errors.role_id ? (
+                  <div className="text-red-600">{formik.errors.role_id}</div>
                 ) : null}
               </div>
 

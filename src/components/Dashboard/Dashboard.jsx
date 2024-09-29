@@ -29,8 +29,10 @@ function Dashboard({ page }) {
         return <Roles />;
       case 7:
         return <Permmisions />;
+      case 9:
+        return <DashboardData />;
       default:
-        return <Users/>;
+        return <DashboardData />;
     }
   }
 

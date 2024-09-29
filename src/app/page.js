@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged);
   const loading = useSelector((state) => state.historySlice.loading);
+  const loading_out = useSelector((state) => state.loginSlice.loading);
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
@@ -33,6 +34,9 @@ export default function Home() {
       {/* start loading change chat from actions */}
       {loading_actions && <SnackbarTooltip />}
       {/* end loading change chat from actions */}
+      {/* start loading logout actions */}
+      {loading_out && <SnackbarTooltip />}
+      {/* end loading logout actions */}
       {error && <SnackbarError />}
       {/* <SnackbarTime /> */}
     </main>

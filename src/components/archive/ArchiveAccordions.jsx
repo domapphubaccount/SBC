@@ -164,12 +164,6 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
 
-  console.log(
-    dashboardData?.chat_history &&
-      Object.entries(dashboardData.chat_history).length,
-    "*************************"
-  );
-
   return (
     <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
       {/* {actionAlert && (

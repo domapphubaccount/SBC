@@ -42,7 +42,7 @@ export function ViewRole({ openView, handleClose }) {
               <div>
                 {roleData.name ? (
                   <>
-                  <div>
+                  <div className="mb-3">
                     <small>Created-At: {formatDate(roleData.created_at)}</small>
                   </div>
                     <div className="mb-3">
@@ -53,6 +53,16 @@ export function ViewRole({ openView, handleClose }) {
                         required
                         disabled
                         value={`Role : ${roleData.name}`}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <TextInput
+                        id="role_name"
+                        style={{ opacity: 1 }}
+                        type="text"
+                        required
+                        disabled
+                        value={`Assigned to : ${roleData.user_count ? roleData.user_count : 'No One'}`}
                       />
                     </div>
                     <div>

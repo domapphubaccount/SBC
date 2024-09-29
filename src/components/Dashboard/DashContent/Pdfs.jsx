@@ -1,37 +1,31 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { DeleteUser } from "../DashModules/User/Delete";
-import { EditUser } from "../DashModules/User/Edit";
-import { ViewUser } from "../DashModules/User/View";
 import { WarnUser } from "../DashModules/User/Warn";
 import { Button, Tooltip } from "flowbite-react";
-import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getUserByIDAction,
-  removeUser,
   roleModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
 import {
-  closeView,
   editModule,
   getRoleByIDAction,
-  getRolesAction,
-  viewModule,
 } from "@/app/Redux/Features/Dashboard/RolesSlice";
-import { ViewRole } from "../DashModules/Roles/View";
-import { EditRole } from "../DashModules/Roles/Edit";
 import {
   addModule,
+  assignModule,
   closePdfError,
   deleteModule,
   getPdfsAction,
+  viewModule,
 } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import { Addpdfs } from "../DashModules/Pdfs/AddPdfs";
 import { DeletePdfs } from "../DashModules/Pdfs/Delete";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
+import { Assign } from "../DashModules/Pdfs/Assign";
+import { ViewPdf } from "../DashModules/Pdfs/View";
+import { PaginationPages } from "../Pagination/Pagination";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -39,22 +33,17 @@ function Pdfs({}) {
   const pdfsData = useSelector((state) => state.pdfsSlice.pdfs);
   const updatePdfsData = useSelector((state) => state.pdfsSlice.updates);
   const [openWarn, setOpenWarn] = useState(false);
-
   const [fileId, setFileID] = useState("");
-
-  const openEdit = useSelector((state) => state.pdfsSlice.editModule);
   const openDelete = useSelector((state) => state.pdfsSlice.deleteModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
-
   const openAdd = useSelector((state) => state.pdfsSlice.addModule);
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
-
+  const openAssign = useSelector(state => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
 
   const handleClose = () => {
-    dispatch(closeView());
-
     dispatch(editModule(false));
+    dispatch(assignModule(false));
     dispatch(deleteModule(false));
     dispatch(viewModule(false));
     dispatch(roleModule(false));
@@ -77,12 +66,12 @@ function Pdfs({}) {
   };
   // end open edit
 
-  //   // start open role
-  //   const handleOpenRole = (id) => {
-  //     dispatch(getUserByIDAction({ token, id }));
-  //     dispatch(roleModule(true));
-  //   };
-  //   // end open role
+  //   // start open assigned
+    const handleOpenAssigned = (id) => {
+      setFileID(id);
+      dispatch(assignModule(true));
+    };
+  //   // end open assigned
 
   //   start add role             ####DONE
   const handleOpenAdd = () => {
@@ -92,7 +81,7 @@ function Pdfs({}) {
 
   // start open view
   const handleOpenView = (id) => {
-    dispatch(getRoleByIDAction({ token, id }));
+    setFileID(id)
     dispatch(viewModule(true));
   };
   // end open view
@@ -127,7 +116,6 @@ function Pdfs({}) {
               <li>
                 <div className="flex items-center">
                   <a
-                    href="#"
                     className="text-sm font-medium text-white hover:text-blue-600"
                   >
                     Dashboard
@@ -250,7 +238,7 @@ function Pdfs({}) {
                             <div className="flex items-center">
                               <div className="ml-3">
                                 <p className="text-gray-900 whitespace-no-wrap">
-                                {formatDate(item.created_at)}
+                                  {formatDate(item.created_at)}
                                 </p>
                               </div>
                             </div>
@@ -259,14 +247,72 @@ function Pdfs({}) {
                             <div className="flex items-center">
                               <div className="ml-3">
                                 <p className="text-gray-900 whitespace-no-wrap">
-                                need it
+                                  {item.uploaded_by}
                                 </p>
                               </div>
                             </div>
                           </td>
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex gap-2 justify-start">
+                              {/* start view */}
+                              <Tooltip content="View Pdf">
+                                <button
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
+                                  onClick={() => handleOpenView(item)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="white"
+                                    className="size-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                              {/* end view */}
+
+                              {/* start Assigned */}
+                              <Tooltip content="Assigned">
+                                <button
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
+                                  onClick={() =>
+                                    handleOpenAssigned(item.id)
+                                  }
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                              {/* end Assigned */}
+
                               {/* start delete */}
+                              <Tooltip content="Delete">
                               <button
                                 type="button"
                                 className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
@@ -289,6 +335,7 @@ function Pdfs({}) {
                                   />
                                 </svg>
                               </button>
+                              </Tooltip>
                               {/* start delete */}
                             </div>
                           </td>
@@ -305,6 +352,7 @@ function Pdfs({}) {
             </div>
           </div>
         </div>
+        <PaginationPages />
       </section>
 
       {openDelete && (
@@ -314,12 +362,12 @@ function Pdfs({}) {
           openDelete={openDelete}
         />
       )}
-
-      {openEdit && <EditRole handleClose={handleClose} openEdit={openEdit} />}
-
-      {openView && <ViewRole handleClose={handleClose} openView={openView} />}
-      {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openAdd && <Addpdfs openAdd={openAdd} handleClose={handleClose} />}
+
+      {openAssign && <Assign fileId={fileId} handleClose={handleClose} openAssign={openAssign} />}
+
+      {openView && <ViewPdf handleClose={handleClose} openView={openView} fileId={fileId} />}
+      {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
 
       {loading && <SnackbarTooltip />}

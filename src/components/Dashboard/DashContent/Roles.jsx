@@ -32,6 +32,7 @@ import { EditRole } from "../DashModules/Roles/Edit";
 import { RolesPermissions } from "../DashModules/Roles/RolesPermissions";
 import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
+import { PaginationPages } from "../Pagination/Pagination";
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -383,6 +384,7 @@ function Roles({}) {
             </table>
           </div>
         </div>
+        <PaginationPages />
       </section>
 
       {openDelete && (

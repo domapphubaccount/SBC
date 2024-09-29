@@ -41,7 +41,6 @@ export function AddReview({ openAdd, handleClose }) {
         .required("Status is required"),
     }),
     onSubmit: (values) => {
-      console.log({ token, ...values });
       dispatch(addReviewAction({ token, ...values }))
     },
   });

@@ -5,6 +5,8 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 
+
+
 // start get users
 export const getUsersAction = createAsyncThunk(
   "users/getUsersAction",
@@ -17,6 +19,13 @@ export const getUsersAction = createAsyncThunk(
           Accept: "application/json",
           "Content-Type": "application/json",
         },
+        // responseType: 'blob', // Adjust the responseType as needed
+        // onDownloadProgress: (event) => {
+        //   if (event.lengthComputable) {
+        //     const progress = Math.round((event.loaded / event.total) * 100);
+        //     console.log(`Download Progress: ${progress}%`);
+        //   }
+        // },
       });
 
       if (response.data.error) {

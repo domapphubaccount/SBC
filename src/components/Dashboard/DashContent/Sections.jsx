@@ -18,6 +18,7 @@ import { AddSection } from "../DashModules/Sections/AddSection";
 import { DeleteSections } from "../DashModules/Sections/DeleteSections";
 import { EditSections } from "../DashModules/Sections/EditSections";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
+import { PaginationPages } from "../Pagination/Pagination";
 
 function Sections() {
   const dispatch = useDispatch();
@@ -281,6 +282,7 @@ function Sections() {
             </table>
           </div>
         </div>
+        <PaginationPages />
       </section>
 
       {openDelete && (

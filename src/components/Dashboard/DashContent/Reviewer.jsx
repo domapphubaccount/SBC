@@ -15,12 +15,14 @@ import {
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
 import { Reviewer } from "../DashModules/UserComments/Reviewer";
-import { deleteModule, editModule, getReviewsAction, viewModule, addModule } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
+import { deleteModule, editModule, getReviewsAction, viewModule, addModule, trainModule } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 import { ViewReview } from "../DashModules/Reviewer/View";
 import { DeleteReview } from "../DashModules/Reviewer/Delete";
 import { EditReviewer } from "../DashModules/Reviewer/Edit";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { AddReview } from "../DashModules/Reviewer/Add";
+import { Train } from "../DashModules/Reviewer/Train";
+import { PaginationPages } from "../Pagination/Pagination";
 
 function ReviewerAdmin({}) {
   const dispatch = useDispatch();
@@ -37,11 +39,14 @@ function ReviewerAdmin({}) {
     (state) => state.ReviewSlice.deleteModule
   );
   const openView = useSelector((state) => state.ReviewSlice.viewModule);
+  const openTrain = useSelector((state) => state.ReviewSlice.trainModule);
   const openReviewer = useSelector(
     (state) => state.ReviewSlice.reviewerModel
   );
   const openRole = useSelector((state) => state.ReviewSlice.roleModule);
-  const loading = useSelector(state => state.ReviewSlice.loading)
+  const loading = useSelector(state => state.ReviewSlice.loading);
+
+
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -49,6 +54,7 @@ function ReviewerAdmin({}) {
     dispatch(editModule({open:false,review:''}));
     dispatch(deleteModule({open:false,review:''}));
     dispatch(viewModule({open:false,review:''}));
+    dispatch(trainModule({open:false,review:''}));
     dispatch(addModule(false));
     
     // dispatch(roleModule(false));
@@ -70,6 +76,11 @@ function ReviewerAdmin({}) {
   const handleOpenView = (id) => {
     // dispatch(getCommentByIDAction({ token, id }));
     dispatch(viewModule({open:true,review:id}));
+  };
+
+  const handleOpenTrain = (id) => {
+    // dispatch(getCommentByIDAction({ token, id }));
+    dispatch(trainModule({open:true,review:id}));
   };
   // end open view
   // start open reviewer
@@ -129,7 +140,6 @@ function ReviewerAdmin({}) {
               <li>
                 <div className="flex items-center">
                   <a
-                    href="#"
                     className="text-sm font-medium text-white hover:text-blue-600"
                   >
                     Dashboard
@@ -294,26 +304,8 @@ function ReviewerAdmin({}) {
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
-                        {/* <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                              />
-                            </svg> */}
                       </div>
                       <div className="ml-3">
-                        {/* <p className="text-gray-900 whitespace-no-wrap">
-                              {}
-                            </p> */}
-
                         <Popover
                           content={
                             <Textarea
@@ -329,7 +321,6 @@ function ReviewerAdmin({}) {
                           }
                           placement="bottom"
                         >
-                          {/* <Button>Popover bottom</Button> */}
                           <div className="hover:text-sky-700 cursor-pointer">
                             {item.chat_user_dislike?.comment.length > 12
                                   ? item.chat_user_dislike?.comment.slice(0,12) + " ....."
@@ -437,12 +428,13 @@ function ReviewerAdmin({}) {
                       </Tooltip>
                       {/* start delete */}
                       {/* start train */}
+                      {item.status !== "reject" &&
                       <Tooltip content="Train">
                         <button
                           title="Train"
                           type="button"
                           className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                          // onClick={() => handleOpenReviewer(item.id)}
+                          onClick={() => handleOpenTrain(item)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -460,6 +452,7 @@ function ReviewerAdmin({}) {
                           </svg>
                         </button>
                       </Tooltip>
+}
                       {/* end train */}
                     </div>
                   </td>
@@ -474,6 +467,7 @@ function ReviewerAdmin({}) {
             </table>
           </div>
         </div>
+        <PaginationPages />
       </section>
 
       {openDelete && (
@@ -482,6 +476,9 @@ function ReviewerAdmin({}) {
       {openEdit && <EditReviewer handleClose={handleClose} openEdit={openEdit} />}
       {openView && (
         <ViewReview handleClose={handleClose} openView={openView} />
+      )}
+      {openTrain && (
+        <Train handleClose={handleClose} openTrain={openTrain} />
       )}
       {openReviewer && (
         <Reviewer handleClose={handleClose} openReviewer={openReviewer} />

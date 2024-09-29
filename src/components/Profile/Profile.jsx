@@ -16,7 +16,7 @@ function Profile() {
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
   const [message, setMessage] = useState();
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getProfileAction({ token }));
@@ -42,7 +42,7 @@ function Profile() {
         .required("Password confirmation is required"),
     }),
     onSubmit: (values) => {
-      setLoading(true)
+      setLoading(true);
       axios
         .put(`${config.api}profile`, values, {
           headers: {
@@ -53,14 +53,13 @@ function Profile() {
         })
         .then((response) => {
           if (response.data) {
-            console.log("Profile updated successfully");
             setMessage("Profile updated successfully");
-            setTimeout(()=>setMessage(),3000)
-            setLoading(false)
+            setTimeout(() => setMessage(), 3000);
+            setLoading(false);
           }
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           console.error("There was an error updating the profile!", error);
         });
     },
@@ -91,9 +90,7 @@ function Profile() {
         ) : (
           ""
         )}
-        {
-          loading ? <div className="mb-3">Updating..</div> : ''
-        }
+        {loading ? <div className="mb-3">Updating..</div> : ""}
         <h4 className="text-xl font-bold text-center mb-4">Update Profile</h4>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
@@ -134,6 +131,9 @@ function Profile() {
             ) : null}
           </div>
 
+          <div>
+            <h4 className="text-center">Update Password</h4>
+          </div>
           <div className="mb-4">
             <Label htmlFor="password">Password</Label>
             <TextInput

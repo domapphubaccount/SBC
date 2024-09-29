@@ -16,37 +16,28 @@ export function EditUser({ openEdit, handleClose }) {
   const roles = useSelector((state) => state.rolesSlice.roles);
   const ErrorMSG = useSelector((state) => state.usersSlice.error);
 
-  // useLayoutEffect(() => {
-  // }, []);
-
-  // Status options
   const status = ["active", "deactive", "suspend"];
 
-
-  // Formik setup
   const formik = useFormik({
     initialValues: {
       name: userData?.name || "",
       email: userData?.email || "",
       status: userData?.status || "active",
       role_id: (userData.roles && userData?.roles[0]?.id) || "",
-
-      // Default to "active" if undefined
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
+      name: Yup.string().max(30, "Name shouldn't exceed 30 characters").required("Name is required"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
       status: Yup.string().required("Status is required"),
+      role_id: Yup.string().required("Role is required"),
     }),
     onSubmit: (values) => {
       dispatch(editUserAction({ token, id: userData.id, ...values }));
-      // console.log({ token, id: userData.id, ...values });
     },
   });
 
-  // Update formik values when userData changes
   useEffect(() => {
     if (userData) {
       formik.setValues({
@@ -61,17 +52,16 @@ export function EditUser({ openEdit, handleClose }) {
   return (
     <>
       <Modal show={openEdit} size="md" popup onClose={handleClose}>
-      {ErrorMSG && (
+        {ErrorMSG && (
           <div
-            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
           >
-            <span class="font-medium">Error!</span> {ErrorMSG}
+            <span className="font-medium">Error!</span> {ErrorMSG}
           </div>
         )}
         <Modal.Header />
         <Modal.Body>
-          
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
               Edit User Details
@@ -89,9 +79,9 @@ export function EditUser({ openEdit, handleClose }) {
                     value={formik.values.name}
                     required
                   />
-                  {formik.touched.name && formik.errors.name ? (
+                  {formik.touched.name && formik.errors.name && (
                     <div className="text-red-600">{formik.errors.name}</div>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -105,9 +95,9 @@ export function EditUser({ openEdit, handleClose }) {
                     value={formik.values.email}
                     required
                   />
-                  {formik.touched.email && formik.errors.email ? (
+                  {formik.touched.email && formik.errors.email && (
                     <div className="text-red-600">{formik.errors.email}</div>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -127,9 +117,9 @@ export function EditUser({ openEdit, handleClose }) {
                       </option>
                     ))}
                   </select>
-                  {formik.touched.status && formik.errors.status ? (
+                  {formik.touched.status && formik.errors.status && (
                     <div className="text-red-600">{formik.errors.status}</div>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
@@ -140,8 +130,9 @@ export function EditUser({ openEdit, handleClose }) {
                     name="role_id"
                     onChange={formik.handleChange}
                     value={formik.values.role_id}
+                    required
                   >
-                    <option value={""}>None</option>
+                    <option value="">None</option>
                     {roles.length > 0 &&
                       roles.map((item, index) => (
                         <option key={index} value={item.id}>
@@ -149,13 +140,13 @@ export function EditUser({ openEdit, handleClose }) {
                         </option>
                       ))}
                   </select>
-                  {formik.touched.role_id && formik.errors.role_id ? (
+                  {formik.touched.role_id && formik.errors.role_id && (
                     <div className="text-red-600">{formik.errors.role_id}</div>
-                  ) : null}
+                  )}
                 </div>
 
                 <div className="w-full">
-                  <Button type="submit">Save Changes</Button>
+                  <Button type="submit" >Save Changes</Button>
                 </div>
               </>
             ) : (

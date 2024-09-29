@@ -123,7 +123,39 @@ export const addpdffileAction = createAsyncThunk(
   }
 );
 
-// End add PDF file
+// Start Assign user to PDF file
+export const assignUserToPdfAction = createAsyncThunk(
+  "pdfs/assignUserToPdfAction",
+  async (arg, { rejectWithValue }) => {
+    const { token, file_id, user_ids } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}admin/assign-users-to-file`,
+        {
+          file_id , user_ids
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return rejectWithValue(new Error(response.data.error));
+      }
+
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// End Assign user to PDF file
 
 // start edit role
 export const updateRoleAction = createAsyncThunk(
@@ -165,6 +197,7 @@ const initialState = {
   addModule: false,
   deleteModule: false,
   viewModule: false,
+  assignModule: false,
 
   editModule: false,
   roleModule: false,
@@ -175,6 +208,9 @@ export const pdfsSlice = createSlice({
   name: "pdfs",
   initialState,
   reducers: {
+    viewModule: (state, action) => {
+      state.viewModule = action.payload;
+    },
     editModule: (state, action) => {
       state.editModule = action.payload;
     },
@@ -186,6 +222,9 @@ export const pdfsSlice = createSlice({
     },
     closePdfError: (state)=>{
       state.error = null
+    },
+    assignModule: (state , action)=>{
+      state.assignModule = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -225,6 +264,23 @@ export const pdfsSlice = createSlice({
       })
       // end add pdf file
 
+      // start assign user to pdf file
+      .addCase(assignUserToPdfAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(assignUserToPdfAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.assignModule = false;
+      })
+      .addCase(assignUserToPdfAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end assign user to pdf file
+
       //start delete pdf file
       .addCase(deletePdfAction.pending, (state) => {
         state.loading = true;
@@ -242,16 +298,6 @@ export const pdfsSlice = createSlice({
       })
       // end delete pdf file
 
-
-
-
-
-
-
-
-
-
-
       //start get role by id
       .addCase(getRoleByIDAction.pending, (state) => {
         state.loading = true;
@@ -267,8 +313,6 @@ export const pdfsSlice = createSlice({
         state.error = action.payload?.message;
       })
       // end get role by id
-
-
 
       //start update user role
       .addCase(updateRoleAction.pending, (state) => {
@@ -289,7 +333,7 @@ export const pdfsSlice = createSlice({
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError, assignModule } =
   pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

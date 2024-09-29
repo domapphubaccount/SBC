@@ -133,9 +133,6 @@ export const updateReviewAction = createAsyncThunk(
       comment_super_reviewer,
       status,
     } = arg;
-
-    console.log(arg)
-
     try {
       const response = await axios.put(
         `${config.api}admin/reviews/${id}`,
@@ -179,6 +176,7 @@ const initialState = {
   deleteModule: false,
   viewModule: false,
   reviewerModel: false,
+  trainModule: false,
 
   editModule: false,
   roleModule: false,
@@ -200,6 +198,10 @@ export const ReviewSlice = createSlice({
     viewModule: (state, action) => {
       console.log(action.payload, "+-+-+");
       state.viewModule = action.payload.open;
+      state.review = action.payload.review || "";
+    },
+    trainModule: (state, action) => {
+      state.trainModule = action.payload.open;
       state.review = action.payload.review || "";
     },
     closeView: (state, action) => {
@@ -309,6 +311,7 @@ export const {
   deleteModule,
   editModule,
   reviewerModel,
+  trainModule
 } = ReviewSlice.actions;
 
 export default ReviewSlice.reducer;

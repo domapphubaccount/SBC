@@ -68,7 +68,7 @@ function Header({ path }) {
 
   return (
     <>
-      <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue">
+      <nav style={{zIndex:'1100'}} className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue">
         <div className="w-full mx-auto flex flex-wrap items-center justify-between">
           <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
             <Link

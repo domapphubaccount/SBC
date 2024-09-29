@@ -14,6 +14,7 @@ import {
 import {
   chat_out,
   choseChate,
+  error_start_chat,
   getChatCode,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
@@ -27,8 +28,9 @@ import {
   loading_chat_action,
 } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import Loading_chat from "../chatContainer/Loading";
+import { Button, Popover, Tooltip } from "flowbite-react";
 
-function MainChat({ elementWidth }) {
+function MainChat({ elementWidth, windowWidth }) {
   const pathName = usePathname();
   const [copyIcon, setCopyIcon] = useState(false);
   const [user, setUser] = useState("");
@@ -216,6 +218,12 @@ function MainChat({ elementWidth }) {
         dispatch(loading_chat(false));
         dispatch(loading_chat_action(false));
         console.error("There was an error making the request!", error);
+        if (error.response.data.error) {
+          dispatch(error_start_chat(error.response.data.error));
+        } else if (error.response.data.message) {
+          dispatch(error_start_chat(error.response.data.message));
+        }
+        setTimeout(() => dispatch(error_start_chat(null)), 2000);
       });
   };
   dispatch(action_done(true));
@@ -276,9 +284,8 @@ function MainChat({ elementWidth }) {
     }
   }, []);
 
-
   return (
-    <div className="col-span-3 bg-white relative">
+    <div className={`col-span-3 bg-white relative`}>
       {!loadingchat ? (
         <>
           <div
@@ -290,7 +297,7 @@ function MainChat({ elementWidth }) {
               id="chat"
               style={{
                 height: "calc(100vh - 120px)",
-                width: windhtchat - 10 + "px",
+                width: windhtchat + "px",
                 position: "absolute",
                 right: 0,
                 top: 0,
@@ -433,36 +440,64 @@ function MainChat({ elementWidth }) {
                               <div className="relative w-full">
                                 <div
                                   className="code"
-                                  style={{ width: elementWidth - 40 + "px" }}
+                                  style={{
+                                    width: elementWidth - 40 + "px",
+                                    zIndex: 100,
+                                  }}
                                 >
-                                  {item.pdfs?.length > 0 && (
+                                  {item.pdfs?.length > 0 &&
+                                  windowWidth <= 800 ? (
+                                    <Popover
+                                      aria-labelledby="default-popover"
+                                      content={
+                                        <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
+                                          <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
+                                          <div className="px-3 py-2">
+                                            <ul>
+                                              {item.pdfs.map((item, i) => (
+                                                <li>{item.name}</li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      }
+                                    >
+                                      <Button>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth={1.5}
+                                          stroke="currentColor"
+                                          className="size-6"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"
+                                          />
+                                        </svg>
+                                      </Button>
+                                    </Popover>
+                                  ) : (
                                     <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                       <div className="w-full pb-2">
                                         <div className="flex justify-between"></div>
                                         <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                                          {
-                                            // item.answer.match(pattern) ? (
-                                            //   item.answer
-                                            //     .match(pattern)
-                                            //     ?.map((item3, i) => (
-                                            // <p className="w-100 my-3" key={i}>
-                                            //   {item3}
-                                            // </p>
-                                            //     ))
-
-                                            item.pdfs?.length > 0 ? (
-                                              item.pdfs.map((item, i) => (
-                                                <p
-                                                  className="w-100 my-3"
-                                                  key={i}
-                                                >
-                                                  {item.section.name}ssdfsdf
-                                                </p>
-                                              ))
-                                            ) : (
-                                              <div>No Reference</div>
-                                            )
-                                          }
+                                          {item.pdfs?.length > 0 ? (
+                                            item.pdfs.map((item, i) => (
+                                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
+                                                <div className="px-3 py-2">
+                                                  <ul>
+                                                    <li>{item.name}</li>
+                                                  </ul>
+                                                </div>
+                                              </div>
+                                            ))
+                                          ) : (
+                                            <div>No Reference</div>
+                                          )}
                                         </span>
                                       </div>
                                     </span>
@@ -603,22 +638,24 @@ function MainChat({ elementWidth }) {
                                           </svg>
                                         )
                                       )}
-                                      {pathName.trim().slice(0, 9) !== "/sharable" &&
-                                      <svg
-                                        onClick={() => dislikeToggle(item.id)}
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="black"
-                                        className="size-3.5 ml-2 cursor-pointer"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                                        />
-                                      </svg>}
+                                      {pathName.trim().slice(0, 9) !==
+                                        "/sharable" && (
+                                        <svg
+                                          onClick={() => dislikeToggle(item.id)}
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth={1.5}
+                                          stroke="black"
+                                          className="size-3.5 ml-2 cursor-pointer"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                                          />
+                                        </svg>
+                                      )}
                                     </div>
                                   ) : (
                                     ""
@@ -650,6 +687,7 @@ function MainChat({ elementWidth }) {
       )}
       {dislike && (
         <Dislike
+          loading_actions={loading_actions}
           handleDislike={handleDislike}
           setDislikeMessage={setDislikeMessage}
           setDislike={setDislike}

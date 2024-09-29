@@ -43,7 +43,6 @@ export function EditReviewer({ openEdit, handleClose }) {
           ...values,
         })
       );
-      console.log({ token, id: reviewData.id, ...values });
       handleClose(); // Close the modal after saving changes
     },
   });
@@ -60,7 +59,6 @@ export function EditReviewer({ openEdit, handleClose }) {
       }
     }, [reviewData]);
 
-  console.log(reviewData)
 
   return (
     <>

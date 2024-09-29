@@ -207,7 +207,6 @@ export const userCommentsSlice = createSlice({
       .addCase(getCommentsAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        console.log(action.payload)
         state.comments = action.payload;
         state.addModule = false;
       })

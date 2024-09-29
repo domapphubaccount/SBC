@@ -21,16 +21,26 @@ function ChatContainer() {
   const updates = useSelector((state) => state.updateSlice.state);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
-  const state = useSelector(state => state)
   const dispatch = useDispatch();
-  const pathName = usePathname()
+  const pathName = usePathname();
+  const [windowWidth, setWindowWidth] = useState();
 
   useEffect(() => {
-    if (!JSON.parse(localStorage.getItem("data")) && pathName.slice(0,9) != "/sharable" ) {
+    setWindowWidth(window.innerWidth)
+    if (
+      !JSON.parse(localStorage.getItem("data")) &&
+      pathName.slice(0, 9) != "/sharable"
+    ) {
       redirect("/signIn");
     } else {
       dispatch(getCodeAction({ token }));
     }
+    const handleWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleWindowWidth);
+
+    return () => window.removeEventListener("resize", handleWindowWidth);
   }, []);
 
   useEffect(() => {
@@ -38,18 +48,24 @@ function ChatContainer() {
       if (catchChat || localStorage.getItem("chat") || chatCode) {
         // dispatch(chatSlice_loading(true))
         axios
-          .get(`${config.api}get_chat/${localStorage.getItem("chat")&&localStorage.getItem("chat") || catchChat}`,{
-            headers: {
-              Accept: "*/*",
-              Authorization: `Bearer ${token}`,
-            },
-          })
+          .get(
+            `${config.api}get_chat/${
+              (localStorage.getItem("chat") && localStorage.getItem("chat")) ||
+              catchChat
+            }`,
+            {
+              headers: {
+                Accept: "*/*",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
           .then((response) => {
             if (response.data) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));
-              dispatch(loading_get_chat_history(false))
+              dispatch(loading_get_chat_history(false));
               // dispatch(chatSlice_loading(false))
             }
           })
@@ -59,7 +75,7 @@ function ChatContainer() {
           });
         // dispatch(getChatAction({token,chat_id: catchChat || localStorage.getItem("chat")&&localStorage.getItem("chat")}))
       } else if (
-        dashboardData.chat_history&&
+        dashboardData.chat_history &&
         Object.entries(dashboardData.chat_history).length >= 1 &&
         catchChat === null
       ) {
@@ -79,7 +95,7 @@ function ChatContainer() {
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));
               // dispatch(loading_chat(false));
-              dispatch(loading_get_chat_history(false))
+              dispatch(loading_get_chat_history(false));
             }
           })
           .catch((error) => {
@@ -89,16 +105,20 @@ function ChatContainer() {
     }
   }, [token, dashboardData, updates, catchChat]);
 
-  const [elementWidth,setElementWidth] = useState()
+  const [elementWidth, setElementWidth] = useState();
   useEffect(() => {
     const updateElementWidth = () => {
-      setElementWidth(document.getElementById("listRef").offsetWidth);
-    }
+      setElementWidth(
+        document.getElementById("listRef") &&
+          document.getElementById("listRef").offsetWidth
+      );
+    };
+
     updateElementWidth(); // Set initial width
-    window.addEventListener('resize', updateElementWidth);
+    window.addEventListener("resize", updateElementWidth);
     return () => {
-      window.removeEventListener('resize', updateElementWidth);
-    }
+      window.removeEventListener("resize", updateElementWidth);
+    };
   }, []);
 
   return (
@@ -108,7 +128,7 @@ function ChatContainer() {
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
             <div className="grid grid-cols-4 min-w-full">
               <Refrence setElementWidth={setElementWidth} />
-              <MainChat elementWidth={elementWidth}/>
+              <MainChat elementWidth={elementWidth} windowWidth={windowWidth} />
             </div>
           </div>
         </div>

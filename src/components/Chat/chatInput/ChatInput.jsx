@@ -40,7 +40,6 @@ function ChatInput() {
     }
   }, []);
 
-  console.log(conversation , 'conversation')
   const handleSendMessage = () => {
     if (storedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));

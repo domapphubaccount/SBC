@@ -8,7 +8,6 @@ import { logoutAction } from "@/app/Redux/Features/Auth/AuthSlice";
 import { getProfileAction } from "@/app/Redux/Features/Profile/ProfileSlice";
 
 function DropDown() {
-  const router = useRouter();
   const [dropDownToggle, setDropDownToggle] = useState(false);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dropdownRef = useRef(null);

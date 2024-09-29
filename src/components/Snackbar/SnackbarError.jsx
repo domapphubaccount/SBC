@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 function SnackbarError() {
   const messageError = useSelector((state) => state.chatSlice.error);
   const messageError2 = useSelector((state) => state.chatSlice);
-console.log(messageError2)
   const message = (
       <div
         class="flex items-center"
