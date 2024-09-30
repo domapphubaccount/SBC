@@ -451,7 +451,6 @@ function MainChat({ elementWidth, windowWidth }) {
                                       aria-labelledby="default-popover"
                                       content={
                                         <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
-                                          <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
                                           <div className="px-3 py-2">
                                             <ul>
                                               {item.pdfs.map((item, i) => (
@@ -486,7 +485,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                           {item.pdfs?.length > 0 ? (
                                             item.pdfs.map((item, i) => (
                                               <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
+                                                <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
                                                 <div className="px-3 py-2">
                                                   <ul>
                                                     <li>{item.name}</li>
