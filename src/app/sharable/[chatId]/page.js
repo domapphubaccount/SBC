@@ -33,9 +33,11 @@ export default function Home() {
       }
     })
       .then(response => {
-        dispatch(getConversation(response.data.data[0]));
-        dispatch(getChatData(response.data.data[0].user_chats));
-      })
+        console.log(response.data[0].user_chats)
+        if(response.data){
+        dispatch(getConversation(response.data[0]));
+        dispatch(getChatData(response.data[0].user_chats));
+      }})
       .catch(e => console.log(e));
   }, [update]);
 

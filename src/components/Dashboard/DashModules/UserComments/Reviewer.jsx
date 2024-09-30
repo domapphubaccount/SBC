@@ -55,9 +55,6 @@ export function Reviewer({ openReviewer, handleClose }) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-
-  console.log(commentData)
-
   const statusOptions = ["accept", "reject", "in_progress"];
 
   return (

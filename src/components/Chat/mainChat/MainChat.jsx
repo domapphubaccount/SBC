@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ChatInput from "../chatInput/ChatInput";
 import axios from "axios";
 import Dislike from "./actions/Dislike";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import MessageImg from "@/assets/chat/MESSAGE.png";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,6 +57,11 @@ function MainChat({ elementWidth, windowWidth }) {
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
+  const navigate = useRouter()
+
+  console.log(chatData &&
+    conversation &&
+    chatData.map((item, i) => (item)))
 
   function isEnglish(text) {
     const cleanedText = text.replace(/[^a-zA-Z]/g, "");
@@ -192,6 +197,11 @@ function MainChat({ elementWidth, windowWidth }) {
       });
   };
   const handleStartNewChat = () => {
+
+    if(pathName.trim().slice(0, 9) !==
+    "/sharable"){
+      navigate.push('/')
+    }else{
     dispatch(chat_out());
     dispatch(loading_chat(true));
     dispatch(loading_chat_action(true));
@@ -224,7 +234,7 @@ function MainChat({ elementWidth, windowWidth }) {
           dispatch(error_start_chat(error.response.data.message));
         }
         setTimeout(() => dispatch(error_start_chat(null)), 2000);
-      });
+      });}
   };
   dispatch(action_done(true));
   useEffect(() => {
@@ -364,7 +374,7 @@ function MainChat({ elementWidth, windowWidth }) {
                       >
                         {chatData &&
                           conversation &&
-                          conversation.userChats &&
+                          (conversation.userChats || conversation.user_chats) &&
                           chatData.map((item, i) => (
                             <React.Fragment key={i}>
                               <div className="flex justify-end relative w-full">

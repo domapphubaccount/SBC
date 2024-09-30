@@ -43,16 +43,6 @@ function Users_chat() {
     navigate.push('/')
 
   }
-  // const handleGetChat = (chat_id, share_name) => {
-  //   if (chatid != chat_id) {
-  //     dispatch(choseChate(chat_id));
-  //     dispatch(loading_main_chat(true));
-  //     // dispatch(loading_chat(true));
-  //     dispatch(loading_get_chat_history(true));
-  //     localStorage.setItem("chat", chat_id);
-  //   }
-  // };
-
   return (
     <>
       <section>
