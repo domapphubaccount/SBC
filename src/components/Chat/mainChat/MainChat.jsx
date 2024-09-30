@@ -480,9 +480,8 @@ function MainChat({ elementWidth, windowWidth }) {
                                       </Button>
                                     </Popover>
                                   ) : (
-                                    <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                      <div className="w-full pb-2">
-                                        <div className="flex justify-between"></div>
+                                    <span style={{maxHeight:'150%'}} className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                      <div className="w-full">
                                         <span className="block ml-2 text-sm text-gray-600  font-semibold">
                                           {item.pdfs?.length > 0 ? (
                                             item.pdfs.map((item, i) => (

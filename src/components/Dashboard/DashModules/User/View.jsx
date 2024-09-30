@@ -80,7 +80,7 @@ export function ViewUser({ openView, handleClose }) {
                     type="text"
                     required
                     disabled
-                    value={`User Role : ${userData.roles[0].name} `}
+                    value={`User Role : ${userData.roles[0]?.name} `}
                   />
                 </div>
                 <div className="mb-3">

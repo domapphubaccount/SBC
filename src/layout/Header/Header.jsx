@@ -19,6 +19,7 @@ import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import Logo from "/public/logo.png";
 import { config } from "@/config/config";
 import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
+import { Tooltip } from "flowbite-react";
 
 function Header({ path }) {
   const [userName, setUserName] = useState("");
@@ -57,18 +58,20 @@ function Header({ path }) {
         dispatch(loading_chat_action(false));
         dispatch(loading_chat(false));
         dispatch(loading_main_chat(false));
-        if(error.response.data.error){
-          dispatch(error_start_chat(error.response.data.error))
-        }else if(error.response.data.message){
-          dispatch(error_start_chat(error.response.data.message))
+        if (error.response.data.error) {
+          dispatch(error_start_chat(error.response.data.error));
+        } else if (error.response.data.message) {
+          dispatch(error_start_chat(error.response.data.message));
         }
-        setTimeout(()=>dispatch(error_start_chat(null)),2000)
+        setTimeout(() => dispatch(error_start_chat(null)), 2000);
       });
   };
 
   return (
     <>
-      <nav style={{zIndex:'1100'}} className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue">
+      <nav
+        className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue"
+      >
         <div className="w-full mx-auto flex flex-wrap items-center justify-between">
           <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
             <Link
@@ -90,7 +93,9 @@ function Header({ path }) {
             <>
               {!path ? (
                 <div id="code">
-                  <MultipleSelect />
+                  <Tooltip content="Code" placement="bottom">
+                    <MultipleSelect />
+                  </Tooltip>
                 </div>
               ) : (
                 <div className="text-white">
@@ -110,36 +115,42 @@ function Header({ path }) {
                     ""
                   ) : (
                     <>
-                      <li className="mr-3 relative" title="timeline">
-                        <Archive />
-                      </li>
+                      <Tooltip content="Chat History" placement="bottom" onClick={(e)=>e.stopPropagation()}>
+                        <li className="mr-3 relative" title="timeline">
+                          <Archive />
+                        </li>
+                      </Tooltip>
                       {/* start start new chat */}
-                      <li
-                        title="start new chat"
-                        className="mr-3"
-                        onClick={handleStartNewChat}
-                      >
-                        <div>
-                          <div tabIndex="0" className="plusButton">
-                            <svg
-                              className="plusIcon"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 30 30"
-                            >
-                              <g mask="url(#mask0_21_345)">
-                                <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
-                              </g>
-                            </svg>
+                      <Tooltip content="Start new chat" placement="bottom">
+                        <li
+                          title="start new chat"
+                          className="mr-3"
+                          onClick={handleStartNewChat}
+                        >
+                          <div>
+                            <div tabIndex="0" className="plusButton">
+                              <svg
+                                className="plusIcon"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 30 30"
+                              >
+                                <g mask="url(#mask0_21_345)">
+                                  <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                                </g>
+                              </svg>
+                            </div>
                           </div>
-                        </div>
-                      </li>
+                        </li>
+                      </Tooltip>
                       {/* end start new chat */}
                     </>
                   )}
 
-                  <li title="profile">
-                    <DropDown userName={userName} />
-                  </li>
+                  <Tooltip content="Profile" placement="bottom">
+                    <li title="profile">
+                      <DropDown userName={userName} />
+                    </li>
+                  </Tooltip>
                 </ul>
               </div>
             </>

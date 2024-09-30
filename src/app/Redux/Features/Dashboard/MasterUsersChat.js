@@ -5,13 +5,13 @@ import axios from "axios";
 import { config } from "@/config/config";
 
 // start get dashbaord
-export const getDashboardDataAction = createAsyncThunk(
-  "dashboard/getDashboardDataAction",
+export const getUsersChatAction = createAsyncThunk(
+  "users-chat/getUsersChatAction",
   async (arg, { rejectWithValue }) => {
-    const { token, id } = arg;
+    const { token } = arg;
     
     try {
-      const response = await axios.get(`${config.api}admin/analysis`, {
+      const response = await axios.get(`${config.api}admin/master_user_chat`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "*/*",
@@ -36,8 +36,8 @@ const initialState = {
   updates: false,
 };
 
-export const dashboardSlice = createSlice({
-  name: "dashboard",
+export const usersChatSlice = createSlice({
+  name: "users-chat",
   initialState,
   reducers: {
     updateAction: (state, action) => {
@@ -47,22 +47,21 @@ export const dashboardSlice = createSlice({
   extraReducers: (builder) => {
     builder
       //start login
-      .addCase(getDashboardDataAction.pending, (state) => {
+      .addCase(getUsersChatAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getDashboardDataAction.fulfilled, (state, action) => {
+      .addCase(getUsersChatAction.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload)
         state.data = action.payload
       })
-      .addCase(getDashboardDataAction.rejected, (state, action) => {
+      .addCase(getUsersChatAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
     // end login
   },
 });
-export const { updateAction } = dashboardSlice.actions;
+export const { updateAction } = usersChatSlice.actions;
 
-export default dashboardSlice.reducer;
+export default usersChatSlice.reducer;

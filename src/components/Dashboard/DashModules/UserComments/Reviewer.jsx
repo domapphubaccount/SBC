@@ -12,6 +12,7 @@ export function Reviewer({ openReviewer, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const commentData = useSelector((state) => state.userCommentsSlice.comment);
   const loading = useSelector((state) => state.userCommentsSlice.loading);
+  const profileData = useSelector((state) => state.profileSlice.profile);
   const dispatch = useDispatch();
 
   // Formik setup
@@ -54,6 +55,8 @@ export function Reviewer({ openReviewer, handleClose }) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
+
+  console.log(commentData)
 
   const statusOptions = ["accept", "reject", "in_progress"];
 

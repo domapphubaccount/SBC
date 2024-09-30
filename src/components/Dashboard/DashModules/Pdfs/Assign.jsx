@@ -41,15 +41,16 @@ export function Assign({ openAssign, handleClose, fileId }) {
 
   useEffect(() => {
     if (usersData) {
-      // Set the options for the select input
+      let data = usersData.filter(item => !item.pdfs.some(pdf => pdf.id === fileId));
       setUsersOption(
-        usersData?.map((item) => ({
+        data.map((item) => ({
           value: item.id,
           label: item.name,
         })) || []
       );
     }
-  }, [usersData]);
+  }, [usersData, fileId]);
+  
 
   return (
     <>

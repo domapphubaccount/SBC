@@ -17,12 +17,16 @@ import userCommentsSlice from "./Features/Dashboard/UsersCommentsSlice";
 import historySlice from "./Features/Chat_History/historySlice";
 import chatActionsSlice from "./Features/Chat/ChatActionsSlice";
 import ReviewSlice from "./Features/Dashboard/ReviewerSlice";
+import dashboardSlice from "./Features/Dashboard/DashboardSlice";
+import usersChatSlice from "./Features/Dashboard/MasterUsersChat";
 
 export const store = configureStore({
   reducer: {
     loginSlice,
     conversationSlice,
     codeSlice,
+    dashboardSlice,
+    usersChatSlice,
     profileSlice,
     usersSlice,
     rolesSlice,

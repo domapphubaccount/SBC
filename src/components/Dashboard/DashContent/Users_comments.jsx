@@ -121,6 +121,8 @@ function Users_comments({}) {
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
 
+  console.log(usersCommentsData)
+
   return (
     <>
       <section>

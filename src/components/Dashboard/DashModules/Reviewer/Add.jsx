@@ -19,6 +19,8 @@ export function AddReview({ openAdd, handleClose }) {
   );
   const profileData = useSelector((state) => state.profileSlice.profile);
 
+  // console.log(profileData.roles[0].id)
+
 
   // Status options
   const statusOptions = ["accept", "reject", "in_progress"];
@@ -27,15 +29,15 @@ export function AddReview({ openAdd, handleClose }) {
   const formik = useFormik({
     initialValues: {
       chat_user_dislike_id: "",
-      comment_reviewer: "",
-      comment_super_reviewer: "",
+      comment_reviewer: null,
+      comment_super_reviewer: null,
       super_reviewr_id: profileData.id || "",
       status: "",
     },
     validationSchema: Yup.object({
       chat_user_dislike_id: Yup.string().required("Please choose a comment"),
-      comment_reviewer: Yup.string().required("Reviewer comment is required"),
-      comment_super_reviewer: Yup.string().required("Super reviewer comment is required"),
+      // comment_reviewer: Yup.string().required("Reviewer comment is required"),
+      // comment_super_reviewer: Yup.string().required("Super reviewer comment is required"),
       status: Yup.string()
         .oneOf(statusOptions, "Invalid status")
         .required("Status is required"),
@@ -86,6 +88,7 @@ export function AddReview({ openAdd, handleClose }) {
                   )}
                 </div>
 
+{profileData.roles && profileData.roles[0].id == 3 &&
                 <div className="mb-8">
                   <div>
                     <small>Comment Reviewer</small>
@@ -103,6 +106,8 @@ export function AddReview({ openAdd, handleClose }) {
                     <div className="text-red-600">{formik.errors.comment_reviewer}</div>
                   )}
                 </div>
+
+}
 
                 <div className="mb-8">
                   <div>

@@ -10,12 +10,12 @@ import { useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function Home() {
-  const isLogged = useSelector((state) => state.loginSlice.logged);
-  const loading = useSelector((state) => state.historySlice.loading);
-  const loading_out = useSelector((state) => state.loginSlice.loading);
+  const isLogged = useSelector((state) => state.loginSlice.logged); 
+  const loading = useSelector((state) => state.historySlice.loading);    // here i have added the loading of the dashboard slice
+  const loading_out = useSelector((state) => state.loginSlice.loading);  // here i have added the loading of loginslice
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
-  );
+  );                                                                    // and here is the loading of all chat actions 
   const error = useSelector((state) => state.chatSlice.error);
 
   useLayoutEffect(() => {

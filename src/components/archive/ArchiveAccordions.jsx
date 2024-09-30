@@ -33,7 +33,6 @@ function TailwindAccordion() {
   const [shareName, setShareName] = useState("0");
   const [shareToggle, setShareToggle] = useState(false);
   const [sharableChat, setSharableChat] = useState([]);
-  // const dashboardData = useSelector(state => state.chatSlice.chat_history[0])
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dashboardData = useSelector((state) => state.historySlice.chat_history);
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
@@ -166,29 +165,6 @@ function TailwindAccordion() {
 
   return (
     <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
-      {/* {actionAlert && (
-        <div
-          className="flex bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
-          role="alert"
-        >
-          <svg
-            className="w-5 h-5 inline mr-3"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <div>
-            <span className="font-medium">Success!</span> Your action happened
-            successfully.
-          </div>
-        </div>
-      )} */}
       <div className="accordion h-full">
         {dashboardData?.chat_history &&
         Object.entries(dashboardData.chat_history).length >= 1 ? (
@@ -236,7 +212,7 @@ function TailwindAccordion() {
                           --{" "}
                           {item[1].id
                             ? item[1].name
-                            : // ? item[1].id.slice(0, 20)
+                            : 
                               item[1].name}
                           <ArchiveSettings
                             item={item[1]}

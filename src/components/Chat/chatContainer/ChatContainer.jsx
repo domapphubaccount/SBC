@@ -11,20 +11,22 @@ import {
   getConversation,
   loading_main_chat,
 } from "@/app/Redux/Features/Chat/ChatSlice";
-import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import { config } from "@/config/config";
 import { loading_get_chat_history } from "@/app/Redux/Features/Chat_History/historySlice";
 
 function ChatContainer() {
+  const [windowWidth, setWindowWidth] = useState();
+  const [elementWidth, setElementWidth] = useState();
+
+  const pathName = usePathname();
   const dashboardData = useSelector((state) => state.chatSlice.value);
   const catchChat = useSelector((state) => state.chatSlice.get_chat);
   const updates = useSelector((state) => state.updateSlice.state);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const dispatch = useDispatch();
-  const pathName = usePathname();
-  const [windowWidth, setWindowWidth] = useState();
 
+  // start manage window width and is logged or not
   useEffect(() => {
     setWindowWidth(window.innerWidth)
     if (
@@ -39,14 +41,14 @@ function ChatContainer() {
       setWindowWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleWindowWidth);
-
+    
     return () => window.removeEventListener("resize", handleWindowWidth);
   }, []);
+  // end manage window width and is logged or not
 
   useEffect(() => {
     if (token) {
       if (catchChat || localStorage.getItem("chat") || chatCode) {
-        // dispatch(chatSlice_loading(true))
         axios
           .get(
             `${config.api}get_chat/${
@@ -66,14 +68,11 @@ function ChatContainer() {
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));
               dispatch(loading_get_chat_history(false));
-              // dispatch(chatSlice_loading(false))
             }
           })
           .catch((error) => {
-            // dispatch(chatSlice_loading(false))
             console.error("There was an error making the request!", error);
           });
-        // dispatch(getChatAction({token,chat_id: catchChat || localStorage.getItem("chat")&&localStorage.getItem("chat")}))
       } else if (
         dashboardData.chat_history &&
         Object.entries(dashboardData.chat_history).length >= 1 &&
@@ -94,7 +93,6 @@ function ChatContainer() {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));
-              // dispatch(loading_chat(false));
               dispatch(loading_get_chat_history(false));
             }
           })
@@ -105,7 +103,6 @@ function ChatContainer() {
     }
   }, [token, dashboardData, updates, catchChat]);
 
-  const [elementWidth, setElementWidth] = useState();
   useEffect(() => {
     const updateElementWidth = () => {
       setElementWidth(
@@ -124,7 +121,7 @@ function ChatContainer() {
   return (
     <div className="h-screen chat_container">
       <div className="w-full bg-neutral-200 chat_input">
-        <div className="w-screen" style={{ overflowX: "hidden" }}>
+        <div className="w-screen overflow-x-hidden">
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
             <div className="grid grid-cols-4 min-w-full">
               <Refrence setElementWidth={setElementWidth} />

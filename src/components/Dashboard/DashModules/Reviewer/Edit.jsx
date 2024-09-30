@@ -14,6 +14,7 @@ export function EditReviewer({ openEdit, handleClose }) {
   const reviewData = useSelector((state) => state.ReviewSlice.review);
   const loading = useSelector((state) => state.ReviewSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const profileData = useSelector((state) => state.profileSlice.profile);
 
   // Status options
   const statusOptions = ["accept", "reject", "in_progress"];
@@ -27,7 +28,7 @@ export function EditReviewer({ openEdit, handleClose }) {
       status: reviewData?.status || "accept", // Default to "accept" if undefined
     },
     validationSchema: Yup.object({
-      comment_reviewer: Yup.string().required("Reviewer comment is required"),
+      // comment_reviewer: Yup.string().required("Reviewer comment is required"),
       // comment_super_reviewer: Yup.string().required("Super reviewer comment is required"),
       status: Yup.string()
         .oneOf(statusOptions, "Invalid status")
@@ -52,7 +53,7 @@ export function EditReviewer({ openEdit, handleClose }) {
       if (reviewData) {
         formik.setValues({
           chat_user_dislike_id: reviewData?.chat_user_dislike?.id || "",
-          comment_reviewer: reviewData?.comment_reviewr || "",
+          comment_reviewer:  null, //reviewData?.comment_reviewr || ""
           comment_super_reviewer: reviewData?.comment_super_reviewr || "",
           status: reviewData?.status || "accept",
         });
@@ -85,6 +86,7 @@ export function EditReviewer({ openEdit, handleClose }) {
                     placeholder="Enter reviewer comment"
                     style={{ opacity: 1 }}
                     defaultValue={reviewData?.comment_reviewr}
+                    disabled={profileData.roles && profileData.roles[0].id != 3}
                   />
                   {formik.touched.comment_reviewer &&
                   formik.errors.comment_reviewer ? (

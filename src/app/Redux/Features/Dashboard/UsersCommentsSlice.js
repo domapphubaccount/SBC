@@ -18,11 +18,11 @@ export const getCommentsAction = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-
+console.log(response.data)
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
