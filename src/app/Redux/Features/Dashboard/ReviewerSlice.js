@@ -134,7 +134,7 @@ export const updateReviewAction = createAsyncThunk(
       status,
     } = arg;
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${config.api}admin/reviews/${id}`,
         {
           chat_user_dislike_id,
