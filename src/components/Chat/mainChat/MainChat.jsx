@@ -59,10 +59,6 @@ function MainChat({ elementWidth, windowWidth }) {
   );
   const navigate = useRouter()
 
-  console.log(chatData &&
-    conversation &&
-    chatData.map((item, i) => (item)))
-
   function isEnglish(text) {
     const cleanedText = text.replace(/[^a-zA-Z]/g, "");
     const englishCharCount = cleanedText.length;
@@ -464,7 +460,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                           <div className="px-3 py-2">
                                             <ul>
                                               {item.pdfs.map((item, i) => (
-                                                <li>{item.name}</li>
+                                                <li key={i}>{item.name}</li>
                                               ))}
                                             </ul>
                                           </div>
@@ -494,7 +490,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                         <span className="block ml-2 text-sm text-gray-600  font-semibold">
                                           {item.pdfs?.length > 0 ? (
                                             item.pdfs.map((item, i) => (
-                                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                              <div key={i} className="text-sm text-gray-500 dark:text-gray-400">
                                                 <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
                                                 <div className="px-3 py-2">
                                                   <ul>
