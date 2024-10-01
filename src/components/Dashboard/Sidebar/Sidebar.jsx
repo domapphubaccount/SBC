@@ -288,7 +288,7 @@ export function Sidebar({ children, handlePage }) {
         </div> */}
 
         <div className="relative h-screen pattern">
-          <nav className="z-20 bg-white flex shrink-0 grow-0 justify-around gap-4 border-t border-gray-200 p-2.5 shadow-lg backdrop-blur-lg fixed top-2/4 -translate-y-2/4 left-6 min-h-[auto] min-w-[64px] flex-col rounded-lg border">
+          <nav className="z-20 bg-white flex shrink-0 grow-0 justify-around gap-4 border-t border-gray-200 p-2.5 shadow-lg fixed top-2/4 -translate-y-2/4 left-6 min-h-[auto] min-w-[64px] flex-col rounded-lg border">
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
