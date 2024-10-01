@@ -3,10 +3,9 @@ import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import { useSelector } from "react-redux";
 
-function SnackbarError() {
-  const messageError = useSelector((state) => state.chatSlice.error);
-  const messageError2 = useSelector((state) => state.chatSlice);
-  const message = (
+function SnackbarSendError() {
+    const sendError = useSelector(state => state.chatActionsSlice.error)
+    const message = (
       <div
         class="flex items-center"
       >
@@ -21,19 +20,19 @@ function SnackbarError() {
         </svg>
         <span class="sr-only">Info</span>
         <div>
-          <span class="font-medium">{messageError}</span>{" "}
+          <span class="font-medium">You cant send Message here, Open new Thread </span>{" "}
         </div>
       </div>
   );
   return (
     <Snackbar
-      open={messageError}
+      open={sendError}
       autoHideDuration={2000}
       //   onClose={'handleClose'}
-      message={message || "You need to Open new Thread"}
+      message={message}
       //   action={'action'}
     />
   );
 }
 
-export default SnackbarError;
+export default SnackbarSendError;

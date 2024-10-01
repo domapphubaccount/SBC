@@ -10,6 +10,7 @@ import { useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "./loading"
 import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
+import SnackbarSendError from "@/components/Snackbar/SnackSendError";
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged); 
@@ -23,11 +24,11 @@ export default function Home() {
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const sendError = useSelector(state => state.chatActionsSlice.error)
   
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));
   }, []);
-  console.log(profileData)
 
   useLayoutEffect(() => {
     if (isLogged == false) {
@@ -51,6 +52,9 @@ export default function Home() {
       {loading_out && <SnackbarTooltip />}
       {/* end loading logout actions */}
       {error && <SnackbarError />}
+      {/* <SnackbarTime /> */}
+      {/* end loading logout actions */}
+      {sendError && <SnackbarSendError />}
       {/* <SnackbarTime /> */}
     </main>
     :

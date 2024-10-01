@@ -1,4 +1,5 @@
 "use client";
+import { sendError } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import {
   addQuestionAction,
   choseChate,
@@ -7,6 +8,7 @@ import {
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { update } from "@/app/Redux/Features/Update/UpdateSlice";
+import SnackbarError from "@/components/Snackbar/SnackbarError";
 import { config } from "@/config/config";
 import {
   Popover,
@@ -31,7 +33,6 @@ function ChatInput() {
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
-
   let errorsStore = ["error 1", "error 2", "error 3", "error 4", "error 5"];
 
   useEffect(() => {
@@ -82,40 +83,20 @@ function ChatInput() {
         })
         .catch((error) => {
           setLoading(false);
+          
           dispatch(
             send_failed(
               errorsStore[Math.floor(Math.random() * errorsStore.length)]
             )
           );
+          dispatch(sendError(true))
+          setTimeout(()=>dispatch(sendError(false)),1500)
           console.error("There was an error making the request!", error);
         });
     } else if (storedCode.length === 0) {
       setSendMessage(true);
     }
   };
-
-  // const handleSendMessage = () => {
-  //   if (storedCode.length > 0 && message.length > 0) {
-  //     console.log({
-  //           token,
-  //           question: message,
-  //           thread_id:
-  //             (conversation && conversation.chatgpt_id) || (chatCode && chatCode),
-  //           files: storedCode
-  //         })
-  //     dispatch(
-  //       addQuestionAction({
-  //         token,
-  //         question: message,
-  //         thread_id:
-  //           (conversation && conversation.chatgpt_id) || (chatCode && chatCode),
-  //         files: storedCode
-  //       })
-  //     );
-  //   } else if (storedCode.length === 0) {
-  //     setSendMessage(true);
-  //   }
-  // };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

@@ -206,7 +206,7 @@ function MainChat({ elementWidth, windowWidth }) {
       });
   };
   const handleStartNewChat = () => {
-    if(pathName.trim().slice(0, 9) !== "/sharable"){
+    if(pathName.trim().slice(0, 9) == "/sharable"){
       navigate.push('/')
     }else{
     dispatch(chat_out());
