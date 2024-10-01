@@ -11,21 +11,14 @@ import { logout } from "../Auth/AuthSlice";
 export const getUsersAction = createAsyncThunk(
   "users/getUsersAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/users`, {
+      const response = await axios.get(`${config.api}admin/users?page=${page}` ,{
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        // responseType: 'blob', // Adjust the responseType as needed
-        // onDownloadProgress: (event) => {
-        //   if (event.lengthComputable) {
-        //     const progress = Math.round((event.loaded / event.total) * 100);
-        //     console.log(`Download Progress: ${progress}%`);
-        //   }
-        // },
       });
 
       if (response.data.error) {
@@ -75,12 +68,12 @@ export const getUserByIDAction = createAsyncThunk(
 export const editUserAction = createAsyncThunk(
   "users/editUserAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, id, name, email, status, role_id } = arg;
+    const { token, id, name, email, status, role_id , account_type } = arg;
 
     try {
       const response = await axios.put(
         `${config.api}admin/users/${id}`,
-        { name, email, status, role_id:Number(role_id) },
+        { name, email, status, role_id:Number(role_id), account_type },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -112,7 +105,7 @@ export const editUserAction = createAsyncThunk(
 export const addUserAction = createAsyncThunk(
   "users/addUserAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, name, email, password, password_confirmation, role_id } =
+    const { token, name, email, password, password_confirmation, role_id, account_type } =
       arg;
 
     try {
@@ -125,6 +118,7 @@ export const addUserAction = createAsyncThunk(
           password_confirmation,
           role_id: Number(role_id),
           status: "active",
+          account_type
         },
         {
           headers: {

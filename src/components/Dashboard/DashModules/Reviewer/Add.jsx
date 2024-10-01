@@ -6,7 +6,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { addReviewAction, updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
+import {
+  addReviewAction,
+  updateReviewAction,
+} from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 import { getCommentsAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 
 export function AddReview({ openAdd, handleClose }) {
@@ -19,9 +22,6 @@ export function AddReview({ openAdd, handleClose }) {
   );
   const profileData = useSelector((state) => state.profileSlice.profile);
 
-  // console.log(profileData.roles[0].id)
-
-
   // Status options
   const statusOptions = ["accept", "reject", "in_progress"];
 
@@ -29,21 +29,21 @@ export function AddReview({ openAdd, handleClose }) {
   const formik = useFormik({
     initialValues: {
       chat_user_dislike_id: "",
-      comment_reviewer: null,
-      comment_super_reviewer: null,
+      comment_reviewr: null,
+      comment_super_reviewr: null,
       super_reviewr_id: profileData.id || "",
       status: "",
     },
     validationSchema: Yup.object({
       chat_user_dislike_id: Yup.string().required("Please choose a comment"),
-      // comment_reviewer: Yup.string().required("Reviewer comment is required"),
-      // comment_super_reviewer: Yup.string().required("Super reviewer comment is required"),
+      comment_reviewr: Yup.string().required("Reviewer comment is required"),
+      comment_super_reviewr: Yup.string().required("Super reviewer comment is required"),
       status: Yup.string()
         .oneOf(statusOptions, "Invalid status")
         .required("Status is required"),
     }),
     onSubmit: (values) => {
-      dispatch(addReviewAction({ token, ...values }))
+      dispatch(addReviewAction({ token, ...values }));
     },
   });
 
@@ -83,31 +83,36 @@ export function AddReview({ openAdd, handleClose }) {
                       </option>
                     ))}
                   </select>
-                  {formik.touched.chat_user_dislike_id && formik.errors.chat_user_dislike_id && (
-                    <div className="text-red-600">{formik.errors.chat_user_dislike_id}</div>
-                  )}
+                  {formik.touched.chat_user_dislike_id &&
+                    formik.errors.chat_user_dislike_id && (
+                      <div className="text-red-600">
+                        {formik.errors.chat_user_dislike_id}
+                      </div>
+                    )}
                 </div>
 
-{profileData.roles && profileData.roles[0].id == 3 &&
-                <div className="mb-8">
-                  <div>
-                    <small>Comment Reviewer</small>
+                {/* {profileData.roles && profileData.roles[0].id == 3 && ( */}
+                  <div className="mb-8">
+                    <div>
+                      <small>Comment Reviewer</small>
+                    </div>
+                    <Textarea
+                      rows={4}
+                      id="comment_reviewr"
+                      name="comment_reviewr"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.comment_reviewr}
+                      placeholder="Enter reviewer comment"
+                    />
+                    {formik.touched.comment_reviewr &&
+                      formik.errors.comment_reviewr && (
+                        <div className="text-red-600">
+                          {formik.errors.comment_reviewr}
+                        </div>
+                      )}
                   </div>
-                  <Textarea
-                    rows={4}
-                    id="comment_reviewer"
-                    name="comment_reviewer"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.comment_reviewer}
-                    placeholder="Enter reviewer comment"
-                  />
-                  {formik.touched.comment_reviewer && formik.errors.comment_reviewer && (
-                    <div className="text-red-600">{formik.errors.comment_reviewer}</div>
-                  )}
-                </div>
-
-}
+                {/* )} */}
 
                 <div className="mb-8">
                   <div>
@@ -115,16 +120,19 @@ export function AddReview({ openAdd, handleClose }) {
                   </div>
                   <Textarea
                     rows={4}
-                    id="comment_super_reviewer"
-                    name="comment_super_reviewer"
+                    id="comment_super_reviewr"
+                    name="comment_super_reviewr"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.comment_super_reviewer}
+                    value={formik.values.comment_super_reviewr}
                     placeholder="Enter super reviewer comment"
                   />
-                  {formik.touched.comment_super_reviewer && formik.errors.comment_super_reviewer && (
-                    <div className="text-red-600">{formik.errors.comment_super_reviewer}</div>
-                  )}
+                  {formik.touched.comment_super_reviewr &&
+                    formik.errors.comment_super_reviewr && (
+                      <div className="text-red-600">
+                        {formik.errors.comment_super_reviewr}
+                      </div>
+                    )}
                 </div>
 
                 <div>

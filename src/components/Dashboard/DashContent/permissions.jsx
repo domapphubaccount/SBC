@@ -57,6 +57,9 @@ function Permmisions({}) {
 
   const openAdd = useSelector((state) => state.permissionsSlice.addModule);
 
+  const [page , setPage] = useState(1)
+
+
   const handleClose = () => {
     dispatch(closeView());
     dispatch(viewModule(false));
@@ -73,10 +76,11 @@ function Permmisions({}) {
   // end open view
 
   useEffect(() => {
-    dispatch(getPermissionsAction({ token }));
+    dispatch(getPermissionsAction({ token , page }));
   }, [
     /* updates */
     updatePermisionsData,
+    page
   ]);
 
   // Step 1: State for search input
@@ -266,7 +270,7 @@ function Permmisions({}) {
           </div>
         </div>
 
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
 
       {openDelete && (

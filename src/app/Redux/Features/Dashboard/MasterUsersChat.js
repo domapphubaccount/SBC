@@ -8,10 +8,10 @@ import { config } from "@/config/config";
 export const getUsersChatAction = createAsyncThunk(
   "users-chat/getUsersChatAction",
   async (arg, { rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     
     try {
-      const response = await axios.get(`${config.api}admin/master_user_chat`, {
+      const response = await axios.get(`${config.api}admin/master_user_chat?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "*/*",

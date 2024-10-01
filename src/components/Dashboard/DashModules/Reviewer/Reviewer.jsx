@@ -15,7 +15,7 @@ export function Reviewer({ openReviewer, handleClose }) {
         <Modal.Body>
           <div className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-            Reviewer
+              Reviewer
             </h3>
 
             {loading ? (
@@ -29,114 +29,110 @@ export function Reviewer({ openReviewer, handleClose }) {
               </div>
             ) : (
               <>
-              <div>
-
-                                
-                <div className="mb-3">
-                  <TextInput
-                    id="user"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`User : Ahmed for Example`}
-                  />
-                </div>
-
-
-
-                <div className="mb-3">
-                  <div>
-                    <small className="font-semibold">User Question</small>
+                <div>
+                  <div className="mb-3">
+                    <TextInput
+                      id="user"
+                      style={{ opacity: 1 }}
+                      type="text"
+                      required
+                      disabled
+                      value={`User : Ahmed for Example`}
+                    />
                   </div>
-                  <Textarea
-                    rows={4}
-                    id="comment id"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`Hi this is a user question?`}
-                  />
-                </div>
-                <div className="mb-3">
-                  <div>
-                    <small className="font-semibold">BYLD response</small>
+
+                  <div className="mb-3">
+                    <div>
+                      <small className="font-semibold">User Question</small>
+                    </div>
+                    <Textarea
+                      rows={4}
+                      id="comment id"
+                      style={{ opacity: 1 }}
+                      type="text"
+                      required
+                      disabled
+                      value={`Hi this is a user question?`}
+                    />
                   </div>
-                  <Textarea
-                    rows={4}
-                    id="comment id"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`Hi this is a user question?`}
-                  />
-                </div>
-
-
-                <div className="mb-3">
-                  <div className="flex justify-between">
-                    <small className="font-semibold">User Deslike Comment</small>
-                    <small>At: 25-12-2023</small>
+                  <div className="mb-3">
+                    <div>
+                      <small className="font-semibold">BYLD response</small>
+                    </div>
+                    <Textarea
+                      rows={4}
+                      id="comment id"
+                      style={{ opacity: 1 }}
+                      type="text"
+                      required
+                      disabled
+                      value={`Hi this is a user question?`}
+                    />
                   </div>
-                  <Textarea
-                    rows={4}
-                    id="comment id"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`User Comment : ${commentData.comment}`}
-                  />
-                </div>
 
-                <div className="mb-3">
-                  <div className="flex justify-between">
-                    <small className="font-semibold">reviewer Response</small>
-                    <small>At: 25-12-2023</small>
+                  <div className="mb-3">
+                    <div className="flex justify-between">
+                      <small className="font-semibold">
+                        User Deslike Comment
+                      </small>
+                      <small>At: 25-12-2023</small>
+                    </div>
+                    <Textarea
+                      rows={4}
+                      id="comment id"
+                      style={{ opacity: 1 }}
+                      type="text"
+                      required
+                      disabled
+                      value={`User Comment : ${commentData.comment}`}
+                    />
                   </div>
-                  <Textarea
-                    rows={3}
-                    placeholder="Write response ."
-                    id="response"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`this is the reviewer comment of the user comment `}
-                  />
-                </div>
 
-                <hr/>
-
-                <div className="my-8">
-                  <div className="flex justify-between">
-                    <small className="font-semibold" >Admin comment</small>
-                    {/* <small>At: 25-12-2023</small> */}
+                  <div className="mb-3">
+                    <div className="flex justify-between">
+                      <small className="font-semibold">reviewer Response</small>
+                      <small>At: 25-12-2023</small>
+                    </div>
+                    <Textarea
+                      rows={3}
+                      placeholder="Write response ."
+                      id="response"
+                      style={{ opacity: 1 }}
+                      type="text"
+                      required
+                      disabled
+                      value={`this is the reviewer comment of the user comment `}
+                    />
                   </div>
-                  <Textarea
-                    rows={3}
-                    placeholder="Write response ."
-                    id="response"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    value={`Admin : `}
-                  />
-                </div>
-          
-              </div>
 
-            <div className="flex justify-between">
-              <div className="w-full">
-                <Button onClick={handleClose}>CLOSE</Button>
-              </div>
-              <div className="w-full text-end">
-                <Button onClick={handleClose}>SUBMIT</Button>
-              </div>
-            </div>
-            </>
+                  <hr />
+
+                  <div className="my-8">
+                    <div className="flex justify-between">
+                      <small className="font-semibold">Admin comment</small>
+                      {/* <small>At: 25-12-2023</small> */}
+                    </div>
+                    <Textarea
+                      rows={3}
+                      placeholder="Write response ."
+                      id="response"
+                      style={{ opacity: 1 }}
+                      type="text"
+                      required
+                      value={`Admin : `}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-between">
+                  <div className="w-full">
+                    <Button onClick={handleClose}>CLOSE</Button>
+                  </div>
+                  <div className="w-full text-end">
+                    <Button onClick={handleClose}>SUBMIT</Button>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </Modal.Body>

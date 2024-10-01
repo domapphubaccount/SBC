@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { chat_out } from "@/app/Redux/Features/Chat/ChatSlice";
 import { logoutAction } from "@/app/Redux/Features/Auth/AuthSlice";
@@ -13,6 +13,9 @@ function DropDown() {
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
+  const pathname = usePathname();
+
+  console.log(pathname.slice(0,9))
 
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));
@@ -78,6 +81,31 @@ function DropDown() {
           tabIndex="-1"
         >
           <div className="py-1" role="none">
+            {pathname.slice(0, 9) !== "/" && (
+              <Link
+                href="/"
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"
+                role="menuitem"
+                tabIndex="-1"
+                id="menu-item-0"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-5 mr-3"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                  />
+                </svg>
+                Home
+              </Link>
+            )}
             <Link
               href="/profile"
               className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"
@@ -105,7 +133,7 @@ function DropDown() {
 
             {profileData &&
               profileData.roles &&
-              profileData.roles[0].name != "user" && (
+              profileData.roles[0].name != "user" && pathname.slice(0,9) !== "/dashboar" && (
                 <Link
                   href="/dashboard"
                   className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"

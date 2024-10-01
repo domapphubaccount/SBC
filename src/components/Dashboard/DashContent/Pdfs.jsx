@@ -40,6 +40,8 @@ function Pdfs({}) {
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
   const openAssign = useSelector(state => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
+  const [page , setPage] = useState(1)
+
 
   const handleClose = () => {
     dispatch(editModule(false));
@@ -87,10 +89,11 @@ function Pdfs({}) {
   // end open view
 
   useEffect(() => {
-    dispatch(getPdfsAction({ token }));
+    dispatch(getPdfsAction({ token , page }));
   }, [
     /* updates */
     updatePdfsData,
+    page
   ]);
 
   function formatDate(dateString) {
@@ -352,7 +355,7 @@ function Pdfs({}) {
             </div>
           </div>
         </div>
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
 
       {openDelete && (

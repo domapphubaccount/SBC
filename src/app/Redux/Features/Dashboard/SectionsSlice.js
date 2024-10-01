@@ -10,9 +10,9 @@ import { addpdffileAction } from "./PdfsSlice";
 export const getSectionsAction = createAsyncThunk(
   "sections/getSectionsAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/sections`, {
+      const response = await axios.get(`${config.api}admin/sections?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

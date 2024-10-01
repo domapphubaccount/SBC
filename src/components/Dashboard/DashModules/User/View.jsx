@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Modal, TextInput } from "flowbite-react";
+import { Badge, Button, Modal, TextInput } from "flowbite-react";
 import { useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
@@ -51,8 +51,13 @@ export function ViewUser({ openView, handleClose }) {
                   />
                 </div> */}
                 <div className="mb-3">
-                  <small>Created-At: {formatDate(userData.created_at)}</small>
+                  <small className="px-2">Created-At: {formatDate(userData.created_at)}</small>
                 </div>
+                {userData.suspension_date ? 
+                <div className="mb-3">
+                  <small><Badge color="failure">Suspension date: {formatDate(userData.suspension_date)}</Badge></small>
+                </div>:''
+}
                 <div className="mb-3">
                   <TextInput
                     id="user name"

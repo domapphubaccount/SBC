@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -24,9 +24,12 @@ export function EditUser({ openEdit, handleClose }) {
       email: userData?.email || "",
       status: userData?.status || "active",
       role_id: (userData.roles && userData?.roles[0]?.id) || "",
+      // account_type: userData.account_type || ""
     },
     validationSchema: Yup.object({
-      name: Yup.string().max(30, "Name shouldn't exceed 30 characters").required("Name is required"),
+      name: Yup.string()
+        .max(30, "Name shouldn't exceed 30 characters")
+        .required("Name is required"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
@@ -145,8 +148,27 @@ export function EditUser({ openEdit, handleClose }) {
                   )}
                 </div>
 
+                {/* <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="accept"
+                    onChange={(e) =>
+                      e.target.checked
+                        ? formik.setFieldValue("account_type", "test")
+                        : formik.setFieldValue("account_type", "")
+                    }
+                    defaultChecked={userData?.account_type === "test"}
+                  />
+                  <Label htmlFor="accept" className="flex">
+                    <span className="font-bold"> Test </span>&nbsp; account
+                    &nbsp;
+                    <a className="text-cyan-600 dark:text-cyan-500">
+                      with suspension date
+                    </a>
+                  </Label>
+                </div> */}
+
                 <div className="w-full">
-                  <Button type="submit" >Save Changes</Button>
+                  <Button type="submit">Save Changes</Button>
                 </div>
               </>
             ) : (

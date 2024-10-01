@@ -23,13 +23,13 @@ export function EditReviewer({ openEdit, handleClose }) {
   const formik = useFormik({
     initialValues: {
       chat_user_dislike_id: reviewData?.chat_user_dislike?.id || "",
-      comment_reviewer: reviewData?.comment_reviewr || "",
-      comment_super_reviewer: reviewData?.comment_super_reviewr || "",
+      comment_reviewr: reviewData?.comment_reviewr || "",
+      comment_super_reviewr: reviewData?.comment_super_reviewr || "",
       status: reviewData?.status || "accept", // Default to "accept" if undefined
     },
     validationSchema: Yup.object({
-      // comment_reviewer: Yup.string().required("Reviewer comment is required"),
-      // comment_super_reviewer: Yup.string().required("Super reviewer comment is required"),
+      comment_reviewr: Yup.string().required("Reviewer comment is required"),
+      comment_super_reviewr: Yup.string().required("Super reviewer comment is required"),
       status: Yup.string()
         .oneOf(statusOptions, "Invalid status")
         .required("Status is required"),
@@ -53,8 +53,8 @@ export function EditReviewer({ openEdit, handleClose }) {
       if (reviewData) {
         formik.setValues({
           chat_user_dislike_id: reviewData?.chat_user_dislike?.id || "",
-          comment_reviewer:  null, //reviewData?.comment_reviewr || ""
-          comment_super_reviewer: reviewData?.comment_super_reviewr || "",
+          comment_reviewr: reviewData?.comment_reviewr || "",
+          comment_super_reviewr: reviewData?.comment_super_reviewr || "",
           status: reviewData?.status || "accept",
         });
       }
@@ -78,20 +78,20 @@ export function EditReviewer({ openEdit, handleClose }) {
                   </div>
                   <Textarea
                     rows={4}
-                    id="comment_reviewer"
-                    name="comment_reviewer"
+                    id="comment_reviewr"
+                    name="comment_reviewr"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.comment_reviewer}
+                    value={formik.values.comment_reviewr}
                     placeholder="Enter reviewer comment"
                     style={{ opacity: 1 }}
                     defaultValue={reviewData?.comment_reviewr}
-                    disabled={profileData.roles && profileData.roles[0].id != 3}
+                    // disabled={profileData.roles && profileData.roles[0].id != 3}
                   />
-                  {formik.touched.comment_reviewer &&
-                  formik.errors.comment_reviewer ? (
+                  {formik.touched.comment_reviewr &&
+                  formik.errors.comment_reviewr ? (
                     <div className="text-red-600">
-                      {formik.errors.comment_reviewer}
+                      {formik.errors.comment_reviewr}
                     </div>
                   ) : null}
                 </div>
@@ -102,19 +102,19 @@ export function EditReviewer({ openEdit, handleClose }) {
                   </div>
                   <Textarea
                     rows={4}
-                    id="comment_super_reviewer"
-                    name="comment_super_reviewer"
+                    id="comment_super_reviewr"
+                    name="comment_super_reviewr"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.comment_super_reviewer}
+                    value={formik.values.comment_super_reviewr}
                     defaultValue={reviewData?.comment_super_reviewr}
                     placeholder="Enter super reviewer comment"
                     style={{ opacity: 1 }}
                   />
-                  {formik.touched.comment_super_reviewer &&
-                  formik.errors.comment_super_reviewer ? (
+                  {formik.touched.comment_super_reviewr &&
+                  formik.errors.comment_super_reviewr ? (
                     <div className="text-red-600">
-                      {formik.errors.comment_super_reviewer}
+                      {formik.errors.comment_super_reviewr}
                     </div>
                   ) : null}
                 </div>

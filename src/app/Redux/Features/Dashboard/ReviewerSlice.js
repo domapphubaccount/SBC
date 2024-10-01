@@ -9,9 +9,9 @@ import { logout } from "../Auth/AuthSlice";
 export const getReviewsAction = createAsyncThunk(
   "reviews/getReviewsAction",
   async (arg, { rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/reviews`, {
+      const response = await axios.get(`${config.api}admin/reviews?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -92,12 +92,12 @@ export const deleteReviewsAction = createAsyncThunk(
 export const addReviewAction = createAsyncThunk(
   "reviews/addReviewAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, chat_user_dislike_id , comment_reviewer , comment_super_reviewer , super_reviewr_id , status } = arg;
+    const { token, chat_user_dislike_id , comment_reviewr , comment_super_reviewr , super_reviewr_id , status } = arg;
 
     try {
       const response = await axios.post(
-        `${config.api}admin/reviews`,
-        { chat_user_dislike_id , comment_reviewer , comment_super_reviewer , super_reviewr_id , status },
+        `${config.api}admin/create/reviews`,
+        { chat_user_dislike_id , comment_reviewr , comment_super_reviewr , super_reviewr_id , status },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -121,25 +121,26 @@ export const addReviewAction = createAsyncThunk(
 );
 // end add role
 
-// start edit role
+// start edit review
 export const updateReviewAction = createAsyncThunk(
-  "reviews/updateCommentAction",
+  "reviews/updateReviewAction",
   async (arg, { dispatch, rejectWithValue }) => {
     const {
       token,
       id,
       chat_user_dislike_id,
-      comment_reviewer,
-      comment_super_reviewer,
+      comment_reviewr,
+      comment_super_reviewr,
       status,
     } = arg;
+
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${config.api}admin/reviews/${id}`,
         {
           chat_user_dislike_id,
-          comment_reviewer,
-          comment_super_reviewer,
+          comment_reviewr,
+          comment_super_reviewr,
           status,
         },
         {
@@ -164,6 +165,42 @@ export const updateReviewAction = createAsyncThunk(
   }
 );
 // end edit user role
+
+// start train
+export const trainAction = createAsyncThunk(
+  "reviews/trainAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token , new_data } = arg;
+
+    try {
+      const response = await axios.get(`${config.api}admin/create/instruction`, 
+        {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        params: {
+          new_data: new_data
+        }
+         
+      // Use params for GET requests
+      });
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end train
+
 
 const initialState = {
   review: [],
@@ -252,19 +289,19 @@ export const ReviewSlice = createSlice({
       // end add role
 
       //start get comment by id
-      // .addCase(getCommentByIDAction.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = null;
-      // })
-      // .addCase(getCommentByIDAction.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.error = null;
-      //   state.comment = action.payload;
-      // })
-      // .addCase(getCommentByIDAction.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.error = action.payload.message;
-      // })
+      .addCase(trainAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(trainAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(trainAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.error;
+        // console.log(action.payload)
+      })
       // end get comment by id
 
       //start delete comment

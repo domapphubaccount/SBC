@@ -60,7 +60,7 @@ export function EditRole({ openEdit, handleClose }) {
 
   return (
     <>
-      <Modal show={openEdit} size="5xl" popup onClose={handleClose}>
+      <Modal show={openEdit} size="md" popup onClose={handleClose}>
       {ErrorMSG && (
           <div
             class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"

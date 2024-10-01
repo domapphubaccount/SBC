@@ -32,6 +32,9 @@ function Sections() {
   const openEdit = useSelector((state) => state.sectionsSlice.editModule);
   const loading = useSelector((state) => state.sectionsSlice.loading);
 
+  const [page , setPage] = useState(1)
+
+
   const handleOpenDelete = (id) => {
     dispatch(getSectionId({ id }));
     dispatch(deleteModule(true));
@@ -62,8 +65,8 @@ function Sections() {
   };
 
   useEffect(() => {
-    dispatch(getSectionsAction({ token }));
-  }, [updates]);
+    dispatch(getSectionsAction({ token , page }));
+  }, [updates , page]);
 
   // Step 1: State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -282,7 +285,7 @@ function Sections() {
             </table>
           </div>
         </div>
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
 
       {openDelete && (

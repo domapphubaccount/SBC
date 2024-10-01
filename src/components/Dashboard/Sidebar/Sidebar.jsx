@@ -378,7 +378,7 @@ export function Sidebar({ children, handlePage }) {
                     </svg>
 
                     <small className="text-center text-xs font-medium">
-                      User's Comments
+                      User's Dislikes
                     </small>
                   </a>
                 </Tooltip>

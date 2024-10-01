@@ -23,9 +23,12 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
       password: "",
       password_confirmation: "",
       role_id: "",
+      account_type: ""
     },
     validationSchema: Yup.object({
-      name: Yup.string().max(30, "Shouldn't exceed 30").required("Name is required"),
+      name: Yup.string()
+        .max(30, "Shouldn't exceed 30")
+        .required("Name is required"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
@@ -112,7 +115,10 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
               </div>
 
               <div>
-                <Label htmlFor="password_confirmation" value="Confirm Password" />
+                <Label
+                  htmlFor="password_confirmation"
+                  value="Confirm Password"
+                />
                 <TextInput
                   id="password_confirmation"
                   name="password_confirmation"
@@ -152,6 +158,15 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                 {formik.touched.role_id && formik.errors.role_id ? (
                   <div className="text-red-600">{formik.errors.role_id}</div>
                 ) : null}
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="accept" onChange={(e)=> e.target.checked ? formik.setFieldValue("account_type","test"): formik.setFieldValue("account_type","") } />
+                <Label htmlFor="accept" className="flex">
+                  <span className="font-bold"> Test </span>&nbsp; account &nbsp;
+                  <a className="text-cyan-600 dark:text-cyan-500">
+                    with suspension date
+                  </a>
+                </Label>
               </div>
 
               <div className="w-full">

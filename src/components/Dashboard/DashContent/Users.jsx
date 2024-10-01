@@ -5,7 +5,7 @@ import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
 import { WarnUser } from "../DashModules/User/Warn";
-import { Button, Tooltip } from "flowbite-react";
+import { Button, ToggleSwitch, Tooltip } from "flowbite-react";
 import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,6 +29,7 @@ function Users({}) {
   const usersData = useSelector((state) => state.usersSlice.users);
   const updateUsersData = useSelector((state) => state.usersSlice.updates);
   const loading = useSelector((state) => state.usersSlice.loading);
+  const [page , setPage] = useState(1)
 
   const [openWarn, setOpenWarn] = useState(false);
 
@@ -37,6 +38,7 @@ function Users({}) {
   const openDelete = useSelector((state) => state.usersSlice.deleteModule);
   const openView = useSelector((state) => state.usersSlice.viewModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
+  const [switch1, setSwitch1] = useState(false);
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -82,8 +84,8 @@ function Users({}) {
   };
 
   useEffect(() => {
-    dispatch(getUsersAction({ token }));
-  }, [updateUsersData]);
+    dispatch(getUsersAction({ token , page }));
+  }, [updateUsersData,page]);
 
   useEffect(() => {
     dispatch(getRolesAction({ token }));
@@ -99,12 +101,16 @@ function Users({}) {
 
   // Step 3: Filter the rows based on the search term
   const filteredData = usersData.filter((item) => {
-    return (
+    const matchesSearchTerm =
       item.name.toLowerCase().includes(searchTerm) ||
       item.email.toLowerCase().includes(searchTerm) ||
-      item.status.toLowerCase().includes(searchTerm)
-    );
+      item.status.toLowerCase().includes(searchTerm);
+  
+    const matchesSuspensionDate = switch1 ? item.suspension_date : true;
+  
+    return matchesSearchTerm && matchesSuspensionDate;
   });
+  
 
   return (
     <>
@@ -167,7 +173,8 @@ function Users({}) {
               <label for="table-search" className="sr-only">
                 Search
               </label>
-              <div className="relative mt-1">
+              <div className="flex justify-between">
+              <div className="relative ">
                 <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg
                     className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -192,6 +199,10 @@ function Users({}) {
                   placeholder="Search for User"
                   onChange={handleSearchChange} // Handle search input change
                 />
+              </div>
+              <div className="m-2">
+              <ToggleSwitch checked={switch1} label="Test accounts" onChange={setSwitch1} />
+              </div>
               </div>
             </div>
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -222,7 +233,7 @@ function Users({}) {
                   filteredData.map((item, index) => (
                     <tr
                       key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      className={`${item.suspension_date ? 'bg-red-100	' : 'bg-white'} border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}
                     >
                       <th
                         scope="row"
@@ -378,7 +389,7 @@ function Users({}) {
             </table>
           </div>
         </div>
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
 
       {openDelete && (

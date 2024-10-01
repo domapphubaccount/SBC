@@ -14,13 +14,15 @@ function Users_chat() {
   const masterUsersChat = useSelector((state) => state.usersChatSlice.data);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dispatch = useDispatch();
-  const navigate = useRouter()
+  const navigate = useRouter();
+  const [page , setPage] = useState(1)
+
 
   console.log(masterUsersChat);
 
   useEffect(() => {
-    dispatch(getUsersChatAction({ token }));
-  }, [getUsersChatAction]);
+    dispatch(getUsersChatAction({ token , page }));
+  }, [getUsersChatAction , page]);
 
   // Step 1: State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -214,7 +216,7 @@ function Users_chat() {
             </table>
           </div>
         </div>
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
     </>
   );

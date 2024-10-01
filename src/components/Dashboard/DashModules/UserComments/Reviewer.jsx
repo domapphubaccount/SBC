@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { addReviewAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 import { useEffect } from "react";
+import { updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 
 export function Reviewer({ openReviewer, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -22,29 +23,48 @@ export function Reviewer({ openReviewer, handleClose }) {
     },
     validationSchema: Yup.object({
       reviewerResponse: Yup.string().required("Reviewer response is required"),
-      status: "",
+      status: Yup.string().required("Status is required"),
     }),
+    
     onSubmit: (values) => {
-      dispatch(
-        addReviewAction({
+      if (commentData?.review_data?.reviewer.id == profileData.id) {
+        console.log({
           token,
-          id: commentData.id,
-          comment: values.reviewerResponse,
+          id: commentData.review_data.id,
+          chat_user_dislike_id: commentData.review_data.chat_user_dislike.id,
+
+          comment_reviewr: values.reviewerResponse,
+
           status: values.status,
-        })
-      );
+          comment_super_reviewr: null,
+        });
+        dispatch(
+          updateReviewAction({
+            token,
+            id: commentData.review_data.id,
+            chat_user_dislike_id: commentData.review_data.chat_user_dislike.id,
+
+            comment_reviewr: values.reviewerResponse,
+
+            status: values.status,
+            comment_super_reviewr: null,
+          })
+        );
+      } else {
+        dispatch(
+          addReviewAction({
+            token,
+            id: commentData.id,
+            comment: values.reviewerResponse,
+            status: values.status,
+          })
+        );
+      }
       handleClose();
     },
   });
-  // Update formik values when userData changes
-  useEffect(() => {
-    if (commentData) {
-      formik.setValues({
-        reviewerResponse: commentData?.review_data?.comment_reviewr || "",
-      });
-    }
-  }, [commentData]);
 
+  
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -56,6 +76,26 @@ export function Reviewer({ openReviewer, handleClose }) {
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
   const statusOptions = ["accept", "reject", "in_progress"];
+
+  useEffect(() => {
+    if (commentData) {
+      const newReviewerResponse = commentData.review_data?.comment_reviewr || "";
+      const newStatus = commentData.status || "";
+  
+      // Only update if the values are different
+      if (
+        formik.values.reviewerResponse !== newReviewerResponse ||
+        formik.values.status !== newStatus
+      ) {
+        formik.setValues({
+          reviewerResponse: newReviewerResponse,
+          status: newStatus,
+        });
+      }
+    }
+  }, [commentData]); // Removed 'formik' from the dependency array
+  
+  
 
   return (
     <>
@@ -174,8 +214,11 @@ export function Reviewer({ openReviewer, handleClose }) {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.reviewerResponse}
-                        defaultValue={commentData.comment_reviewr}
-                        disabled={commentData?.review_data?.comment_reviewr}
+                        disabled={
+                          commentData?.review_data?.comment_reviewr &&
+                          commentData?.review_data?.reviewer.id !==
+                            profileData.id
+                        }
                       />
                       {formik.touched.reviewerResponse &&
                       formik.errors.reviewerResponse ? (
@@ -185,7 +228,8 @@ export function Reviewer({ openReviewer, handleClose }) {
                       ) : null}
                     </div>
 
-                    {commentData?.review_data?.comment_reviewr ? (
+                    {commentData?.review_data?.comment_reviewr &&
+                    commentData?.review_data?.reviewer.id !== profileData.id ? (
                       ""
                     ) : (
                       <div>
@@ -197,6 +241,7 @@ export function Reviewer({ openReviewer, handleClose }) {
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           value={formik.values.status}
+                          defaultValue={commentData.status}
                         >
                           <option value="">Select Status</option>
                           {statusOptions.map((item, index) => (
@@ -221,7 +266,11 @@ export function Reviewer({ openReviewer, handleClose }) {
                     <div className="w-full text-end">
                       <Button
                         type="submit"
-                        disabled={commentData?.review_data?.comment_reviewr}
+                        disabled={
+                          commentData?.review_data?.comment_reviewr &&
+                          commentData?.review_data?.reviewer.id !==
+                            profileData.id
+                        }
                       >
                         SUBMIT
                       </Button>

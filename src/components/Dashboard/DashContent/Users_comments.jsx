@@ -49,6 +49,8 @@ function Users_comments({}) {
     (state) => state.userCommentsSlice.reviewerModel
   );
   const openRole = useSelector((state) => state.userCommentsSlice.roleModule);
+  const [page , setPage] = useState(1)
+
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -94,8 +96,8 @@ function Users_comments({}) {
     dispatch(addModule(true));
   };
   useEffect(() => {
-    dispatch(getCommentsAction({ token }));
-  }, [updateUsersData]);
+    dispatch(getCommentsAction({ token , page }));
+  }, [updateUsersData , page]);
 
   // Step 1: State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -160,7 +162,7 @@ function Users_comments({}) {
                     />
                   </svg>
                   <span className="ms-1 text-sm font-medium text-white md:ms-2">
-                    Users Comments
+                    Users Dislikes
                   </span>
                 </div>
               </li>
@@ -168,7 +170,7 @@ function Users_comments({}) {
           </div>
           <div className="flex justify-between my-5">
             <div>
-              <h1 className="text-white text-4xl">USERS COMMENTS</h1>
+              <h1 className="text-white text-4xl">USERS DISLIKES</h1>
             </div>
             {/* <div>
               <Button color="blue" onClick={handleOpenAdd}>
@@ -217,9 +219,9 @@ function Users_comments({}) {
                   <th scope="col" className="px-6 py-3">
                     Comment
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  {/* <th scope="col" className="px-6 py-3">
                     Status
-                  </th>
+                  </th> */}
                   <th scope="col" className="px-6 py-3">
                     Comment by
                   </th>
@@ -289,7 +291,7 @@ function Users_comments({}) {
                         </div>
                       </th>
 
-                      <td className="px-6 py-4">
+                      {/* <td className="px-6 py-4">
                         {item.status === "accept" ? (
                           <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                             {item.status}
@@ -303,7 +305,7 @@ function Users_comments({}) {
                             {item.status}
                           </span>
                         )}
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4">{item.disliked_by.name}</td>
                       {/* <td className="px-6 py-4">{item.disliked_by.name}</td> */}
                       <td className="px-6 py-4">
@@ -375,7 +377,7 @@ function Users_comments({}) {
             </table>
           </div>
         </div>
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
 
       {openDelete && (

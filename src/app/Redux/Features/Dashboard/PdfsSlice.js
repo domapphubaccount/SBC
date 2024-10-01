@@ -9,9 +9,9 @@ import { logout } from "../Auth/AuthSlice";
 export const getPdfsAction = createAsyncThunk(
   "pdfs/getPdfsAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/all_files`, {
+      const response = await axios.get(`${config.api}admin/all_files?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

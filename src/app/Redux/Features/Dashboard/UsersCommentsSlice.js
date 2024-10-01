@@ -9,9 +9,9 @@ import { logout } from "../Auth/AuthSlice";
 export const getCommentsAction = createAsyncThunk(
   "comments/getCommentsAction",
   async (arg, { rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/chat-user-dislikes`, {
+      const response = await axios.get(`${config.api}admin/chat-user-dislikes?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -96,7 +96,7 @@ export const addReviewAction = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `${config.api}admin/reviews`,
+        `${config.api}admin/create/reviews`,
         { 
           chat_user_dislike_id: id,
           comment_reviewr: comment,

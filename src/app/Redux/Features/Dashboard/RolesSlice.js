@@ -9,9 +9,9 @@ import { logout } from "../Auth/AuthSlice";
 export const getRolesAction = createAsyncThunk(
   "roles/getRolesAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token } = arg;
+    const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/roles`, {
+      const response = await axios.get(`${config.api}admin/roles?page=${page}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

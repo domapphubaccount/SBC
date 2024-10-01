@@ -49,6 +49,9 @@ function Roles({}) {
   const openAdd = useSelector((state) => state.rolesSlice.addModule);
   const openView = useSelector((state) => state.rolesSlice.viewModule);
 
+  const [page , setPage] = useState(1)
+
+
   const permissionsModule = useSelector(
     (state) => state.rolesSlice.editPermissionsModule
   );
@@ -103,11 +106,12 @@ function Roles({}) {
   // edit open permissions
 
   useEffect(() => {
-    dispatch(getRolesAction({ token }));
+    dispatch(getRolesAction({ token , page}));
     dispatch(getPermissionsAction({ token }));
   }, [
     /* updates */
     updateRolesData,
+    page
   ]);
 
   // Step 1: State for search input
@@ -384,7 +388,7 @@ function Roles({}) {
             </table>
           </div>
         </div>
-        <PaginationPages />
+        <PaginationPages page={page} setPage={setPage} />
       </section>
 
       {openDelete && (
