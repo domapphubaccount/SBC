@@ -354,7 +354,9 @@ export function Sidebar({ children, handlePage }) {
             {profileData &&
               profileData.roles &&
               (profileData.roles[0].id == "2" ||
-                profileData.roles[0].id == "1") && (
+                profileData.roles[0].id == "1" ||
+              profileData.roles[0].id == "3"
+              ) && (
                 <Tooltip
                   content="User's Comments"
                   style="dark"
