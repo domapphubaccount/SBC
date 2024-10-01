@@ -40,7 +40,9 @@ function Pdfs({}) {
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
   const openAssign = useSelector(state => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
-  const [page , setPage] = useState(1)
+  const [page , setPage] = useState(1);
+  const total_pages = useSelector((state) => state.pdfsSlice.total_pages);
+
 
 
   const handleClose = () => {
@@ -355,7 +357,7 @@ function Pdfs({}) {
             </div>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
       </section>
 
       {openDelete && (

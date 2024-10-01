@@ -44,6 +44,7 @@ export function Sidebar({ children, handlePage }) {
           aside ? "translate-x-0" : "-translate-x-full"
         } sm:translate-x-0  pt-40 mt-4 pl-5`}
         aria-label="Sidebar"
+        style={{transform: "scale(0.9)"}}
       >
         {/* <div className="px-3 py-2 relative overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded border border-4	">
           <div
@@ -509,7 +510,7 @@ export function Sidebar({ children, handlePage }) {
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
-                <Tooltip content="Sections" style="dark" placement="right">
+                <Tooltip content="ٌRoles" style="dark" placement="right">
                   <a
                     href="#"
                     onClick={() => handlePage(6)}

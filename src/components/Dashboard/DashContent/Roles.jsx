@@ -39,19 +39,15 @@ function Roles({}) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const rolesData = useSelector((state) => state.rolesSlice.roles);
   const updateRolesData = useSelector((state) => state.rolesSlice.updates);
+  const total_pages = useSelector((state) => state.rolesSlice.total_pages);
   const [openWarn, setOpenWarn] = useState(false);
   const loading = useSelector((state) => state.rolesSlice.loading);
-
   const openEdit = useSelector((state) => state.rolesSlice.editModule);
   const openDelete = useSelector((state) => state.rolesSlice.deleteModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
-
   const openAdd = useSelector((state) => state.rolesSlice.addModule);
   const openView = useSelector((state) => state.rolesSlice.viewModule);
-
   const [page , setPage] = useState(1)
-
-
   const permissionsModule = useSelector(
     (state) => state.rolesSlice.editPermissionsModule
   );
@@ -388,7 +384,7 @@ function Roles({}) {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} setPage={setPage} total_pages={total_pages} />
       </section>
 
       {openDelete && (

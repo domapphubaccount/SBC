@@ -15,11 +15,9 @@ function Users_chat() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dispatch = useDispatch();
   const navigate = useRouter();
-  const [page , setPage] = useState(1)
-
-
-  console.log(masterUsersChat);
-
+  const [page , setPage] = useState(1);
+  const total_pages = useSelector((state) => state.usersChatSlice.total_pages);
+  
   useEffect(() => {
     dispatch(getUsersChatAction({ token , page }));
   }, [getUsersChatAction , page]);
@@ -45,6 +43,7 @@ function Users_chat() {
     navigate.push('/')
 
   }
+
   return (
     <>
       <section>
@@ -216,7 +215,7 @@ function Users_chat() {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
       </section>
     </>
   );

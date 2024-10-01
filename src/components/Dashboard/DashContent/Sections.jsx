@@ -31,6 +31,8 @@ function Sections() {
   const openDelete = useSelector((state) => state.sectionsSlice.deleteModule);
   const openEdit = useSelector((state) => state.sectionsSlice.editModule);
   const loading = useSelector((state) => state.sectionsSlice.loading);
+  const total_pages = useSelector((state) => state.sectionsSlice.total_pages);
+
 
   const [page , setPage] = useState(1)
 
@@ -285,7 +287,7 @@ function Sections() {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
       </section>
 
       {openDelete && (

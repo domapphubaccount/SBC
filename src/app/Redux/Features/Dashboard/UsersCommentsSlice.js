@@ -8,7 +8,7 @@ import { logout } from "../Auth/AuthSlice";
 // start get comments
 export const getCommentsAction = createAsyncThunk(
   "comments/getCommentsAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token , page } = arg;
     try {
       const response = await axios.get(`${config.api}admin/chat-user-dislikes?page=${page}`, {
@@ -18,9 +18,11 @@ export const getCommentsAction = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-console.log(response.data)
       if (response.data.error) {
         return new Error(response.data.error);
+      }
+      if(response.data?.meta?.total){
+        dispatch(handlePages(response.data?.meta?.total))
       }
       return response.data.data;
     } catch (error) {
@@ -172,6 +174,9 @@ const initialState = {
 
   editModule: false,
   roleModule: false,
+
+  total_pages: 1,
+
 };
 
 export const userCommentsSlice = createSlice({
@@ -195,6 +200,9 @@ export const userCommentsSlice = createSlice({
     },
     reviewerModel: (state, action) => {
       state.reviewerModel = action.payload
+    },
+    handlePages: (state , action) => {
+      state.total_pages = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -286,7 +294,7 @@ export const userCommentsSlice = createSlice({
     // end update user comment
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, reviewerModel } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, reviewerModel, handlePages } =
 userCommentsSlice.actions;
 
 export default userCommentsSlice.reducer;

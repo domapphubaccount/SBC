@@ -155,6 +155,10 @@ export const updateReviewAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      if(response.data?.meta?.total){
+        dispatch(handlePages(response.data?.meta?.total))
+      }
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -217,6 +221,8 @@ const initialState = {
 
   editModule: false,
   roleModule: false,
+
+  total_pages:1
 };
 
 export const ReviewSlice = createSlice({
@@ -250,6 +256,9 @@ export const ReviewSlice = createSlice({
     reviewerModel: (state, action) => {
       state.reviewerModel = action.payload;
     },
+    handlePages: (state , action) => {
+      state.total_pages = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -348,7 +357,8 @@ export const {
   deleteModule,
   editModule,
   reviewerModel,
-  trainModule
+  trainModule,
+  handlePages
 } = ReviewSlice.actions;
 
 export default ReviewSlice.reducer;

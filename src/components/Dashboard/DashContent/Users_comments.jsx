@@ -49,8 +49,8 @@ function Users_comments({}) {
     (state) => state.userCommentsSlice.reviewerModel
   );
   const openRole = useSelector((state) => state.userCommentsSlice.roleModule);
-  const [page , setPage] = useState(1)
-
+  const [page , setPage] = useState(1);
+  const total_pages = useSelector((state) => state.userCommentsSlice.total_pages);
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -377,7 +377,7 @@ function Users_comments({}) {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
       </section>
 
       {openDelete && (

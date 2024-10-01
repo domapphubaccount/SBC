@@ -24,6 +24,9 @@ export const getUsersAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      if(response.data?.meta?.total){
+        dispatch(handlePages(response.data?.meta?.total))
+      }
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -220,6 +223,8 @@ const initialState = {
   viewModule: false,
   roleModule: false,
   addModule: false,
+
+  total_pages: 1,
 };
 
 export const usersSlice = createSlice({
@@ -244,6 +249,9 @@ export const usersSlice = createSlice({
     roleModule: (state, action) => {
       state.roleModule = action.payload;
     },
+    handlePages: (state , action) => {
+      state.total_pages = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -358,6 +366,7 @@ export const {
   viewModule,
   roleModule,
   addModule,
+  handlePages
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

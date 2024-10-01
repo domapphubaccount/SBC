@@ -23,7 +23,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
       password: "",
       password_confirmation: "",
       role_id: "",
-      account_type: ""
+      account_type: "user"
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -160,7 +160,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                 ) : null}
               </div>
               <div className="flex items-center gap-2">
-                <Checkbox id="accept" onChange={(e)=> e.target.checked ? formik.setFieldValue("account_type","test"): formik.setFieldValue("account_type","") } />
+                <Checkbox id="accept" onChange={(e)=> e.target.checked ? formik.setFieldValue("account_type","test"): formik.setFieldValue("account_type","user") } />
                 <Label htmlFor="accept" className="flex">
                   <span className="font-bold"> Test </span>&nbsp; account &nbsp;
                   <a className="text-cyan-600 dark:text-cyan-500">

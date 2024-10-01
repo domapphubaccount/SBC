@@ -7,7 +7,7 @@ import { config } from "@/config/config";
 // start get dashbaord
 export const getUsersChatAction = createAsyncThunk(
   "users-chat/getUsersChatAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token , page } = arg;
     
     try {
@@ -22,6 +22,9 @@ export const getUsersChatAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      if(response.data?.meta?.total){
+        dispatch(handlePages(response.data?.meta?.total))
+      }
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -34,6 +37,7 @@ const initialState = {
   data: null,
   values: null,
   updates: false,
+  total_pages: 1
 };
 
 export const usersChatSlice = createSlice({
@@ -43,6 +47,9 @@ export const usersChatSlice = createSlice({
     updateAction: (state, action) => {
       state.updates = !state.updates;
     },
+    handlePages: (state , action) => {
+      state.total_pages = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -62,6 +69,6 @@ export const usersChatSlice = createSlice({
     // end login
   },
 });
-export const { updateAction } = usersChatSlice.actions;
+export const { updateAction , handlePages } = usersChatSlice.actions;
 
 export default usersChatSlice.reducer;

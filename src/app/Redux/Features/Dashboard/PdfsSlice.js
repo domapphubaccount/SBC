@@ -22,6 +22,10 @@ export const getPdfsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      if(response.data?.meta?.total){
+        dispatch(handlePages(response.data?.meta?.total))
+      }
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
@@ -201,6 +205,7 @@ const initialState = {
 
   editModule: false,
   roleModule: false,
+  total_pages: 1,
   error: null
 };
 
@@ -225,6 +230,9 @@ export const pdfsSlice = createSlice({
     },
     assignModule: (state , action)=>{
       state.assignModule = action.payload;
+    },
+    handlePages: (state , action) => {
+      state.total_pages = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -333,7 +341,7 @@ export const pdfsSlice = createSlice({
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError, assignModule } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError, assignModule, handlePages } =
   pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

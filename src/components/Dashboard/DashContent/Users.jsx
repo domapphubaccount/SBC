@@ -39,6 +39,7 @@ function Users({}) {
   const openView = useSelector((state) => state.usersSlice.viewModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
   const [switch1, setSwitch1] = useState(false);
+  const total_pages = useSelector((state) => state.usersSlice.total_pages);
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -389,7 +390,7 @@ function Users({}) {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
       </section>
 
       {openDelete && (

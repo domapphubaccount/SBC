@@ -44,6 +44,8 @@ function ReviewerAdmin({}) {
   const openReviewer = useSelector((state) => state.ReviewSlice.reviewerModel);
   const openRole = useSelector((state) => state.ReviewSlice.roleModule);
   const loading = useSelector((state) => state.ReviewSlice.loading);
+  const total_pages = useSelector((state) => state.ReviewSlice.total_pages);
+
 
   const [page, setPage] = useState(1);
 
@@ -55,9 +57,6 @@ function ReviewerAdmin({}) {
     dispatch(viewModule({ open: false, review: "" }));
     dispatch(trainModule({ open: false, review: "" }));
     dispatch(addModule(false));
-
-    // dispatch(roleModule(false));
-    // dispatch(reviewerModel(false));
   };
   // start open delete
   const handleOpenDelete = (id) => {
@@ -448,7 +447,7 @@ function ReviewerAdmin({}) {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} />
+        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
       </section>
 
       {openDelete && (

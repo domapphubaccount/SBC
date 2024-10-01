@@ -23,6 +23,9 @@ export const getSectionsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      if(response.data?.meta?.total){
+        dispatch(handlePages(response.data?.meta?.total))
+      }
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -161,6 +164,8 @@ const initialState = {
   editModule: false,
 
   viewModule: false,
+
+  total_pages: 1,
 };
 
 export const sectionsSlice = createSlice({
@@ -187,6 +192,9 @@ export const sectionsSlice = createSlice({
     },
     removeError: (state)=>{
       state.error = null
+    },
+    handlePages: (state , action) => {
+      state.total_pages = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -261,7 +269,7 @@ export const sectionsSlice = createSlice({
   },
 });
 
-export const { editModule, deleteModule, viewModule, addModule, getSectionId, removeError } =
+export const { editModule, deleteModule, viewModule, addModule, getSectionId, removeError , handlePages } =
   sectionsSlice.actions;
 
 export default sectionsSlice.reducer;
