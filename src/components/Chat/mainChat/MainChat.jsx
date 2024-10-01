@@ -207,7 +207,7 @@ function MainChat({ elementWidth, windowWidth }) {
   };
   const handleStartNewChat = () => {
     if(pathName.trim().slice(0, 9) == "/sharable"){
-      navigate.push('/')
+      navigate.push('/signIn')
     }else{
     dispatch(chat_out());
     dispatch(loading_chat(true));
