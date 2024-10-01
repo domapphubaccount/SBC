@@ -30,6 +30,7 @@ import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { AddReview } from "../DashModules/Reviewer/Add";
 import { Train } from "../DashModules/Reviewer/Train";
 import { PaginationPages } from "../Pagination/Pagination";
+import { useSnackbar } from "notistack";
 
 function ReviewerAdmin({}) {
   const dispatch = useDispatch();
@@ -45,7 +46,14 @@ function ReviewerAdmin({}) {
   const openRole = useSelector((state) => state.ReviewSlice.roleModule);
   const loading = useSelector((state) => state.ReviewSlice.loading);
   const total_pages = useSelector((state) => state.ReviewSlice.total_pages);
+  const { enqueueSnackbar } = useSnackbar();
+  const action = useSelector((state) => state.ReviewSlice.action);
 
+  useEffect(() => {
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [action]);
 
   const [page, setPage] = useState(1);
 
@@ -296,7 +304,7 @@ function ReviewerAdmin({}) {
                               placement="bottom"
                             >
                               <div className="hover:text-sky-700 cursor-pointer">
-                                {item.chat_user_dislike?.comment.length > 12
+                                {item.chat_user_dislike?.comment?.length > 12
                                   ? item.chat_user_dislike?.comment.slice(
                                       0,
                                       12

@@ -23,8 +23,8 @@ export const getSectionsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.meta?.total){
-        dispatch(handlePages(response.data?.meta?.total))
+      if(response.data?.meta?.last_page){
+        dispatch(handlePages(response.data?.meta?.last_page))
       }
       return response.data.data;
     } catch (error) {
@@ -59,16 +59,19 @@ export const addSectionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if (file_path && response.data?.data?.id) {
-        dispatch(
-          addpdffileAction({
-            name: fileName,
-            token,
-            section_id: response.data?.data?.id,
-            file_path,
-          })
-        );
-      }
+      // if (file_path && response.data?.data?.id) {
+      //   dispatch(
+      //     addpdffileAction({
+      //       name: fileName,
+      //       token,
+      //       section_id: response.data?.data?.id,
+      //       file_path,
+      //     })
+      //   );
+      // }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -95,6 +98,10 @@ export const deleteSectionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -137,6 +144,11 @@ export const editSectionAction = createAsyncThunk(
           })
         );
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -166,6 +178,7 @@ const initialState = {
   viewModule: false,
 
   total_pages: 1,
+  action: false
 };
 
 export const sectionsSlice = createSlice({
@@ -195,6 +208,9 @@ export const sectionsSlice = createSlice({
     },
     handlePages: (state , action) => {
       state.total_pages = action.payload
+    },
+    handleAction: (state , action) => {
+      state.action = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -269,7 +285,7 @@ export const sectionsSlice = createSlice({
   },
 });
 
-export const { editModule, deleteModule, viewModule, addModule, getSectionId, removeError , handlePages } =
+export const { editModule, deleteModule, viewModule, addModule, getSectionId, removeError , handlePages , handleAction } =
   sectionsSlice.actions;
 
 export default sectionsSlice.reducer;

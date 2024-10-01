@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { assignPermissionAction, getRolesAction, updateRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
+import { assignPermissionAction,updatPermissionAction, getRolesAction, updateRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import Select from "react-select";
 import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 
@@ -29,9 +29,8 @@ export function RolesPermissions({ openRole, handleClose }) {
       permissions: Yup.array().of(Yup.string()).required("At least one permission is required"),
     }),
     onSubmit: (values) => {
-        // console.log('submited - values' ,{ ...values, id:roleData.id})
       dispatch(
-        assignPermissionAction({
+        updatPermissionAction({
           token,
           id: roleData.id,
           permissions: values.permissions, // This should be sent as the array of permission IDs

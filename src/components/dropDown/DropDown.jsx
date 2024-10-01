@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { chat_out } from "@/app/Redux/Features/Chat/ChatSlice";
 import { logoutAction } from "@/app/Redux/Features/Auth/AuthSlice";
 import { getProfileAction } from "@/app/Redux/Features/Profile/ProfileSlice";
+import { useSnackbar } from "notistack";
 
 function DropDown() {
   const [dropDownToggle, setDropDownToggle] = useState(false);
@@ -15,11 +16,10 @@ function DropDown() {
   const profileData = useSelector((state) => state.profileSlice.profile);
   const pathname = usePathname();
 
-  console.log(pathname.slice(0,9))
-
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));
   }, []);
+
   const handleDropDown = () => {
     setDropDownToggle(!dropDownToggle);
   };

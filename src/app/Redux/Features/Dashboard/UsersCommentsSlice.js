@@ -79,6 +79,11 @@ export const deleteCommentAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+      
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
@@ -116,6 +121,10 @@ export const addReviewAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
@@ -175,6 +184,8 @@ const initialState = {
   editModule: false,
   roleModule: false,
 
+  action: false,
+
   total_pages: 1,
 
 };
@@ -203,6 +214,9 @@ export const userCommentsSlice = createSlice({
     },
     handlePages: (state , action) => {
       state.total_pages = action.payload;
+    },
+    handleAction: (state , action) => {
+      state.action = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -294,7 +308,7 @@ export const userCommentsSlice = createSlice({
     // end update user comment
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, reviewerModel, handlePages } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, reviewerModel, handlePages, handleAction } =
 userCommentsSlice.actions;
 
 export default userCommentsSlice.reducer;

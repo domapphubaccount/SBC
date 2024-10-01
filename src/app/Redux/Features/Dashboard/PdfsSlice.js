@@ -23,8 +23,8 @@ export const getPdfsAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      if(response.data?.meta?.total){
-        dispatch(handlePages(response.data?.meta?.total))
+      if(response.data?.meta?.last_page){
+        dispatch(handlePages(response.data?.meta?.last_page))
       }
       return response.data.data;
     } catch (error) {
@@ -66,7 +66,7 @@ export const getRoleByIDAction = createAsyncThunk(
 // start delete pdf
 export const deletePdfAction = createAsyncThunk(
   "pdfs/deletePdfAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
@@ -81,6 +81,10 @@ export const deletePdfAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -93,7 +97,7 @@ export const deletePdfAction = createAsyncThunk(
 // Start add PDF file
 export const addpdffileAction = createAsyncThunk(
   "pdfs/addpdffileAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, name, section_id, file_path } = arg;
 
     // Create FormData object to handle file upload
@@ -120,6 +124,9 @@ export const addpdffileAction = createAsyncThunk(
         return rejectWithValue(new Error(response.data.error));
       }
 
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -130,7 +137,7 @@ export const addpdffileAction = createAsyncThunk(
 // Start Assign user to PDF file
 export const assignUserToPdfAction = createAsyncThunk(
   "pdfs/assignUserToPdfAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token, file_id, user_ids } = arg;
 
     try {
@@ -151,6 +158,10 @@ export const assignUserToPdfAction = createAsyncThunk(
       if (response.data.error) {
         return rejectWithValue(new Error(response.data.error));
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
 
       return response.data.data;
     } catch (error) {
@@ -206,7 +217,8 @@ const initialState = {
   editModule: false,
   roleModule: false,
   total_pages: 1,
-  error: null
+  error: null,
+  action: false
 };
 
 export const pdfsSlice = createSlice({
@@ -233,6 +245,9 @@ export const pdfsSlice = createSlice({
     },
     handlePages: (state , action) => {
       state.total_pages = action.payload
+    },
+    handleAction: (state , action) => {
+      state.action = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -341,7 +356,7 @@ export const pdfsSlice = createSlice({
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError, assignModule, handlePages } =
+export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError, assignModule, handlePages , handleAction } =
   pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

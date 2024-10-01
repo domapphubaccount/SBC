@@ -24,10 +24,10 @@ export const getUsersAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.meta?.total){
-        dispatch(handlePages(response.data?.meta?.total))
+      if(response.data?.data.total_pages){
+        dispatch(handlePages(response.data?.data.total_pages))
       }
-      return response.data.data;
+      return response.data.data[0].data;
     } catch (error) {
       if (error?.response?.status === 401) {
         dispatch(logout());
@@ -90,9 +90,9 @@ export const editUserAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      // if(role && response.data?.data?.id){
-      //   dispatch(updateRoleAction({ token, id: response.data?.data?.id, role }));
-      // }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -136,9 +136,9 @@ export const addUserAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      // if(role && response.data?.data?.id){
-      //   dispatch(updateRoleAction({ token, id: response.data?.data?.id, role }));
-      // }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -168,6 +168,10 @@ export const deleteUserAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -224,6 +228,8 @@ const initialState = {
   roleModule: false,
   addModule: false,
 
+  action: false,
+
   total_pages: 1,
 };
 
@@ -251,6 +257,9 @@ export const usersSlice = createSlice({
     },
     handlePages: (state , action) => {
       state.total_pages = action.payload
+    },
+    handleAction: (state , action) => {
+      state.action = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -366,7 +375,8 @@ export const {
   viewModule,
   roleModule,
   addModule,
-  handlePages
+  handlePages,
+  handleAction
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

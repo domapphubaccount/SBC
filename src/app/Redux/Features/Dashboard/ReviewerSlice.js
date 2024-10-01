@@ -8,7 +8,7 @@ import { logout } from "../Auth/AuthSlice";
 // start get reviews
 export const getReviewsAction = createAsyncThunk(
   "reviews/getReviewsAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { dispatch , rejectWithValue }) => {
     const { token , page } = arg;
     try {
       const response = await axios.get(`${config.api}admin/reviews?page=${page}`, {
@@ -21,6 +21,9 @@ export const getReviewsAction = createAsyncThunk(
 
       if (response.data.error) {
         return new Error(response.data.error);
+      }
+        if(response.data?.last_page){
+        dispatch(handlePages(response.data?.last_page))
       }
       return response.data.data;
     } catch (error) {
@@ -77,6 +80,10 @@ export const deleteReviewsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -110,6 +117,11 @@ export const addReviewAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -159,6 +171,10 @@ export const updateReviewAction = createAsyncThunk(
       if(response.data?.meta?.total){
         dispatch(handlePages(response.data?.meta?.total))
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -169,6 +185,8 @@ export const updateReviewAction = createAsyncThunk(
   }
 );
 // end edit user role
+
+
 
 // start train
 export const trainAction = createAsyncThunk(
@@ -194,6 +212,9 @@ export const trainAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -221,6 +242,7 @@ const initialState = {
 
   editModule: false,
   roleModule: false,
+  action: false,
 
   total_pages:1
 };
@@ -258,8 +280,12 @@ export const ReviewSlice = createSlice({
     },
     handlePages: (state , action) => {
       state.total_pages = action.payload
+    },
+    handleAction: (state,action)=>{
+      state.action = action.payload
     }
   },
+  
   extraReducers: (builder) => {
     builder
       //start get reviews
@@ -305,6 +331,8 @@ export const ReviewSlice = createSlice({
       .addCase(trainAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+        state.trainModule = false;
+        state.updates = !state.updates;
       })
       .addCase(trainAction.rejected, (state, action) => {
         state.loading = false;
@@ -358,7 +386,8 @@ export const {
   editModule,
   reviewerModel,
   trainModule,
-  handlePages
+  handlePages,
+  handleAction
 } = ReviewSlice.actions;
 
 export default ReviewSlice.reducer;

@@ -19,6 +19,7 @@ import { DeleteSections } from "../DashModules/Sections/DeleteSections";
 import { EditSections } from "../DashModules/Sections/EditSections";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
+import { useSnackbar } from "notistack";
 
 function Sections() {
   const dispatch = useDispatch();
@@ -32,6 +33,14 @@ function Sections() {
   const openEdit = useSelector((state) => state.sectionsSlice.editModule);
   const loading = useSelector((state) => state.sectionsSlice.loading);
   const total_pages = useSelector((state) => state.sectionsSlice.total_pages);
+  const { enqueueSnackbar } = useSnackbar();
+  const action = useSelector((state) => state.sectionsSlice.action);
+
+  useEffect(() => {
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [action]);
 
 
   const [page , setPage] = useState(1)

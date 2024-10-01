@@ -28,6 +28,7 @@ import {
 import { Reviewer } from "../DashModules/UserComments/Reviewer";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
+import { useSnackbar } from "notistack";
 
 function Users_comments({}) {
   const dispatch = useDispatch();
@@ -51,6 +52,14 @@ function Users_comments({}) {
   const openRole = useSelector((state) => state.userCommentsSlice.roleModule);
   const [page , setPage] = useState(1);
   const total_pages = useSelector((state) => state.userCommentsSlice.total_pages);
+  const { enqueueSnackbar } = useSnackbar();
+  const action = useSelector((state) => state.userCommentsSlice.action);
+
+  useEffect(() => {
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [action]);
 
   const handleClose = () => {
     dispatch(removeUser());

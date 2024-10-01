@@ -26,6 +26,7 @@ import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { Assign } from "../DashModules/Pdfs/Assign";
 import { ViewPdf } from "../DashModules/Pdfs/View";
 import { PaginationPages } from "../Pagination/Pagination";
+import { useSnackbar } from "notistack";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -42,6 +43,14 @@ function Pdfs({}) {
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const [page , setPage] = useState(1);
   const total_pages = useSelector((state) => state.pdfsSlice.total_pages);
+  const { enqueueSnackbar } = useSnackbar();
+  const action = useSelector((state) => state.pdfsSlice.action);
+
+  useEffect(() => {
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [action]);
 
 
 

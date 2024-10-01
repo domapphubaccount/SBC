@@ -115,7 +115,7 @@ function Header({ path }) {
                     ""
                   ) : (
                     <>
-                      <Tooltip content="Chat History" placement="bottom" onClick={(e)=>e.stopPropagation()}>
+                      <Tooltip content="Chat History" placement="left" onClick={(e)=>e.stopPropagation()}>
                         <li className="mr-3 relative" title="timeline">
                           <Archive />
                         </li>

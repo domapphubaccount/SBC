@@ -29,6 +29,7 @@ import {
 } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import Loading_chat from "../chatContainer/Loading";
 import { Button, Popover, Tooltip } from "flowbite-react";
+import { useSnackbar } from "notistack";
 
 function MainChat({ elementWidth, windowWidth }) {
   const pathName = usePathname();
@@ -57,7 +58,16 @@ function MainChat({ elementWidth, windowWidth }) {
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
-  const navigate = useRouter()
+  const navigate = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+  const [actionSuccess,setAction] = useState(false)
+  const action = useSelector((state) => state.usersSlice.action);
+
+  useEffect(() => {
+    if (actionSuccess) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [actionSuccess]);
 
   function isEnglish(text) {
     const cleanedText = text.replace(/[^a-zA-Z]/g, "");
@@ -83,6 +93,7 @@ function MainChat({ elementWidth, windowWidth }) {
     dislikeMessage,
     loadingMessage,
     typeComplete,
+    actionSuccess
   ]);
   const dislikeToggle = (id) => {
     setItemId(id);
@@ -184,6 +195,8 @@ function MainChat({ elementWidth, windowWidth }) {
         setLoadingMessage(false);
         dispatch(loading_chat_action(false));
         setDislike(false);
+        setAction(true);
+        setTimeout(()=>setAction(false),1500)
       })
       .catch((error) => {
         setLoadingMessage(false);
@@ -193,9 +206,7 @@ function MainChat({ elementWidth, windowWidth }) {
       });
   };
   const handleStartNewChat = () => {
-
-    if(pathName.trim().slice(0, 9) !==
-    "/sharable"){
+    if(pathName.trim().slice(0, 9) !== "/sharable"){
       navigate.push('/')
     }else{
     dispatch(chat_out());
@@ -448,7 +459,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                   className="code"
                                   style={{
                                     width: elementWidth - 40 + "px",
-                                    zIndex: 100,
+                                    zIndex: 2,
                                   }}
                                 >
                                   {item.pdfs?.length > 0 &&

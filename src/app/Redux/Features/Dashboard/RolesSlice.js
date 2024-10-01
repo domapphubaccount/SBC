@@ -22,8 +22,8 @@ export const getRolesAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.meta?.total){
-        dispatch(handlePages(response.data?.meta?.total))
+      if(response.data?.meta?.last_page){
+        dispatch(handlePages(response.data?.meta?.last_page))
       }
       return response.data.data;
     } catch (error) {
@@ -83,6 +83,11 @@ export const deleteRoleAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -126,6 +131,10 @@ export const addRoleAction = createAsyncThunk(
           })
         );
       }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -139,7 +148,7 @@ export const addRoleAction = createAsyncThunk(
 
 // start assign permission to role
 export const assignPermissionAction = createAsyncThunk(
-  "users/assignPermissionAction",
+  "roles/assignPermissionAction",
   async (arg, { dispatch, rejectWithValue }) => {
     const { token, id, permissions } = arg;
     try {
@@ -158,6 +167,43 @@ export const assignPermissionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end assign permission to role
+// start assign permission to role
+export const updatPermissionAction = createAsyncThunk(
+  "roles/updatPermissionAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, permissions } = arg;
+    try {
+      const response = await axios.put(
+        `${config.api}admin/roles/${id}/permissions`,
+        { permissions },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -194,13 +240,16 @@ export const updateRoleAction = createAsyncThunk(
 
       if (permissions && response.data?.message) {
         dispatch(
-          assignPermissionAction({
+          updatPermissionAction({
             token,
             id,
             permissions, 
           })
         );
       }
+      dispatch(handleAction(true))
+      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -229,6 +278,8 @@ const initialState = {
   editPermissionsModule: false,
 
   total_pages: 1,
+  action: false
+
 };
 
 export const rolesSlice = createSlice({
@@ -258,6 +309,9 @@ export const rolesSlice = createSlice({
     },
     handlePages: (state , action) => {
       state.total_pages = action.payload
+    },
+    handleAction: (state , action) => {
+      state.action = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -309,6 +363,22 @@ export const rolesSlice = createSlice({
         state.editPermissionsModule = false;
       })
       .addCase(assignPermissionAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end assign PermissionAction
+      // start assign PermissionAction
+      .addCase(updatPermissionAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatPermissionAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.editPermissionsModule = false;
+      })
+      .addCase(updatPermissionAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
       })
@@ -375,7 +445,8 @@ export const {
   editModule,
   editPermissionsModule,
   removeRolesError,
-  handlePages
+  handlePages,
+  handleAction
 } = rolesSlice.actions;
 
 export default rolesSlice.reducer;

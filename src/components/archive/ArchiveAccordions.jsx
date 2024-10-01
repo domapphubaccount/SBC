@@ -22,6 +22,7 @@ import {
 } from "@/app/Redux/Features/Chat_History/historySlice";
 import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
+import { useSnackbar } from "notistack";
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -43,6 +44,14 @@ function TailwindAccordion() {
   const chatid = useSelector((state) => state.chatSlice.get_chat);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const disabledAction = useSelector((state) => state.chatActionsSlice.loading);
+  const [action , setAction] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [action]);
 
   useEffect(() => {
     dispatch(getHistoryAction({ token }));
@@ -107,6 +116,8 @@ function TailwindAccordion() {
           dispatch(loading_chat_action(false));
           setRenameToggle(false);
           setOpen(false);
+          setAction(true)
+          setTimeout(()=>setAction(false),1500)
         }
       })
       .catch((error) => {
@@ -115,6 +126,8 @@ function TailwindAccordion() {
       });
     window.MathJax && window.MathJax.typeset();
   };
+
+
   const handleGetChat = (chat_id, share_name) => {
     if (chatid != chat_id) {
       dispatch(choseChate(chat_id));
@@ -154,6 +167,8 @@ function TailwindAccordion() {
           }
           dispatch(update_archive());
           setOpen(false);
+          setAction(true);
+          setTimeout(()=>setAction(false),1500);
         }
       })
       .catch((error) => {

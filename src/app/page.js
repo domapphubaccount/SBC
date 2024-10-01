@@ -7,7 +7,9 @@ import DashLayout from "@/layout/DashLayout/DashLayout";
 import Header from "@/layout/Header/Header";
 import { redirect, usePathname } from "next/navigation";
 import { useLayoutEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Loading from "./loading"
+import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged); 
@@ -17,6 +19,15 @@ export default function Home() {
     (state) => state.chatActionsSlice.loading
   );                                                                    // and here is the loading of all chat actions 
   const error = useSelector((state) => state.chatSlice.error);
+  const pathname = usePathname();
+  const dispatch = useDispatch();
+  const profileData = useSelector((state) => state.profileSlice.profile);
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  
+  useLayoutEffect(() => {
+    dispatch(getProfileAction({ token }));
+  }, []);
+  console.log(profileData)
 
   useLayoutEffect(() => {
     if (isLogged == false) {
@@ -25,6 +36,8 @@ export default function Home() {
   }, [isLogged]);
 
   return (
+    <>
+    {pathname.slice(0,9) !== "/sharable" && Object.entries(profileData).length > 0 ?
     <main>
       <Header />
       <DashLayout />
@@ -40,5 +53,10 @@ export default function Home() {
       {error && <SnackbarError />}
       {/* <SnackbarTime /> */}
     </main>
+    :
+    <Loading />
+    }
+      
+    </>
   );
 }

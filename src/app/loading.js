@@ -1,7 +1,7 @@
 import React from 'react'
 import loadingImg from "@/assets/logo/loading.gif"
 
-function loading() {
+function Loading() {
   return (
 <div className="inset-0 bg-gray-800 fixed flex w-full h-full items-center justify-center duration-300 transition-opacity"
  style={{zIndex: "6000"}}>
@@ -12,4 +12,4 @@ function loading() {
   )
 }
 
-export default loading
+export default Loading

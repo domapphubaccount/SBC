@@ -22,10 +22,10 @@ export const getUsersChatAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.meta?.total){
-        dispatch(handlePages(response.data?.meta?.total))
+      if(response.data?.data.total_pages){
+        dispatch(handlePages(response.data?.data.total_pages))
       }
-      return response.data.data;
+      return response.data.data[0].data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

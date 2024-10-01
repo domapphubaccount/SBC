@@ -33,6 +33,7 @@ import { RolesPermissions } from "../DashModules/Roles/RolesPermissions";
 import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
+import { useSnackbar } from "notistack";
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -51,6 +52,14 @@ function Roles({}) {
   const permissionsModule = useSelector(
     (state) => state.rolesSlice.editPermissionsModule
   );
+  const { enqueueSnackbar } = useSnackbar();
+  const action = useSelector((state) => state.rolesSlice.action);
+
+  useEffect(() => {
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+    }
+  }, [action]);
 
   const handleClose = () => {
     dispatch(removeUser());
@@ -118,11 +127,6 @@ function Roles({}) {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
-  // // Step 3: Filter the rows based on the search term
-  // const filteredData = rolesData.filter((item) => {
-  //   return item.name.toLowerCase().includes(searchTerm);
-  //   // item.email.toLowerCase().includes(searchTerm)
-  // });
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -283,6 +287,7 @@ function Roles({}) {
                       <td className="px-6 py-4">
                         <button
                           onClick={() => handlePermissionModule(item.id)}
+                          
                           type="button"
                           className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
                         >
