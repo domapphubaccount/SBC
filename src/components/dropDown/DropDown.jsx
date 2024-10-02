@@ -45,7 +45,6 @@ function DropDown() {
   }, [dropDownToggle]);
 
 
-  console.log(profileData.roles[0]  )
 
   return (
     <div className="relative inline-block text-left">

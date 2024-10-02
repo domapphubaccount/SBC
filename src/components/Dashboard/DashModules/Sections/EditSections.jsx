@@ -49,7 +49,6 @@ export function EditSections({ openEdit, handleClose }) {
     formik.setFieldValue("file_path", event.currentTarget.files[0]);
   };
 
-  console.log(sectionData)
 
   return (
     <>
