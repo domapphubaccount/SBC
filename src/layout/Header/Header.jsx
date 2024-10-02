@@ -147,7 +147,7 @@ function Header({ path }) {
                     </>
                   )}
 
-                  <Tooltip content="Profile" placement="bottom">
+                  <Tooltip content="Profile" placement="left">
                     <li title="profile">
                       <DropDown userName={userName} />
                     </li>
