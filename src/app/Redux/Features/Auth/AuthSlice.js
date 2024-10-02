@@ -2,6 +2,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
+import { clearData } from "../Chat/ChatSlice";
+import { clearHistory } from "../Chat_History/historySlice";
 
 const isBrouse = typeof window !== "undefined";
 
@@ -57,6 +59,8 @@ export const logoutAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      dispatch(clearData())
+      dispatch(clearHistory())
       return response.data;
     } catch (error) {
       // if(error?.response?.status === 401){
@@ -257,7 +261,7 @@ export const loginSlice = createSlice({
       })
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end login
 

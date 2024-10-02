@@ -143,8 +143,25 @@ export const chatSlice = createSlice({
     // start chat error
     error_start_chat: (state, action) => {
       state.error = action.payload;
-    }
+    },
     // end chat error
+    clearData: (state,action) => {
+      
+      state.value= 0;
+        state.chat_data= [];
+        state.conversation= [];
+        state.get_chat= "";
+        state.chat_code= "";
+        state.loading= false;
+      
+      
+        // start chatInput
+        state.input = {
+          loading: false,
+          error: null
+        }
+        // end chatInput
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -194,7 +211,8 @@ export const {
   send_failed,
   chat_out,
   loading_main_chat,
-  error_start_chat
+  error_start_chat,
+  clearData
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

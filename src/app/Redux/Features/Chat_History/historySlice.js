@@ -36,6 +36,7 @@ export const getHistoryAction = createAsyncThunk(
 const initialState = {
   chat_history: [],
   loading: false,
+  error: false
 };
 
 export const historySlice = createSlice({
@@ -44,6 +45,10 @@ export const historySlice = createSlice({
   reducers: {
     loading_get_chat_history: (state , action) => {
       state.loading = action.payload
+    },
+    clearHistory: (state) => {
+      state.chat_history = [];
+      state.loading = false
     }
   },
   extraReducers: (builder) => {
@@ -66,5 +71,5 @@ export const historySlice = createSlice({
   },
 });
 
-export const {loading_get_chat_history} = historySlice.actions 
+export const {loading_get_chat_history , clearHistory} = historySlice.actions 
 export default historySlice.reducer;

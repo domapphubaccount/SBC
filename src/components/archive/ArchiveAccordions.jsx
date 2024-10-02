@@ -40,16 +40,19 @@ function TailwindAccordion() {
   const updates = useSelector((state) => state.updateSlice.state);
   const loading = useSelector((state) => state.chatActionsSlice.loading);
   const loadingHistory = useSelector((state) => state.historySlice.loading);
+  const errorHistory = useSelector((state) => state.historySlice.error);
   const dispatch = useDispatch();
   const chatid = useSelector((state) => state.chatSlice.get_chat);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const disabledAction = useSelector((state) => state.chatActionsSlice.loading);
-  const [action , setAction] = useState(false);
+  const [action, setAction] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (action) {
-      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
     }
   }, [action]);
 
@@ -116,8 +119,8 @@ function TailwindAccordion() {
           dispatch(loading_chat_action(false));
           setRenameToggle(false);
           setOpen(false);
-          setAction(true)
-          setTimeout(()=>setAction(false),1500)
+          setAction(true);
+          setTimeout(() => setAction(false), 1500);
         }
       })
       .catch((error) => {
@@ -126,7 +129,6 @@ function TailwindAccordion() {
       });
     window.MathJax && window.MathJax.typeset();
   };
-
 
   const handleGetChat = (chat_id, share_name) => {
     if (chatid != chat_id) {
@@ -168,7 +170,7 @@ function TailwindAccordion() {
           dispatch(update_archive());
           setOpen(false);
           setAction(true);
-          setTimeout(()=>setAction(false),1500);
+          setTimeout(() => setAction(false), 1500);
         }
       })
       .catch((error) => {
@@ -224,11 +226,7 @@ function TailwindAccordion() {
                             handleGetChat(item[1].id, item[1].share_name);
                           }}
                         >
-                          --{" "}
-                          {item[1].id
-                            ? item[1].name
-                            : 
-                              item[1].name}
+                          -- {item[1].id ? item[1].name : item[1].name}
                           <ArchiveSettings
                             item={item[1]}
                             setRenameToggle={setRenameToggle}
@@ -243,20 +241,31 @@ function TailwindAccordion() {
               )}
             </div>
           ))
-        ) : (loadingHistory ||
-            typeof dashboardData?.chat_history === "undefined") ||(
-          loadingHistory ) ? (
-          <div className="text-center">
-            <img
-              src={loadingImg.src}
-              alt="loading"
-              className="w-20 loading_logo inline"
-            />
-            <div className="font-semibold">Loading..</div>
-          </div>
+        ) : loadingHistory ||
+          typeof dashboardData?.chat_history === "undefined" ||
+          loadingHistory ? (
+          <>
+            {errorHistory ? (
+              <div className="text-center">
+                <img
+                  src={loadingImg.src}
+                  alt="loading"
+                  className="w-20 loading_logo inline"
+                />
+                <div className="font-semibold">Loading..</div>
+              </div>
+            ) : (
+              <div className="h-full w-full text-black flex justify-center items-center">
+                <div className="text-center">
+                  <img className="w-20 inline" src={Logo.src} alt="logo" />
+                  <div className="font-semibold	">No History Yet</div>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
-          ( dashboardData.chat_history &&
-            Object.entries(dashboardData.chat_history).length === 0) && (
+          dashboardData.chat_history &&
+          Object.entries(dashboardData.chat_history).length === 0 && (
             <>
               <div className="h-full w-full text-black flex justify-center items-center">
                 <div className="text-center">

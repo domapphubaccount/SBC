@@ -4,6 +4,8 @@ import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../Auth/AuthSlice";
+import { clearData } from "../Chat/ChatSlice";
+import { clearHistory } from "../Chat_History/historySlice";
 
 // start update password
 export const updatePasswordAction = createAsyncThunk(
@@ -29,6 +31,8 @@ export const updatePasswordAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(clearData())
+        dispatch(clearHistory())
         dispatch(logout())
       }
       return rejectWithValue(error.response.data);

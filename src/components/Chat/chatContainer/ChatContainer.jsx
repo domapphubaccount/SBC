@@ -47,7 +47,7 @@ function ChatContainer() {
   // end manage window width and is logged or not
 
   useEffect(() => {
-    if (token) {
+    if (token && pathName.slice(0, 9) != "/sharable") {
       if (catchChat || localStorage.getItem("chat") || chatCode) {
         axios
           .get(

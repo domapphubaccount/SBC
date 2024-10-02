@@ -135,7 +135,7 @@ function DropDown() {
 
             {profileData &&
               profileData.roles &&
-              profileData.roles[0].name != "User" && pathname.slice(0,9) !== "/dashboar" && (
+              profileData.roles[0]?.name != "User" && pathname.slice(0,9) !== "/dashboar" && (
                 <Link
                   href="/dashboard"
                   className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"
