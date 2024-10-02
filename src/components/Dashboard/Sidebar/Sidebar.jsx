@@ -39,6 +39,7 @@ export function Sidebar({ children, handlePage }) {
           </svg>
         </button>
       </div>
+      {aside &&
       <aside
         id="default-sidebar"
         className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
@@ -545,6 +546,7 @@ export function Sidebar({ children, handlePage }) {
           </nav>
         </div>
       </aside>
+}
 
       <div className="p-4 sm:ml-32">{children}</div>
     </>
