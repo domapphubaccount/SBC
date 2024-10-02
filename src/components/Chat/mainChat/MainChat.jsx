@@ -60,12 +60,14 @@ function MainChat({ elementWidth, windowWidth }) {
   );
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const [actionSuccess,setAction] = useState(false)
+  const [actionSuccess, setAction] = useState(false);
   const action = useSelector((state) => state.usersSlice.action);
 
   useEffect(() => {
     if (actionSuccess) {
-      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
     }
   }, [actionSuccess]);
 
@@ -93,7 +95,7 @@ function MainChat({ elementWidth, windowWidth }) {
     dislikeMessage,
     loadingMessage,
     typeComplete,
-    actionSuccess
+    actionSuccess,
   ]);
   const dislikeToggle = (id) => {
     setItemId(id);
@@ -196,7 +198,7 @@ function MainChat({ elementWidth, windowWidth }) {
         dispatch(loading_chat_action(false));
         setDislike(false);
         setAction(true);
-        setTimeout(()=>setAction(false),1500)
+        setTimeout(() => setAction(false), 1500);
       })
       .catch((error) => {
         setLoadingMessage(false);
@@ -206,42 +208,43 @@ function MainChat({ elementWidth, windowWidth }) {
       });
   };
   const handleStartNewChat = () => {
-    if(pathName.trim().slice(0, 9) == "/sharable"){
-      navigate.push('/signIn')
-    }else{
-    dispatch(chat_out());
-    dispatch(loading_chat(true));
-    dispatch(loading_chat_action(true));
+    if (pathName.trim().slice(0, 9) == "/sharable") {
+      navigate.push("/signIn");
+    } else {
+      dispatch(chat_out());
+      dispatch(loading_chat(true));
+      dispatch(loading_chat_action(true));
 
-    axios
-      .post(
-        `${config.api}create_thread`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(getChatCode(response.data.data[0]));
-        dispatch(loading_chat_action(false));
-        dispatch(loading_chat(false));
-        // localStorage.setItem("chat", response.data.data[0]);
-      })
-      .catch((error) => {
-        dispatch(loading_chat(false));
-        dispatch(loading_chat_action(false));
-        console.error("There was an error making the request!", error);
-        if (error.response.data.error) {
-          dispatch(error_start_chat(error.response.data.error));
-        } else if (error.response.data.message) {
-          dispatch(error_start_chat(error.response.data.message));
-        }
-        setTimeout(() => dispatch(error_start_chat(null)), 2000);
-      });}
+      axios
+        .post(
+          `${config.api}create_thread`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          dispatch(getChatCode(response.data.data[0]));
+          dispatch(loading_chat_action(false));
+          dispatch(loading_chat(false));
+          // localStorage.setItem("chat", response.data.data[0]);
+        })
+        .catch((error) => {
+          dispatch(loading_chat(false));
+          dispatch(loading_chat_action(false));
+          console.error("There was an error making the request!", error);
+          if (error.response.data.error) {
+            dispatch(error_start_chat(error.response.data.error));
+          } else if (error.response.data.message) {
+            dispatch(error_start_chat(error.response.data.message));
+          }
+          setTimeout(() => dispatch(error_start_chat(null)), 2000);
+        });
+    }
   };
   dispatch(action_done(true));
   useEffect(() => {
@@ -263,6 +266,7 @@ function MainChat({ elementWidth, windowWidth }) {
     window.MathJax && window.MathJax.typeset();
   }, [conversation]);
   const pattern = /SBC.*?\/\//g;
+
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);
@@ -463,16 +467,20 @@ function MainChat({ elementWidth, windowWidth }) {
                                   }}
                                 >
                                   {item.pdfs?.length > 0 &&
-                                  windowWidth <= 800 ? (
+                                  windowWidth <= 800 ? 
+                                  (
                                     <Popover
                                       aria-labelledby="default-popover"
                                       content={
                                         <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
                                           <div className="px-3 py-2">
                                             <ul>
-                                              {item.pdfs.map((item, i) => (
-                                                <li key={i}>{item.name}</li>
-                                              ))}
+                                            { 
+                                            item?.answer?.includes("//") && 
+                                            item.answer.match(pattern) ?
+                                            item.answer.match(pattern)?.map((item2, i) => (<li key={i}>{item2}</li>)):
+                                            "No Reference"
+                                            }
                                             </ul>
                                           </div>
                                         </div>
@@ -496,20 +504,29 @@ function MainChat({ elementWidth, windowWidth }) {
                                       </Button>
                                     </Popover>
                                   ) : (
-                                    <span style={{maxHeight:'150%'}} className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                    <span
+                                      style={{ maxHeight: "150%" }}
+                                      className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
+                                    >
                                       <div className="w-full">
                                         <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                                          {item.pdfs?.length > 0 ? (
-                                            item.pdfs.map((item, i) => (
-                                              <div key={i} className="text-sm text-gray-500 dark:text-gray-400">
-                                                <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
-                                                <div className="px-3 py-2">
-                                                  <ul>
-                                                    <li>{item.name}</li>
-                                                  </ul>
+                                          {item?.answer?.includes("//") &&
+                                          item.answer.match(pattern) ? (
+                                            item.answer
+                                              .match(pattern)
+                                              ?.map((item2, i) => (
+                                                <div
+                                                  key={i}
+                                                  className="text-sm text-gray-500 dark:text-gray-400"
+                                                >
+                                                  <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
+                                                  <div className="px-3 py-2">
+                                                    <ul>
+                                                      <li>{item2}</li>
+                                                    </ul>
+                                                  </div>
                                                 </div>
-                                              </div>
-                                            ))
+                                              ))
                                           ) : (
                                             <div>No Reference</div>
                                           )}
