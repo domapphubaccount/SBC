@@ -15,7 +15,7 @@ function Refrence({ setElementWidth }) {
     <div
       ref={colRef}
       id="refContainer"
-      className="col-span-1  bg-gray-100 border-r border-gray-300	relative"
+      className="col-span-1 bg-gray-100 border-r border-gray-300	relative"
     >
       <ul
         id="listRef"
@@ -30,6 +30,7 @@ function Refrence({ setElementWidth }) {
             fontWeight: "bold",
             left: "50%",
             transform: "translateX(-50%)",
+            zIndex:3
           }}
         >
           Reference
