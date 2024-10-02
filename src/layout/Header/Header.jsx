@@ -94,7 +94,7 @@ function Header({ path }) {
             <>
               {!path ? (
                 <div id="code">
-                  <Tooltip content="Code" placement="bottom">
+                  <Tooltip content="Code" placement="left">
                     <MultipleSelect />
                   </Tooltip>
                 </div>
