@@ -53,7 +53,7 @@ export function ViewPdf({ openView, handleClose, fileId }) {
                       type="text"
                       required
                       disabled
-                      value={`Pdf Name : ${fileId.name}`}
+                      value={`File Name : ${fileId.name}`}
                     />
                   </div>
                   <div className="mb-3">

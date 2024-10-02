@@ -67,7 +67,7 @@ export function Assign({ openAssign, handleClose, fileId }) {
         <Modal.Body style={{ overflow: "visible" }}>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Assign User To Pdf
+              Assign User To File
             </h3>
             {loading ? (
               <div className="flex justify-center">
