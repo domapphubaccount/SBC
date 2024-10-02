@@ -162,7 +162,7 @@ function Pdfs({}) {
           </div>
           <div className="flex justify-between my-5">
             <div>
-              <h1 className="text-white text-4xl">BUILDING CODE</h1>
+              <h1 className="text-white text-3xl">BUILDING CODE</h1>
             </div>
             <div>
               <Button color="blue" onClick={handleOpenAdd}>

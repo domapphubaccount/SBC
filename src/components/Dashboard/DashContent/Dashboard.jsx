@@ -77,7 +77,7 @@ function DashboardData({}) {
           </div>
           <div className="flex justify-between my-5">
             <div className="px-3">
-              <h1 className="text-white text-4xl">DASHBOARD</h1>
+              <h1 className="text-white text-3xl">DASHBOARD</h1>
             </div>
           </div>
         </div>

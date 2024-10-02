@@ -149,7 +149,7 @@ function Sections() {
           </div>
           <div className="flex justify-between my-5">
             <div>
-              <h1 className="text-white text-4xl">Sections</h1>
+              <h1 className="text-white text-3xl">Sections</h1>
             </div>
             <div>
               <Button color="blue" onClick={handleOpenAdd}>
