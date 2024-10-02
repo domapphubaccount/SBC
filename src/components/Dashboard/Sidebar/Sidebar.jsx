@@ -8,7 +8,6 @@ export function Sidebar({ children, handlePage }) {
   const [aside, setAside] = useState(false);
   const profileData = useSelector((state) => state.profileSlice.profile);
 
-  console.log(profileData)
 
   return (
     <>

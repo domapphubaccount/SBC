@@ -28,16 +28,7 @@ export function Reviewer({ openReviewer, handleClose }) {
     
     onSubmit: (values) => {
       if (commentData?.review_data?.reviewer.id == profileData.id) {
-        console.log({
-          token,
-          id: commentData.review_data.id,
-          chat_user_dislike_id: commentData.review_data.chat_user_dislike.id,
 
-          comment_reviewr: values.reviewerResponse,
-
-          status: values.status,
-          comment_super_reviewr: null,
-        });
         dispatch(
           updateReviewAction({
             token,

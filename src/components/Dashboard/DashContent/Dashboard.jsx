@@ -32,7 +32,6 @@ function DashboardData({}) {
   const updateRolesData = useSelector((state) => state.rolesSlice.updates);
   const [openWarn, setOpenWarn] = useState(false);
 
-  console.log(dashboardData);
 
   const openEdit = useSelector((state) => state.rolesSlice.editModule);
   const openDelete = useSelector((state) => state.rolesSlice.deleteModule);
