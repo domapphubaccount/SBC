@@ -141,7 +141,7 @@ export function EditReviewer({ openEdit, handleClose }) {
                   ) : null}
                 </div>
 
-                <div className="w-full">
+                <div className="w-full flex justify-end">
                   <Button type="submit">Save Changes</Button>
                 </div>
               </>

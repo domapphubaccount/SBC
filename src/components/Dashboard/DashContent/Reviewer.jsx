@@ -138,7 +138,7 @@ function ReviewerAdmin({}) {
       <section>
         <div>
           <div
-            className="flex py-3 pt-8 text-white rounded-lg"
+            className="flex py-3 pt-4 text-white rounded-lg"
             aria-label="Breadcrumb"
           >
             <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -257,7 +257,6 @@ function ReviewerAdmin({}) {
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center"></div>
                           <div className="ml-3">
                             <Popover
                               content={
@@ -286,7 +285,6 @@ function ReviewerAdmin({}) {
                       </th>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center"></div>
                           <div className="ml-3">
                             <Popover
                               content={

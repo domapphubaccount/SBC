@@ -81,7 +81,7 @@ export function ViewPermission({ openView, handleClose }) {
               </div>
             )}
 
-            <div className="w-full">
+            <div className="w-full flex justify-end">
               <Button onClick={handleClose}>CLOSE</Button>
             </div>
           </div>

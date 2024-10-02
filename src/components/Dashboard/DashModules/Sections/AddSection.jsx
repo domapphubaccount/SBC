@@ -115,7 +115,7 @@ export function AddSection({ openAdd, handleClose }) {
                   ) : null}
                 </div> */}
 
-                <div className="w-full">
+                <div className="w-full flex justify-end">
                   <Button type="submit">Add Section</Button>
                 </div>
               </>

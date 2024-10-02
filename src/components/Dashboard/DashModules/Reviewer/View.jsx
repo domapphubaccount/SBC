@@ -133,8 +133,8 @@ export function ViewReview({ openView, handleClose }) {
                   </div> */}
                 </div>
 
-                <div className="flex justify-between">
-                  <div className="w-full">
+                <div>
+                  <div className="w-full flex justify-end">
                     <Button onClick={handleClose}>CLOSE</Button>
                   </div>
                   {/* <div className="w-full text-end">

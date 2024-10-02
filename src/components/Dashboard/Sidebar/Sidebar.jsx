@@ -44,9 +44,9 @@ export function Sidebar({ children, handlePage }) {
         id="default-sidebar"
         className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
           aside ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0  pt-40 mt-4 pl-5`}
+        } sm:translate-x-0 mt-4`}
         aria-label="Sidebar"
-        style={{transform: "scale(0.9)"}}
+        style={{transform: "scale(0.85)",paddingTop:'60px'}}
       >
         {/* <div className="px-3 py-2 relative overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded border border-4	">
           <div
@@ -287,12 +287,16 @@ export function Sidebar({ children, handlePage }) {
           </ul>
         </div> */}
 
-        <div className="relative h-screen pattern">
-          <nav className="z-20 bg-white flex shrink-0 grow-0 justify-around gap-4 border-t border-gray-200 p-2.5 shadow-lg fixed top-2/4 -translate-y-2/4 left-6 min-h-[auto] min-w-[64px] flex-col rounded-lg border">
+        <div className="relative h-full pattern" style={{
+          width: "130px",
+          overflowY: "auto",
+          overflowX: "hidden"
+        }}>
+          <nav className="z-20 bg-white absolute flex shrink-0 grow-0 justify-around gap-4 border-t border-gray-200 p-2.5 shadow-lg fixed left-6 min-h-[auto] min-w-[64px] flex-col rounded-lg border">
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
-                <Tooltip content="Dashbaord" style="dark" placement="right">
+                <Tooltip content="Dashbaord" style="dark" placement="top">
                   <a
                     href="#"
                     className="flex aspect-square min-h-[32px] w-16 flex-col items-center justify-center gap-1 rounded-md p-1.5 dark:bg-sky-900 dark:text-sky-50"
@@ -322,7 +326,7 @@ export function Sidebar({ children, handlePage }) {
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
-                <Tooltip content="Users" style="dark" placement="right">
+                <Tooltip content="Users" style="dark" placement="top">
                   <a
                     href="#"
                     className="flex aspect-square min-h-[32px] w-16 flex-col items-center justify-center gap-1 rounded-md p-1.5 dark:bg-sky-900 dark:text-sky-50"
@@ -360,7 +364,7 @@ export function Sidebar({ children, handlePage }) {
                 <Tooltip
                   content="User's Comments"
                   style="dark"
-                  placement="right"
+                  placement="top"
                 >
                   <a
                     href="#"
@@ -392,7 +396,7 @@ export function Sidebar({ children, handlePage }) {
               profileData.roles &&
               (profileData.roles[0].id == "2" ||
                 profileData.roles[0].id == "1") && (
-                <Tooltip content="Reviewer" style="dark" placement="right">
+                <Tooltip content="Reviewer" style="dark" placement="top">
                   <a
                     onClick={() => handlePage(8)}
                     href="#"
@@ -426,7 +430,7 @@ export function Sidebar({ children, handlePage }) {
                 <Tooltip
                   content="Master User's Chat"
                   style="dark"
-                  placement="right"
+                  placement="top"
                 >
                   <a
                     href="#"
@@ -458,7 +462,7 @@ export function Sidebar({ children, handlePage }) {
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
-                <Tooltip content="PDFs" style="dark" placement="right">
+                <Tooltip content="Building Code" style="dark" placement="top">
                   <a
                     onClick={() => handlePage(4)}
                     href="#"
@@ -479,14 +483,14 @@ export function Sidebar({ children, handlePage }) {
                       />
                     </svg>
 
-                    <small className="text-xs font-medium">PDFs</small>
+                    <small className="text-xs text-center font-medium">Building Code</small>
                   </a>
                 </Tooltip>
               )}
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
-                <Tooltip content="Sections" style="dark" placement="right">
+                <Tooltip content="Sections" style="dark" placement="top">
                   <a
                     href="#"
                     onClick={() => handlePage(5)}
@@ -514,7 +518,7 @@ export function Sidebar({ children, handlePage }) {
             {profileData &&
               profileData.roles &&
               profileData.roles[0].id == "1" && (
-                <Tooltip content="ٌRoles" style="dark" placement="right">
+                <Tooltip content="ٌRoles" style="dark" placement="top">
                   <a
                     href="#"
                     onClick={() => handlePage(6)}
@@ -541,61 +545,6 @@ export function Sidebar({ children, handlePage }) {
               )}
           </nav>
         </div>
-
-        {profileData && profileData.roles && profileData.roles[0].id == "1" && (
-          <div className="px-3 py-2 my-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded border border-4">
-            <ul className="space-y-2 font-medium relative">
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  onClick={() => handlePage(6)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
-                    />
-                  </svg>
-
-                  <span className="ms-3">Roles</span>
-                </a>
-              </li>
-              {/* <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                onClick={() => handlePage(7)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12"
-                  />
-                </svg>
-
-                <span className="ms-3">Permisions</span>
-              </a>
-            </li> */}
-            </ul>
-          </div>
-        )}
       </aside>
 
       <div className="p-4 sm:ml-32">{children}</div>

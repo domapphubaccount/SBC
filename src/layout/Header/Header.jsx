@@ -70,6 +70,7 @@ function Header({ path }) {
   return (
     <>
       <nav
+        style={{zIndex:3}}
         className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue"
       >
         <div className="w-full mx-auto flex flex-wrap items-center justify-between">

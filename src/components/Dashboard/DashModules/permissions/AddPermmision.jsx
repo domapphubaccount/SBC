@@ -61,7 +61,7 @@ export function AddPermmision({ openAdd, handleClose }) {
                 <div className="text-red-600">{formik.errors.name}</div>
               ) : null}
             </div>
-            <div className="w-full">
+            <div className="w-full flex justify-end">
               <Button type="submit">Submit</Button>
             </div>
             </>

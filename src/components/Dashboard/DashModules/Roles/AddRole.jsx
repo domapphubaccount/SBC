@@ -106,7 +106,7 @@ export function AddRole({ openAdd, handleClose }) {
                   ) : null} */}
                 </div>
 
-                <div className="w-full">
+                <div className="w-full flex justify-end">
                   <Button type="submit">Submit</Button>
                 </div>
               </>

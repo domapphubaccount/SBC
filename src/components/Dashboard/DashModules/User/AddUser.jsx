@@ -169,7 +169,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                 </Label>
               </div>
 
-              <div className="w-full">
+              <div className="w-full flex justify-end">
                 <Button type="submit">Submit</Button>
               </div>
             </form>

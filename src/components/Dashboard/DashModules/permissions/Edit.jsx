@@ -75,7 +75,7 @@ export function EditPermission({ openEdit, handleClose }) {
               </div>
             )}
 
-            <div className="w-full">
+            <div className="w-full flex justify-end">
               <Button type="submit">Save Changes</Button>
             </div>
           </form>

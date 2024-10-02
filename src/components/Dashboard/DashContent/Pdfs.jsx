@@ -123,7 +123,7 @@ function Pdfs({}) {
       <section>
         <div>
           <div
-            className="flex py-3 pt-8 text-white rounded-lg"
+            className="flex py-3 pt-4 text-white rounded-lg"
             aria-label="Breadcrumb"
           >
             <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -154,7 +154,7 @@ function Pdfs({}) {
                     />
                   </svg>
                   <span className="ms-1 text-sm font-medium text-white md:ms-2">
-                    Pdfs
+                  Building Code
                   </span>
                 </div>
               </li>
@@ -162,7 +162,7 @@ function Pdfs({}) {
           </div>
           <div className="flex justify-between my-5">
             <div>
-              <h1 className="text-white text-4xl">PDFS</h1>
+              <h1 className="text-white text-4xl">BUILDING CODE</h1>
             </div>
             <div>
               <Button color="blue" onClick={handleOpenAdd}>
