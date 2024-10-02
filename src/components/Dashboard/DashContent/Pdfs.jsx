@@ -269,7 +269,7 @@ function Pdfs({}) {
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex gap-2 justify-start">
                               {/* start view */}
-                              <Tooltip content="View Pdf">
+                              <Tooltip content="View File">
                                 <button
                                   type="button"
                                   className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
