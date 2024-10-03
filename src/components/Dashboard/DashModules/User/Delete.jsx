@@ -24,10 +24,10 @@ export function DeleteUser({ openDelete, handleClose }) {
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
         {deleteErrorMSG && (
           <div
-            class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
           >
-            <span class="font-medium">Error!</span> {deleteErrorMSG}
+            <span className="font-medium">Error!</span> {deleteErrorMSG}
           </div>
         )}
         <Modal.Header />

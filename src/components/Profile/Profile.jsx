@@ -82,10 +82,10 @@ function Profile() {
       <div className="bg-white rounded p-5 w-full max-w-md mx-auto">
         {message ? (
           <div
-            class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+            className="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
             role="alert"
           >
-            <span class="font-medium">{message}</span>
+            <span className="font-medium">{message}</span>
           </div>
         ) : (
           ""

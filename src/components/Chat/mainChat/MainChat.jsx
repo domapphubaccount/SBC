@@ -356,11 +356,11 @@ function MainChat({ elementWidth, windowWidth }) {
                           </p>
                           <div className="mt-6 flex items-center justify-center gap-x-6">
                             {loading_actions ? (
-                              <div class="dot-wave">
-                                <div class="dot-wave__dot"></div>
-                                <div class="dot-wave__dot"></div>
-                                <div class="dot-wave__dot"></div>
-                                <div class="dot-wave__dot"></div>
+                              <div className="dot-wave">
+                                <div className="dot-wave__dot"></div>
+                                <div className="dot-wave__dot"></div>
+                                <div className="dot-wave__dot"></div>
+                                <div className="dot-wave__dot"></div>
                               </div>
                             ) : (
                               <button
