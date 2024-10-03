@@ -96,6 +96,7 @@ function MainChat({ elementWidth, windowWidth }) {
     loadingMessage,
     typeComplete,
     actionSuccess,
+    loading_actions
   ]);
   const dislikeToggle = (id) => {
     setItemId(id);

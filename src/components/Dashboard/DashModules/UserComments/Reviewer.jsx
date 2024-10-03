@@ -8,6 +8,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 import { addReviewAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 import { useEffect } from "react";
 import { updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
+import { MathJax , MathJaxContext } from "better-react-mathjax";
 
 export function Reviewer({ openReviewer, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -150,20 +151,25 @@ export function Reviewer({ openReviewer, handleClose }) {
                       />
                     </div>
 
-                    <div className="my-5 rounded border">
-                      <div>
-                        <small className="font-semibold">BYLD response</small>
-                      </div>
-                      <div
-                        id="byldResponse"
-                        style={{ opacity: 1 , overflowX:"auto" }}
-                        className="textarea" // Add any styling class if needed
-                        dangerouslySetInnerHTML={{
-                          __html: commentData?.user_chat?.answer,
-                        }}
-                      />
-                    </div>
-
+                    <MathJaxContext>
+                      <MathJax dynamic>
+                        <div className="my-5 rounded border">
+                          <div>
+                            <small className="font-semibold">
+                              BYLD response
+                            </small>
+                          </div>
+                          <div
+                            id="byldResponse"
+                            style={{ opacity: 1, overflowX: "auto" }}
+                            className="textarea" // Add any styling class if needed
+                            dangerouslySetInnerHTML={{
+                              __html: commentData?.user_chat?.answer,
+                            }}
+                          />
+                        </div>
+                      </MathJax>
+                    </MathJaxContext>
                     <div className="mb-3">
                       <div className="flex justify-between">
                         <small className="font-semibold">

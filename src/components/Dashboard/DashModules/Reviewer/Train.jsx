@@ -6,6 +6,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 import { useLayoutEffect, useState } from "react";
 import { trainAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 import { getCommentByIDAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
+import { MathJax, MathJaxContext } from "better-react-mathjax";
 
 export function Train({ openTrain, handleClose }) {
   const reviewData = useSelector((state) => state.ReviewSlice.review);
@@ -91,39 +92,29 @@ export function Train({ openTrain, handleClose }) {
                   />
                 </div>
 
-                {/* <div className="mb-3">
-                  <div>
-                    <small className="font-semibold">BYLD response</small>
-                  </div>
-                  <Textarea
-                    rows={4}
-                    id="byldResponse"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`${commentData?.user_chat?.answer}`}
-                  />
-                </div> */}
-
-                <div className="my-5 rounded border">
-                  <div>
-                    <small className="font-semibold">BYLD response</small>
-                  </div>
-                  <div
-                    id="byldResponse"
-                    style={{ opacity: 1, overflowX: "auto" }}
-                    className="textarea text-xs	"
-                    dangerouslySetInnerHTML={{
-                      __html: commentData?.user_chat?.answer,
-                    }}
-                  />
-                </div>
+                <MathJaxContext>
+                  <MathJax dynamic>
+                    <div className="my-5 rounded border">
+                      <div>
+                        <small className="font-semibold">BYLD response</small>
+                      </div>
+                      <div
+                        id="byldResponse"
+                        style={{ opacity: 1, overflowX: "auto" }}
+                        className="textarea text-xs	"
+                        dangerouslySetInnerHTML={{
+                          __html: commentData?.user_chat?.answer,
+                        }}
+                      />
+                    </div>
+                  </MathJax>
+                </MathJaxContext>
 
                 <div className="mb-5">
                   <TextInput
                     required
                     disabled
+                    style={{ opacity: 1 }}
                     value={`Reviewed At : ${formatDate(
                       reviewData?.created_at
                     )}`}
@@ -133,6 +124,7 @@ export function Train({ openTrain, handleClose }) {
                   <TextInput
                     required
                     disabled
+                    style={{ opacity: 1 }}
                     value={`Reviewer : ${reviewData?.reviewer?.name || "none"}`}
                   />
                 </div>
@@ -140,13 +132,17 @@ export function Train({ openTrain, handleClose }) {
                   <TextInput
                     required
                     disabled
+                    style={{ opacity: 1 }}
                     value={`Status : ${reviewData?.status || "none"}`}
                   />
                 </div>
                 <div className="mb-8">
-                  <small>User Comment</small>
+                  <div>
+                    <small className="font-semibold">User Comment</small>
+                  </div>
                   <Textarea
                     rows={4}
+                    style={{ opacity: 1 }}
                     required
                     disabled
                     value={reviewData?.chat_user_dislike?.comment}
@@ -154,20 +150,29 @@ export function Train({ openTrain, handleClose }) {
                 </div>
                 <div className="mb-8">
                   <div className="flex justify-between">
-                    <small>Review</small>
-                    <small>By: {reviewData?.reviewer?.name || "none"}</small>
+                    <div>
+                      <small className="font-semibold">
+                        Review By: {reviewData?.reviewer?.name || "none"}
+                      </small>
+                    </div>
                   </div>
                   <Textarea
                     rows={4}
+                    style={{ opacity: 1 }}
                     required
                     disabled
                     value={reviewData.comment_reviewr}
                   />
                 </div>
                 <div className="mb-8">
-                  <small>Comment Super Reviewer</small>
+                  <div>
+                    <small className="font-semibold">
+                      Comment Super Reviewer
+                    </small>
+                  </div>
                   <Textarea
                     rows={4}
+                    style={{ opacity: 1 }}
                     required
                     disabled
                     value={
@@ -175,18 +180,6 @@ export function Train({ openTrain, handleClose }) {
                     }
                   />
                 </div>
-                {/* <div className="mb-8">
-                  <small>Train</small>
-                  <Textarea
-                    rows={5}
-                    required
-                    disabled
-                    value={`Question: ${commentData?.user_chat?.question}
-Provided Answer: ${commentData?.user_chat?.answer}
-Evaluation: Wrong
-Correct Answer: ${reviewData.comment_reviewr}`}
-                  />
-                </div> */}
               </div>
 
               <div>
@@ -208,14 +201,18 @@ Correct Answer: ${reviewData.comment_reviewr}`}
                 <div>
                   <small className="font-semibold">Provided Answer:</small>
                 </div>
-                <div
-                  id="byldResponse"
-                  style={{ opacity: 1, overflowX: "auto" }}
-                  className="textarea text-xs	" // Add any styling class if needed
-                  dangerouslySetInnerHTML={{
-                    __html: commentData?.user_chat?.answer,
-                  }}
-                />
+                <MathJaxContext>
+                  <MathJax dynamic>
+                    <div
+                      id="byldResponse"
+                      style={{ opacity: 1, overflowX: "auto" }}
+                      className="textarea text-xs	" // Add any styling class if needed
+                      dangerouslySetInnerHTML={{
+                        __html: commentData?.user_chat?.answer,
+                      }}
+                    />
+                  </MathJax>
+                </MathJaxContext>
 
                 <div>
                   <small className="font-semibold">Evaluation: Wrong</small>

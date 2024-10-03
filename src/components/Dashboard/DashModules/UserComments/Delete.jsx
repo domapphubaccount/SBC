@@ -11,6 +11,8 @@ export function DeleteUserComment({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const commentData = useSelector((state) => state.userCommentsSlice.comment);
   const loading = useSelector((state) => state.userCommentsSlice.loading);
+  const ErrorMSG = useSelector((state) => state.userCommentsSlice.error);
+
 
   const dispatch = useDispatch();
 
@@ -20,6 +22,14 @@ export function DeleteUserComment({ openDelete, handleClose }) {
   return (
     <>
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
+      {ErrorMSG && (
+          <div
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           {commentData.id && !loading ? (
