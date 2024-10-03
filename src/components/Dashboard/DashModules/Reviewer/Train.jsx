@@ -91,7 +91,7 @@ export function Train({ openTrain, handleClose }) {
                   />
                 </div>
 
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <div>
                     <small className="font-semibold">BYLD response</small>
                   </div>
@@ -104,7 +104,22 @@ export function Train({ openTrain, handleClose }) {
                     disabled
                     value={`${commentData?.user_chat?.answer}`}
                   />
+                </div> */}
+
+                <div className="my-5 rounded border">
+                  <div>
+                    <small className="font-semibold">BYLD response</small>
+                  </div>
+                  <div
+                    id="byldResponse"
+                    style={{ opacity: 1, overflowX: "auto" }}
+                    className="textarea text-xs	"
+                    dangerouslySetInnerHTML={{
+                      __html: commentData?.user_chat?.answer,
+                    }}
+                  />
                 </div>
+
                 <div className="mb-5">
                   <TextInput
                     required
@@ -160,7 +175,7 @@ export function Train({ openTrain, handleClose }) {
                     }
                   />
                 </div>
-                <div className="mb-8">
+                {/* <div className="mb-8">
                   <small>Train</small>
                   <Textarea
                     rows={5}
@@ -171,8 +186,54 @@ Provided Answer: ${commentData?.user_chat?.answer}
 Evaluation: Wrong
 Correct Answer: ${reviewData.comment_reviewr}`}
                   />
-                </div>
+                </div> */}
               </div>
+
+              <div>
+                <h4 className="font-bold">Train</h4>
+              </div>
+              <div className="my-5 rounded border">
+                <div>
+                  <small className="font-semibold">Question:</small>
+                </div>
+                <div
+                  id="byldResponse"
+                  style={{ opacity: 1, overflowX: "auto" }}
+                  className="textarea text-xs	"
+                  dangerouslySetInnerHTML={{
+                    __html: commentData?.user_chat?.question,
+                  }}
+                />
+
+                <div>
+                  <small className="font-semibold">Provided Answer:</small>
+                </div>
+                <div
+                  id="byldResponse"
+                  style={{ opacity: 1, overflowX: "auto" }}
+                  className="textarea text-xs	" // Add any styling class if needed
+                  dangerouslySetInnerHTML={{
+                    __html: commentData?.user_chat?.answer,
+                  }}
+                />
+
+                <div>
+                  <small className="font-semibold">Evaluation: Wrong</small>
+                </div>
+
+                <div>
+                  <small className="font-semibold">Correct Answer:</small>
+                </div>
+                <div
+                  id="byldResponse"
+                  style={{ opacity: 1, overflowX: "auto" }}
+                  className="textarea text-xs	"
+                  dangerouslySetInnerHTML={{
+                    __html: reviewData.comment_reviewr,
+                  }}
+                />
+              </div>
+
               <div className="p-3">
                 <div className="mt-2 mb-4 p-2 text-sm text-red-800 bg-red-100 border border-red-400 rounded">
                   <strong>Warning:</strong> You can't edit this after training.

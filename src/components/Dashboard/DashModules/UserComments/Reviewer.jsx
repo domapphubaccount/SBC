@@ -25,10 +25,9 @@ export function Reviewer({ openReviewer, handleClose }) {
       reviewerResponse: Yup.string().required("Reviewer response is required"),
       status: Yup.string().required("Status is required"),
     }),
-    
+
     onSubmit: (values) => {
       if (commentData?.review_data?.reviewer.id == profileData.id) {
-
         dispatch(
           updateReviewAction({
             token,
@@ -55,7 +54,6 @@ export function Reviewer({ openReviewer, handleClose }) {
     },
   });
 
-  
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -70,9 +68,10 @@ export function Reviewer({ openReviewer, handleClose }) {
 
   useEffect(() => {
     if (commentData) {
-      const newReviewerResponse = commentData.review_data?.comment_reviewr || "";
+      const newReviewerResponse =
+        commentData.review_data?.comment_reviewr || "";
       const newStatus = commentData.status || "";
-  
+
       // Only update if the values are different
       if (
         formik.values.reviewerResponse !== newReviewerResponse ||
@@ -85,8 +84,6 @@ export function Reviewer({ openReviewer, handleClose }) {
       }
     }
   }, [commentData]); // Removed 'formik' from the dependency array
-  
-  
 
   return (
     <>
@@ -153,18 +150,17 @@ export function Reviewer({ openReviewer, handleClose }) {
                       />
                     </div>
 
-                    <div className="mb-3">
+                    <div className="my-5 rounded border">
                       <div>
                         <small className="font-semibold">BYLD response</small>
                       </div>
-                      <Textarea
-                        rows={4}
+                      <div
                         id="byldResponse"
-                        style={{ opacity: 1 }}
-                        type="text"
-                        required
-                        disabled
-                        value={`${commentData?.user_chat?.answer}`}
+                        style={{ opacity: 1 , overflowX:"auto" }}
+                        className="textarea" // Add any styling class if needed
+                        dangerouslySetInnerHTML={{
+                          __html: commentData?.user_chat?.answer,
+                        }}
                       />
                     </div>
 
