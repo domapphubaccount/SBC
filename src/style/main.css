@@ -109,6 +109,17 @@ nav{
   position: relative;
 }
 
+.scroll-bar-aside {
+  overflow: hidden; /* Hide the scrollbar */
+  overflow-y: scroll; /* Allow vertical scrolling */
+  scrollbar-width: none; /* For Firefox */
+}
+
+.scroll-bar-aside::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+
 .chat_userName {
   border-left: 3px solid var(--secondary-color);
   color: black;

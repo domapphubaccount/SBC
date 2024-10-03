@@ -47,7 +47,7 @@ export function Sidebar({ children, handlePage }) {
         aria-label="Sidebar"
         style={{paddingTop:'60px'}}
       >
-        <div className="relative h-full pattern" style={{
+        <div className="scroll-bar-aside relative h-full pattern" style={{
           width: "130px",
           overflowY: "auto",
           overflowX: "hidden",
