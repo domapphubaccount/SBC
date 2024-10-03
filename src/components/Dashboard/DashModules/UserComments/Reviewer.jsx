@@ -162,7 +162,7 @@ export function Reviewer({ openReviewer, handleClose }) {
                           <div
                             id="byldResponse"
                             style={{ opacity: 1, overflowX: "auto" }}
-                            className="textarea" // Add any styling class if needed
+                            className="textarea text-xs	" // Add any styling class if needed
                             dangerouslySetInnerHTML={{
                               __html: commentData?.user_chat?.answer,
                             }}
