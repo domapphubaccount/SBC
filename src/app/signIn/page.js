@@ -17,7 +17,7 @@ const validationSchema = Yup.object({
 
 function Page() {
   const dispatch = useDispatch();
-  const message = useSelector((state) => state.loginSlice.error);
+  const message = useSelector((state) => state.loginSlice?.error);
   const loading = useSelector((state) => state.loginSlice.loading);
   const isLogged = useSelector(state => state.loginSlice.logged);
 
