@@ -48,7 +48,7 @@ function Roles({}) {
   const openRole = useSelector((state) => state.usersSlice.roleModule);
   const openAdd = useSelector((state) => state.rolesSlice.addModule);
   const openView = useSelector((state) => state.rolesSlice.viewModule);
-  const [page , setPage] = useState(1)
+  const [page, setPage] = useState(1);
   const permissionsModule = useSelector(
     (state) => state.rolesSlice.editPermissionsModule
   );
@@ -57,14 +57,16 @@ function Roles({}) {
 
   useEffect(() => {
     if (action) {
-      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
     }
   }, [action]);
 
   const handleClose = () => {
     dispatch(removeUser());
     dispatch(closeView());
-    dispatch(removeRolesError())
+    dispatch(removeRolesError());
 
     dispatch(editModule(false));
     dispatch(deleteModule(false));
@@ -111,12 +113,12 @@ function Roles({}) {
   // edit open permissions
 
   useEffect(() => {
-    dispatch(getRolesAction({ token , page}));
+    dispatch(getRolesAction({ token, page }));
     dispatch(getPermissionsAction({ token }));
   }, [
     /* updates */
     updateRolesData,
-    page
+    page,
   ]);
 
   // Step 1: State for search input
@@ -281,13 +283,10 @@ function Roles({}) {
                           </div>
                         </div>
                       </th>
-                      <td className="px-6 py-4">
-                          {item.user_count}
-                      </td>
+                      <td className="px-6 py-4">{item.user_count}</td>
                       <td className="px-6 py-4">
                         <button
                           onClick={() => handlePermissionModule(item.id)}
-                          
                           type="button"
                           className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
                         >
@@ -295,7 +294,7 @@ function Roles({}) {
                         </button>
                       </td>
                       <td className="px-6 py-4">
-                          {formatDate(item.created_at)}
+                        {formatDate(item.created_at)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
@@ -329,28 +328,30 @@ function Roles({}) {
                           </Tooltip>
                           {/* end view */}
                           {/* start edit */}
-                          <Tooltip content="Edit Role">
-                            <button
-                              type="button"
-                              className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="size-4"
-                                onClick={() => handleOpenEdit(item.id)}
+                          {item.id !== 1 && (
+                            <Tooltip content="Edit Role">
+                              <button
+                                type="button"
+                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                />
-                              </svg>
-                            </button>
-                          </Tooltip>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="size-4"
+                                  onClick={() => handleOpenEdit(item.id)}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
+                              </button>
+                            </Tooltip>
+                          )}
                           {/* end edit */}
                           {/* start delete */}
                           <Tooltip content="Delete Role">
@@ -389,7 +390,11 @@ function Roles({}) {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} setPage={setPage} total_pages={total_pages} />
+        <PaginationPages
+          page={page}
+          setPage={setPage}
+          total_pages={total_pages}
+        />
       </section>
 
       {openDelete && (

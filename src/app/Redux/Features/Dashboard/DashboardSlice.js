@@ -53,7 +53,6 @@ export const dashboardSlice = createSlice({
       })
       .addCase(getDashboardDataAction.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload)
         state.data = action.payload
       })
       .addCase(getDashboardDataAction.rejected, (state, action) => {

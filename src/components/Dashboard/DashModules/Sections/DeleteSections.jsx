@@ -11,6 +11,8 @@ export function DeleteSections({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sectionData = useSelector((state) => state.sectionsSlice.section_ID.id);
   const loading = useSelector((state) => state.sectionsSlice.loading);
+  const ErrorMSG = useSelector((state) => state.sectionsSlice.error);
+
 
 
   const dispatch = useDispatch();
@@ -28,6 +30,14 @@ export function DeleteSections({ openDelete, handleClose }) {
         onClose={handleClose}
         popup
       >
+        {ErrorMSG && (
+          <div
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           {!loading ? (
