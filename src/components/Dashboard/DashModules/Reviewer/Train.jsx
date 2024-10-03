@@ -37,16 +37,25 @@ export function Train({ openTrain, handleClose }) {
   }
 
   const handleSubmit = () => {
+    const stripHtml = (html) => {
+      return html.replace(/<[^>]*>/g, ''); // Regular expression to remove HTML tags
+    };
+  
+    const userQuestion = commentData?.user_chat?.question;
+    const providedAnswer = stripHtml(commentData?.user_chat?.answer); // Stripped answer
+    const correctAnswer = reviewData.comment_reviewr;
+  
     dispatch(
       trainAction({
         token,
-        new_data: `Question: ${commentData?.user_chat?.question}
-      Provided Answer: ${commentData?.user_chat?.answer}
-      Evaluation: Wrong
-      Correct Answer: ${reviewData.comment_reviewr}`,
+        new_data: `Question: ${userQuestion}
+        Provided Answer: ${providedAnswer}
+        Evaluation: Wrong
+        Correct Answer: ${correctAnswer}`,
       })
     );
   };
+  
 
   return (
     <Modal show={openTrain} size="md" popup onClose={handleClose}>
