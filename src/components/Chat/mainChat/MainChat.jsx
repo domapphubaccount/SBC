@@ -525,7 +525,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                                   key={i}
                                                   className="text-sm text-gray-500 dark:text-gray-400"
                                                 >
-                                                  <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div>
+                                                  {/* <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div> */}
                                                   <div className="px-3 py-2">
                                                     <ul>
                                                       <li>{item2}</li>

@@ -70,6 +70,8 @@ function Header({ path }) {
       });
   };
 
+  console.log(permissionsData);
+
   return (
     <>
       <nav
@@ -131,7 +133,7 @@ function Header({ path }) {
                         </Tooltip>
                       )}
                       {/* start start new chat */}
-                      {permissionsData && permissionsData.includes(2) && (
+                      {permissionsData && permissionsData.includes(3) && (
                         <Tooltip content="Start new chat" placement="bottom">
                           <li
                             title="start new chat"

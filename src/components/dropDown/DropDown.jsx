@@ -47,8 +47,6 @@ function DropDown() {
     };
   }, [dropDownToggle]);
 
-  console.log(permissionsData)
-
   return (
     <div className="relative inline-block text-left">
       <div>
