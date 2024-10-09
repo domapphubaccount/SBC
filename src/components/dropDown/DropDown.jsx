@@ -15,6 +15,9 @@ function DropDown() {
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
   const pathname = usePathname();
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));
@@ -44,7 +47,7 @@ function DropDown() {
     };
   }, [dropDownToggle]);
 
-
+  console.log(permissionsData)
 
   return (
     <div className="relative inline-block text-left">
@@ -73,7 +76,7 @@ function DropDown() {
           </svg>
         </button>
       </div>
-      {dropDownToggle && (
+      {dropDownToggle && permissionsData && (
         <div
           ref={dropdownRef}
           className="archive_card  mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
@@ -108,34 +111,37 @@ function DropDown() {
                 Home
               </Link>
             )}
-            <Link
-              href="/profile"
-              className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"
-              role="menuitem"
-              tabIndex="-1"
-              id="menu-item-0"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-5 mr-3"
+            {permissionsData.includes(1) && (
+              <Link
+                href="/profile"
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"
+                role="menuitem"
+                tabIndex="-1"
+                id="menu-item-0"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                />
-              </svg>
-              Profile
-            </Link>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-5 mr-3"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                Profile
+              </Link>
+            )}
             {/* {profileData && profileData.roles && profileData.roles[0].name && ( */}
 
             {profileData &&
               profileData.roles &&
-              profileData.roles[0]?.name != "User" && pathname.slice(0,9) !== "/dashboar" && (
+              profileData.roles[0]?.name != "User" &&
+              pathname.slice(0, 9) !== "/dashboar" && (
                 <Link
                   href="/dashboard"
                   className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"

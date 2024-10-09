@@ -15,6 +15,9 @@ export function EditUser({ openEdit, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const roles = useSelector((state) => state.rolesSlice.roles);
   const ErrorMSG = useSelector((state) => state.usersSlice.error);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   const status = ["active", "deactive", "suspend"];
 
@@ -125,29 +128,32 @@ export function EditUser({ openEdit, handleClose }) {
                   )}
                 </div>
 
-                <div>
-                  <Label htmlFor="role" value="User Role" />
-                  <select
-                    className="border-0"
-                    id="role"
-                    name="role_id"
-                    onChange={formik.handleChange}
-                    value={formik.values.role_id}
-                    required
-                  >
-                    <option value="">None</option>
-                    {roles.length > 0 &&
-                      roles.map((item, index) => (
-                        <option key={index} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                  </select>
-                  {formik.touched.role_id && formik.errors.role_id && (
-                    <div className="text-red-600">{formik.errors.role_id}</div>
-                  )}
-                </div>
-
+                {permissionsData && permissionsData.includes(24) && (
+                  <div>
+                    <Label htmlFor="role" value="User Role" />
+                    <select
+                      className="border-0"
+                      id="role"
+                      name="role_id"
+                      onChange={formik.handleChange}
+                      value={formik.values.role_id}
+                      required
+                    >
+                      <option value="">None</option>
+                      {roles.length > 0 &&
+                        roles.map((item, index) => (
+                          <option key={index} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                    </select>
+                    {formik.touched.role_id && formik.errors.role_id && (
+                      <div className="text-red-600">
+                        {formik.errors.role_id}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {/* <div className="flex items-center gap-2">
                   <Checkbox
                     id="accept"

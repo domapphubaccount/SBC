@@ -15,6 +15,9 @@ function Profile() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
   const [message, setMessage] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -91,7 +94,7 @@ function Profile() {
           ""
         )}
         {loading ? <div className="mb-3">Updating..</div> : ""}
-        <h4 className="text-xl font-bold text-center mb-4">Update Profile</h4>
+        {/* <h4 className="text-xl font-bold text-center mb-4">Update Profile</h4> */}
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <Label htmlFor="name">Name</Label>
@@ -111,77 +114,80 @@ function Profile() {
               <div className="text-red-600 text-sm">{formik.errors.name}</div>
             ) : null}
           </div>
-
-          <div className="mb-4">
-            <Label htmlFor="email">Email</Label>
-            <TextInput
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              defaultValue={profileData.email}
-              className="mt-1"
-              disabled={formik.isSubmitting}
-            />
-            {formik.touched.email && formik.errors.email ? (
-              <div className="text-red-600 text-sm">{formik.errors.email}</div>
-            ) : null}
-          </div>
-
-          <div>
-            <h4 className="text-center">Update Password</h4>
-          </div>
-          <div className="mb-4">
-            <Label htmlFor="password">Password</Label>
-            <TextInput
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="mt-1"
-              disabled={formik.isSubmitting}
-            />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="text-red-600 text-sm">
-                {formik.errors.password}
+          {permissionsData && (
+            <>
+              <div className="mb-4">
+                <Label htmlFor="email">Email</Label>
+                <TextInput
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  defaultValue={profileData.email}
+                  className="mt-1"
+                  disabled={formik.isSubmitting}
+                />
+                {formik.touched.email && formik.errors.email ? (
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.email}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
 
-          <div className="mb-4">
-            <Label htmlFor="password_confirmation">Confirm Password</Label>
-            <TextInput
-              id="password_confirmation"
-              name="password_confirmation"
-              type="password"
-              placeholder="Confirm your password"
-              value={formik.values.password_confirmation}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="mt-1"
-              disabled={formik.isSubmitting}
-            />
-            {formik.touched.password_confirmation &&
-            formik.errors.password_confirmation ? (
-              <div className="text-red-600 text-sm">
-                {formik.errors.password_confirmation}
+              <div className="mb-4">
+                <Label htmlFor="password">Password</Label>
+                <TextInput
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="mt-1"
+                  disabled={formik.isSubmitting}
+                />
+                {formik.touched.password && formik.errors.password ? (
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.password}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
 
-          <button
-            type="submit"
-            className="bg-blue-500 text-white w-full py-2 rounded mt-4"
-            disabled={formik.isSubmitting}
-          >
-            Update Profile
-          </button>
+              <div className="mb-4">
+                <Label htmlFor="password_confirmation">Confirm Password</Label>
+                <TextInput
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={formik.values.password_confirmation}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="mt-1"
+                  disabled={formik.isSubmitting}
+                />
+                {formik.touched.password_confirmation &&
+                formik.errors.password_confirmation ? (
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.password_confirmation}
+                  </div>
+                ) : null}
+              </div>
+              {permissionsData.includes(2) && (
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white w-full py-2 rounded mt-4"
+                  disabled={formik.isSubmitting}
+                >
+                  Update Profile
+                </button>
+              )}
+            </>
+          )}
         </form>
       </div>
     </div>

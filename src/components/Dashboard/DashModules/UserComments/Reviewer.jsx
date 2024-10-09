@@ -16,6 +16,9 @@ export function Reviewer({ openReviewer, handleClose }) {
   const loading = useSelector((state) => state.userCommentsSlice.loading);
   const profileData = useSelector((state) => state.profileSlice.profile);
   const dispatch = useDispatch();
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   // Formik setup
   const formik = useFormik({

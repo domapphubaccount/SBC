@@ -62,6 +62,10 @@ function MainChat({ elementWidth, windowWidth }) {
   const { enqueueSnackbar } = useSnackbar();
   const [actionSuccess, setAction] = useState(false);
   const action = useSelector((state) => state.usersSlice.action);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
+  
 
   useEffect(() => {
     if (actionSuccess) {
@@ -96,7 +100,7 @@ function MainChat({ elementWidth, windowWidth }) {
     loadingMessage,
     typeComplete,
     actionSuccess,
-    loading_actions
+    loading_actions,
   ]);
   const dislikeToggle = (id) => {
     setItemId(id);
@@ -363,7 +367,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                 <div className="dot-wave__dot"></div>
                                 <div className="dot-wave__dot"></div>
                               </div>
-                            ) : (
+                            ) : permissionsData && permissionsData.includes(3) && (
                               <button
                                 onClick={handleStartNewChat}
                                 className="learn-more start"
@@ -468,20 +472,21 @@ function MainChat({ elementWidth, windowWidth }) {
                                   }}
                                 >
                                   {item.pdfs?.length > 0 &&
-                                  windowWidth <= 800 ? 
-                                  (
+                                  windowWidth <= 800 ? (
                                     <Popover
                                       aria-labelledby="default-popover"
                                       content={
                                         <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
                                           <div className="px-3 py-2">
                                             <ul>
-                                            { 
-                                            item?.answer?.includes("//") && 
-                                            item.answer.match(pattern) ?
-                                            item.answer.match(pattern)?.map((item2, i) => (<li key={i}>{item2}</li>)):
-                                            "No Reference"
-                                            }
+                                              {item?.answer?.includes("//") &&
+                                              item.answer.match(pattern)
+                                                ? item.answer
+                                                    .match(pattern)
+                                                    ?.map((item2, i) => (
+                                                      <li key={i}>{item2}</li>
+                                                    ))
+                                                : "No Reference"}
                                             </ul>
                                           </div>
                                         </div>
@@ -672,7 +677,8 @@ function MainChat({ elementWidth, windowWidth }) {
                                         )
                                       )}
                                       {pathName.trim().slice(0, 9) !==
-                                        "/sharable" && (
+                                        "/sharable" && permissionsData && permissionsData.includes(5) && 
+                                          (
                                         <svg
                                           onClick={() => dislikeToggle(item.id)}
                                           xmlns="http://www.w3.org/2000/svg"
@@ -709,7 +715,7 @@ function MainChat({ elementWidth, windowWidth }) {
           ) : (conversation && Object.entries(conversation).length !== 0) ||
             chatCode.length > 0 ? (
             <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              <ChatInput />
+              {permissionsData && permissionsData.includes(4) && <ChatInput />}
             </div>
           ) : (
             <div></div>
