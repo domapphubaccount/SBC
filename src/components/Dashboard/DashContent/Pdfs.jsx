@@ -46,6 +46,8 @@ function Pdfs({}) {
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
+  const loadingUsers = useSelector((state) => state.usersSlice.loading);
+
 
   useEffect(() => {
     if (action) {
@@ -402,7 +404,7 @@ function Pdfs({}) {
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
 
-      {loading && <SnackbarTooltip />}
+      {(loading || loadingUsers)&& <SnackbarTooltip />}
     </>
   );
 }
