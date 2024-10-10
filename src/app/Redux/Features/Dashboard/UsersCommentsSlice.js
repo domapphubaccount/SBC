@@ -267,7 +267,7 @@ export const userCommentsSlice = createSlice({
       })
       .addCase(getCommentByIDAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end get comment by id
 
