@@ -79,7 +79,14 @@ const initialState = {
 export const profileSlice = createSlice({
   name: "profile",
   initialState,
-  reducers: {},
+  reducers: {
+    clearProfile: (state)=>{
+      state.value = "";
+      state.error= "";
+      state.profile = {};
+      state.permissions = [];
+    }
+  },
 
   extraReducers: (builder) => {
     builder
@@ -115,5 +122,7 @@ export const profileSlice = createSlice({
     // end get profile
   },
 });
+
+export const {clearProfile} = profileSlice.actions
 
 export default profileSlice.reducer;

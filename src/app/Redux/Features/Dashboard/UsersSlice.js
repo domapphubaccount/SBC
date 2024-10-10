@@ -346,7 +346,7 @@ export const usersSlice = createSlice({
       })
       .addCase(updateRoleAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end update user role
 

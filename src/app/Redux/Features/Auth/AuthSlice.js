@@ -61,11 +61,12 @@ export const logoutAction = createAsyncThunk(
       }
       dispatch(clearData())
       dispatch(clearHistory())
+      dispatch(clearProfile())
       return response.data;
     } catch (error) {
-      // if(error?.response?.status === 401){
-      //   dispatch(logout())
-      // }
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }
