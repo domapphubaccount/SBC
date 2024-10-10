@@ -87,15 +87,16 @@ export function Assign({ openAssign, handleClose, fileId }) {
                     <div className="flex justify-between">
                       <Label htmlFor="Users" value="User" />
                       <div
-                        class="inline-flex rounded-md shadow-sm"
+                        className="inline-flex rounded-md shadow-sm"
                         role="group"
                       >
                         <button
                           onClick={() => {
                             page > 1 && setPage(page - 1);
                           }}
+                          title="back"
                           type="button"
-                          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -113,11 +114,12 @@ export function Assign({ openAssign, handleClose, fileId }) {
                           </svg>
                         </button>
                         <button
+                          title="more users"
                           onClick={() => {
                             setPage(page + 1);
                           }}
                           type="button"
-                          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
