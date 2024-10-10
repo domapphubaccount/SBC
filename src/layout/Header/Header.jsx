@@ -70,8 +70,6 @@ function Header({ path }) {
       });
   };
 
-  console.log(permissionsData);
-
   return (
     <>
       <nav
