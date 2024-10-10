@@ -95,7 +95,8 @@ function Header({ path }) {
             ""
           ) : (
             <>
-              {!path ? (
+              {!path ? 
+              permissionsData && permissionsData.includes(12) &&(
                 <div id="code">
                   <Tooltip content="Code" placement="left">
                     <MultipleSelect />
