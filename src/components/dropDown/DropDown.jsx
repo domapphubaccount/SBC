@@ -74,6 +74,7 @@ function DropDown() {
           </svg>
         </button>
       </div>
+      
       {dropDownToggle && permissionsData && (
         <div
           ref={dropdownRef}
@@ -134,11 +135,8 @@ function DropDown() {
                 Profile
               </Link>
             )}
-            {/* {profileData && profileData.roles && profileData.roles[0].name && ( */}
-
             {profileData &&
-              profileData.roles &&
-              profileData.roles[0]?.name != "User" &&
+              [25,39,48,13,8,30].some(value => permissionsData.includes(value)) &&
               pathname.slice(0, 9) !== "/dashboar" && (
                 <Link
                   href="/dashboard"
