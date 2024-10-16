@@ -195,7 +195,7 @@ function Roles({}) {
             <div>
               <h1 className="text-white text-3xl">ROLES</h1>
             </div>
-            {permissionsData && permissionsData.includes(31) && (
+            {permissionsData && permissionsData.includes(31) && rolesData && rolesData.length < 11 && (
               <div>
                 <Button color="blue" onClick={handleOpenAdd}>
                   Add Role
