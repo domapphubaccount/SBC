@@ -26,6 +26,9 @@ function Header({ path }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const pathname = usePathname();
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   const handleStartNewChat = () => {
     dispatch(chat_out());
@@ -70,7 +73,7 @@ function Header({ path }) {
   return (
     <>
       <nav
-        style={{zIndex:50}}
+        style={{ zIndex: 50 }}
         className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue"
       >
         <div className="w-full mx-auto flex flex-wrap items-center justify-between">
@@ -92,7 +95,8 @@ function Header({ path }) {
             ""
           ) : (
             <>
-              {!path ? (
+              {!path ? 
+              permissionsData && permissionsData.includes(12) &&(
                 <div id="code">
                   <Tooltip content="Code" placement="left">
                     <MultipleSelect />
@@ -116,33 +120,41 @@ function Header({ path }) {
                     ""
                   ) : (
                     <>
-                      <Tooltip content="Chat History" placement="left" onClick={(e)=>e.stopPropagation()}>
-                        <li className="mr-3 relative" title="timeline">
-                          <Archive />
-                        </li>
-                      </Tooltip>
-                      {/* start start new chat */}
-                      <Tooltip content="Start new chat" placement="bottom">
-                        <li
-                          title="start new chat"
-                          className="mr-3"
-                          onClick={handleStartNewChat}
+                      {permissionsData && permissionsData.includes(7) && (
+                        <Tooltip
+                          content="Chat History"
+                          placement="left"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          <div>
-                            <div tabIndex="0" className="plusButton">
-                              <svg
-                                className="plusIcon"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 30 30"
-                              >
-                                <g mask="url(#mask0_21_345)">
-                                  <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
-                                </g>
-                              </svg>
+                          <li className="mr-3 relative" title="timeline">
+                            <Archive />
+                          </li>
+                        </Tooltip>
+                      )}
+                      {/* start start new chat */}
+                      {permissionsData && permissionsData.includes(3) && (
+                        <Tooltip content="Start new chat" placement="bottom">
+                          <li
+                            title="start new chat"
+                            className="mr-3"
+                            onClick={handleStartNewChat}
+                          >
+                            <div>
+                              <div tabIndex="0" className="plusButton">
+                                <svg
+                                  className="plusIcon"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 30 30"
+                                >
+                                  <g mask="url(#mask0_21_345)">
+                                    <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                                  </g>
+                                </svg>
+                              </div>
                             </div>
-                          </div>
-                        </li>
-                      </Tooltip>
+                          </li>
+                        </Tooltip>
+                      )}
                       {/* end start new chat */}
                     </>
                   )}

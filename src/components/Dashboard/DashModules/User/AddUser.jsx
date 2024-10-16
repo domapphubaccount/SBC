@@ -14,6 +14,9 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
   const loading = useSelector((state) => state.usersSlice.loading);
   const roles = useSelector((state) => state.rolesSlice.roles);
   const ErrorMSG = useSelector((state) => state.usersSlice.error);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   // Formik setup
   const formik = useFormik({
@@ -23,7 +26,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
       password: "",
       password_confirmation: "",
       role_id: "",
-      account_type: "user"
+      account_type: "user",
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -135,32 +138,40 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   </div>
                 ) : null}
               </div>
-
-              <div>
-                <Label htmlFor="role_id" value="User Role: " />
-                <select
-                  className="border-0"
-                  id="role_id"
-                  name="role_id"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.role_id}
-                  required
-                >
-                  <option value="">Select Role</option>
-                  {roles.length > 0 &&
-                    roles.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                </select>
-                {formik.touched.role_id && formik.errors.role_id ? (
-                  <div className="text-red-600">{formik.errors.role_id}</div>
-                ) : null}
-              </div>
+              {permissionsData && permissionsData.includes(24) && (
+                <div>
+                  <Label htmlFor="role_id" value="User Role: " />
+                  <select
+                    className="border-0"
+                    id="role_id"
+                    name="role_id"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.role_id}
+                    required
+                  >
+                    <option value="">Select Role</option>
+                    {roles.length > 0 &&
+                      roles.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                  {formik.touched.role_id && formik.errors.role_id ? (
+                    <div className="text-red-600">{formik.errors.role_id}</div>
+                  ) : null}
+                </div>
+              )}
               <div className="flex items-center gap-2">
-                <Checkbox id="accept" onChange={(e)=> e.target.checked ? formik.setFieldValue("account_type","test"): formik.setFieldValue("account_type","user") } />
+                <Checkbox
+                  id="accept"
+                  onChange={(e) =>
+                    e.target.checked
+                      ? formik.setFieldValue("account_type", "test")
+                      : formik.setFieldValue("account_type", "user")
+                  }
+                />
                 <Label htmlFor="accept" className="flex">
                   <span className="font-bold"> Test </span>&nbsp; account &nbsp;
                   <a className="text-cyan-600 dark:text-cyan-500">

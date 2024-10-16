@@ -4,9 +4,7 @@ import React, { useEffect, useState } from "react";
 import { WarnUser } from "../DashModules/User/Warn";
 import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  roleModule,
-} from "@/app/Redux/Features/Dashboard/UsersSlice";
+import { roleModule } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
 import {
   editModule,
@@ -39,20 +37,25 @@ function Pdfs({}) {
   const openRole = useSelector((state) => state.usersSlice.roleModule);
   const openAdd = useSelector((state) => state.pdfsSlice.addModule);
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
-  const openAssign = useSelector(state => state.pdfsSlice.assignModule);
+  const openAssign = useSelector((state) => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
-  const [page , setPage] = useState(1);
+  const [page, setPage] = useState(1);
   const total_pages = useSelector((state) => state.pdfsSlice.total_pages);
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.pdfsSlice.action);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
+  const loadingUsers = useSelector((state) => state.usersSlice.loading);
+
 
   useEffect(() => {
     if (action) {
-      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
     }
   }, [action]);
-
-
 
   const handleClose = () => {
     dispatch(editModule(false));
@@ -80,10 +83,10 @@ function Pdfs({}) {
   // end open edit
 
   //   // start open assigned
-    const handleOpenAssigned = (id) => {
-      setFileID(id);
-      dispatch(assignModule(true));
-    };
+  const handleOpenAssigned = (id) => {
+    setFileID(id);
+    dispatch(assignModule(true));
+  };
   //   // end open assigned
 
   //   start add role             ####DONE
@@ -94,17 +97,17 @@ function Pdfs({}) {
 
   // start open view
   const handleOpenView = (id) => {
-    setFileID(id)
+    setFileID(id);
     dispatch(viewModule(true));
   };
   // end open view
 
   useEffect(() => {
-    dispatch(getPdfsAction({ token , page }));
+    dispatch(getPdfsAction({ token, page }));
   }, [
     /* updates */
     updatePdfsData,
-    page
+    page,
   ]);
 
   function formatDate(dateString) {
@@ -129,9 +132,7 @@ function Pdfs({}) {
             <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
               <li>
                 <div className="flex items-center">
-                  <a
-                    className="text-sm font-medium text-white hover:text-blue-600"
-                  >
+                  <a className="text-sm font-medium text-white hover:text-blue-600">
                     Dashboard
                   </a>
                 </div>
@@ -154,7 +155,7 @@ function Pdfs({}) {
                     />
                   </svg>
                   <span className="ms-1 text-sm font-medium text-white md:ms-2">
-                  Building Code
+                    Building Code
                   </span>
                 </div>
               </li>
@@ -164,11 +165,13 @@ function Pdfs({}) {
             <div>
               <h1 className="text-white text-3xl">BUILDING CODE</h1>
             </div>
-            <div>
-              <Button color="blue" onClick={handleOpenAdd}>
-                Add Pdfs
-              </Button>
-            </div>
+            {permissionsData && permissionsData.includes(15) && (
+              <div>
+                <Button color="blue" onClick={handleOpenAdd}>
+                  Add Pdfs
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-white p-8 rounded-md w-full m-auto dashed">
@@ -303,9 +306,7 @@ function Pdfs({}) {
                                 <button
                                   type="button"
                                   className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                                  onClick={() =>
-                                    handleOpenAssigned(item.id)
-                                  }
+                                  onClick={() => handleOpenAssigned(item.id)}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -326,30 +327,33 @@ function Pdfs({}) {
                               {/* end Assigned */}
 
                               {/* start delete */}
-                              <Tooltip content="Delete">
-                              <button
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                                onClick={() =>
-                                  handleOpenDelete(item.chatgpt_file_id)
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="size-4"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                  />
-                                </svg>
-                              </button>
-                              </Tooltip>
+                              {permissionsData &&
+                                permissionsData.includes(17) && (
+                                  <Tooltip content="Delete">
+                                    <button
+                                      type="button"
+                                      className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                      onClick={() =>
+                                        handleOpenDelete(item.chatgpt_file_id)
+                                      }
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="size-4"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </Tooltip>
+                                )}
                               {/* start delete */}
                             </div>
                           </td>
@@ -366,7 +370,11 @@ function Pdfs({}) {
             </div>
           </div>
         </div>
-        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
+        <PaginationPages
+          page={page}
+          total_pages={total_pages}
+          setPage={setPage}
+        />
       </section>
 
       {openDelete && (
@@ -378,13 +386,25 @@ function Pdfs({}) {
       )}
       {openAdd && <Addpdfs openAdd={openAdd} handleClose={handleClose} />}
 
-      {openAssign && <Assign fileId={fileId} handleClose={handleClose} openAssign={openAssign} />}
+      {openAssign && (
+        <Assign
+          fileId={fileId}
+          handleClose={handleClose}
+          openAssign={openAssign}
+        />
+      )}
 
-      {openView && <ViewPdf handleClose={handleClose} openView={openView} fileId={fileId} />}
+      {openView && (
+        <ViewPdf
+          handleClose={handleClose}
+          openView={openView}
+          fileId={fileId}
+        />
+      )}
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
 
-      {loading && <SnackbarTooltip />}
+      {(loading || loadingUsers)&& <SnackbarTooltip />}
     </>
   );
 }

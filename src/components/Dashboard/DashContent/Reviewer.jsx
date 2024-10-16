@@ -48,10 +48,15 @@ function ReviewerAdmin({}) {
   const total_pages = useSelector((state) => state.ReviewSlice.total_pages);
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.ReviewSlice.action);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   useEffect(() => {
     if (action) {
-      enqueueSnackbar("This action has been done successfully", { variant: "success" });
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
     }
   }, [action]);
 
@@ -177,11 +182,13 @@ function ReviewerAdmin({}) {
             <div>
               <h1 className="text-white text-3xl">REVIEWERS</h1>
             </div>
-            <div>
-              <Button color="blue" onClick={handleOpenAdd}>
-                Add Review
-              </Button>
-            </div>
+            {permissionsData && permissionsData.includes(49) && (
+              <div>
+                <Button color="blue" onClick={handleOpenAdd}>
+                  Add Review
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -334,60 +341,65 @@ function ReviewerAdmin({}) {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
                           {/* start view */}
-                          <Tooltip content="View">
-                            <button
-                              title="View"
-                              type="button"
-                              className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
-                              onClick={() => handleOpenView(item)} // item.id
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="white"
-                                className="size-4"
+                          {permissionsData && permissionsData.includes(50) && (
+                            <Tooltip content="View">
+                              <button
+                                title="View"
+                                type="button"
+                                className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
+                                onClick={() => handleOpenView(item)} // item.id
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                />
-                              </svg>
-                            </button>
-                          </Tooltip>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="white"
+                                  className="size-4"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                  />
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                  />
+                                </svg>
+                              </button>
+                            </Tooltip>
+                          )}
                           {/* end view */}
                           {/* start edit */}
-                          <Tooltip content="ٌReview">
-                            <button
-                              type="button"
-                              className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                              onClick={() => handleOpenEdit(item)} //item.id
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="size-4"
+                          {permissionsData && permissionsData.includes(51) && (
+                            <Tooltip content="ٌReview">
+                              <button
+                                type="button"
+                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
+                                onClick={() => handleOpenEdit(item)} //item.id
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-                                />
-                              </svg>
-                            </button>
-                          </Tooltip>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="size-4"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                                  />
+                                </svg>
+                              </button>
+                            </Tooltip>
+                          )}
                           {/* end edit */}
                           {/* start delete */}
+                          {permissionsData && permissionsData.includes(52) &&
                           <Tooltip content="Delete">
                             <button
                               title="Delete"
@@ -410,11 +422,10 @@ function ReviewerAdmin({}) {
                                 />
                               </svg>
                             </button>
-                          </Tooltip>
+                          </Tooltip>}
                           {/* start delete */}
                           {/* start train */}
-                          {item.status !== "reject" &&
-                            item.status === "accept" && (
+                          {permissionsData && permissionsData.includes(51) &&(
                               <Tooltip content="Train">
                                 <button
                                   title="Train"
@@ -453,7 +464,11 @@ function ReviewerAdmin({}) {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
+        <PaginationPages
+          page={page}
+          total_pages={total_pages}
+          setPage={setPage}
+        />
       </section>
 
       {openDelete && (

@@ -18,7 +18,6 @@ export function DeleteUser({ openDelete, handleClose }) {
     dispatch(deleteUserAction({ token, id: userData.id }));
   };
 
-  // console.log(userData,'userData')
   return (
     <>
       <Modal show={openDelete} size="md" onClose={handleClose} popup>

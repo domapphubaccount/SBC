@@ -4,6 +4,7 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { clearData } from "../Chat/ChatSlice";
 import { clearHistory } from "../Chat_History/historySlice";
+import { clearProfile } from "../Profile/ProfileSlice";
 
 const isBrouse = typeof window !== "undefined";
 
@@ -61,11 +62,13 @@ export const logoutAction = createAsyncThunk(
       }
       dispatch(clearData())
       dispatch(clearHistory())
+      dispatch(clearProfile())
+      dispatch(logout())
       return response.data;
     } catch (error) {
-      // if(error?.response?.status === 401){
-      //   dispatch(logout())
-      // }
+      if(error?.response?.status === 401){
+        dispatch(logout())
+      }
       return rejectWithValue(error.response.data);
     }
   }

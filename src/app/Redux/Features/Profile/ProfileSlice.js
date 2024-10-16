@@ -72,13 +72,21 @@ const initialState = {
   loading: false,
   value: "",
   error: "",
-  profile: {}
+  profile: {},
+  permissions: []
 };
 
 export const profileSlice = createSlice({
   name: "profile",
   initialState,
-  reducers: {},
+  reducers: {
+    clearProfile: (state)=>{
+      state.value = "";
+      state.error= "";
+      state.profile = {};
+      state.permissions = [];
+    }
+  },
 
   extraReducers: (builder) => {
     builder
@@ -104,7 +112,8 @@ export const profileSlice = createSlice({
       })
       .addCase(getProfileAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile = action.payload
+        state.profile = action.payload;
+        state.permissions = action.payload?.roles[0]?.permissions.map(item => item.id)
       })
       .addCase(getProfileAction.rejected, (state, action) => {
         state.loading = false;
@@ -113,5 +122,7 @@ export const profileSlice = createSlice({
     // end get profile
   },
 });
+
+export const {clearProfile} = profileSlice.actions
 
 export default profileSlice.reducer;

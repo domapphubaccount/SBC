@@ -20,11 +20,12 @@ export function Assign({ openAssign, handleClose, fileId }) {
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
   const usersData = useSelector((state) => state.usersSlice.users);
   const [usersOption, setUsersOption] = useState([]);
+  const [page, setPage] = useState(1);
 
   // Formik setup
   const formik = useFormik({
     initialValues: {
-     file_id: fileId,
+      file_id: fileId,
       user_ids: [],
     },
     validationSchema: Yup.object({
@@ -36,21 +37,22 @@ export function Assign({ openAssign, handleClose, fileId }) {
   });
 
   useEffect(() => {
-    dispatch(getUsersAction({ token }));
-  }, [dispatch, token]);
+    dispatch(getUsersAction({ token, page }));
+  }, [dispatch, token, page]);
 
   useEffect(() => {
     if (usersData) {
-      let data = usersData.filter(item => !item.pdfs.some(pdf => pdf.id === fileId));
-      setUsersOption(
+      let data = usersData.filter(
+        (item) => !item.pdfs.some((pdf) => pdf.id === fileId)
+      );
+      setUsersOption([...usersOption,...
         data.map((item) => ({
           value: item.id,
           label: item.name,
         })) || []
-      );
+      ]);
     }
   }, [usersData, fileId]);
-  
 
   return (
     <>
@@ -87,6 +89,7 @@ export function Assign({ openAssign, handleClose, fileId }) {
                       id="Users"
                       name="user_ids"
                       isMulti
+                      onMenuScrollToBottom={() => setPage(page + 1)}
                       options={usersOption}
                       value={usersOption.filter((option) =>
                         formik.values.user_ids.includes(option.value)
