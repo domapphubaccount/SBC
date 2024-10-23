@@ -21,7 +21,7 @@ export function ViewPdf({ openView, handleClose, fileId }) {
         <Modal.Body>
           <div className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Role Iformation
+              File Iformation
             </h3>
             <div>
               {fileId.name ? (

@@ -20,54 +20,21 @@ import Logo from "/public/logo.png";
 import { config } from "@/config/config";
 import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import { Tooltip } from "flowbite-react";
+import { set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
 
 function Header({ path }) {
   const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const pathname = usePathname();
+
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
 
   const handleStartNewChat = () => {
     dispatch(chat_out());
-    dispatch(loading_chat_action(true));
-    dispatch(loading_chat(true));
-    dispatch(loading_main_chat(true));
-
-    axios
-      .post(
-        `${config.api}create_thread`,
-        {},
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(getChatCode(response.data.data[0]));
-        dispatch(loading_chat_action(false));
-        dispatch(loading_chat(false));
-        dispatch(loading_main_chat(false));
-
-        // localStorage.setItem("chat_code", response.data.data[0]);
-      })
-      .catch((error) => {
-        console.error("There was an error making the request!", error);
-        dispatch(loading_chat_action(false));
-        dispatch(loading_chat(false));
-        dispatch(loading_main_chat(false));
-        if (error.response.data.error) {
-          dispatch(error_start_chat(error.response.data.error));
-        } else if (error.response.data.message) {
-          dispatch(error_start_chat(error.response.data.message));
-        }
-        setTimeout(() => dispatch(error_start_chat(null)), 2000);
-      });
+    dispatch(set_direct_code([]))
   };
 
   return (
@@ -96,7 +63,7 @@ function Header({ path }) {
           ) : (
             <>
               {!path ? 
-              permissionsData && permissionsData.includes(12) &&(
+              permissionsData && permissionsData.includes(12) && (
                 <div id="code">
                   <Tooltip content="Code" placement="left">
                     <MultipleSelect />

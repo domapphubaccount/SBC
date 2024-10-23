@@ -296,7 +296,6 @@ export const ReviewSlice = createSlice({
       .addCase(getReviewsAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        console.log(action.payload);
         state.reviews = action.payload;
         state.addModule = false;
       })

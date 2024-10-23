@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "./loading"
 import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
 import SnackbarSendError from "@/components/Snackbar/SnackSendError";
+import SnackbarGlobalError from "@/components/Snackbar/SnackGlobalError";
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged); 
@@ -24,7 +25,10 @@ export default function Home() {
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const sendError = useSelector(state => state.chatActionsSlice.error)
+  const sendError = useSelector(state => state.chatActionsSlice.error);
+  const codeError = useSelector(state => state.codeSlice.error);
+  const state = useSelector( state => state);
+  console.log(state)
   
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));
@@ -56,6 +60,9 @@ export default function Home() {
       {/* end loading logout actions */}
       {sendError && <SnackbarSendError />}
       {/* <SnackbarTime /> */}
+      {/* start global error */}
+      {codeError && <SnackbarGlobalError messageError={codeError}/>}
+      {/* end global error */}
     </main>
     :
     <Loading />

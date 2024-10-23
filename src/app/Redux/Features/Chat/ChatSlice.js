@@ -70,6 +70,7 @@ const initialState = {
   get_chat: "",
   chat_code: "",
   loading: false,
+  error: null,
 
 
   // start chatInput
