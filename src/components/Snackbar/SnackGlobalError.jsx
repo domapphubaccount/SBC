@@ -1,10 +1,8 @@
 "use client";
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
-import { useSelector } from "react-redux";
 
-function SnackbarError() {
-  const messageError = useSelector((state) => state.chatSlice.error);
+function SnackbarGlobalError({messageError}) {
   const message = (
       <div
         className="flex items-center"
@@ -27,12 +25,12 @@ function SnackbarError() {
   return (
     <Snackbar
       open={messageError}
-      autoHideDuration={2000}
+      autoHideDuration={1000}
       //   onClose={'handleClose'}
-      message={message || "You need to Open new Thread"}
+      message={message || "There is an error!!"}
       //   action={'action'}
     />
   );
 }
 
-export default SnackbarError;
+export default SnackbarGlobalError;

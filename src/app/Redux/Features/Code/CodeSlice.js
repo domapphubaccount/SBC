@@ -5,7 +5,7 @@ import { config } from "@/config/config";
 import axios from "axios"
 import { logout } from '../Auth/AuthSlice';
 
-// start get chat
+// start get sections
 export const getCodeAction = createAsyncThunk(
   "code/getCodeAction",
   async (arg, { dispatch , rejectWithValue }) => {
@@ -30,11 +30,12 @@ export const getCodeAction = createAsyncThunk(
     }
   }
 );
-// end get chat
+// end get sections
 
 const initialState = {
   value: '',
   storedCode: [],
+  error: null
 }
 
 export const codeSlice = createSlice({
@@ -44,12 +45,37 @@ export const codeSlice = createSlice({
     getCode: (state , action) => {
       state.value = action.payload
     },
+    set_direct_code: (state , action) => {
+      state.storedCode = action.payload
+    },
     set_stored_code: (state, action) => {
       if (state.storedCode.some(item => item === action.payload)) {
         state.storedCode = state.storedCode.filter(item => item !== action.payload);
       } else {
         state.storedCode.push(action.payload);
       }
+    },
+    set_multi_stored_Code: (state, action) => {
+      const codesToAddOrRemove = action.payload;
+      const allCodesExist = codesToAddOrRemove.every(code => 
+        state.storedCode.includes(code)
+      );
+    
+      if (allCodesExist) {
+        state.storedCode = state.storedCode.filter(code => 
+          !codesToAddOrRemove.includes(code)
+        );
+      } else {
+        state.storedCode = [...state.storedCode, ...codesToAddOrRemove.filter(code => 
+          !state.storedCode.includes(code)
+        )];
+      }
+    },
+    set_code_error: (state , action) => {
+      state.error = action.payload;
+    },
+    clear_code_error: (state) => {
+      state.error = null;
     }
   },
 
@@ -72,6 +98,6 @@ export const codeSlice = createSlice({
   },
 })
 
-export const { getCode , set_stored_code } = codeSlice.actions
+export const { getCode , set_stored_code , set_code_error , clear_code_error , set_multi_stored_Code ,set_direct_code } = codeSlice.actions
 
 export default codeSlice.reducer
