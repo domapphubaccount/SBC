@@ -26,6 +26,9 @@ function ChatContainer() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const dispatch = useDispatch();
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   // start manage window width and is logged or not
   useEffect(() => {
@@ -36,7 +39,9 @@ function ChatContainer() {
     ) {
       redirect("/signIn");
     } else {
-      dispatch(getCodeAction({ token }));
+      if(permissionsData && permissionsData.includes(12)){
+      dispatch(getCodeAction({ token }))
+      }
     }
     const handleWindowWidth = () => {
       setWindowWidth(window.innerWidth);

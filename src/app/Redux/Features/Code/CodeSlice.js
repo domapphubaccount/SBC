@@ -26,7 +26,7 @@ export const getCodeAction = createAsyncThunk(
       if(error?.response?.status === 401){
         dispatch(logout())
       }
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data.message);
     }
   }
 );

@@ -155,7 +155,7 @@ export function Reviewer({ openReviewer, handleClose }) {
                     </div>
 
                     <MathJaxContext>
-                      <MathJax dynamic>
+                      {/* <MathJax dynamic> */}
                         <div className="my-5 rounded border">
                           <div>
                             <small className="font-semibold">
@@ -171,7 +171,7 @@ export function Reviewer({ openReviewer, handleClose }) {
                             }}
                           />
                         </div>
-                      </MathJax>
+                      {/* </MathJax> */}
                     </MathJaxContext>
                     <div className="mb-3">
                       <div className="flex justify-between">

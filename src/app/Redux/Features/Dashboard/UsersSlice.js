@@ -363,7 +363,7 @@ export const usersSlice = createSlice({
       })
       .addCase(addUserAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       });
     // end add user
   },

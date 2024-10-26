@@ -268,7 +268,7 @@ function ReviewerAdmin({}) {
                             <Popover
                               content={
                                 <Textarea
-                                  rows={3}
+                                  rows={2}
                                   cols={25}
                                   id="comment id"
                                   style={{ opacity: 1 }}
@@ -296,7 +296,7 @@ function ReviewerAdmin({}) {
                             <Popover
                               content={
                                 <Textarea
-                                  rows={3}
+                                  rows={2}
                                   cols={25}
                                   id="comment id"
                                   style={{ opacity: 1 }}
