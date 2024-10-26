@@ -148,7 +148,7 @@ function Example({
                                   </div>
                                   <div className="w-full flex justify-start">
                                     <div
-                                      className="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative"
+                                      className="overflow-auto bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative"
                                       style={{ maxWidth: "300px" }}
                                     >
                                       <MathJaxContext>

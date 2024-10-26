@@ -11,7 +11,7 @@ export const getPermissionsAction = createAsyncThunk(
   async (arg, { rejectWithValue }) => {
     const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/permissions?page=${page}`, {
+      const response = await axios.get(`${config.api}admin/all_permissions`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

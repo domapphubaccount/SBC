@@ -174,7 +174,7 @@ function Users_chat() {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
                           {/* start view */}
-                          <Tooltip content="View User">
+                          <Tooltip content="View Chat">
                             <button
                               type="button"
                               className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"

@@ -119,10 +119,9 @@ export function Sidebar({ children, handlePage }) {
                   </a>
                 </Tooltip>
               )}
-              <hr className="dark:border-gray-700/60" />
               {permissionsData && permissionsData.includes(39) && (
                   <Tooltip
-                    content="User's Comments"
+                    content="User's Dislikes"
                     style="dark"
                     placement="top"
                   >
@@ -215,7 +214,6 @@ export function Sidebar({ children, handlePage }) {
                     </a>
                   </Tooltip>
                 )}
-              <hr className="dark:border-gray-700/60" />
               {permissionsData && permissionsData.includes(13) && (
                 <Tooltip content="Building Code" style="dark" placement="top">
                   <a

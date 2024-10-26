@@ -59,7 +59,7 @@ export function UserRole({ openRole, handleClose }) {
                     <option value={""}>None</option>
                     {roles.length > 0 &&
                       roles.map((item, index) => (
-                        <option key={index} value={item.name}>
+                        <option key={index} value={item.id}>
                           {item.name}
                         </option>
                       ))}

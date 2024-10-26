@@ -1,8 +1,8 @@
-"use client"; // Ensure the component is treated as a client component
+"use client"; 
 
 import { Button, Modal, Label } from "flowbite-react";
 import Select from "react-select"; // Import react-select
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,21 +38,30 @@ export function Assign({ openAssign, handleClose, fileId }) {
 
   useEffect(() => {
     dispatch(getUsersAction({ token, page }));
-  }, [dispatch, token, page]);
+  }, [page]);
 
-  useEffect(() => {
+  useEffect(()=>{
     if (usersData) {
       let data = usersData.filter(
         (item) => !item.pdfs.some((pdf) => pdf.id === fileId)
       );
+      if(page == 1){
+        setUsersOption([...
+          data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          })) || []
+        ]);
+      }else{
       setUsersOption([...usersOption,...
         data.map((item) => ({
           value: item.id,
           label: item.name,
         })) || []
-      ]);
+      ])
     }
-  }, [usersData, fileId]);
+    }
+  },[usersData, fileId])
 
   return (
     <>

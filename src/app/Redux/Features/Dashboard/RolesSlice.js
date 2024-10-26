@@ -341,7 +341,6 @@ export const rolesSlice = createSlice({
       .addCase(addRoleAction.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.roles = action.payload;
         state.updates = !state.updates;
         state.addModule = false;
       })
