@@ -1,6 +1,7 @@
 
 import Header from '@/layout/Header/Header';
 import React from 'react'
+import Navbar from '@/layout/Header/Navbar';
 
 export const metadata = {
   title: "Dashboard",
@@ -10,7 +11,8 @@ export const metadata = {
 function layout({children}) {
   return (
     <div>
-        <Header path="profile"/>
+        {/* <Header path="profile"/> */}
+        <Navbar />
         {children}
     </div>
   )

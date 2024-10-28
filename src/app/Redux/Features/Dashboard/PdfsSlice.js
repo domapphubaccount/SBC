@@ -115,7 +115,7 @@ export const addpdffileAction = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            Accept: "*/*",
+            Accept: "application/json",
             // "Content-Type": "multipart/form-data",
           },
         }
