@@ -68,7 +68,7 @@ export const deleteCommentAction = createAsyncThunk(
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/chat-user-dislikes/force_delete/${id}`, {
+      const response = await axios.delete(`${config.api}admin/chat-user-dislikes/soft_delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

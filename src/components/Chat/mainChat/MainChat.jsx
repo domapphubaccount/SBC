@@ -30,6 +30,7 @@ import {
 import Loading_chat from "../chatContainer/Loading";
 import { Button, Popover, Tooltip } from "flowbite-react";
 import { useSnackbar } from "notistack";
+import { clear_code_error, set_code_error } from "@/app/Redux/Features/Code/CodeSlice";
 
 function MainChat({ elementWidth, windowWidth }) {
   const pathName = usePathname();
@@ -45,9 +46,10 @@ function MainChat({ elementWidth, windowWidth }) {
   const updates = useSelector((state) => state.updateSlice.state);
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
-  const getchat = useSelector((state) => state.chatSlice.get_chat);
+  // const getchat = useSelector((state) => state.chatSlice.get_chat);
+  // const loading = useSelector((state) => state.updateSlice.loading_chat);
+  // const action = useSelector((state) => state.usersSlice.action);
   const loadingchat = useSelector((state) => state.chatSlice.loading);
-  const loading = useSelector((state) => state.updateSlice.loading_chat);
   const chatSlice_loading = useSelector((state) => state.chatSlice.loading);
   const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
@@ -61,11 +63,10 @@ function MainChat({ elementWidth, windowWidth }) {
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [actionSuccess, setAction] = useState(false);
-  const action = useSelector((state) => state.usersSlice.action);
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
-  
+  const storedCode = useSelector((state) => state.codeSlice.storedCode);
 
   useEffect(() => {
     if (actionSuccess) {
@@ -216,6 +217,7 @@ function MainChat({ elementWidth, windowWidth }) {
     if (pathName.trim().slice(0, 9) == "/sharable") {
       navigate.push("/signIn");
     } else {
+      if(storedCode.length > 0){
       dispatch(chat_out());
       dispatch(loading_chat(true));
       dispatch(loading_chat_action(true));
@@ -223,7 +225,9 @@ function MainChat({ elementWidth, windowWidth }) {
       axios
         .post(
           `${config.api}create_thread`,
-          {},
+          {
+            "file_ids": storedCode.join()
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -236,7 +240,6 @@ function MainChat({ elementWidth, windowWidth }) {
           dispatch(getChatCode(response.data.data[0]));
           dispatch(loading_chat_action(false));
           dispatch(loading_chat(false));
-          // localStorage.setItem("chat", response.data.data[0]);
         })
         .catch((error) => {
           dispatch(loading_chat(false));
@@ -248,7 +251,10 @@ function MainChat({ elementWidth, windowWidth }) {
             dispatch(error_start_chat(error.response.data.message));
           }
           setTimeout(() => dispatch(error_start_chat(null)), 2000);
-        });
+        })}else{
+          dispatch(set_code_error('You cant start new chat without mentioning "CODE"'))
+          setTimeout(()=> dispatch(clear_code_error()) ,1000 )
+        }
     }
   };
   dispatch(action_done(true));

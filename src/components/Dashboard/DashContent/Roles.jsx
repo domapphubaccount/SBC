@@ -142,9 +142,9 @@ function Roles({}) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-
+console.log(rolesData)
   // Step 3: Filter the rows based on the search term
-  const filteredData = rolesData.filter((item) => {
+  const filteredData = rolesData?.filter((item) => {
     return item.name.toLowerCase().includes(searchTerm);
   });
 
@@ -233,7 +233,7 @@ function Roles({}) {
                   type="text"
                   id="table-search"
                   className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Search for User"
+                  placeholder="Search for Role"
                   onChange={handleSearchChange} // Handle search input change
                 />
               </div>
@@ -259,7 +259,7 @@ function Roles({}) {
                 </tr>
               </thead>
               <tbody>
-                {rolesData && rolesData.length > 0 ? (
+                {rolesData && rolesData?.length > 0 ? (
                   filteredData.map((item, index) => (
                     <tr
                       key={index}

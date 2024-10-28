@@ -139,6 +139,8 @@ function Users_comments({}) {
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
 
+  console.log(updateUsersData)
+
   return (
     <>
       <section>
@@ -282,7 +284,7 @@ function Users_comments({}) {
                             <Popover
                               content={
                                 <Textarea
-                                  rows={4}
+                                  rows={3}
                                   cols={25}
                                   id="comment id"
                                   style={{ opacity: 1 }}

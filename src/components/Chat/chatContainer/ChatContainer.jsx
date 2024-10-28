@@ -5,8 +5,9 @@ import MainChat from "../mainChat/MainChat";
 import axios from "axios";
 import { redirect, usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { getCodeAction } from "@/app/Redux/Features/Code/CodeSlice";
+import { getCodeAction, set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
 import {
+  getChatCode,
   getChatData,
   getConversation,
   loading_main_chat,
@@ -25,6 +26,9 @@ function ChatContainer() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const dispatch = useDispatch();
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   // start manage window width and is logged or not
   useEffect(() => {
@@ -35,7 +39,9 @@ function ChatContainer() {
     ) {
       redirect("/signIn");
     } else {
-      dispatch(getCodeAction({ token }));
+      if(permissionsData && permissionsData.includes(12)){
+      dispatch(getCodeAction({ token }))
+      }
     }
     const handleWindowWidth = () => {
       setWindowWidth(window.innerWidth);
@@ -64,6 +70,8 @@ function ChatContainer() {
           )
           .then((response) => {
             if (response.data) {
+              dispatch(set_direct_code(response.data.data.pdfs.map(item => item.chatgpt_file_id)));
+              dispatch(getChatCode(response.data.data.pdfs.map(item => item.chatgpt_file_id)));
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));

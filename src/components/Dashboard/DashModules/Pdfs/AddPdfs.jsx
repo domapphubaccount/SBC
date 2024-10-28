@@ -8,7 +8,7 @@ import {
   Select,
   TextInput,
 } from "flowbite-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,7 @@ export function Addpdfs({ openAdd, handleClose }) {
   const sections = useSelector((state) => state.sectionsSlice.sections);
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
+  const [check,setIsChecked] = useState(false)
 
   // Formik setup
   const formik = useFormik({
@@ -45,7 +46,7 @@ export function Addpdfs({ openAdd, handleClose }) {
         }),
     }),
     onSubmit: (values) => {
-      dispatch(addpdffileAction({ token, ...values }));
+      dispatch(addpdffileAction({ token, type: check ? 1 : 0 , ...values }));
     },
   });
 
@@ -60,7 +61,7 @@ export function Addpdfs({ openAdd, handleClose }) {
   return (
     <>
       <Modal show={openAdd} size="md" popup onClose={handleClose}>
-      {ErrorMSG && (
+        {ErrorMSG && (
           <div
             className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
@@ -142,6 +143,31 @@ export function Addpdfs({ openAdd, handleClose }) {
                       {formik.errors.file_path}
                     </div>
                   ) : null}
+                </div>
+
+                <div className="p-3">
+{check &&
+                  <div className="mt-2 mb-4 p-2 text-sm text-yellow-800 bg-red-100 border border-red-400 rounded">
+                    <strong>Warning:</strong> You can't use the assistant file ,it will be provided in only to <bold>Train</bold> model
+                    training.
+                  </div>
+}
+                  <div className="flex items-center">
+                    <input
+                      id="editAfterTrain"
+                      type="checkbox"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                      onChange={(event) => {
+                        setIsChecked(event.target.checked);
+                      }}
+                    />
+                    <label
+                      htmlFor="editAfterTrain"
+                      className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >
+                      This is an assistant file
+                    </label>
+                  </div>
                 </div>
 
                 <div className="w-full flex justify-end">

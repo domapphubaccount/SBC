@@ -70,7 +70,7 @@ export const deletePdfAction = createAsyncThunk(
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/force_delete_file/${id}`, {
+      const response = await axios.delete(`${config.api}admin/soft_delete_file/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -98,7 +98,7 @@ export const deletePdfAction = createAsyncThunk(
 export const addpdffileAction = createAsyncThunk(
   "pdfs/addpdffileAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    const { token, name, section_id, file_path } = arg;
+    const { token, name, section_id, file_path , type } = arg;
 
     // Create FormData object to handle file upload
     const formData = new FormData();
@@ -106,6 +106,7 @@ export const addpdffileAction = createAsyncThunk(
     formData.append("section_id", section_id);
     formData.append("name", name);
     formData.append("file_path", file_path); // Adjust this if the backend expects a different name
+    formData.append("type",type);
 
     try {
       const response = await axios.post(

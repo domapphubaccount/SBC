@@ -66,30 +66,38 @@ function Users({}) {
 
   // start open delete
   const handleOpenDelete = (id) => {
+    if(id){
     dispatch(getUserByIDAction({ token, id }));
     dispatch(deleteModule(true));
+    }
   };
   // end open delete
 
   // start open edit
   const handleOpenEdit = (id) => {
+    if(id){
     dispatch(getUserByIDAction({ token, id }));
     dispatch(getRolesAction({ token }));
     dispatch(editModule(true));
+    }
   };
   // end open edit
 
   // start open view
   const handleOpenView = (id) => {
+    if(id){
     dispatch(getUserByIDAction({ token, id }));
     dispatch(viewModule(true));
+    }
   };
   // end open view
 
   // start open role
   const handleOpenRole = (id) => {
+    if(id){
     dispatch(getUserByIDAction({ token, id }));
     dispatch(roleModule(true));
+    }
   };
   // end open role
 
