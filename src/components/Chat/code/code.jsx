@@ -33,20 +33,20 @@ function MultipleSelect() {
 
   const handleCheckboxChange = (fileId) => {
     if (!available) {
-      if (storedCode.length < 9) {
+      if (storedCode.length < 6) {
         dispatch(set_stored_code(fileId));
       }else{
-        dispatch(set_code_error('You cant check more than 8 files'));
+        dispatch(set_code_error('You cant check more than 5 files'));
         setTimeout(()=>{dispatch(clear_code_error())} , 1500)
       }
     }
   };
   const handleSelectMultiCode = (filesId) => {
     if (!available) {
-      if(filesId.length < 9){
+      if(filesId.length < 6){
       dispatch(set_multi_stored_Code(filesId));
       }else{
-        dispatch(set_code_error('This list has more than 8 files,"you can check 5 files only"'));
+        dispatch(set_code_error('This list has more than 5 files,"you can check 5 files only"'));
         setTimeout(()=>{dispatch(clear_code_error())} , 1500)
       }
     }

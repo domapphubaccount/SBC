@@ -23,15 +23,7 @@ function Refrence({ setElementWidth }) {
         style={{ paddingTop: "100px" }}
       >
         <h2
-          className="ml-2 mb-2 text-gray-600 text-lg my-2 absolute"
-          style={{
-            top: "80px",
-            fontSize: "1rem",
-            fontWeight: "bold",
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex:3
-          }}
+          className="ref ml-2 mb-2 text-gray-600 my-2 absolute"
         >
           Reference
         </h2>

@@ -11,8 +11,7 @@ export const metadata = {
 function layout({children}) {
   return (
     <div>
-        {/* <Header path="profile"/> */}
-        <Navbar />
+        <Header path="profile"/>
         {children}
     </div>
   )

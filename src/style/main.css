@@ -285,11 +285,24 @@ nav{
   transition: all 1s cubic-bezier(0, .5, 0, 1);
 }
 
+.ref{
+  font-size: 1rem;
+  font-weight: bold;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
 @media (max-width: 600px) {
+  .ref{
+    font-size: .8rem;
+  }
   .archive_card{
     position: absolute;
-    left: 0px;
+    left: 20%;
     width: 300px;
+    transform: translateX(-70%);
   }
   .code_card{
     right: 0px;
@@ -1021,6 +1034,15 @@ button:hover .button-text {
 /* button click effect*/
 .Btn_history:active {
   transform: translate(2px, 2px);
+}
+
+@media (max-width: 600px) {
+  .Btn_history:hover .svgWrapper{
+    padding-right: 0;
+  }
+  .Btn_history:hover{
+    width: 0;
+  }
 }
 
 /* end history chat button */

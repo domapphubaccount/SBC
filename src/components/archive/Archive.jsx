@@ -49,7 +49,7 @@ function Archive() {
             ></rect>
             <path strokeWidth="5" stroke="#fff" d="M1 12L41 12"></path>
           </svg>
-          <div className="text">History</div>
+          <div className="text hidden sm:block">History</div>
         </div>
       </button>
 
