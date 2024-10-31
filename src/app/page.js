@@ -12,6 +12,7 @@ import Loading from "./loading"
 import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
 import SnackbarSendError from "@/components/Snackbar/SnackSendError";
 import SnackbarGlobalError from "@/components/Snackbar/SnackGlobalError";
+import Drawer from "@/layout/Drawer/Drawer"
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged); 
@@ -27,8 +28,6 @@ export default function Home() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sendError = useSelector(state => state.chatActionsSlice.error);
   const codeError = useSelector(state => state.codeSlice.error);
-  const state = useSelector( state => state);
-  console.log(state)
   
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));
@@ -46,6 +45,7 @@ export default function Home() {
     <main>
       <Header />
       <DashLayout />
+      <Drawer />
       {/* start loading change chat from history */}
       {loading && <SnackbarTooltip />}
       {/* end loading change chat from history */}

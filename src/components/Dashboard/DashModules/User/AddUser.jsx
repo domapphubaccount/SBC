@@ -75,6 +75,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   id="name"
                   name="name"
                   type="text"
+                  max="30"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.name}

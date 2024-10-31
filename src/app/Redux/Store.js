@@ -19,10 +19,12 @@ import chatActionsSlice from "./Features/Chat/ChatActionsSlice";
 import ReviewSlice from "./Features/Dashboard/ReviewerSlice";
 import dashboardSlice from "./Features/Dashboard/DashboardSlice";
 import usersChatSlice from "./Features/Dashboard/MasterUsersChat";
+import asideSlice from "./Features/Dashboard/SideBarSlice";
 
 export const store = configureStore({
   reducer: {
     loginSlice,
+    asideSlice,
     conversationSlice,
     codeSlice,
     dashboardSlice,

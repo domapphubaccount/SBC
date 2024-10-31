@@ -31,7 +31,7 @@ export function EditUser({ openEdit, handleClose }) {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .max(30, "Name shouldn't exceed 30 characters")
+        .max(30, "Shouldn't exceed 30")
         .required("Name is required"),
       email: Yup.string()
         .email("Invalid email address")
@@ -154,25 +154,6 @@ export function EditUser({ openEdit, handleClose }) {
                     )}
                   </div>
                 )}
-                {/* <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="accept"
-                    onChange={(e) =>
-                      e.target.checked
-                        ? formik.setFieldValue("account_type", "test")
-                        : formik.setFieldValue("account_type", "")
-                    }
-                    defaultChecked={userData?.account_type === "test"}
-                  />
-                  <Label htmlFor="accept" className="flex">
-                    <span className="font-bold"> Test </span>&nbsp; account
-                    &nbsp;
-                    <a className="text-cyan-600 dark:text-cyan-500">
-                      with suspension date
-                    </a>
-                  </Label>
-                </div> */}
-
                 <div className="w-full flex justify-end">
                   <Button type="submit">Save Changes</Button>
                 </div>

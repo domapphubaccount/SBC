@@ -1,65 +1,112 @@
-import React, { useEffect, useState } from "react";
-import ArchiveSettings from "./ArchiveSettings";
-import ShareChatLink from "../Chat/shareChatLink/ShareChatLink";
 import axios from "axios";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loading_chat,
-  updateSlice,
-  update_archive,
-} from "@/app/Redux/Features/Update/UpdateSlice";
-import {
-  choseChate,
-  getChatHistory,
-  getConversation,
-  loading_main_chat,
-} from "@/app/Redux/Features/Chat/ChatSlice";
-import Logo from "@/assets/logo/icon.png";
 import { config } from "@/config/config";
-import {
-  getHistoryAction,
-  loading_get_chat_history,
-} from "@/app/Redux/Features/Chat_History/historySlice";
 import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
-import loadingImg from "@/assets/logo/loading_icon.gif";
-import { useSnackbar } from "notistack";
+import {
+  delete_module,
+  rename_module,
+} from "@/app/Redux/Features/Chat_History/historySlice";
+import { update_archive } from "@/app/Redux/Features/Update/UpdateSlice";
+import ShareChatLink from "../../Chat/shareChatLink/ShareChatLink";
 
-function TailwindAccordion() {
-  const [open, setOpen] = useState(null);
-  const [renameToggle, setRenameToggle] = useState(false);
-  const [deleteToggle, setDeleteToggle] = useState(false);
-  const [handleChat, setHandleChat] = useState({});
-  const [inputName, setInputName] = useState("");
-  const [shareName, setShareName] = useState("0");
-  const [shareToggle, setShareToggle] = useState(false);
-  const [sharableChat, setSharableChat] = useState([]);
-  const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const dashboardData = useSelector((state) => state.historySlice.chat_history);
-  const updateDashboard = useSelector((state) => state.updateSlice.archive);
-  const updates = useSelector((state) => state.updateSlice.state);
-  const loading = useSelector((state) => state.chatActionsSlice.loading);
-  const loadingHistory = useSelector((state) => state.historySlice.loading);
-  const errorHistory = useSelector((state) => state.historySlice.error);
+function ArchiveAction({
+  setSharableChat,
+  sharableChat,
+  handleChat,
+  setHandleChat,
+  setShareToggle,
+  token,
+  shareToggle,
+}) {
+  const renameToggle = useSelector((state) => state.historySlice.rename_module);
+  const deleteToggle = useSelector((state) => state.historySlice.delete_module);
+  const [shareName, setShareName] = React.useState("0");
+  const [inputName, setInputName] = React.useState("");
+
+  const [ErrorMSG, setError] = useState("");
+
   const dispatch = useDispatch();
-  const chatid = useSelector((state) => state.chatSlice.get_chat);
-  const conversation = useSelector((state) => state.chatSlice.conversation);
+  const loading = useSelector((state) => state.chatActionsSlice.loading);
   const disabledAction = useSelector((state) => state.chatActionsSlice.loading);
-  const [action, setAction] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    if (action) {
-      enqueueSnackbar("This action has been done successfully", {
-        variant: "success",
+  const handleRename = () => {
+    dispatch(loading_chat_action(true));
+    axios
+      .post(
+        `${config.api}rename-chat`,
+        {
+          chat_id: handleChat.id,
+          new_name: inputName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data) {
+          setHandleChat({});
+          dispatch(update_archive());
+          dispatch(loading_chat_action(false));
+          dispatch(rename_module(false));
+          setOpen(false);
+          setAction(true);
+          setTimeout(() => setAction(false), 1500);
+        }
+      })
+      .catch((error) => {
+        setError(error.response.data.message);
+        setTimeout(() => setError(""), 1500);
+        dispatch(loading_chat_action(false));
+        console.error("There was an error making the request!", error);
       });
-    }
-  }, [action]);
+    window.MathJax && window.MathJax.typeset();
+  };
+  const handleDeleteChate = (handleChat) => {
+    dispatch(loading_chat_action(true));
+    axios
+      .post(
+        `${config.api}archive-chat`,
+        {
+          chat_id: handleChat.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data) {
+          dispatch(loading_chat_action(false));
+          dispatch(delete_module(false));
 
-  useEffect(() => {
-    dispatch(getHistoryAction({ token }));
-  }, [updates, updateDashboard, token]);
-
-  // mark name sharable
+          if (handleChat.id === conversation.id) {
+            localStorage.removeItem("chat");
+            setHandleChat({});
+            dispatch(choseChate(null));
+            dispatch(getConversation([]));
+          }
+          dispatch(update_archive());
+          setOpen(false);
+          setAction(true);
+          setTimeout(() => setAction(false), 1500);
+        }
+      })
+      .catch((error) => {
+        dispatch(loading_chat_action(false));
+        setError(error.response.data.message);
+        setTimeout(() => setError(""), 1500);
+        console.error("There was an error making the request!", error);
+      });
+    window.MathJax && window.MathJax.typeset();
+  };
   const handleCopyShare = (toggleItem) => {
     axios
       .post(
@@ -85,193 +132,8 @@ function TailwindAccordion() {
         console.error("There was an error making the request!", error);
       });
   };
-  const toggle = (id) => {
-    setOpen((prevId) => (prevId === id ? null : id));
-  };
-  const handleRename = (handleChat) => {
-    dispatch(loading_chat_action(true));
-    axios
-      .post(
-        `${config.api}rename-chat`,
-        {
-          chat_id: handleChat.id,
-          new_name: inputName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data) {
-          setHandleChat({});
-          handleAction();
-          dispatch(update_archive());
-          dispatch(loading_chat_action(false));
-          setRenameToggle(false);
-          setOpen(false);
-          setAction(true);
-          setTimeout(() => setAction(false), 1500);
-        }
-      })
-      .catch((error) => {
-        dispatch(loading_chat_action(false));
-        console.error("There was an error making the request!", error);
-      });
-    window.MathJax && window.MathJax.typeset();
-  };
-
-  const handleGetChat = (chat_id, share_name) => {
-    if (chatid != chat_id) {
-      dispatch(choseChate(chat_id));
-      dispatch(loading_main_chat(true));
-      // dispatch(loading_chat(true));
-      dispatch(loading_get_chat_history(true));
-      localStorage.setItem("chat", chat_id);
-    }
-  };
-  const handleDeleteChate = (handleChat) => {
-    dispatch(loading_chat_action(true));
-    axios
-      .post(
-        `${config.api}archive-chat`,
-        {
-          chat_id: handleChat.id,
-          // archive: handleChat.is_archive,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data) {
-          dispatch(loading_chat_action(false));
-          setDeleteToggle(false);
-
-          if (handleChat.id === conversation.id) {
-            localStorage.removeItem("chat");
-            setHandleChat({});
-            dispatch(choseChate(null));
-            dispatch(getConversation([]));
-          }
-          dispatch(update_archive());
-          setOpen(false);
-          setAction(true);
-          setTimeout(() => setAction(false), 1500);
-        }
-      })
-      .catch((error) => {
-        dispatch(loading_chat_action(false));
-        console.error("There was an error making the request!", error);
-      });
-    window.MathJax && window.MathJax.typeset();
-  };
-
   return (
-    <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
-      <div className="accordion h-full">
-        {dashboardData?.chat_history &&
-        Object.entries(dashboardData.chat_history).length >= 1 ? (
-          Object.entries(dashboardData.chat_history).map((item, i) => (
-            <div className="border-b border-gray-200" key={item[0]}>
-              <div
-                className="cursor-pointer py-4 flex justify-between items-center"
-                onClick={() => toggle(i)}
-              >
-                <span className="text-sm font-bold text-gray-800">
-                  {item[0]}
-                </span>
-                {item[1]?.id && (
-                  <svg
-                    className={`w-5 h-5 transform transition-transform duration-300 ${
-                      open === 2 ? "rotate-180" : "rotate-0"
-                    }`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="white"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                )}
-              </div>
-              {open === i && (
-                <div className="pb-2 text-sm font-bold text-gray-700">
-                  <ul>
-                    {item[1] &&
-                      Object.entries(item[1]).map((item, i) => (
-                        <li
-                          key={i}
-                          className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleGetChat(item[1].id, item[1].share_name);
-                          }}
-                        >
-                          -- {item[1].id ? item[1].name : item[1].name}
-                          <ArchiveSettings
-                            item={item[1]}
-                            setRenameToggle={setRenameToggle}
-                            setDeleteToggle={setDeleteToggle}
-                            setHandleChat={setHandleChat}
-                            setShareToggle={setShareToggle}
-                          />
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))
-        ) : loadingHistory ||
-          typeof dashboardData?.chat_history === "undefined" ||
-          loadingHistory ? (
-          <>
-            {errorHistory ? (
-              <div className="text-center">
-                <img
-                  src={loadingImg.src}
-                  alt="loading"
-                  className="w-20 loading_logo inline"
-                />
-                <div className="font-semibold">Loading..</div>
-              </div>
-            ) : (
-              <div className="h-full w-full text-black flex justify-center items-center">
-                <div className="text-center">
-                  <img className="w-20 inline" src={Logo.src} alt="logo" />
-                  <div className="font-semibold	">No History Yet</div>
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          dashboardData.chat_history &&
-          Object.entries(dashboardData.chat_history).length === 0 && (
-            <>
-              <div className="h-full w-full text-black flex justify-center items-center">
-                <div className="text-center">
-                  <img className="w-20 inline" src={Logo.src} alt="logo" />
-                  <div className="font-semibold	">No History Yet</div>
-                </div>
-              </div>
-            </>
-          )
-        )}
-      </div>
-
+    <>
       {renameToggle && handleChat && (
         <div
           className="relative z-10"
@@ -279,8 +141,24 @@ function TailwindAccordion() {
           role="dialog"
           aria-modal="true"
         >
+          {ErrorMSG && (
+            <div
+              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              role="alert"
+            >
+              <span className="font-medium">Error!</span> {ErrorMSG}
+            </div>
+          )}
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
           <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          {ErrorMSG && (
+              <div
+                className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                role="alert"
+              >
+                <span className="font-medium">Error!</span> {ErrorMSG}
+              </div>
+            )}
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -311,14 +189,14 @@ function TailwindAccordion() {
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     disabled={loading || disabledAction}
-                    onClick={() => handleRename(handleChat)}
+                    onClick={handleRename}
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500	 sm:ml-3 sm:w-auto"
                   >
                     Rename
                   </button>
                   <button
-                    onClick={() => setRenameToggle(false)}
+                    onClick={() => dispatch(rename_module(false))}
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                   >
@@ -340,6 +218,14 @@ function TailwindAccordion() {
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
           <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            {ErrorMSG && (
+              <div
+                className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                role="alert"
+              >
+                <span className="font-medium">Error!</span> {ErrorMSG}
+              </div>
+            )}
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -387,7 +273,7 @@ function TailwindAccordion() {
                     Delete
                   </button>
                   <button
-                    onClick={() => setDeleteToggle(false)}
+                    onClick={() => dispatch(delete_module(false))}
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                   >
@@ -412,8 +298,8 @@ function TailwindAccordion() {
           shareName={shareName}
         />
       )}
-    </div>
+    </>
   );
 }
 
-export default TailwindAccordion;
+export default ArchiveAction;
