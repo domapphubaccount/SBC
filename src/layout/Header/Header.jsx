@@ -3,7 +3,7 @@ import MultipleSelect from "@/components/Chat/code/code";
 import Archive from "@/components/archive/Archive";
 import DropDown from "@/components/dropDown/DropDown";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   chat_out,
@@ -13,9 +13,9 @@ import Logo from "/public/logo.png";
 import { Tooltip } from "flowbite-react";
 import { set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
 import { drawer_toggle, sidar_toggle } from "@/app/Redux/Features/Dashboard/SideBarSlice";
+import Joyride from "react-joyride";
 
 function Header({ path }) {
-  const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
   const pathname = usePathname();
 
@@ -27,9 +27,59 @@ function Header({ path }) {
     dispatch(chat_out());
     dispatch(set_direct_code([]));
   };
+  const [run, setRun] = useState(false);
 
+  useEffect(() => {
+    setRun(true)
+  }, []);
+
+  const steps = [
+    {
+      target: '#code',
+      content: (
+        <div>
+          You can select up to 5 options here,
+          <br />
+          and they cannot be changed after starting a new chat.
+        </div>
+      ),
+      disableBeacon: true,
+      placement: 'bottom',
+      spotlightClicks: true,
+      styles: {
+        options: {
+          zIndex: 10000,
+        },
+      },
+      title: 'CODE',
+    },
+    // Additional steps can go here if needed
+  ];
+  
   return (
     <>
+    <Joyride
+    steps={steps}
+    run={run}
+    continuous={false}
+    showSkipButton={false}    disableOverlayClose
+    styles={{
+      options: {
+        primaryColor: "#172d59",
+      },
+    }}
+    locale={{
+      next: "OK",
+      skip: "close",
+    }}
+    callback={(data) => {
+      if (data.action === 'skip' || data.status === 'finished') {
+        setRun(false);
+      }
+    }}
+  />
+  
+  
       <nav
         style={{ zIndex: 50 }}
         className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue"
@@ -114,7 +164,7 @@ function Header({ path }) {
 
                   <Tooltip content="Profile" placement="left">
                     <li title="profile">
-                      <DropDown userName={userName} />
+                      <DropDown />
                     </li>
                   </Tooltip>
 

@@ -30,7 +30,10 @@ import {
 import Loading_chat from "../chatContainer/Loading";
 import { Button, Popover, Tooltip } from "flowbite-react";
 import { useSnackbar } from "notistack";
-import { clear_code_error, set_code_error } from "@/app/Redux/Features/Code/CodeSlice";
+import {
+  clear_code_error,
+  set_code_error,
+} from "@/app/Redux/Features/Code/CodeSlice";
 
 function MainChat({ elementWidth, windowWidth }) {
   const pathName = usePathname();
@@ -217,44 +220,47 @@ function MainChat({ elementWidth, windowWidth }) {
     if (pathName.trim().slice(0, 9) == "/sharable") {
       navigate.push("/signIn");
     } else {
-      if(storedCode.length > 0){
-      dispatch(chat_out());
-      dispatch(loading_chat(true));
-      dispatch(loading_chat_action(true));
+      if (storedCode.length > 0) {
+        dispatch(chat_out());
+        dispatch(loading_chat(true));
+        dispatch(loading_chat_action(true));
 
-      axios
-        .post(
-          `${config.api}create_thread`,
-          {
-            "file_ids": storedCode.join()
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
+        axios
+          .post(
+            `${config.api}create_thread`,
+            {
+              file_ids: storedCode.join(),
             },
-          }
-        )
-        .then((response) => {
-          dispatch(getChatCode(response.data.data[0]));
-          dispatch(loading_chat_action(false));
-          dispatch(loading_chat(false));
-        })
-        .catch((error) => {
-          dispatch(loading_chat(false));
-          dispatch(loading_chat_action(false));
-          console.error("There was an error making the request!", error);
-          if (error.response.data.error) {
-            dispatch(error_start_chat(error.response.data.error));
-          } else if (error.response.data.message) {
-            dispatch(error_start_chat(error.response.data.message));
-          }
-          setTimeout(() => dispatch(error_start_chat(null)), 2000);
-        })}else{
-          dispatch(set_code_error('You cant start new chat without mentioning "CODE"'))
-          setTimeout(()=> dispatch(clear_code_error()) ,1000 )
-        }
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            dispatch(getChatCode(response.data.data[0]));
+            dispatch(loading_chat_action(false));
+            dispatch(loading_chat(false));
+          })
+          .catch((error) => {
+            dispatch(loading_chat(false));
+            dispatch(loading_chat_action(false));
+            console.error("There was an error making the request!", error);
+            if (error.response.data.error) {
+              dispatch(error_start_chat(error.response.data.error));
+            } else if (error.response.data.message) {
+              dispatch(error_start_chat(error.response.data.message));
+            }
+            setTimeout(() => dispatch(error_start_chat(null)), 2000);
+          });
+      } else {
+        dispatch(
+          set_code_error('You cant start new chat without mentioning "CODE"')
+        );
+        setTimeout(() => dispatch(clear_code_error()), 1000);
+      }
     }
   };
   dispatch(action_done(true));
@@ -373,16 +379,21 @@ function MainChat({ elementWidth, windowWidth }) {
                                 <div className="dot-wave__dot"></div>
                                 <div className="dot-wave__dot"></div>
                               </div>
-                            ) : permissionsData && permissionsData.includes(3) && (
-                              <button
-                                onClick={handleStartNewChat}
-                                className="learn-more start"
-                              >
-                                <span className="circle" aria-hidden="true">
-                                  <span className="icon arrow"></span>
-                                </span>
-                                <span className="button-text">Start Chat</span>
-                              </button>
+                            ) : (
+                              permissionsData &&
+                              permissionsData.includes(3) && (
+                                <button
+                                  onClick={handleStartNewChat}
+                                  className="learn-more start"
+                                >
+                                  <span className="circle" aria-hidden="true">
+                                    <span className="icon arrow"></span>
+                                  </span>
+                                  <span className="button-text">
+                                    Start Chat
+                                  </span>
+                                </button>
+                              )
                             )}
                           </div>
                         </div>
@@ -477,8 +488,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                     zIndex: 2,
                                   }}
                                 >
-                                  {item.pdfs?.length > 0 &&
-                                  windowWidth <= 800 ? (
+                                  {windowWidth <= 800 ? (
                                     <Popover
                                       aria-labelledby="default-popover"
                                       content={
@@ -683,24 +693,27 @@ function MainChat({ elementWidth, windowWidth }) {
                                         )
                                       )}
                                       {pathName.trim().slice(0, 9) !==
-                                        "/sharable" && permissionsData && permissionsData.includes(5) && 
-                                          (
-                                        <svg
-                                          onClick={() => dislikeToggle(item.id)}
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          fill="none"
-                                          viewBox="0 0 24 24"
-                                          strokeWidth={1.5}
-                                          stroke="black"
-                                          className="size-3.5 ml-2 cursor-pointer"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                                          />
-                                        </svg>
-                                      )}
+                                        "/sharable" &&
+                                        permissionsData &&
+                                        permissionsData.includes(5) && (
+                                          <svg
+                                            onClick={() =>
+                                              dislikeToggle(item.id)
+                                            }
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="black"
+                                            className="size-3.5 ml-2 cursor-pointer"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                                            />
+                                          </svg>
+                                        )}
                                     </div>
                                   ) : (
                                     ""
