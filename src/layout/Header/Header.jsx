@@ -30,7 +30,10 @@ function Header({ path }) {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
-    setRun(true)
+    if(localStorage.getItem("hints")){
+    }else{
+      setRun(true)
+    }
   }, []);
 
   const steps = [
@@ -75,6 +78,7 @@ function Header({ path }) {
     callback={(data) => {
       if (data.action === 'skip' || data.status === 'finished') {
         setRun(false);
+        localStorage.setItem("hints",true)
       }
     }}
   />
