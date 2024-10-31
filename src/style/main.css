@@ -1041,7 +1041,7 @@ button:hover .button-text {
     padding-right: 0;
   }
   .Btn_history:hover{
-    width: 0;
+    width: 45px;
   }
 }
 

@@ -28,8 +28,6 @@ export default function Home() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sendError = useSelector(state => state.chatActionsSlice.error);
   const codeError = useSelector(state => state.codeSlice.error);
-  const state = useSelector( state => state);
-  console.log(state)
   
   useLayoutEffect(() => {
     dispatch(getProfileAction({ token }));

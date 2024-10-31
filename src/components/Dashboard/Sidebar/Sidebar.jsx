@@ -20,7 +20,7 @@ export function Sidebar({ children, handlePage }) {
       {permissionsData && (
         <aside
           id="default-sidebar"
-          className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+          className={`fixed top-0 left-0 z-40 w-32 h-screen transition-transform ${
             aside ? "translate-x-0" : "-translate-x-full"
           } sm:translate-x-0 mt-4`}
           aria-label="Sidebar"

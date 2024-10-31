@@ -17,6 +17,7 @@
     "@mui/icons-material": "^6.1.5",
     "@mui/material": "^6.1.0",
     "@mui/styled-engine-sc": "^6.1.0",
+    "@mui/x-tree-view": "^7.22.0",
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
     "better-react-mathjax": "^2.0.3",

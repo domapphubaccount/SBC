@@ -35,7 +35,7 @@ export function Addpdfs({ openAdd, handleClose }) {
       name: Yup.string()
         .required("Name is required")
         .min(3, "Name must be at least 3 characters")
-        .max(50, "Name must be at most 50 characters"), // Adjust min and max lengths as needed
+        .max(20, "Name must be at most 20 characters"), // Adjust min and max lengths as needed
       section_id: Yup.string()
         .required("Section is required")
         .notOneOf([""], "Selecting 'NONE' is not allowed"), // Add this line
