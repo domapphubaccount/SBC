@@ -10,7 +10,8 @@ import Permmisions from "./DashContent/permissions";
 import DashboardData from "./DashContent/Dashboard";
 import ReviewerAdmin from "./DashContent/Reviewer";
 
-function Dashboard({ page }) {
+function Dashboard({ page , setPage }) {
+
   function handlePage() {
     switch (page) {
       case 8:
@@ -30,9 +31,9 @@ function Dashboard({ page }) {
       case 7:
         return <Permmisions />;
       case 9:
-        return <DashboardData />;
+        return <DashboardData setPage={setPage}/>;
       default:
-        return <DashboardData />;
+        return <DashboardData setPage={setPage}/>;
     }
   }
 
