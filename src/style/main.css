@@ -231,7 +231,6 @@ nav{
   text-align: center;
 }
 
-
 .chat_input ::-webkit-resizer {
   border: 2px solid black;
   background: red;

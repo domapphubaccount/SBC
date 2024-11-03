@@ -39,6 +39,9 @@ function ChatInput() {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
       const storedData = JSON.parse(localStorage.getItem("data"));
     }
+
+    document.getElementById("custom_text_area").addEventListener("focus" , ()=> document.getElementById("sendIcon").classList.add("text-gray-700"))
+    document.getElementById("custom_text_area").addEventListener("blur" , ()=> document.getElementById("sendIcon").classList.remove("text-gray-700"))
   }, []);
 
   const handleSendMessage = () => {
@@ -83,14 +86,14 @@ function ChatInput() {
         })
         .catch((error) => {
           setLoading(false);
-          
+
           dispatch(
             send_failed(
               errorsStore[Math.floor(Math.random() * errorsStore.length)]
             )
           );
-          dispatch(sendError(true))
-          setTimeout(()=>dispatch(sendError(false)),1500)
+          dispatch(sendError(true));
+          setTimeout(() => dispatch(sendError(false)), 1500);
           console.error("There was an error making the request!", error);
         });
     } else if (storedCode.length === 0) {
@@ -137,6 +140,7 @@ function ChatInput() {
                 isEnglish(e.target.value);
                 setMessage(e.target.value);
               }}
+              id="custom_text_area"
               className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
               onKeyDown={handleKeyDown}
               // disabled={!conversation.id || chatCode}
@@ -157,6 +161,7 @@ function ChatInput() {
             >
               <PopoverDefault popoverOpen={popoverOpen}>
                 <svg
+                  id="sendIcon"
                   className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"

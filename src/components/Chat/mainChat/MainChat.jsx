@@ -49,9 +49,6 @@ function MainChat({ elementWidth, windowWidth }) {
   const updates = useSelector((state) => state.updateSlice.state);
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
-  // const getchat = useSelector((state) => state.chatSlice.get_chat);
-  // const loading = useSelector((state) => state.updateSlice.loading_chat);
-  // const action = useSelector((state) => state.usersSlice.action);
   const loadingchat = useSelector((state) => state.chatSlice.loading);
   const chatSlice_loading = useSelector((state) => state.chatSlice.loading);
   const typeComplete = useSelector((state) => state.typeSlice.value);
