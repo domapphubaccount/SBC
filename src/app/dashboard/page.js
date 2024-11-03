@@ -33,7 +33,7 @@ function Page() {
     <section className='min-h-screen bg-sky-950'>
         {profileData.roles ?
       <Sidebar handlePage={handlePage}>
-        <Dashboard page={page}/>
+        <Dashboard page={page} setPage={setPage}/>
       </Sidebar>
         :<Load />
         }

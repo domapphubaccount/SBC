@@ -220,7 +220,7 @@ const initialState = {
   password: {
     step: 1,
     loading: false,
-    error: null,
+    error: "",
     code: null,
   },
   // end password
