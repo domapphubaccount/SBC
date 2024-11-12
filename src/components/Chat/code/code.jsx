@@ -43,7 +43,7 @@ function MultipleSelect() {
   };
   const handleSelectMultiCode = (filesId) => {
     if (!available) {
-      if(filesId.length < 6){
+      if(filesId.length < 5){
       dispatch(set_multi_stored_Code(filesId));
       }else{
         dispatch(set_code_error('This list has more than 5 files,"you can check 5 files only"'));
