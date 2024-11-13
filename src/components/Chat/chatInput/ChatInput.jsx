@@ -33,16 +33,19 @@ function ChatInput({ storedCode }) {
     }
   }, []);
   const handleSendMessage = () => {
-    if (storedCode.length > 0 && message.length > 0) {
+    const selectedCode = storedCode.length > 0 ? storedCode : JSON.parse(localStorage.getItem('code')) || [];
+
+    if (selectedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       setLoading(true);
+      console.log(JSON.parse(localStorage.getItem('code')) , storedCode)
       axios
         .post(
           "https://sbc.designal.cc/api/send-message",
           {
             question: message,
             master_chat_id: conversation && conversation.id,
-            selected_pdf: storedCode && storedCode,
+            selected_pdf: selectedCode && selectedCode,
           },
           {
             headers: {
@@ -76,7 +79,7 @@ function ChatInput({ storedCode }) {
           );
           console.error("There was an error making the request!", error);
         });
-    } else if (storedCode.length === 0) {
+    } else if (((storedCode.length == 0) || (JSON.parse(localStorage.getItem('code')).length == 0 ))) {
       setSendMessage(true);
     }
   };

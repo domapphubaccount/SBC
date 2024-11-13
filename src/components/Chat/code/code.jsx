@@ -1,234 +1,174 @@
-"use client";
-// import React, { useEffect, useRef, useState } from 'react';
-// import { useSelector } from 'react-redux';
-
-// function MultipleSelect({ setStoredCode, storedCode }) {
-//   const [selectedOptions, setSelectedOptions] = useState(false);
-//   const [selectAll, setSelectAll] = useState(false);
-//   const dropdownRef = useRef(null);
-//   const code = useSelector(state => state.codeSlice.value);
-
-//   useEffect(() => {
-//     function handleClickOutside(event) {
-//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-//         setSelectedOptions(false);
-//       }
-//     }
-
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => {
-//       document.removeEventListener("mousedown", handleClickOutside);
-//     };
-//   }, [dropdownRef]);
-
-//   const handleCheckboxChange = (itemName) => {
-//     setStoredCode(prevState => {
-//       if (prevState.includes(itemName)) {
-//         // Remove the item if it's already selected
-//         return prevState.filter(item => item !== itemName);
-//       } else {
-//         // Add the item if it's not already selected
-//         return [...prevState, itemName];
-//       }
-//     });
-//   };
-
-//   const handleSelectAllChange = () => {
-//     if (selectAll) {
-//       // Deselect all items
-//       setStoredCode(prevState => prevState.filter(item => !code[0].pdfs.map(pdf => pdf.id).includes(item)));
-//     } else {
-//       // Select all items
-//       setStoredCode(prevState => [...new Set([...prevState, ...code[0].pdfs.map(pdf => pdf.id)])]);
-//     }
-//     setSelectAll(!selectAll);
-//   };
-
-//   useEffect(() => {
-//     // Check if all items are selected
-//     if (code[0]) {
-//       const allSelected = code[0].pdfs.every(pdf => storedCode.includes(pdf.id));
-//       setSelectAll(allSelected);
-//     }
-//   }, [storedCode, code]);
-
-//   const handleSpanClick = (itemId, event) => {
-//     event.stopPropagation(); // Prevent triggering the select all checkbox change
-//     handleCheckboxChange(itemId);
-//   };
-
-//   return (
-//     <>
-//       <div className="relative inline-block text-left" ref={dropdownRef}>
-//         <div>
-//           <button
-//             type="button"
-//             style={{ color: '#fff !important' }}
-//             onClick={() => setSelectedOptions(!selectedOptions)}
-//             className="inline-flex justify-center w-full text-sm font-medium text-white"
-//             id="options-menu"
-//             aria-haspopup="true"
-//             aria-expanded={selectedOptions}
-//           >
-//             CODE
-//             <svg
-//               className="-mr-1 ml-2 h-5 w-5"
-//               xmlns="http://www.w3.org/2000/svg"
-//               viewBox="0 0 20 20"
-//               fill="currentColor"
-//               aria-hidden="true"
-//             >
-//               <path
-//                 fillRule="evenodd"
-//                 d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-//                 clipRule="evenodd"
-//               />
-//             </svg>
-//           </button>
-//         </div>
-//         {selectedOptions && code[0] &&
-//           <div className="code_card origin-top-right mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-//             <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-//               <div className="flex items-center ps-2 text-black px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-//                 <input
-//                   type="checkbox"
-//                   className="form-checkbox h-4 w-4 text-indigo-600 mr-2 rounded"
-//                   onChange={handleSelectAllChange}
-//                   checked={selectAll}
-//                 />
-//                 <div>{code[0].name}</div>
-//               </div>
-//               <div>
-//                 {code[0].pdfs.map((item, i) => (
-//                   <span
-//                     key={i}
-//                     className="block px-4 ml-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex items-center"
-//                     role="menuitem"
-//                     onClick={(event) => handleSpanClick(item.id, event)}
-//                   >
-//                     <input
-//                       style={{ borderRadius: '7px' }}
-//                       onChange={() => handleCheckboxChange(item.id)}
-//                       checked={storedCode.includes(item.id)}
-//                       type="checkbox"
-//                       className="form-checkbox h-3 w-3 text-indigo-600 mr-1"
-//                     />
-//                     <div className='px-2'>{item.name}</div>
-//                   </span>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         }
-//       </div>
-//     </>
-//   );
-// }
-
-// export default MultipleSelect;
-
-import React, { useEffect, useRef, useState } from "react";
+import { Accordion } from "flowbite-react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Dropdown } from "flowbite-react";
 
 function MultipleSelect({ setStoredCode, storedCode }) {
-  const [selectedOptions, setSelectedOptions] = useState(false);
-  const [selectAll, setSelectAll] = useState(false);
-  const dropdownRef = useRef(null);
-  const code = useSelector((state) => state.codeSlice.value);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown open/close state
+  const code = useSelector((state) => state.codeSlice.value); // Assuming you are fetching this from Redux
+  const conversation = useSelector((state) => state.chatSlice.conversation);
+  const [showCodeOptions,setShowCodeOptions] = useState(true)
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
-  console.log(state);
+
+  // Handle checkbox changes
+  const handleCheckboxChange = (itemName) => {
+    setStoredCode((prevState) => {
+      if (prevState.includes(itemName)) {
+        return prevState.filter((item) => item !== itemName);
+      } else if (prevState.length < 5) {
+        return [...prevState, itemName];
+      } else {
+        setShowCodeOptions(false)
+        setShowTooltip(true);
+        setTimeout(() => setShowTooltip(false), 2500);
+        return prevState;
+      }
+    });
+  };
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setSelectedOptions(false);
-      }
+    if(storedCode.length){
+    localStorage.setItem("code", JSON.stringify(storedCode));
     }
+
+    setTimeout(()=>setShowCodeOptions(false) , 7000)
+  }, [storedCode]);
+
+  // Filter code items based on search query
+  const filteredCode = Array.isArray(code)
+    ? code.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.pdfs.some((pdf) =>
+            pdf.name.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+      )
+    : [];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".dropdown-container")) {
+        setDropdownOpen(false); // Close dropdown when clicking outside
+      }
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [dropdownRef]);
-
-  const handleCheckboxChange = (itemName) => {
-    setStoredCode((prevState) => {
-      if (prevState.includes(itemName)) {
-        // Remove the item if it's already selected
-        return prevState.filter((item) => item !== itemName);
-      } else {
-        // Add the item if it's not already selected
-        return [...prevState, itemName];
-      }
-    });
-  };
-
-  // const handleSelectAllChange = () => {
-  //   if (selectAll) {
-  //     setStoredCode((prevState) =>
-  //       prevState.filter(
-  //         (item) => !code[0].pdfs.map((pdf) => pdf.id).includes(item)
-  //       )
-  //     );
-  //   } else {
-  //     // Select all items
-  //     setStoredCode((prevState) => [
-  //       ...new Set([...prevState, ...code[0].pdfs.map((pdf) => pdf.id)]),
-  //     ]);
-  //   }
-  //   setSelectAll(!selectAll);
-  // };
-
-  console.log(code);
+  }, []);
 
   return (
-    <>
-      <Dropdown label="CODE" dismissOnClick={false} className="code_card">
-        {code &&
-          code.map((item, i) => (
-            <>
-              <div>
-                <h5 className="px-3 py-2">{item.name}</h5>
-              </div>
-              {/* <Dropdown.Item className="p-1">
-              <div className="flex items-center ps-2 text-black px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-                <div class="checkbox-wrapper-11">
-                  <input
-                    value="2"
-                    name="r"
-                    type="checkbox"
-                    id="02-11"
-                    onChange={handleSelectAllChange}
-                  />
-                  <label for="02-11">{item.name}</label>
-                </div>
-              </div>
-            </Dropdown.Item> */}
-              {item.pdfs.map((item, i) => (
-                <Dropdown.Item key={i} className="p-1">
-                  <div class="checkbox-wrapper-11 px-5">
-                    <input
-                      value={i}
-                      name={i + "r"}
-                      type="checkbox"
-                      id={i + "-11"}
-                      checked={storedCode.includes(item.id)}
-                      onChange={() => {
-                        handleCheckboxChange(item.id);
-                      }}
-                    />
-                    <label for={i + "-11"}>{item.name}</label>
+    <div className="dropdown-container relative w-60">
+      {/* Dropdown button */}
+      <button
+        onClick={() => setDropdownOpen((prevState) => !prevState)}
+        className="w-full p-2 bg-transparent text-white rounded-lg focus:outline-none"
+      >
+        CODE
+      </button>
 
-                 
-                  </div>
-                </Dropdown.Item>
-              ))}
-            </>
-          ))}
-      </Dropdown>
-    </>
+      {/* Dropdown content */}
+      {dropdownOpen && (
+        <div className="absolute z-10 bg-white dark:bg-gray-800 shadow-lg rounded-lg mt-2 w-full">
+          {/* Tooltip */}
+          {showTooltip && (
+            <div className="p-2 bg-yellow-200 text-black text-sm rounded-lg shadow-md mb-2">
+              You can only select up to 5 codes.
+            </div>
+          )}
+          {showCodeOptions && (
+            <div className="p-2 bg-yellow-200 text-black text-sm rounded-lg shadow-md mb-2">
+              You can not change the code after starting new chat.
+            </div>
+          )}
+
+          {/* Search input */}
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search"
+            className="block color-black text-black w-full p-2 mb-2 border border-gray-300 rounded-lg dark:bg-gray-600 dark:text-white dark:border-gray-500"
+          />
+
+          {/* Dropdown items */}
+          <ul className="max-h-48 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
+            {filteredCode.length === 0 ? (
+              <li className="p-2 text-gray-500">No results found</li>
+            ) : (
+              filteredCode.map((item, i) => (
+                <Accordion key={i} className="p-2">
+                  <Accordion.Panel className="p-2">
+                    <Accordion.Title className="p-2">
+                      {item.name}
+                    </Accordion.Title>
+                    <Accordion.Content className="p-2">
+                      {item.pdfs.map((pdfItem, j) => (
+                        <li key={j}>
+                          <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                            <input
+                              type="checkbox"
+                              id={`checkbox-item-${pdfItem.id}`}
+                              checked={storedCode.includes(pdfItem.id)}
+                              onChange={() => handleCheckboxChange(pdfItem.id)}
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
+                            />
+                            <label
+                              htmlFor={`checkbox-item-${pdfItem.id}`}
+                              className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >
+                              {pdfItem.name}
+                            </label>
+                          </div>
+                        </li>
+                      ))}
+                    </Accordion.Content>
+                  </Accordion.Panel>
+                </Accordion>
+
+                // <React.Fragment>
+                //   <div className="px-3 py-2 font-semibold text-gray-800 dark:text-gray-800">
+                //     {item.name}
+                //   </div>
+                //   {item.pdfs.map((pdfItem, j) => (
+
+                //     <li key={j}>
+                //       <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                //         <input
+                //           type="checkbox"
+                //           id={`checkbox-item-${pdfItem.id}`}
+                //           checked={storedCode.includes(pdfItem.id)}
+                //           onChange={() => handleCheckboxChange(pdfItem.id)}
+                //           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
+                //         />
+                //         <label
+                //           htmlFor={`checkbox-item-${pdfItem.id}`}
+                //           className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                //         >
+                //           {pdfItem.name}
+                //         </label>
+                //       </div>
+                //     </li>
+                //   ))}
+                // </React.Fragment>
+              ))
+            )}
+          </ul>
+
+          {/* Clear Selections */}
+          <a
+            href="#"
+            className="block p-2 mt-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-600"
+            onClick={() => setStoredCode([])}
+          >
+            Clear Selections
+          </a>
+        </div>
+      )}
+    </div>
   );
 }
 

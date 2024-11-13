@@ -47,7 +47,7 @@ function DropDown({ userName }) {
                     aria-expanded="true"
                     aria-haspopup="true"
                 >
-                    {userName.substring(0, 2).toUpperCase()}
+                    {userName?.substring(0, 2).toUpperCase()}
                 </button>
             </div>
             {dropDownToggle && (

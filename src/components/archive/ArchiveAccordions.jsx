@@ -113,6 +113,7 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
   const handleGetChat = (chat_id, share_name) => {
+    localStorage.removeItem('code')
     dispatch(choseChate(chat_id));
     dispatch(loading_chat(true));
     localStorage.setItem("chat", chat_id);
