@@ -13,6 +13,7 @@ import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
 import SnackbarSendError from "@/components/Snackbar/SnackSendError";
 import SnackbarGlobalError from "@/components/Snackbar/SnackGlobalError";
 import Drawer from "@/layout/Drawer/Drawer"
+import { CodeModule } from "@/components/Chat/code/CodeModle";
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged); 
@@ -46,6 +47,10 @@ export default function Home() {
       <Header />
       <DashLayout />
       <Drawer />
+
+      {/* start code module */}
+      <CodeModule />
+      {/* end code module */}
       {/* start loading change chat from history */}
       {loading && <SnackbarTooltip />}
       {/* end loading change chat from history */}

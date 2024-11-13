@@ -41,18 +41,19 @@ function MultipleSelect() {
       }
     }
   };
-  const handleSelectMultiCode = (filesId) => {
-    if (!available) {
-      if(filesId.length < 5){
-      dispatch(set_multi_stored_Code(filesId));
-      }else{
-        dispatch(set_code_error('This list has more than 5 files,"you can check 5 files only"'));
-        setTimeout(()=>{dispatch(clear_code_error())} , 1500)
-      }
-    }
-  };
+  // const handleSelectMultiCode = (filesId) => {
+  //   if (!available) {
+  //     if(filesId.length < 5){
+  //     dispatch(set_multi_stored_Code(filesId));
+  //     }else{
+  //       dispatch(set_code_error('This list has more than 5 files,"you can check 5 files only"'));
+  //       setTimeout(()=>{dispatch(clear_code_error())} , 1500)
+  //     }
+  //   }
+  // };
 
-  return (
+  return (<div>
+    
     <Dropdown
       label="CODE"
       dismissOnClick={false}
@@ -74,6 +75,7 @@ function MultipleSelect() {
             >
               {item.name}
             </h5>
+            
             {item.pdfs.length > 0 ? (
               item.pdfs.map((pdf, i) => (
                 <Dropdown.Item key={pdf.chatgpt_file_id} className="p-1">
@@ -105,6 +107,7 @@ function MultipleSelect() {
         <div className="p-3 py-5">...NO CODE YET</div>
       )}
     </Dropdown>
+    </div>
   );
 }
 

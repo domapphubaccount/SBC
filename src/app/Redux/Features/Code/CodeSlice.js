@@ -36,7 +36,9 @@ export const getCodeAction = createAsyncThunk(
 const initialState = {
   value: "",
   storedCode: [],
+  loading: false,
   error: null,
+  codeModule: false
 };
 
 export const codeSlice = createSlice({
@@ -89,6 +91,9 @@ export const codeSlice = createSlice({
     clear_code_error: (state) => {
       state.error = null;
     },
+    codeModule: (state,action) => {
+      state.codeModule = action.payload
+    }
   },
 
   extraReducers: (builder) => {
@@ -117,6 +122,7 @@ export const {
   clear_code_error,
   set_multi_stored_Code,
   set_direct_code,
+  codeModule
 } = codeSlice.actions;
 
 export default codeSlice.reducer;

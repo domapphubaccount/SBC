@@ -9,12 +9,14 @@ import { chat_out } from "@/app/Redux/Features/Chat/ChatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Logo from "/public/logo.png";
 import { Tooltip } from "flowbite-react";
-import { set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
+import { codeModule, set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
 import {
   drawer_toggle,
   sidar_toggle,
 } from "@/app/Redux/Features/Dashboard/SideBarSlice";
 import Joyride from "react-joyride";
+import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
+import { Button, IconButton } from "@mui/material";
 
 function Header({ path }) {
   const [isClient, setIsClient] = useState(false);
@@ -61,6 +63,10 @@ function Header({ path }) {
     },
     // Additional steps can go here if needed
   ];
+
+  function handleCodeModule(){
+    dispatch(codeModule(true))
+  }
 
   return (
     <>
@@ -115,11 +121,41 @@ function Header({ path }) {
                   {!path ? (
                     permissionsData &&
                     permissionsData.includes(12) && (
-                      <div id="code" className="hidden sm:block">
-                        <Tooltip content="Code" placement="left">
-                          <MultipleSelect />
-                        </Tooltip>
-                      </div>
+                      // <div id="code" className="hidden sm:block">
+                      //   <Tooltip content="Code" placement="left">
+                      //     <MultipleSelect />
+                      //   </Tooltip>
+                      // </div>
+                      // <IconButton aria-label="delete" stroke="white">
+                      //   <IntegrationInstructionsIcon />
+                      //   <small>CODE</small>
+                      // </IconButton>
+
+                      <Tooltip content="Code" placement="left">
+                        <Button onClick={handleCodeModule}>
+                          <div id="code_button">
+                            <button class="bookmarkBtn">
+                              <span class="IconContainer">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="white"
+                                  className="size-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z"
+                                  />
+                                </svg>
+                              </span>
+                              <p class="code_text">CODE</p>
+                            </button>
+                          </div>
+                        </Button>
+                      </Tooltip>
                     )
                   ) : (
                     <></>
