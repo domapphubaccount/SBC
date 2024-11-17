@@ -123,11 +123,18 @@ function Users_comments({}) {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
-  // Step 3: Filter the rows based on the search term
   const filteredData = usersCommentsData.filter((item) => {
-    return item.comment.toLowerCase().includes(searchTerm);
+    const searchLower = searchTerm.toLowerCase();  
+    return (
+      (item.comment?.toLowerCase().includes(searchLower) || false) ||
+      (item.status?.toLowerCase().includes(searchLower) || false) ||
+      (item.disliked_by?.name?.toLowerCase().includes(searchLower) || false) ||
+      (item.whoAssigned?.toLowerCase().includes(searchLower) || false) ||
+      (item.created_at?.toLowerCase().includes(searchLower) || false) ||
+      (item.actions?.toLowerCase().includes(searchLower) || false)
+    );
   });
-
+  
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -138,8 +145,6 @@ function Users_comments({}) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-
-  console.log(updateUsersData)
 
   return (
     <>
@@ -235,15 +240,15 @@ function Users_comments({}) {
                   <th scope="col" className="px-6 py-3">
                     Comment
                   </th>
-                  {/* <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-6 py-3">
                     Status
-                  </th> */}
+                  </th>
                   <th scope="col" className="px-6 py-3">
                     Comment by
                   </th>
-                  {/* <th scope="col" className="px-6 py-3">
-                    reviewed by
-                  </th> */}
+                  <th scope="col" className="px-6 py-3">
+                    Who Assigned
+                  </th>
                   <th scope="col" className="px-6 py-3">
                     date
                   </th>
@@ -307,7 +312,7 @@ function Users_comments({}) {
                         </div>
                       </th>
 
-                      {/* <td className="px-6 py-4">
+                      <td className="px-6 py-4">
                         {item.status === "accept" ? (
                           <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                             {item.status}
@@ -321,9 +326,13 @@ function Users_comments({}) {
                             {item.status}
                           </span>
                         )}
-                      </td> */}
+                      </td>
                       <td className="px-6 py-4">{item.disliked_by.name}</td>
-                      {/* <td className="px-6 py-4">{item.disliked_by.name}</td> */}
+                      <td className="px-6 py-4">{item.disliked_by.name}
+                        <ul>
+                          <li></li>
+                        </ul>
+                      </td>
                       <td className="px-6 py-4">
                         {formatDate(item.created_at)}
                       </td>

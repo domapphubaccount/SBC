@@ -114,18 +114,21 @@ function ReviewerAdmin({}) {
     dispatch(getReviewsAction({ token, page }));
   }, [updateReviewerData, page]);
 
-  // // Step 1: State for search input
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // Step 1: State for search input
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
 
-  // // Step 2: Handle input change
-  // const handleSearchChange = (e) => {
-  //   setSearchTerm(e.target.value.toLowerCase());
-  // };
-
-  // // Step 3: Filter the rows based on the search term
-  // const filteredData = ReviewsData.filter((item) => {
-  //   return item?.name?.toLowerCase().includes(searchTerm);
-  // });
+  // Step 3: Filter the rows based on the search term across multiple fields
+  const filteredData = ReviewsData.filter((item) => {
+    const nameMatch = item.reviewer?.name?.toLowerCase().includes(searchTerm);
+    const commentMatch = item.comment_reviewr?.toLowerCase().includes(searchTerm);
+    const dislikeCommentMatch = item.chat_user_dislike?.comment?.toLowerCase().includes(searchTerm);
+    const statusMatch = item.status?.toLowerCase().includes(searchTerm);
+    const dateMatch = formatDate(item.created_at).toLowerCase().includes(searchTerm); // Check formatted date
+    
+    return nameMatch || commentMatch || dislikeCommentMatch || statusMatch || dateMatch;
+  });
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -195,7 +198,7 @@ function ReviewerAdmin({}) {
         <div className="bg-white p-8 rounded-md w-full m-auto dashed">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="flex justify-between items-center">
-              {/* <div className="pb-4 bg-white dark:bg-gray-900">
+              <div className="pb-4 bg-white dark:bg-gray-900">
                 <label for="table-search" className="sr-only">
                   Search
                 </label>
@@ -225,7 +228,7 @@ function ReviewerAdmin({}) {
                     onChange={handleSearchChange} // Handle search input change
                   />
                 </div>
-              </div> */}
+              </div>
             </div>
 
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -252,8 +255,8 @@ function ReviewerAdmin({}) {
                 </tr>
               </thead>
               <tbody>
-                {ReviewsData.length > 0 ? (
-                  ReviewsData.map((item, index) => (
+                {filteredData.length > 0 ? (
+                filteredData.map((item, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
