@@ -1,110 +1,155 @@
-"use client"; // Add this directive at the top to ensure client-side rendering
+"use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Dropdown } from "flowbite-react";
+import { Accordion } from "flowbite-react";
 import {
   clear_code_error,
   set_code_error,
+  set_direct_code,
   set_multi_stored_Code,
   set_stored_code,
 } from "@/app/Redux/Features/Code/CodeSlice";
 
 function MultipleSelect() {
-  const [selectedOptions, setSelectedOptions] = useState(false);
-  const dropdownRef = useRef(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [showCodeOptions, setShowCodeOptions] = useState(false);
+  const dispatch = useDispatch();
+
   const code = useSelector((state) => state.codeSlice.value);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
-  const dispatch = useDispatch();
-  const get_chat = useSelector((state) => state.chatSlice.get_chat);
   const available = useSelector((state) => state.chatSlice.chat_code);
 
+  console.log(storedCode)
+
   useEffect(() => {
+    // Close dropdown if clicked outside
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setSelectedOptions(false);
+      if (!event.target.closest(".dropdown-container")) {
+        setDropdownOpen(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleCheckboxChange = (fileId) => {
     if (!available) {
-      if (storedCode.length < 6) {
+      // Check if the fileId is already selected
+      if (storedCode.includes(fileId)) {
+        // Deselect the fileId if it's already selected
         dispatch(set_stored_code(fileId));
-      }else{
-        dispatch(set_code_error('You cant check more than 5 files'));
-        setTimeout(()=>{dispatch(clear_code_error())} , 1500)
-      }
-    }
-  };
-  const handleSelectMultiCode = (filesId) => {
-    if (!available) {
-      if(filesId.length < 5){
-      dispatch(set_multi_stored_Code(filesId));
-      }else{
-        dispatch(set_code_error('This list has more than 5 files,"you can check 5 files only"'));
-        setTimeout(()=>{dispatch(clear_code_error())} , 1500)
+      } else if (storedCode.length < 5) {
+        // Add the fileId if it's not already selected and under the limit
+        dispatch(set_stored_code(fileId));
+      } else {
+        // Show an error if trying to select more than 5 files
+        dispatch(set_code_error("You can't check more than 5 files"));
+        setShowTooltip(true);
+        setTimeout(() => {
+          setShowTooltip(false);
+          dispatch(clear_code_error());
+        }, 1500);
       }
     }
   };
 
+  const removeStoredCode = () => {
+    dispatch(set_direct_code([]))
+  }
+  
+
   return (
-    <Dropdown
-      label="CODE"
-      dismissOnClick={false}
-      className="code_card"
-      style={{ minWidth: "150px" }}
-    >
-      {code.length > 0 ? (
-        code.map((item, idx) => (
-          <div key={idx}>
-            <h5
-              className={`px-3 py-2 hover:font-semibold ${
-                available ? "" : "cursor-pointer"
-              }`}
-              onClick={() =>
-                handleSelectMultiCode(
-                  item.pdfs.map((item) => item.chatgpt_file_id)
-                )
-              }
-            >
-              {item.name}
-            </h5>
-            {item.pdfs.length > 0 ? (
-              item.pdfs.map((pdf, i) => (
-                <Dropdown.Item key={pdf.chatgpt_file_id} className="p-1">
-                  <div className="checkbox-wrapper-11 px-5">
-                    <input
-                      value={pdf.chatgpt_file_id}
-                      name={`checkbox-${pdf.chatgpt_file_id}`}
-                      type="checkbox"
-                      id={`checkbox-${pdf.chatgpt_file_id}`}
-                      checked={storedCode.includes(pdf.chatgpt_file_id)}
-                      onChange={() => handleCheckboxChange(pdf.chatgpt_file_id)}
-                      disabled={available}
-                      style={{ opacity: `${get_chat != "" ? 0.5 : 1}` }}
-                    />
-                    <label htmlFor={`checkbox-${pdf.chatgpt_file_id}`}>
-                      {pdf.name}
-                    </label>
-                  </div>
-                </Dropdown.Item>
-              ))
+    <div className="dropdown-container relative w-60">
+      {/* Dropdown button */}
+      <button
+        onClick={() => setDropdownOpen((prevState) => !prevState)}
+        className="w-full p-2 bg-transparent text-white rounded-lg focus:outline-none"
+      >
+        CODE
+      </button>
+
+      {/* Dropdown content */}
+      {dropdownOpen && (
+        <div className="absolute z-10 bg-white dark:bg-gray-800 shadow-lg rounded-lg mt-2 w-full">
+          {/* Tooltip */}
+          {showTooltip && (
+            <div className="p-2 bg-yellow-200 text-black text-sm rounded-lg shadow-md mb-2">
+              You can only select up to 5 codes.
+            </div>
+          )}
+          {showCodeOptions && (
+            <div className="p-2 bg-yellow-200 text-black text-sm rounded-lg shadow-md mb-2">
+              You cannot change the code after starting a new chat.
+            </div>
+          )}
+
+          {/* Search input */}
+          {/* <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search"
+            className="block text-black w-full p-2 mb-2 border border-gray-300 rounded-lg dark:bg-gray-600 dark:text-white dark:border-gray-500"
+          /> */}
+
+          {/* Dropdown items */}
+          <ul className="max-h-48 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
+            {code.length === 0 ? (
+              <li className="p-2 text-gray-500">No results found</li>
             ) : (
-              <div className="p-3 pl-5">
-                <small>NO Files Yet</small>
-              </div>
+              code.map((item, i) => (
+                <Accordion key={i} className="p-2">
+                  <Accordion.Panel className="p-2">
+                    <Accordion.Title className="p-2">
+                      {item.name}
+                    </Accordion.Title>
+                    <Accordion.Content className="p-2">
+                      {
+                      item.pdfs.length > 0 ? 
+                      item.pdfs.map((pdfItem, j) => (
+                        <li key={j}>
+                          <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                            <input
+                              type="checkbox"
+                              id={`checkbox-item-${pdfItem.id}`}
+                              checked={storedCode.includes(pdfItem.id)}
+                              onChange={() => handleCheckboxChange(pdfItem.id)}
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
+                              disabled={available}
+                            />
+                            <label
+                              htmlFor={`checkbox-item-${pdfItem.id}`}
+                              className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >
+                              {pdfItem.name}
+                            </label>
+                          </div>
+                        </li>
+                      )):
+                      <li className="p-2 text-gray-500">No Code found</li>
+                      }
+                    </Accordion.Content>
+                  </Accordion.Panel>
+                </Accordion>
+              ))
             )}
-          </div>
-        ))
-      ) : (
-        <div className="p-3 py-5">...NO CODE YET</div>
+          </ul>
+
+          {/* Clear Selections */}
+          <a
+            href="#"
+            className="block p-2 mt-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-600"
+            onClick={removeStoredCode}
+          >
+            Clear Selections
+          </a>
+        </div>
       )}
-    </Dropdown>
+    </div>
   );
 }
 
