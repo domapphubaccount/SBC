@@ -120,7 +120,7 @@ export function EditReviewer({ openEdit, handleClose }) {
                 </div>
 
                 <div>
-                  <Label htmlFor="status" value="User Status" />
+                  <Label htmlFor="status" value="Status" />
                   <select
                     id="status"
                     name="status"

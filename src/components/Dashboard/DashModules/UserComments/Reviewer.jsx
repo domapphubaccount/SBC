@@ -156,7 +156,7 @@ export function Reviewer({ openReviewer, handleClose }) {
 
                     <MathJaxContext>
                       {/* <MathJax dynamic> */}
-                        <div className="my-5 rounded border">
+                        <div className="my-5 rounded border p-3">
                           <div>
                             <small className="font-semibold">
                               BYLD response
@@ -229,7 +229,7 @@ export function Reviewer({ openReviewer, handleClose }) {
                       ""
                     ) : (
                       <div>
-                        <Label htmlFor="status" value="User Status" />
+                        <Label htmlFor="status" value="Status" />
                         <select
                           id="status"
                           name="status"

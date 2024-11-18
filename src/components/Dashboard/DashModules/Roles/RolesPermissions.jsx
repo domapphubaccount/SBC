@@ -6,7 +6,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { assignPermissionAction,updatPermissionAction, getRolesAction, updateRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
+import {
+  assignPermissionAction,
+  updatPermissionAction,
+  getRolesAction,
+  updateRoleAction,
+} from "@/app/Redux/Features/Dashboard/RolesSlice";
 import Select from "react-select";
 import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 
@@ -26,7 +31,9 @@ export function RolesPermissions({ openRole, handleClose }) {
       permissions: roleData?.permissions?.map((item) => item.id) || [], // Initial permissions as array of IDs
     },
     validationSchema: Yup.object({
-      permissions: Yup.array().of(Yup.string()).required("At least one permission is required"),
+      permissions: Yup.array()
+        .of(Yup.string())
+        .required("At least one permission is required"),
     }),
     onSubmit: (values) => {
       dispatch(
@@ -46,14 +53,12 @@ export function RolesPermissions({ openRole, handleClose }) {
         permissions: roleData.permissions?.map((item) => item.id) || [],
       });
       dispatch(getPermissionsAction({ token }));
-
-
     }
   }, [roleData]);
 
-  useEffect(()=>{
-    if(permissionsData){
-    // Set the options for the permissions
+  useEffect(() => {
+    if (permissionsData) {
+      // Set the options for the permissions
       setPermissionsOptions(
         permissionsData?.map((item) => ({
           value: item.id,
@@ -61,13 +66,16 @@ export function RolesPermissions({ openRole, handleClose }) {
         })) || []
       );
     }
-  },[permissionsData])
+  }, [permissionsData]);
 
   return (
-    <Modal show={openRole} size="5xl" popup onClose={handleClose}>
+    <Modal show={openRole} size="xl" popup onClose={handleClose}>
       <Modal.Header />
-      <Modal.Body className="overflow-visible">
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
+      <Modal.Body className="overflow-auto h-full">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="space-y-6 overflow-auto h-full"
+        >
           {!loading ? (
             <>
               <div>
@@ -89,10 +97,24 @@ export function RolesPermissions({ openRole, handleClose }) {
                   }}
                 />
                 {formik.touched.permissions && formik.errors.permissions ? (
-                  <div className="text-red-600">{formik.errors.permissions}</div>
+                  <div className="text-red-600">
+                    {formik.errors.permissions}
+                  </div>
                 ) : null}
               </div>
-
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  formik.setFieldValue(
+                    "permissions",
+                    permissionsOptions.map((item) => item.value)
+                  );
+                }}
+                type="button"
+                class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              >
+                Select All
+              </button>
               <div className="w-full flex justify-end">
                 <Button type="submit">Save Changes</Button>
               </div>

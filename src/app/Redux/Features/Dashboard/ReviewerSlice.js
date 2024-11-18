@@ -4,65 +4,43 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get reviews
 export const getReviewsAction = createAsyncThunk(
   "reviews/getReviewsAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token , page } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/reviews?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `${config.api}admin/reviews?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
-        if(response.data?.last_page){
-        dispatch(handlePages(response.data?.last_page))
+      if (response.data?.last_page) {
+        dispatch(handlePages(response.data?.last_page));
       }
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
       return rejectWithValue(error.response.data);
     }
   }
 );
-// end get comments
+// end get reviews
 
-// start get comment by id
-// export const getCommentByIDAction = createAsyncThunk(
-//   "roles/getRoleByIDAction",
-//   async (arg, { dispatch , rejectWithValue }) => {
-//     const { token, id } = arg;
-
-//     try {
-//       const response = await axios.get(`${config.api}admin/chat-user-dislikes/${id}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           Accept: "application/json",
-//             "Content-Type": "application/json",
-//         },
-//       });
-
-//       if (response.data.error) {
-//         return new Error(response.data.error);
-//       }
-//       return response.data.data;
-//     } catch (error) {
-//       if(error?.response?.status === 401){
-//         dispatch(logout())
-//       }
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
-// end get comment by id
-
-// start delete role
+// start delete reviews
 export const deleteReviewsAction = createAsyncThunk(
   "reviews/deleteReviewsAction",
   async (arg, { dispatch, rejectWithValue }) => {
@@ -80,31 +58,43 @@ export const deleteReviewsAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
-
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
   }
 );
-// end delete role
+// end delete reviews
 
 // start add review
 export const addReviewAction = createAsyncThunk(
   "reviews/addReviewAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, chat_user_dislike_id , comment_reviewr , comment_super_reviewr , super_reviewr_id , status } = arg;
+    const {
+      token,
+      chat_user_dislike_id,
+      comment_reviewr,
+      comment_super_reviewr,
+      super_reviewr_id,
+      status,
+    } = arg;
 
     try {
       const response = await axios.post(
         `${config.api}admin/create/reviews`,
-        { chat_user_dislike_id , comment_reviewr , comment_super_reviewr , super_reviewr_id , status },
+        {
+          chat_user_dislike_id,
+          comment_reviewr,
+          comment_super_reviewr,
+          super_reviewr_id,
+          status,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -118,20 +108,19 @@ export const addReviewAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
-
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
   }
 );
-// end add role
+// end add reviews
 
 // start edit review
 export const updateReviewAction = createAsyncThunk(
@@ -168,64 +157,63 @@ export const updateReviewAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      if(response.data?.meta?.total){
-        dispatch(handlePages(response.data?.meta?.total))
+      if (response.data?.meta?.total) {
+        dispatch(handlePages(response.data?.meta?.total));
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
   }
 );
-// end edit user role
-
-
+// end edit user reviews
 
 // start train
 export const trainAction = createAsyncThunk(
   "reviews/trainAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token , new_data } = arg;
+    const { token, new_data } = arg;
 
     try {
-      const response = await axios.get(`${config.api}admin/create/instruction`, 
+      const response = await axios.get(
+        `${config.api}admin/create/instruction`,
         {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        params: {
-          new_data: new_data
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          params: {
+            new_data: new_data,
+          },
+
+          // Use params for GET requests
         }
-         
-      // Use params for GET requests
-      });
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
   }
 );
 // end train
-
 
 const initialState = {
   review: [],
@@ -244,7 +232,7 @@ const initialState = {
   roleModule: false,
   action: false,
 
-  total_pages:1
+  total_pages: 1,
 };
 
 export const ReviewSlice = createSlice({
@@ -278,14 +266,14 @@ export const ReviewSlice = createSlice({
     reviewerModel: (state, action) => {
       state.reviewerModel = action.payload;
     },
-    handlePages: (state , action) => {
-      state.total_pages = action.payload
+    handlePages: (state, action) => {
+      state.total_pages = action.payload;
     },
-    handleAction: (state,action)=>{
-      state.action = action.payload
-    }
+    handleAction: (state, action) => {
+      state.action = action.payload;
+    },
   },
-  
+
   extraReducers: (builder) => {
     builder
       //start get reviews
@@ -305,7 +293,7 @@ export const ReviewSlice = createSlice({
       })
       // end get reviews
 
-      // start add role
+      // start add reviews
       .addCase(addReviewAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -320,7 +308,7 @@ export const ReviewSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       })
-      // end add role
+      // end add reviews
 
       //start get comment by id
       .addCase(trainAction.pending, (state) => {
@@ -336,7 +324,6 @@ export const ReviewSlice = createSlice({
       .addCase(trainAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.error;
-        // console.log(action.payload)
       })
       // end get comment by id
 
@@ -386,7 +373,7 @@ export const {
   reviewerModel,
   trainModule,
   handlePages,
-  handleAction
+  handleAction,
 } = ReviewSlice.actions;
 
 export default ReviewSlice.reducer;

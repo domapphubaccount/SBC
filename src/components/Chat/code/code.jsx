@@ -116,8 +116,8 @@ function MultipleSelect() {
                             <input
                               type="checkbox"
                               id={`checkbox-item-${pdfItem.id}`}
-                              checked={storedCode.includes(pdfItem.id)}
-                              onChange={() => handleCheckboxChange(pdfItem.id)}
+                              checked={storedCode.includes(pdfItem.chatgpt_file_id)}
+                              onChange={() => handleCheckboxChange(pdfItem.chatgpt_file_id)}
                               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
                               disabled={available}
                             />

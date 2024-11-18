@@ -4,8 +4,9 @@ import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
-// start get pdfs
+// start get 
 export const getChatAction = createAsyncThunk(
   "chat/getChatAction",
   async (arg, { dispatch , rejectWithValue }) => {
@@ -25,13 +26,13 @@ export const getChatAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
-        dispatch(logout())
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
   }
 );
-// end get pdfs
+// end get
 
 // start add question
 export const addQuestionAction = createAsyncThunk(
@@ -57,6 +58,9 @@ export const addQuestionAction = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        RemoveAuth()
+      }
       return rejectWithValue(error.response.data);
     }
   }

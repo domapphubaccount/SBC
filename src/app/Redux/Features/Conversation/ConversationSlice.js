@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get chat
 export const getChatAction = createAsyncThunk(
@@ -25,7 +26,7 @@ export const getChatAction = createAsyncThunk(
       return response.data;
     } catch (error) {
       if(error?.response?.status === 401){
-        dispatch(logout())
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -36,7 +37,7 @@ export const getChatAction = createAsyncThunk(
 // start create section
 export const startSectionAction = createAsyncThunk(
   "conversation/startSectionAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { rejectWithValue , dispatch }) => {
     const { token , chat_id } = arg;
     try {
       const response = await axios.post(`${config.api}get_chat/${chat_id}`, {
@@ -52,6 +53,9 @@ export const startSectionAction = createAsyncThunk(
       }
       return response.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        RemoveAuth()
+      }
       return rejectWithValue(error.response.data);
     }
   }

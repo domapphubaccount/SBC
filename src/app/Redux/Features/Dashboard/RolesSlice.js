@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get Roles
 export const getRolesAction = createAsyncThunk(
@@ -28,7 +29,7 @@ export const getRolesAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -57,7 +58,7 @@ export const getRoleByIDAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -91,7 +92,7 @@ export const deleteRoleAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -138,7 +139,7 @@ export const addRoleAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -173,7 +174,7 @@ export const assignPermissionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -207,7 +208,7 @@ export const updatPermissionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }
@@ -253,7 +254,7 @@ export const updateRoleAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data);
     }

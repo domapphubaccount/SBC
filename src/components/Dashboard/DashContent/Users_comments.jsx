@@ -250,6 +250,9 @@ function Users_comments({}) {
                     Who Assigned
                   </th>
                   <th scope="col" className="px-6 py-3">
+                    Code
+                  </th>
+                  <th scope="col" className="px-6 py-3">
                     date
                   </th>
                   <th scope="col" className="px-6 py-3">
@@ -317,7 +320,7 @@ function Users_comments({}) {
                           <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                             {item.status}
                           </span>
-                        ) : item.status === "in_progress" ? (
+                        ) : item.status === "pending" ? (
                           <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                             {item.status}
                           </span>
@@ -333,6 +336,7 @@ function Users_comments({}) {
                           <li></li>
                         </ul>
                       </td>
+                      <td className="px-6 py-4">code</td>
                       <td className="px-6 py-4">
                         {formatDate(item.created_at)}
                       </td>

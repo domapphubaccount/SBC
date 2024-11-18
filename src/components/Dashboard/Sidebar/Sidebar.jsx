@@ -36,9 +36,7 @@ export function Sidebar({ children, handlePage }) {
             }}
           >
             <nav className="z-20 bg-white absolute flex shrink-0 grow-0 justify-around gap-4 border-t border-gray-200 p-2.5 shadow-lg fixed left-6 min-h-[auto] min-w-[64px] flex-col rounded-lg border">
-              {profileData &&
-                profileData.roles &&
-                profileData.roles[0].id == "1" && (
+              {permissionsData && permissionsData.includes(57) && (
                   <Tooltip content="Dashbaord" style="dark" placement="top">
                     <a
                       href="#"
@@ -156,9 +154,7 @@ export function Sidebar({ children, handlePage }) {
                 </Tooltip>
               )}
 
-              {profileData &&
-                profileData.roles &&
-                profileData.roles[0].id == "1" && (
+              {permissionsData && permissionsData.includes(56) && (
                   <Tooltip
                     content="Master User's Chat"
                     style="dark"

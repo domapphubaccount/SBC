@@ -17,6 +17,7 @@ export function AddRole({ openAdd, handleClose }) {
   const [permissionsOptions, setPermissionsOptions] = useState([]);
   const [chosenPermissions,setChosenPermissions] = useState([])
   const ErrorMSG = useSelector((state) => state.rolesSlice.error);
+  
 
   const permissionsData = useSelector(
     (state) => state.permissionsSlice.permissions
