@@ -1,14 +1,11 @@
 "use client";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Button, Label, Modal } from "flowbite-react";
+import { useLayoutEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  editUserAction,
-  updateRoleAction,
-} from "@/app/Redux/Features/Dashboard/UsersSlice";
+import { updateRoleAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { getRolesAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 

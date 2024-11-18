@@ -4,9 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getProfileAction,
-} from "@/app/Redux/Features/Profile/ProfileSlice";
+import { getProfileAction } from "@/app/Redux/Features/Profile/ProfileSlice";
 import { TextInput, Label, Card } from "flowbite-react";
 import { config } from "@/config/config";
 
@@ -14,7 +12,9 @@ function Profile() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state.profileSlice.profile);
-  const permissionsData = useSelector((state) => state.profileSlice.permissions);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -31,8 +31,12 @@ function Profile() {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
-      email: Yup.string().email("Invalid email address").required("Email is required"),
-      password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string()
+        .min(6, "Password must be at least 6 characters")
+        .required("Password is required"),
       password_confirmation: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Password confirmation is required"),
@@ -76,8 +80,12 @@ function Profile() {
       {/* Profile Data Card */}
       <Card className="mb-5 w-full max-w-md">
         <h3 className="text-xl font-bold mb-4">Profile Information</h3>
-        <div className="mb-2"><strong>Name:</strong> {profileData.name}</div>
-        <div className="mb-2"><strong>Email:</strong> {profileData.email}</div>
+        <div className="mb-2">
+          <strong>Name:</strong> {profileData.name}
+        </div>
+        <div className="mb-2">
+          <strong>Email:</strong> {profileData.email}
+        </div>
       </Card>
 
       {/* Update Profile Card */}
@@ -85,7 +93,9 @@ function Profile() {
         {message && (
           <div
             className={`p-4 mb-4 text-sm rounded-lg ${
-              message.type === "success" ? "text-blue-800 bg-blue-50" : "text-red-800 bg-red-50"
+              message.type === "success"
+                ? "text-blue-800 bg-blue-50"
+                : "text-red-800 bg-red-50"
             }`}
             role="alert"
           >
@@ -129,7 +139,9 @@ function Profile() {
                 disabled={formik.isSubmitting}
               />
               {formik.touched.email && formik.errors.email && (
-                <div className="text-red-600 text-sm">{formik.errors.email}</div>
+                <div className="text-red-600 text-sm">
+                  {formik.errors.email}
+                </div>
               )}
             </div>
           )}
@@ -149,7 +161,9 @@ function Profile() {
               disabled={formik.isSubmitting}
             />
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-600 text-sm">{formik.errors.password}</div>
+              <div className="text-red-600 text-sm">
+                {formik.errors.password}
+              </div>
             )}
           </div>
 
@@ -167,9 +181,12 @@ function Profile() {
               className="mt-1"
               disabled={formik.isSubmitting}
             />
-            {formik.touched.password_confirmation && formik.errors.password_confirmation && (
-              <div className="text-red-600 text-sm">{formik.errors.password_confirmation}</div>
-            )}
+            {formik.touched.password_confirmation &&
+              formik.errors.password_confirmation && (
+                <div className="text-red-600 text-sm">
+                  {formik.errors.password_confirmation}
+                </div>
+              )}
           </div>
 
           {/* Update Button (conditionally rendered based on permissions) */}

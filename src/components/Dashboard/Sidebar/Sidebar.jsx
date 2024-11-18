@@ -1,7 +1,7 @@
 "use client";
 
 import { Tooltip } from "flowbite-react";
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 export function Sidebar({ children, handlePage }) {

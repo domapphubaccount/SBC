@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Menu,
   MenuHandler,
   MenuList,
-  MenuItem,
   Button,
 } from "@material-tailwind/react";
 import { useDispatch } from "react-redux";

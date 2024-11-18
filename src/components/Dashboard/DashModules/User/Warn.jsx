@@ -4,7 +4,7 @@
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-export function WarnUser({openWarn , setOpenWarn , handleOpenWarn , role}) {
+export function WarnUser({openWarn , setOpenWarn , role}) {
 
   return (
     <>

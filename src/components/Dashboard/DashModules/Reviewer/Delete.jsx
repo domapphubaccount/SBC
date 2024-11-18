@@ -9,10 +9,7 @@ import { deleteReviewsAction } from "@/app/Redux/Features/Dashboard/ReviewerSlic
 export function DeleteReview({ openDelete, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const reviewData = useSelector((state) => state.ReviewSlice.review);
-  // const loading = useSelector((state) => state.ReviewSlice.loading);
-
   const dispatch = useDispatch();
-
   const handleDelete = () => {
     dispatch(deleteReviewsAction({ token, id: reviewData }));
   };

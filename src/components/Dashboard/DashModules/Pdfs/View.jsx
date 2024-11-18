@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Modal, Table, TextInput } from "flowbite-react";
+import { Button, Modal, TextInput } from "flowbite-react";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
 export function ViewPdf({ openView, handleClose, fileId }) {

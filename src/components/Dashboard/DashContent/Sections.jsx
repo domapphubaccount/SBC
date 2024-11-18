@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { DeleteUser } from "../DashModules/UserComments/Delete";
 import { WarnUser } from "../DashModules/User/Warn";
 import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import loadingImg from "@/assets/logo/loading_icon.gif";
 import {
   addModule,
   deleteModule,

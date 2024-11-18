@@ -4,13 +4,10 @@ import ShareChatLink from "../Chat/shareChatLink/ShareChatLink";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  loading_chat,
-  updateSlice,
   update_archive,
 } from "@/app/Redux/Features/Update/UpdateSlice";
 import {
   choseChate,
-  getChatHistory,
   getConversation,
   loading_main_chat,
 } from "@/app/Redux/Features/Chat/ChatSlice";

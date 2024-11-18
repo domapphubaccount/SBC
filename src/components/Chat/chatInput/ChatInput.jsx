@@ -1,14 +1,12 @@
 "use client";
 import { sendError } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import {
-  addQuestionAction,
   choseChate,
   getChatData,
   send_failed,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { update } from "@/app/Redux/Features/Update/UpdateSlice";
-import SnackbarError from "@/components/Snackbar/SnackbarError";
 import { config } from "@/config/config";
 import {
   Popover,

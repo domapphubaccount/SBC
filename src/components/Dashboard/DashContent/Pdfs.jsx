@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { WarnUser } from "../DashModules/User/Warn";
-import { Button, ToggleSwitch, Tooltip } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { roleModule } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";

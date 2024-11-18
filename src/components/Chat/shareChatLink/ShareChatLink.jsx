@@ -7,13 +7,9 @@ import { config } from "@/config/config";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
 function Example({
-  shareName,
-  setShareName,
   setShareToggle,
   setSharableChat,
   sharableChat,
-  shareToggle,
-  handleCopyShare,
   handleChat,
   token,
 }) {
