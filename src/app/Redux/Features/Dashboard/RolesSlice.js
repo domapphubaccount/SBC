@@ -5,12 +5,13 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
+import { setAllData } from "./Pagination/Pagination";
 
 // start get Roles
 export const getRolesAction = createAsyncThunk(
   "roles/getRolesAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token , page } = arg;
+    const { token , page , pathPage } = arg;
     try {
       const response = await axios.get(`${config.api}admin/roles?page=${page}`, {
         headers: {
@@ -23,8 +24,12 @@ export const getRolesAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.meta?.last_page){
-        dispatch(handlePages(response.data?.meta?.last_page))
+      // if(response.data?.meta?.last_page){
+      //   dispatch(handlePages(response.data?.meta?.last_page))
+      // }
+      if(pathPage){
+        console.log('roles*********',response.data.data)
+        dispatch(setAllData(response.data.data))
       }
       return response.data.data;
     } catch (error) {

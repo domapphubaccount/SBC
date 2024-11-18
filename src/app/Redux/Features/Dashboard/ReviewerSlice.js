@@ -179,11 +179,11 @@ export const updateReviewAction = createAsyncThunk(
 export const trainAction = createAsyncThunk(
   "reviews/trainAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, new_data } = arg;
+    const { token, new_data , id } = arg;
 
     try {
       const response = await axios.get(
-        `${config.api}admin/create/instruction`,
+        `${config.api}admin/create/instruction/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

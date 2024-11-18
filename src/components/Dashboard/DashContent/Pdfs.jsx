@@ -25,6 +25,7 @@ import { Assign } from "../DashModules/Pdfs/Assign";
 import { ViewPdf } from "../DashModules/Pdfs/View";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
+import { setPage } from "@/app/Redux/Features/Dashboard/Pagination/Pagination";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ function Pdfs({}) {
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
   const openAssign = useSelector((state) => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
-  const [page, setPage] = useState(1);
+  const [page, setPagec] = useState(1);
   const total_pages = useSelector((state) => state.pdfsSlice.total_pages);
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.pdfsSlice.action);
@@ -48,7 +49,8 @@ function Pdfs({}) {
   );
   const loadingUsers = useSelector((state) => state.usersSlice.loading);
   const [fileType,setFileType] = useState(0);
-  
+  const { allData, displayedData, currentPage } = useSelector(state => state.PaginationSlice);
+
 
   useEffect(() => {
     if (action) {
@@ -104,7 +106,7 @@ function Pdfs({}) {
   // end open view
 
   useEffect(() => {
-    dispatch(getPdfsAction({ token, page }));
+    dispatch(getPdfsAction({ token, page , fileType }));
   }, [
     /* updates */
     updatePdfsData,
@@ -123,8 +125,9 @@ function Pdfs({}) {
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
 
-  const filteredData = pdfsData.filter((item) => item.type === fileType);
+  const filteredData = displayedData.filter((item) => item.type === fileType);
 
+  const totalPages = Math.ceil(allData.length / 10);
 
   return (
     <>
@@ -401,9 +404,10 @@ function Pdfs({}) {
           </div>
         </div>
         <PaginationPages
-          page={page}
-          total_pages={total_pages}
+          page={currentPage}
+          total_pages={totalPages}
           setPage={setPage}
+          dynamic={true}
         />
       </section>
 

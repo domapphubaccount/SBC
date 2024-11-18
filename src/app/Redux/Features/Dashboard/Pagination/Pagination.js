@@ -1,13 +1,14 @@
-// redux/Pagination
-
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  allData: [],      // Store all data in an array
-  displayedData: [], // Store the data to be displayed based on the current page
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10, // default items per page
   isLoading: false,
   error: null,
 };
+
 
 const PaginationSlice = createSlice({
   name: 'data',
@@ -15,6 +16,8 @@ const PaginationSlice = createSlice({
   reducers: {
     setAllData: (state, action) => {
       state.allData = action.payload;
+      // Update displayedData when all data is set
+      state.displayedData = state.allData.slice(0, 10); // Show first 10 items
     },
     setDisplayedData: (state, action) => {
       state.displayedData = action.payload;
@@ -30,11 +33,24 @@ const PaginationSlice = createSlice({
       state.displayedData = [];
       state.isLoading = false;
       state.error = null;
+      state.currentPage = 1; // Reset to first page
     },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = []
+    }
+    
   },
 });
 
-export const { setAllData, setDisplayedData, setLoading, setError, resetData } = PaginationSlice.actions;
+export const { setAllData, setDisplayedData, setLoading, setError, resetData, setPage, removeData } = PaginationSlice.actions;
 
 export const selectData = (state) => state.data;
 

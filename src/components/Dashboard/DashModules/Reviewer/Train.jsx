@@ -52,6 +52,7 @@ export function Train({ openTrain, handleClose }) {
         Provided Answer: ${providedAnswer}
         Evaluation: Wrong
         Correct Answer: ${correctAnswer}`,
+        id: reviewData.id || ''
       })
     );
   };
