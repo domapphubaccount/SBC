@@ -4,12 +4,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get permission
 export const getPermissionsAction = createAsyncThunk(
   "permission/getPermissionsAction",
-  async (arg, { rejectWithValue }) => {
-    const { token , page } = arg;
+  async (arg, { rejectWithValue, dispatch }) => {
+    const { token, page } = arg;
     try {
       const response = await axios.get(`${config.api}admin/all_permissions`, {
         headers: {
@@ -24,6 +25,9 @@ export const getPermissionsAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -51,7 +55,7 @@ export const getPermissionByIDAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -83,7 +87,7 @@ export const deletePermissionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -116,7 +120,7 @@ export const addPermissionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -149,7 +153,7 @@ export const updatePermissionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }

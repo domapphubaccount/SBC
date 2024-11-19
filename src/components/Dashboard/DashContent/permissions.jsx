@@ -1,25 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { DeleteUser } from "../DashModules/User/Delete";
-import { EditUser } from "../DashModules/User/Edit";
-import { ViewUser } from "../DashModules/User/View";
 import { WarnUser } from "../DashModules/User/Warn";
-import { Button, Tooltip } from "flowbite-react";
-import { AddUser } from "../DashModules/User/AddUser";
+import { Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getUserByIDAction,
-  removeUser,
-  roleModule,
-} from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
-import {
-  getRoleByIDAction,
-  getRolesAction,
-} from "@/app/Redux/Features/Dashboard/RolesSlice";
-
-import { EditRole } from "../DashModules/Roles/Edit";
 import {
   addModule,
   closeView,
@@ -27,7 +12,6 @@ import {
   editModule,
   getPermissionByIDAction,
   getPermissionsAction,
-  getPermmisionsAction,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 import { ViewPermission } from "../DashModules/permissions/View";

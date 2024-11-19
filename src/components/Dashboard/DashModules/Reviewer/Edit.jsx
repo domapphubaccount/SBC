@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { editUserAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 
@@ -14,8 +13,6 @@ export function EditReviewer({ openEdit, handleClose }) {
   const reviewData = useSelector((state) => state.ReviewSlice.review);
   const loading = useSelector((state) => state.ReviewSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const profileData = useSelector((state) => state.profileSlice.profile);
-
   // Status options
   const statusOptions = ["accept", "reject", "in_progress"];
 
@@ -120,7 +117,7 @@ export function EditReviewer({ openEdit, handleClose }) {
                 </div>
 
                 <div>
-                  <Label htmlFor="status" value="User Status" />
+                  <Label htmlFor="status" value="Status" />
                   <select
                     id="status"
                     name="status"

@@ -4,7 +4,6 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { deleteUserAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { deleteCommentAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 
 export function DeleteUserComment({ openDelete, handleClose }) {

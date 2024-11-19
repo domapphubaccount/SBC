@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { config } from "@/config/config";
 import axios from "axios";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get sections
 export const getCodeAction = createAsyncThunk(
@@ -25,7 +26,7 @@ export const getCodeAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth()
       }
       return rejectWithValue(error.response.data.message);
     }

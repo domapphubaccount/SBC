@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ViewUser } from "../DashModules/User/View";
 import { PaginationPages } from "../Pagination/Pagination";
 import { getUsersChatAction } from "@/app/Redux/Features/Dashboard/MasterUsersChat";
 import { useDispatch, useSelector } from "react-redux";

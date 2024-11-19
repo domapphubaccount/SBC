@@ -3,11 +3,12 @@
 import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
-// start get pdfs
-// export const getChatAction = createAsyncThunk(
+// start get 
   "chat/getChatAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { rejectWithValue , dispatch }) => {
     const { token, chat_id } = arg;
     try {
       const response = await axios.get(`${config.api}get_chat/${chat_id}`, {
@@ -23,41 +24,13 @@ import axios from "axios";
       }
       return response.data.data;
     } catch (error) {
+      if(error?.response?.status === 401){
+        RemoveAuth()
+      }
       return rejectWithValue(error.response.data);
     }
   }
-// );
-// // end get pdfs
-
-// // start add question
-// export const addQuestionAction = createAsyncThunk(
-//   "chat/addQuestionAction",
-//   async (arg, { rejectWithValue }) => {
-//     const { token, question, thread_id, files } = arg;
-//     console.log('errorororor' , {token, question, thread_id, files})
-
-//     try {
-//       const response = await axios.post(
-//         `${config.api}ask_question`,
-//         {
-//           question,
-//           thread_id,
-//           "file_ids[]": files.join(","),
-//         },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             Accept: "application/json",
-//           },
-//         }
-//       );
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
-// end add question
+//  end get 
 
 const initialState = {
   loading: false,

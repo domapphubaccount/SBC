@@ -52,6 +52,7 @@ export function Train({ openTrain, handleClose }) {
         Provided Answer: ${providedAnswer}
         Evaluation: Wrong
         Correct Answer: ${correctAnswer}`,
+        id: reviewData.id || ''
       })
     );
   };
@@ -103,7 +104,7 @@ export function Train({ openTrain, handleClose }) {
 
                 <MathJaxContext>
                   <MathJax dynamic>
-                    <div className="my-5 rounded border">
+                    <div className="my-5 rounded border p-3">
                       <div>
                         <small className="font-semibold">BYLD response</small>
                       </div>
@@ -194,7 +195,7 @@ export function Train({ openTrain, handleClose }) {
               <div>
                 <h4 className="font-bold">Train</h4>
               </div>
-              <div className="my-5 rounded border">
+              <div className="my-5 rounded border p-3">
                 <div>
                   <small className="font-semibold">Question:</small>
                 </div>

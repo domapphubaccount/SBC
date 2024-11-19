@@ -1,7 +1,6 @@
 "use client";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { useRef, useState } from "react";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +11,6 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 export function AddPermmision({ openAdd, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const permissionData = useSelector((state) => state.permissionsSlice.permission);
   const loading = useSelector((state) => state.permissionsSlice.loading);
 
 

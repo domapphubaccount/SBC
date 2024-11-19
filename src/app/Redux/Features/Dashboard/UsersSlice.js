@@ -4,33 +4,40 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
-
-
+import RemoveAuth from "../RemoveAuth";
 
 // start get users
 export const getUsersAction = createAsyncThunk(
   "users/getUsersAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token , page } = arg;
+    const { token, page, pathPage, isTest } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/users?page=${page}` ,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `${config.api}admin/users?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.data.total_pages){
-        dispatch(handlePages(response.data?.data.total_pages))
+      if (pathPage) {
+        if (isTest) {
+          dispatch( setAllData(response.data.data[0].filter(item => item.account_type == "test")));
+        } else {
+          dispatch(setAllData(response.data.data[0]));
+        }
       }
-      return response.data.data[0].data;
+      dispatch(setPage(1))
+      return response.data.data[0];
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -59,7 +66,7 @@ export const getUserByIDAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -71,12 +78,12 @@ export const getUserByIDAction = createAsyncThunk(
 export const editUserAction = createAsyncThunk(
   "users/editUserAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, id, name, email, status, role_id , account_type } = arg;
+    const { token, id, name, email, status, role_id, account_type } = arg;
 
     try {
       const response = await axios.put(
         `${config.api}admin/users/${id}`,
-        { name, email, status, role_id:Number(role_id), account_type },
+        { name, email, status, role_id: Number(role_id), account_type },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -90,13 +97,13 @@ export const editUserAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -108,8 +115,15 @@ export const editUserAction = createAsyncThunk(
 export const addUserAction = createAsyncThunk(
   "users/addUserAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, name, email, password, password_confirmation, role_id, account_type } =
-      arg;
+    const {
+      token,
+      name,
+      email,
+      password,
+      password_confirmation,
+      role_id,
+      account_type,
+    } = arg;
 
     try {
       const response = await axios.post(
@@ -121,7 +135,7 @@ export const addUserAction = createAsyncThunk(
           password_confirmation,
           role_id: Number(role_id),
           status: "active",
-          account_type
+          account_type,
         },
         {
           headers: {
@@ -136,8 +150,8 @@ export const addUserAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
@@ -169,8 +183,8 @@ export const deleteUserAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
@@ -231,6 +245,14 @@ const initialState = {
   action: false,
 
   total_pages: 1,
+
+  // pagination
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10,
+
+
 };
 
 export const usersSlice = createSlice({
@@ -255,12 +277,39 @@ export const usersSlice = createSlice({
     roleModule: (state, action) => {
       state.roleModule = action.payload;
     },
-    handlePages: (state , action) => {
-      state.total_pages = action.payload
+    handlePages: (state, action) => {
+      state.total_pages = action.payload;
     },
-    handleAction: (state , action) => {
-      state.action = action.payload
+    handleAction: (state, action) => {
+      state.action = action.payload;
+    },
+
+
+    // pagination
+    setAllData: (state, action) => {
+      state.allData = action.payload;
+      state.displayedData = state.allData.slice(0, 10); 
+    },
+    setDisplayedData: (state, action) => {
+      state.displayedData = action.payload;
+    },
+    resetData: (state) => {
+      state.allData = [];
+      state.displayedData = [];
+      state.currentPage = 1;
+    },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = []
     }
+
   },
   extraReducers: (builder) => {
     builder
@@ -376,7 +425,8 @@ export const {
   roleModule,
   addModule,
   handlePages,
-  handleAction
+  handleAction,
+  setAllData, setDisplayedData, resetData, setPage, removeData
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

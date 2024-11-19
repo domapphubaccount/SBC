@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";

@@ -28,7 +28,7 @@ import {
   loading_chat_action,
 } from "@/app/Redux/Features/Chat/ChatActionsSlice";
 import Loading_chat from "../chatContainer/Loading";
-import { Button, Popover, Tooltip } from "flowbite-react";
+import { Button, Popover } from "flowbite-react";
 import { useSnackbar } from "notistack";
 import {
   clear_code_error,

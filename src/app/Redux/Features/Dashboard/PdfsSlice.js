@@ -1,35 +1,84 @@
-"use client"
+"use client";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get pdfs
 export const getPdfsAction = createAsyncThunk(
   "pdfs/getPdfsAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token , page } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, page, fileType } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/all_files?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "*/*",
-        },
-      });
+      const response = await axios.get(
+        `${config.api}admin/all_files?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "*/*",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
 
-      if(response.data?.meta?.last_page){
-        dispatch(handlePages(response.data?.meta?.last_page))
+      if (fileType == 0) {
+        dispatch(setAllData(response.data.data));
+      } else {
+        dispatch(
+          setAllData(response.data.data.filter((item) => item.type == 1))
+        );
       }
+      dispatch(setPage(1))
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        dispatch(logout())
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get pdfs
+
+// start get pdfs
+export const getDeletedPdfsAction = createAsyncThunk(
+  "pdfs/getDeletedPdfsAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, page, fileType } = arg;
+    try {
+      const response = await axios.get(
+        `${config.api}admin/all_files?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "*/*",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      if (fileType == 0) {
+        dispatch(setAllData(response.data.data));
+      } else {
+        dispatch(
+          setAllData(response.data.data.filter((item) => item.type == 1))
+        );
+      }
+      dispatch(setPage(1))
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -40,7 +89,7 @@ export const getPdfsAction = createAsyncThunk(
 // start get role by id
 export const getRoleByIDAction = createAsyncThunk(
   "roles/getRoleByIDAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { rejectWithValue, dispatch }) => {
     const { token, id } = arg;
 
     try {
@@ -57,6 +106,9 @@ export const getRoleByIDAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -66,39 +118,44 @@ export const getRoleByIDAction = createAsyncThunk(
 // start delete pdf
 export const deletePdfAction = createAsyncThunk(
   "pdfs/deletePdfAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, id } = arg;
 
     try {
-      const response = await axios.delete(`${config.api}admin/soft_delete_file/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.delete(
+        `${config.api}admin/soft_delete_file/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
       return rejectWithValue(error.response.data);
     }
   }
 );
 // end delete pdf
 
-
 // Start add PDF file
 export const addpdffileAction = createAsyncThunk(
   "pdfs/addpdffileAction",
-  async (arg, { dispatch , rejectWithValue }) => {
-    const { token, name, section_id, file_path , type } = arg;
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, name, section_id, file_path, type } = arg;
 
     // Create FormData object to handle file upload
     const formData = new FormData();
@@ -106,7 +163,7 @@ export const addpdffileAction = createAsyncThunk(
     formData.append("section_id", section_id);
     formData.append("name", name);
     formData.append("file_path", file_path); // Adjust this if the backend expects a different name
-    formData.append("type",type);
+    formData.append("type", type);
 
     try {
       const response = await axios.post(
@@ -125,11 +182,14 @@ export const addpdffileAction = createAsyncThunk(
         return rejectWithValue(new Error(response.data.error));
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -138,14 +198,15 @@ export const addpdffileAction = createAsyncThunk(
 // Start Assign user to PDF file
 export const assignUserToPdfAction = createAsyncThunk(
   "pdfs/assignUserToPdfAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, file_id, user_ids } = arg;
 
     try {
       const response = await axios.post(
         `${config.api}admin/assign-users-to-file`,
         {
-          file_id , user_ids
+          file_id,
+          user_ids,
         },
         {
           headers: {
@@ -160,23 +221,24 @@ export const assignUserToPdfAction = createAsyncThunk(
         return rejectWithValue(new Error(response.data.error));
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
-
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
-
 // End Assign user to PDF file
 
 // start edit role
 export const updateRoleAction = createAsyncThunk(
   "roles/updateRoleAction",
-  async (arg, { rejectWithValue }) => {
+  async (arg, { rejectWithValue, dispatch }) => {
     const { token, id, name } = arg;
 
     try {
@@ -197,6 +259,9 @@ export const updateRoleAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -219,7 +284,13 @@ const initialState = {
   roleModule: false,
   total_pages: 1,
   error: null,
-  action: false
+  action: false,
+
+  // pagination
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10,
 };
 
 export const pdfsSlice = createSlice({
@@ -238,18 +309,43 @@ export const pdfsSlice = createSlice({
     addModule: (state, action) => {
       state.addModule = action.payload;
     },
-    closePdfError: (state)=>{
-      state.error = null
+    closePdfError: (state) => {
+      state.error = null;
     },
-    assignModule: (state , action)=>{
+    assignModule: (state, action) => {
       state.assignModule = action.payload;
     },
-    handlePages: (state , action) => {
-      state.total_pages = action.payload
+    handlePages: (state, action) => {
+      state.total_pages = action.payload;
     },
-    handleAction: (state , action) => {
-      state.action = action.payload
-    }
+    handleAction: (state, action) => {
+      state.action = action.payload;
+    },
+
+    // pagination
+    setAllData: (state, action) => {
+      state.allData = action.payload;
+      state.displayedData = state.allData.slice(0, 10);
+    },
+    setDisplayedData: (state, action) => {
+      state.displayedData = action.payload;
+    },
+    resetData: (state) => {
+      state.allData = [];
+      state.displayedData = [];
+      state.currentPage = 1;
+    },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -269,6 +365,23 @@ export const pdfsSlice = createSlice({
         state.error = action.payload?.message;
       })
       // end get pdfs
+
+      //start get deleted pdfs
+      .addCase(getDeletedPdfsAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getDeletedPdfsAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.pdfs = action.payload;
+        state.addModule = false;
+      })
+      .addCase(getDeletedPdfsAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end get deleted pdfs
 
       // start add pdf file
       .addCase(addpdffileAction.pending, (state) => {
@@ -357,7 +470,21 @@ export const pdfsSlice = createSlice({
     // end update user role
   },
 });
-export const { addModule, viewModule, closeView, deleteModule, editModule, closePdfError, assignModule, handlePages , handleAction } =
-  pdfsSlice.actions;
+export const {
+  addModule,
+  viewModule,
+  closeView,
+  deleteModule,
+  editModule,
+  closePdfError,
+  assignModule,
+  handlePages,
+  handleAction,
+  setAllData,
+  setDisplayedData,
+  resetData,
+  setPage,
+  removeData,
+} = pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

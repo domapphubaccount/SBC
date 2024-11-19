@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import ArchiveAccordion from "./ArchiveAccordions";
 import TreeArchive from "./TreeArchive";
 
 function Archive() {
@@ -64,8 +63,6 @@ function Archive() {
           tabIndex="-1"
         >
           <div className="py-1" role="none">
-            {/* <ArchiveAccordion /> */}
-
             <TreeArchive />
           </div>
         </div>

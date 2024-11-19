@@ -4,31 +4,38 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
 
 // start get Roles
 export const getRolesAction = createAsyncThunk(
   "roles/getRolesAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token , page } = arg;
+    const { token, page, pathPage } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/roles?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `${config.api}admin/roles?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      if(response.data?.meta?.last_page){
-        dispatch(handlePages(response.data?.meta?.last_page))
+      // if(response.data?.meta?.last_page){
+      //   dispatch(handlePages(response.data?.meta?.last_page))
+      // }
+      if (pathPage) {
+        dispatch(setAllData(response.data.data));
       }
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -57,7 +64,7 @@ export const getRoleByIDAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -84,14 +91,13 @@ export const deleteRoleAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
-
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -131,14 +137,13 @@ export const addRoleAction = createAsyncThunk(
           })
         );
       }
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
-
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -167,13 +172,13 @@ export const assignPermissionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -201,13 +206,13 @@ export const updatPermissionAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -243,17 +248,17 @@ export const updateRoleAction = createAsyncThunk(
           updatPermissionAction({
             token,
             id,
-            permissions, 
+            permissions,
           })
         );
       }
-      dispatch(handleAction(true))
-      setTimeout(()=>dispatch(handleAction(false)) , 1500)
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
 
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(logout());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -278,8 +283,13 @@ const initialState = {
   editPermissionsModule: false,
 
   total_pages: 1,
-  action: false
-
+  action: false,
+  
+  // pagination
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10,
 };
 
 export const rolesSlice = createSlice({
@@ -305,14 +315,40 @@ export const rolesSlice = createSlice({
       state.addModule = action.payload;
     },
     removeRolesError: (state) => {
-      state.error = null
+      state.error = null;
     },
-    handlePages: (state , action) => {
-      state.total_pages = action.payload
+    handlePages: (state, action) => {
+      state.total_pages = action.payload;
     },
-    handleAction: (state , action) => {
-      state.action = action.payload
-    }
+    handleAction: (state, action) => {
+      state.action = action.payload;
+    },
+
+
+    // pagination
+    setAllData: (state, action) => {
+      state.allData = action.payload;
+      state.displayedData = state.allData.slice(0, 10);
+    },
+    setDisplayedData: (state, action) => {
+      state.displayedData = action.payload;
+    },
+    resetData: (state) => {
+      state.allData = [];
+      state.displayedData = [];
+      state.currentPage = 1;
+    },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -445,7 +481,8 @@ export const {
   editPermissionsModule,
   removeRolesError,
   handlePages,
-  handleAction
+  handleAction,
+  setAllData, setDisplayedData, resetData, setPage, removeData
 } = rolesSlice.actions;
 
 export default rolesSlice.reducer;

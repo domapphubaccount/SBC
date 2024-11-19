@@ -51,13 +51,21 @@ export function ViewUser({ openView, handleClose }) {
                   />
                 </div> */}
                 <div className="mb-3">
-                  <small className="px-2">Created-At: {formatDate(userData.created_at)}</small>
+                  <small className="px-2">
+                    Created-At: {formatDate(userData.created_at)}
+                  </small>
                 </div>
-                {userData.suspension_date ? 
-                <div className="mb-3">
-                  <small><Badge color="failure">Suspension date: {formatDate(userData.suspension_date)}</Badge></small>
-                </div>:''
-}
+                {userData.suspension_date ? (
+                  <div className="mb-3">
+                    <small>
+                      <Badge color="failure">
+                        Suspension date: {formatDate(userData.suspension_date)}
+                      </Badge>
+                    </small>
+                  </div>
+                ) : (
+                  ""
+                )}
                 <div className="mb-3">
                   <TextInput
                     id="user name"
@@ -85,7 +93,7 @@ export function ViewUser({ openView, handleClose }) {
                     type="text"
                     required
                     disabled
-                    value={`User Role : ${userData.roles[0]?.name} `}
+                    value={`User Role : ${userData?.roles[0]?.name} `}
                   />
                 </div>
                 <div className="mb-3">

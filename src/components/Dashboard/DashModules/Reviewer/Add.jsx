@@ -8,13 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import {
   addReviewAction,
-  updateReviewAction,
 } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 import { getCommentsAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 
 export function AddReview({ openAdd, handleClose }) {
   const dispatch = useDispatch();
-  const reviewData = useSelector((state) => state.ReviewSlice.review);
   const loading = useSelector((state) => state.ReviewSlice.loading);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const usersCommentsData = useSelector(

@@ -8,7 +8,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 import { addReviewAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 import { useEffect } from "react";
 import { updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
-import { MathJax , MathJaxContext } from "better-react-mathjax";
+import { MathJaxContext } from "better-react-mathjax";
 
 export function Reviewer({ openReviewer, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -16,9 +16,6 @@ export function Reviewer({ openReviewer, handleClose }) {
   const loading = useSelector((state) => state.userCommentsSlice.loading);
   const profileData = useSelector((state) => state.profileSlice.profile);
   const dispatch = useDispatch();
-  const permissionsData = useSelector(
-    (state) => state.profileSlice.permissions
-  );
 
   // Formik setup
   const formik = useFormik({
@@ -156,7 +153,7 @@ export function Reviewer({ openReviewer, handleClose }) {
 
                     <MathJaxContext>
                       {/* <MathJax dynamic> */}
-                        <div className="my-5 rounded border">
+                        <div className="my-5 rounded border p-3">
                           <div>
                             <small className="font-semibold">
                               BYLD response
@@ -229,7 +226,7 @@ export function Reviewer({ openReviewer, handleClose }) {
                       ""
                     ) : (
                       <div>
-                        <Label htmlFor="status" value="User Status" />
+                        <Label htmlFor="status" value="Status" />
                         <select
                           id="status"
                           name="status"

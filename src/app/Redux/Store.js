@@ -20,6 +20,8 @@ import ReviewSlice from "./Features/Dashboard/ReviewerSlice";
 import dashboardSlice from "./Features/Dashboard/DashboardSlice";
 import usersChatSlice from "./Features/Dashboard/MasterUsersChat";
 import asideSlice from "./Features/Dashboard/SideBarSlice";
+import PaginationSlice from "./Features/Dashboard/Pagination/Pagination";
+
 
 export const store = configureStore({
   reducer: {
@@ -42,5 +44,6 @@ export const store = configureStore({
     typeSlice,
     chatActionsSlice,
     ReviewSlice,
+    PaginationSlice
   },
 });
