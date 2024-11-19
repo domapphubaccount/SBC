@@ -53,7 +53,7 @@ export const getDeletedPdfsAction = createAsyncThunk(
     const { token, page, fileType } = arg;
     try {
       const response = await axios.get(
-        `${config.api}admin/all_files?page=${page}`,
+        `${config.api}admin/all_files/soft_deleted`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -236,6 +236,39 @@ export const assignUserToPdfAction = createAsyncThunk(
 // End Assign user to PDF file
 
 // start edit role
+export const restorePdfAction = createAsyncThunk(
+  "pdfs/restorePdfAction",
+  async (arg, { rejectWithValue, dispatch }) => {
+    const { token, id } = arg;
+
+    try {
+      const response = await axios.put(
+        `${config.api}admin/${id}/restore`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end edit user role
+
+// start edit role
 export const updateRoleAction = createAsyncThunk(
   "roles/updateRoleAction",
   async (arg, { rejectWithValue, dispatch }) => {
@@ -279,6 +312,7 @@ const initialState = {
   deleteModule: false,
   viewModule: false,
   assignModule: false,
+  restoreModule: false,
 
   editModule: false,
   roleModule: false,
@@ -308,6 +342,9 @@ export const pdfsSlice = createSlice({
     },
     addModule: (state, action) => {
       state.addModule = action.payload;
+    },
+    restoreModule: (state , action) => {
+      state.restoreModule = action.payload
     },
     closePdfError: (state) => {
       state.error = null;
@@ -401,6 +438,23 @@ export const pdfsSlice = createSlice({
       })
       // end add pdf file
 
+      // start restore pdf file
+      .addCase(restorePdfAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(restorePdfAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.restoreModule = false;
+      })
+      .addCase(restorePdfAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end restore pdf file
+
       // start assign user to pdf file
       .addCase(assignUserToPdfAction.pending, (state) => {
         state.loading = true;
@@ -485,6 +539,7 @@ export const {
   resetData,
   setPage,
   removeData,
+  restoreModule
 } = pdfsSlice.actions;
 
 export default pdfsSlice.reducer;
