@@ -29,7 +29,7 @@ import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/Permmisions
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
-import { setPage } from "@/app/Redux/Features/Dashboard/Pagination/Pagination";
+import { setPage } from "@/app/Redux/Features/Dashboard/RolesSlice";
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ function Roles({}) {
     (state) => state.profileSlice.permissions
   );
   const { allData, displayedData, currentPage } = useSelector(
-    (state) => state.PaginationSlice
+    (state) => state.rolesSlice
   );
 
   useEffect(() => {
@@ -171,7 +171,7 @@ function Roles({}) {
           </tr>
         </thead>
         <tbody>
-          {rolesData && rolesData?.length > 0 ? (
+          {rolesData?.length > 0 ? (
             filteredData.map((item, index) => (
               <tr
                 key={index}

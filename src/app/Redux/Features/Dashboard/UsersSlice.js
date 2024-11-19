@@ -5,7 +5,6 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
-import { setAllData } from "./Pagination/Pagination";
 
 // start get users
 export const getUsersAction = createAsyncThunk(
@@ -245,6 +244,14 @@ const initialState = {
   action: false,
 
   total_pages: 1,
+
+  // pagination
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10,
+
+
 };
 
 export const usersSlice = createSlice({
@@ -275,6 +282,33 @@ export const usersSlice = createSlice({
     handleAction: (state, action) => {
       state.action = action.payload;
     },
+
+
+    // pagination
+    setAllData: (state, action) => {
+      state.allData = action.payload;
+      state.displayedData = state.allData.slice(0, 10); 
+    },
+    setDisplayedData: (state, action) => {
+      state.displayedData = action.payload;
+    },
+    resetData: (state) => {
+      state.allData = [];
+      state.displayedData = [];
+      state.currentPage = 1;
+    },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = []
+    }
+
   },
   extraReducers: (builder) => {
     builder
@@ -391,6 +425,7 @@ export const {
   addModule,
   handlePages,
   handleAction,
+  setAllData, setDisplayedData, resetData, setPage, removeData
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

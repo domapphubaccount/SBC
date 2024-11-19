@@ -4,9 +4,8 @@ const initialState = {
   allData: [],
   displayedData: [],
   currentPage: 1,
-  itemsPerPage: 10, // default items per page
-  isLoading: false,
-  error: null,
+  itemsPerPage: 10,
+
 };
 
 
@@ -16,24 +15,15 @@ const PaginationSlice = createSlice({
   reducers: {
     setAllData: (state, action) => {
       state.allData = action.payload;
-      // Update displayedData when all data is set
-      state.displayedData = state.allData.slice(0, 10); // Show first 10 items
+      state.displayedData = state.allData.slice(0, 10); 
     },
     setDisplayedData: (state, action) => {
       state.displayedData = action.payload;
     },
-    setLoading: (state, action) => {
-      state.isLoading = action.payload;
-    },
-    setError: (state, action) => {
-      state.error = action.payload;
-    },
     resetData: (state) => {
       state.allData = [];
       state.displayedData = [];
-      state.isLoading = false;
-      state.error = null;
-      state.currentPage = 1; // Reset to first page
+      state.currentPage = 1;
     },
     setPage: (state, action) => {
       const page = action.payload;
@@ -50,7 +40,7 @@ const PaginationSlice = createSlice({
   },
 });
 
-export const { setAllData, setDisplayedData, setLoading, setError, resetData, setPage, removeData } = PaginationSlice.actions;
+export const { setAllData, setDisplayedData, resetData, setPage, removeData } = PaginationSlice.actions;
 
 export const selectData = (state) => state.data;
 

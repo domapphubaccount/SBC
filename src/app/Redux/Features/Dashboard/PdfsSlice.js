@@ -5,7 +5,6 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
-import { setAllData } from "./Pagination/Pagination";
 
 // start get pdfs
 export const getPdfsAction = createAsyncThunk(
@@ -33,9 +32,8 @@ export const getPdfsAction = createAsyncThunk(
       // }
       if (fileType == 0) {
         dispatch(setAllData(response.data.data));
-        console.log(response.data.data)
       } else {
-        console.log(response.data.data.filter((item) => item.type == 1))
+        console.log(response.data.data.filter((item) => item.type == 1));
         dispatch(
           setAllData(response.data.data.filter((item) => item.type == 1))
         );
@@ -250,6 +248,12 @@ const initialState = {
   total_pages: 1,
   error: null,
   action: false,
+
+  // pagination
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10,
 };
 
 export const pdfsSlice = createSlice({
@@ -279,6 +283,31 @@ export const pdfsSlice = createSlice({
     },
     handleAction: (state, action) => {
       state.action = action.payload;
+    },
+
+    // pagination
+    setAllData: (state, action) => {
+      state.allData = action.payload;
+      state.displayedData = state.allData.slice(0, 10);
+    },
+    setDisplayedData: (state, action) => {
+      state.displayedData = action.payload;
+    },
+    resetData: (state) => {
+      state.allData = [];
+      state.displayedData = [];
+      state.currentPage = 1;
+    },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = [];
     },
   },
   extraReducers: (builder) => {
@@ -397,6 +426,11 @@ export const {
   assignModule,
   handlePages,
   handleAction,
+  setAllData,
+  setDisplayedData,
+  resetData,
+  setPage,
+  removeData,
 } = pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

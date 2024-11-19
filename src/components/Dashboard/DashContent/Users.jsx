@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
@@ -23,7 +23,7 @@ import { getRolesAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
-import { setPage } from "@/app/Redux/Features/Dashboard/Pagination/Pagination";
+import { setPage } from "@/app/Redux/Features/Dashboard/UsersSlice";
 
 function Users({}) {
   const dispatch = useDispatch();
@@ -31,7 +31,6 @@ function Users({}) {
   const usersData = useSelector((state) => state.usersSlice.users);
   const updateUsersData = useSelector((state) => state.usersSlice.updates);
   const loading = useSelector((state) => state.usersSlice.loading);
-  const [page, setPagec] = useState(1);
   const [openWarn, setOpenWarn] = useState(false);
   const openAdd = useSelector((state) => state.usersSlice.addModule);
   const openEdit = useSelector((state) => state.usersSlice.editModule);
@@ -47,7 +46,7 @@ function Users({}) {
 
   // const total_pages = useSelector((state) => state.usersSlice.total_pages);
   const { allData, displayedData, currentPage } = useSelector(
-    (state) => state.PaginationSlice
+    (state) => state.usersSlice
   );
 
   useEffect(() => {
@@ -124,8 +123,6 @@ function Users({}) {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   };
-
-
 
   const totalPages = Math.ceil(allData.length / 10);
 
@@ -437,7 +434,9 @@ function Users({}) {
               </div>
             </div>
 
+            <Suspense fallback={<div>NO DATA YET!</div>}>
             {TableData()}
+            </Suspense>
           </div>
         </div>
         <PaginationPages

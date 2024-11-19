@@ -1,8 +1,9 @@
 "use client";
 
+import { removeData } from "@/app/Redux/Features/Dashboard/Pagination/Pagination";
 import { Tooltip } from "flowbite-react";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function Sidebar({ children, handlePage }) {
   const profileData = useSelector((state) => state.profileSlice.profile);
@@ -11,12 +12,8 @@ export function Sidebar({ children, handlePage }) {
     (state) => state.profileSlice.permissions
   );
 
-
-
   return (
     <>
-
-
       {permissionsData && (
         <aside
           id="default-sidebar"
@@ -69,7 +66,7 @@ export function Sidebar({ children, handlePage }) {
                   <a
                     href="#"
                     className="flex aspect-square min-h-[32px] w-16 flex-col items-center justify-center gap-1 rounded-md p-1.5 dark:bg-sky-900 dark:text-sky-50"
-                    onClick={() => handlePage(1)}
+                    onClick={() => {handlePage(1)}}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -87,8 +84,7 @@ export function Sidebar({ children, handlePage }) {
                     </svg>
 
                     <small className="text-center text-xs font-medium">
-                      {" "}
-                      Users{" "}
+                      Users
                     </small>
                   </a>
                 </Tooltip>
@@ -153,7 +149,6 @@ export function Sidebar({ children, handlePage }) {
                   </a>
                 </Tooltip>
               )}
-
               {permissionsData && permissionsData.includes(56) && (
                   <Tooltip
                     content="Master User's Chat"
@@ -189,7 +184,7 @@ export function Sidebar({ children, handlePage }) {
               {permissionsData && permissionsData.includes(13) && (
                 <Tooltip content="Building Code" style="dark" placement="top">
                   <a
-                    onClick={() => handlePage(4)}
+                    onClick={() => {handlePage(4)}}
                     href="#"
                     className="flex h-16 w-16 flex-col items-center justify-center gap-1 text-fuchsia-900 dark:text-gray-400"
                   >
@@ -244,7 +239,7 @@ export function Sidebar({ children, handlePage }) {
                 <Tooltip content="ٌRoles" style="dark" placement="top">
                   <a
                     href="#"
-                    onClick={() => handlePage(6)}
+                    onClick={() => {handlePage(6)}}
                     className="flex h-16 w-16 flex-col items-center justify-center gap-1 text-fuchsia-900 dark:text-gray-400"
                   >
                     <svg

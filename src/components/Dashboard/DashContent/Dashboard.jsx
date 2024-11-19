@@ -53,12 +53,6 @@ function DashboardData({ setPage }) {
     updateRolesData,
   ]);
 
-  // // Step 3: Filter the rows based on the search term
-  // const filteredData = rolesData.filter((item) => {
-  //   return item.name.toLowerCase().includes(searchTerm);
-  //   // item.email.toLowerCase().includes(searchTerm)
-  // });
-
   return (
     <>
       <section>
@@ -280,7 +274,7 @@ function DashboardData({ setPage }) {
                         Total Trains
                       </p>
                       <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-                        {dashboardData?.total_chats}
+                        {dashboardData?.total_trains}
                       </h4>
                     </div>
                     <div className="border-t border-blue-gray-50 p-4">
@@ -290,6 +284,7 @@ function DashboardData({ setPage }) {
                       </p> */}
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>

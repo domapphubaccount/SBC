@@ -5,6 +5,9 @@ import { clearData } from './Chat/ChatSlice'
 import { clearHistory } from './Chat_History/historySlice'
 import { logout } from './Auth/AuthSlice'
 import { removeData } from './Dashboard/Pagination/Pagination'
+import { removeData as usersData } from './Dashboard/UsersSlice' 
+import { removeData as pdfsData } from './Dashboard/PdfsSlice' 
+import { removeData as rolesData } from './Dashboard/RolesSlice' 
 
 function RemoveAuth() {
     const dispatch = useDispatch()
@@ -12,7 +15,9 @@ function RemoveAuth() {
     dispatch(clearHistory())
     dispatch(logout())
     dispatch(removeData())
-
+    dispatch(usersData())
+    dispatch(pdfsData())
+    dispatch(rolesData())
   return (
     <></>
   )
