@@ -15,7 +15,9 @@ import {
   assignModule,
   closePdfError,
   deleteModule,
+  getDeletedPdfsAction,
   getPdfsAction,
+  restoreModule,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import { Addpdfs } from "../DashModules/Pdfs/AddPdfs";
@@ -28,6 +30,7 @@ import { useSnackbar } from "notistack";
 import { setPage } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import { RestorePdf } from "./RestorePdf";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -37,13 +40,14 @@ function Pdfs({}) {
   const [openWarn, setOpenWarn] = useState(false);
   const [fileId, setFileID] = useState("");
   const openDelete = useSelector((state) => state.pdfsSlice.deleteModule);
+  const openRestoreDeletedFile = useSelector((state) => state.pdfsSlice.restoreModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
   const openAdd = useSelector((state) => state.pdfsSlice.addModule);
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
   const openAssign = useSelector((state) => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const [page, setPagec] = useState(1);
-  const total_pages = useSelector((state) => state.pdfsSlice.total_pages);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.pdfsSlice.action);
   const permissionsData = useSelector(
@@ -72,6 +76,7 @@ function Pdfs({}) {
     dispatch(roleModule(false));
     dispatch(addModule(false));
     dispatch(closePdfError());
+    dispatch(restoreModule(false));
   };
 
   // start open delete
@@ -83,24 +88,24 @@ function Pdfs({}) {
   // end open delete
 
   // start open edit
-  const handleOpenEdit = (id) => {
-    dispatch(getRoleByIDAction({ token, id }));
-    dispatch(editModule(true));
+  const handleOpenRestoreDeletedFile = (id) => {
+    setFileID(id);
+    dispatch(restoreModule(true));
   };
   // end open edit
 
-  //   // start open assigned
+  // start open assigned
   const handleOpenAssigned = (id) => {
     setFileID(id);
     dispatch(assignModule(true));
   };
-  //   // end open assigned
+  // end open assigned
 
-  //   start add role             ####DONE
+  // start add role             ####DONE
   const handleOpenAdd = () => {
     dispatch(addModule(true));
   };
-  //   end add role
+  // end add role
 
   // start open view
   const handleOpenView = (id) => {
@@ -110,12 +115,17 @@ function Pdfs({}) {
   // end open view
 
   useEffect(() => {
-    dispatch(getPdfsAction({ token, page, fileType }));
+    if (deleted) {
+      dispatch(getDeletedPdfsAction({ token, page, fileType }));
+    } else {
+      dispatch(getPdfsAction({ token, page, fileType }));
+    }
   }, [
     /* updates */
     updatePdfsData,
     page,
     fileType,
+    deleted,
   ]);
 
   function formatDate(dateString) {
@@ -130,7 +140,10 @@ function Pdfs({}) {
   }
 
   const filteredData = displayedData.filter((item) => item.type === fileType);
-
+  // Filter PDFs based on the search term
+  const filteredPdfs = displayedData?.filter((pdf) =>
+    pdf.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const totalPages = Math.ceil(allData.length / 10);
 
   return (
@@ -217,115 +230,140 @@ function Pdfs({}) {
             )}
           </div>
         </div>
+
         <div className="bg-white p-8 rounded-md w-full m-auto dashed">
           <div>
-            {/* <div className="pb-4 bg-white dark:bg-gray-900">
-              <label for="table-search" className="sr-only">
-                Search
-              </label>
-              <div className="flex justify-between">
-                <div className="relative ">
-                  <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
+            <div className="flex justify-between">
+              <div className="pb-4 bg-white dark:bg-gray-900">
+                <label for="table-search" className="sr-only">
+                  Search
+                </label>
+                <div className="flex justify-between">
+                  <div className="relative ">
+                    <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                      <svg
+                        className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      id="table-search"
+                      className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Search for Pdf"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                   </div>
-                  <input
-                    type="text"
-                    id="table-search"
-                    className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search for Pdf"
-                     // Handle search input change
-                  />
                 </div>
               </div>
-            </div> */}
-            <div>
               <div>
-                {deleted ? (
-                  <button
-                    type="button"
-                    className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
-                    onClick={() => setDeleted(false)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className="size-6 mr-2"
+                <div>
+                  {deleted ? (
+                    <button
+                      type="button"
+                      className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
+                      onClick={() => setDeleted(false)}
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-                      />
-                    </svg>
-                    BDFS
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
-                    onClick={() => setDeleted(true)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6 mr-2"
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        className="size-6 mr-2"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                        />
+                      </svg>
+                      SHOW BDFS
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
+                      onClick={() => setDeleted(true)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
-                      />
-                    </svg>
-                    DELETED
-                  </button>
-                )}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 mr-2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+                        />
+                      </svg>
+                      SHOW DELETED
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
+
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
               <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table className="min-w-full leading-normal">
                   <thead>
                     <tr>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
                         Name
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
                         File
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
                         Created At
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
                         Created By
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {pdfsData?.length > 0 ? (
-                      filteredData.map((item, index) => (
+                      filteredPdfs.map((item, index) => (
                         <tr key={index} className="user_row hover:bg-gray-200">
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">
@@ -426,40 +464,39 @@ function Pdfs({}) {
                               </Tooltip>
                               {/* end view */}
 
-                              {/* start Assigned */}
-                              <Tooltip content="Assigned">
-                                <button
-                                  type="button"
-                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                                  onClick={() => handleOpenAssigned(item.id)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="size-4"
+                              {deleted ? (
+                                // start restore
+                                <Tooltip content="RESTORE">
+                                  <button
+                                    type="button"
+                                    className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
+                                    onClick={() => handleOpenRestoreDeletedFile(item.id)}
                                   >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"
-                                    />
-                                  </svg>
-                                </button>
-                              </Tooltip>
-                              {/* end Assigned */}
-
-                              {/* start delete */}
-                              {permissionsData &&
-                                permissionsData.includes(17) && (
-                                  <Tooltip content="Delete">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke-width="1.5"
+                                      stroke="currentColor"
+                                      className="size-4"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+                                      />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+                              ) : (
+                                <>
+                                  {/* start Assigned */}
+                                  <Tooltip content="Assigned">
                                     <button
                                       type="button"
-                                      className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                      className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
                                       onClick={() =>
-                                        handleOpenDelete(item.chatgpt_file_id)
+                                        handleOpenAssigned(item.id)
                                       }
                                     >
                                       <svg
@@ -473,13 +510,47 @@ function Pdfs({}) {
                                         <path
                                           strokeLinecap="round"
                                           strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                          d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"
                                         />
                                       </svg>
                                     </button>
                                   </Tooltip>
-                                )}
-                              {/* start delete */}
+                                  {/* end Assigned */}
+
+                                  {/* start delete */}
+                                  {permissionsData &&
+                                    permissionsData.includes(17) && (
+                                      <Tooltip content="Delete">
+                                        <button
+                                          type="button"
+                                          className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                          onClick={() =>
+                                            handleOpenDelete(
+                                              item.chatgpt_file_id
+                                            )
+                                          }
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="size-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                            />
+                                          </svg>
+                                        </button>
+                                      </Tooltip>
+                                    )}
+
+                                  {/* start delete */}
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -495,6 +566,7 @@ function Pdfs({}) {
             </div>
           </div>
         </div>
+
         <PaginationPages
           page={currentPage}
           total_pages={totalPages}
@@ -508,6 +580,13 @@ function Pdfs({}) {
           fileId={fileId}
           handleClose={handleClose}
           openDelete={openDelete}
+        />
+      )}
+      {openRestoreDeletedFile && (
+        <RestorePdf
+          fileId={fileId}
+          handleClose={handleClose}
+          openDelete={openRestoreDeletedFile}
         />
       )}
       {openAdd && <Addpdfs openAdd={openAdd} handleClose={handleClose} />}
