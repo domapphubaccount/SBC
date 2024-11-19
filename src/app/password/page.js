@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import Logo from "@/assets/logo/Logo.png";
 import Forget_password from "./password_components/Check_password";
 import Check_code from "./password_components/Check_code";

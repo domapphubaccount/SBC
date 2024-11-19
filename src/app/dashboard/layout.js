@@ -1,7 +1,6 @@
 
 import Header from '@/layout/Header/Header';
 import React from 'react'
-import Navbar from '@/layout/Header/Navbar';
 
 export const metadata = {
   title: "Dashboard",

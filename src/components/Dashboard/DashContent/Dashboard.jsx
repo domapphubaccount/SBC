@@ -241,18 +241,8 @@ function DashboardData({ setPage }) {
                         {dashboardData?.total_chats}
                       </h4>
                     </div>
-                    <div className="border-t border-blue-gray-50 p-4">
-                      {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
-                        <strong className="text-green-500">+5%</strong>
-                        &nbsp;than yesterday
-                      </p> */}
-                    </div>
                   </div>
-
-                  <div
-                    // onClick={() => setPage(3)}
-                    className="cursor-pointer relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md"
-                  >
+                  <div className="cursor-pointer relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
                     <div className="bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-900 to-cyan-400 text-white shadow-cyan-500/40 shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -277,14 +267,7 @@ function DashboardData({ setPage }) {
                         {dashboardData?.total_trains}
                       </h4>
                     </div>
-                    <div className="border-t border-blue-gray-50 p-4">
-                      {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
-                        <strong className="text-green-500">+5%</strong>
-                        &nbsp;than yesterday
-                      </p> */}
-                    </div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -295,9 +278,7 @@ function DashboardData({ setPage }) {
       {openDelete && (
         <DeleteRole handleClose={handleClose} openDelete={openDelete} />
       )}
-
       {openEdit && <EditRole handleClose={handleClose} openEdit={openEdit} />}
-
       {openView && <ViewRole handleClose={handleClose} openView={openView} />}
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openAdd && <AddRole openAdd={openAdd} handleClose={handleClose} />}

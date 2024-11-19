@@ -3,7 +3,7 @@
 import Dashboard from "@/components/Dashboard/Dashboard";
 import { Sidebar } from "@/components/Dashboard/Sidebar/Sidebar";
 import { redirect } from "next/navigation";
-import React, { Suspense, useEffect, useLayoutEffect, useState } from "react";
+import React, { Suspense, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 function Page() {

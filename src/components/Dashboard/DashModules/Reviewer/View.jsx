@@ -115,22 +115,6 @@ export function ViewReview({ openView, handleClose }) {
                       value={reviewData?.comment_super_reviewr || 'No Comments Yet.'}
                     />
                   </div>
-
-                  {/* <div className="mb-5">
-                    <div>
-                      <small>Response</small>
-                    </div>
-                    <Textarea
-                      rows={3}
-                      placeholder="Write response ."
-                      id="response"
-                      style={{ opacity: 1 }}
-                      type="text"
-                      required
-                      // disabled
-                      // value={`User : ${userData.name}`}
-                    />
-                  </div> */}
                 </div>
 
                 <div>

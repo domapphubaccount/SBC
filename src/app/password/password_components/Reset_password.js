@@ -18,7 +18,6 @@ function ResetPassword({storedCode}) {
       .required("Required"),
   });
   const navigate = useRouter()
-  const state = useSelector((state) => state);
 
   const formik = useFormik({
     initialValues: {
@@ -46,9 +45,7 @@ function ResetPassword({storedCode}) {
 
           if (res.data.status === "SUCCESS") {
             localStorage.setItem("data", JSON.stringify(res.data.data));
-            // router.push("/");
           } else if (res.data.status === "ERROR") {
-            // Handle error (e.g., setMessage(res.data.message))
           }
         })
         .catch((e) => console.log(e));
@@ -67,33 +64,6 @@ function ResetPassword({storedCode}) {
 
       <form onSubmit={formik.handleSubmit}>
         {/* Code Input */}
-        {/* <div className="flex flex-col mb-6">
-          <label
-            htmlFor="code"
-            className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600"
-          >
-            Code:
-          </label>
-          <div className="relative">
-            <input
-              style={{ color: "black" }}
-              id="code"
-              type="text"
-              name="code"
-              className="text-sm sm:text-base placeholder-gray-500 pl-4 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
-              placeholder="Enter your reset code"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.code}
-            />
-          </div>
-          {formik.touched.code && formik.errors.code ? (
-            <div className="text-red-500 text-xs mt-1">
-              {formik.errors.code}
-            </div>
-          ) : null}
-        </div> */}
-
         {/* New Password Input */}
         <div className="flex flex-col mb-6">
           <label

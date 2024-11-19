@@ -9,7 +9,6 @@ import { addRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import Select from "react-select";
 
-
 export function AddRole({ openAdd, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -17,7 +16,6 @@ export function AddRole({ openAdd, handleClose }) {
   const [permissionsOptions, setPermissionsOptions] = useState([]);
   const ErrorMSG = useSelector((state) => state.rolesSlice.error);
   
-
   const permissionsData = useSelector(
     (state) => state.permissionsSlice.permissions
   );
@@ -89,9 +87,6 @@ export function AddRole({ openAdd, handleClose }) {
                     closeMenuOnSelect={false}
                     isMulti
                     options={permissionsOptions}
-                    // value={permissionsOptions.filter((option) =>
-                    //   formik.values.permissions.includes(option.value)
-                    // )}
                     onChange={(selectedOptions) => {
                       formik.setFieldValue(
                         "permissions",

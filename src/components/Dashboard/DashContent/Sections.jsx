@@ -25,7 +25,6 @@ function Sections() {
   const sections = useSelector((state) => state.sectionsSlice.sections);
   const updates = useSelector((state) => state.sectionsSlice.updates);
   const [openWarn, setOpenWarn] = useState(false);
-
   const openAdd = useSelector((state) => state.sectionsSlice.addModule);
   const openDelete = useSelector((state) => state.sectionsSlice.deleteModule);
   const openEdit = useSelector((state) => state.sectionsSlice.editModule);
@@ -55,7 +54,6 @@ function Sections() {
     dispatch(getSectionId({ id, name }));
     dispatch(editModule(true));
   };
-  // const handleOpenView = () => setOpenView(!openView);
   const handleOpenWarn = () => setOpenWarn(!openWarn);
 
   // start add module
@@ -69,11 +67,6 @@ function Sections() {
     dispatch(deleteModule(false));
     dispatch(editModule(false));
     dispatch(removeError());
-
-    // dispatch(removeUser());
-
-    // dispatch(deleteModule(false));
-    // dispatch(viewModule(false));
   };
 
   useEffect(() => {

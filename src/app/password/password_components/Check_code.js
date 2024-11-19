@@ -1,16 +1,15 @@
-import { checkCodeAction, storedCode } from "@/app/Redux/Features/Auth/AuthSlice";
+import { checkCodeAction } from "@/app/Redux/Features/Auth/AuthSlice";
 import React, { useState } from "react";
 import OtpInput from "react-otp-input";
 import { useDispatch, useSelector } from "react-redux";
 
-function Check_code({set_stored_code}) {
+function Check_code({ set_stored_code }) {
   const dispatch = useDispatch();
   const [otp, setOtp] = useState("");
   const errorMessage = useSelector((state) => state.loginSlice.password.error);
 
   function handleSubmit() {
-    // dispatch(storedCode(otp))
-    set_stored_code(otp)
+    set_stored_code(otp);
     dispatch(checkCodeAction({ code: otp }));
   }
 

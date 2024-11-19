@@ -30,19 +30,14 @@ function Permmisions({}) {
     (state) => state.permissionsSlice.updates
   );
   const [openWarn, setOpenWarn] = useState(false);
-
   const openView = useSelector((state) => state.permissionsSlice.viewModule);
-
   const openEdit = useSelector((state) => state.permissionsSlice.editModule);
   const openDelete = useSelector(
     (state) => state.permissionsSlice.deleteModule
   );
   const openRole = useSelector((state) => state.usersSlice.roleModule);
-
   const openAdd = useSelector((state) => state.permissionsSlice.addModule);
-
   const [page , setPage] = useState(1)
-
 
   const handleClose = () => {
     dispatch(closeView());
@@ -62,7 +57,6 @@ function Permmisions({}) {
   useEffect(() => {
     dispatch(getPermissionsAction({ token , page }));
   }, [
-    /* updates */
     updatePermisionsData,
     page
   ]);
@@ -78,7 +72,6 @@ function Permmisions({}) {
   // Step 3: Filter the rows based on the search term
   const filteredData = permissionsData.filter((item) => {
     return item.name.toLowerCase().includes(searchTerm);
-    // item.email.toLowerCase().includes(searchTerm)
   });
   return (
     <>
@@ -159,7 +152,7 @@ function Permmisions({}) {
                   id="table-search"
                   className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search for User"
-                  onChange={handleSearchChange} // Handle search input change
+                  onChange={handleSearchChange}
                 />
               </div>
             </div>
@@ -267,7 +260,6 @@ function Permmisions({}) {
       {openEdit && (
         <EditPermission handleClose={handleClose} openEdit={openEdit} />
       )}
-
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
     </>

@@ -58,7 +58,6 @@ function ReviewerAdmin({}) {
 
   const handleClose = () => {
     dispatch(removeUser());
-    // dispatch(addModule(false));
     dispatch(editModule({ open: false, review: "" }));
     dispatch(deleteModule({ open: false, review: "" }));
     dispatch(viewModule({ open: false, review: "" }));
@@ -67,24 +66,20 @@ function ReviewerAdmin({}) {
   };
   // start open delete
   const handleOpenDelete = (id) => {
-    // dispatch(getCommentByIDAction({ token, id }));
     dispatch(deleteModule({ open: true, review: id }));
   };
   // end open delete
   // start open edit
   const handleOpenEdit = (id) => {
-    // dispatch(getCommentByIDAction({ token, id }));
     dispatch(editModule({ open: true, review: id }));
   };
   // end open edit
   // start open view
   const handleOpenView = (id) => {
-    // dispatch(getCommentByIDAction({ token, id }));
     dispatch(viewModule({ open: true, review: id }));
   };
 
   const handleOpenTrain = (id) => {
-    // dispatch(getCommentByIDAction({ token, id }));
     dispatch(trainModule({ open: true, review: id }));
   };
   // end open view
@@ -486,9 +481,7 @@ function ReviewerAdmin({}) {
           handleClose={handleClose}
         />
       )}
-
       {openRole && <UserRole handleClose={handleClose} openRole={openRole} />}
-
       {loading && <SnackbarTooltip />}
     </>
   );

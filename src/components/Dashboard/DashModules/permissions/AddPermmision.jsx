@@ -7,12 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addPermissionAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
-
 export function AddPermmision({ openAdd, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const loading = useSelector((state) => state.permissionsSlice.loading);
-
 
   // Formik setup
   const formik = useFormik({

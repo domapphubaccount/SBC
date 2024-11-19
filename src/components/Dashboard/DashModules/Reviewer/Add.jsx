@@ -88,8 +88,6 @@ export function AddReview({ openAdd, handleClose }) {
                       </div>
                     )}
                 </div>
-
-                {/* {profileData.roles && profileData.roles[0].id == 3 && ( */}
                   <div className="mb-8">
                     <div>
                       <small>Comment Reviewer</small>
@@ -110,7 +108,6 @@ export function AddReview({ openAdd, handleClose }) {
                         </div>
                       )}
                   </div>
-                {/* )} */}
 
                 <div className="mb-8">
                   <div>

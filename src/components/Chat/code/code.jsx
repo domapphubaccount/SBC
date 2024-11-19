@@ -55,7 +55,9 @@ function MultipleSelect() {
   };
 
   const removeStoredCode = () => {
-    dispatch(set_direct_code([]))
+    if(!available){
+      dispatch(set_direct_code([]))
+    }
   }
   
 
@@ -83,15 +85,6 @@ function MultipleSelect() {
               You cannot change the code after starting a new chat.
             </div>
           )}
-
-          {/* Search input */}
-          {/* <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search"
-            className="block text-black w-full p-2 mb-2 border border-gray-300 rounded-lg dark:bg-gray-600 dark:text-white dark:border-gray-500"
-          /> */}
 
           {/* Dropdown items */}
           <ul className="max-h-48 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">

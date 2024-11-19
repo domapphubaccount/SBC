@@ -43,8 +43,6 @@ function Users({}) {
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
-
-  // const total_pages = useSelector((state) => state.usersSlice.total_pages);
   const { allData, displayedData, currentPage } = useSelector(
     (state) => state.usersSlice
   );
@@ -445,21 +443,6 @@ function Users({}) {
           setPage={setPage}
           dynamic={true}
         />
-        {/* <div>
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span>Page {currentPage}</span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage * 10 >= allData.length}
-          >
-            Next
-          </button>
-        </div> */}
       </section>
 
       {openDelete && (

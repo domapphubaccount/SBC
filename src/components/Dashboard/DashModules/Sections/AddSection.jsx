@@ -25,7 +25,6 @@ export function AddSection({ openAdd, handleClose }) {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
-      // fileName: Yup.string().required("File Name is Required")
     }),
     onSubmit: (values) => {
       dispatch(addSectionAction({ token, ...values }));
@@ -78,39 +77,6 @@ export function AddSection({ openAdd, handleClose }) {
                     <div className="text-red-600">{formik.errors.name}</div>
                   ) : null}
                 </div>
-
-                {/* <hr />
-                <div>
-                  <Label htmlFor="fileName" value="File Name" />
-                  <TextInput
-                    id="fileName"
-                    name="fileName"
-                    type="text"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} // Handle blur for validation
-                    value={formik.values.fileName}
-                    required
-                  />
-                  {formik.touched.fileName && formik.errors.fileName ? (
-                    <div className="text-red-600">{formik.errors.fileName}</div>
-                  ) : null}
-                </div> */}
-
-                {/* <div>
-                  <Label htmlFor="file_path" value="Upload PDF file" />
-                  <FileInput
-                    id="file_path"
-                    name="file_path"
-                    accept=".pdf"
-                    onChange={handleFileChange}
-                    helperText="Only PDF files are allowed."
-                  />
-                  {formik.touched.file_path && formik.errors.file_path ? (
-                    <div className="text-red-600">
-                      {formik.errors.file_path}
-                    </div>
-                  ) : null}
-                </div> */}
 
                 <div className="w-full flex justify-end">
                   <Button type="submit">Add Section</Button>

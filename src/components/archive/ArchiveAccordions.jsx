@@ -56,7 +56,7 @@ function TailwindAccordion() {
     dispatch(getHistoryAction({ token }));
   }, [updates, updateDashboard, token]);
 
-  // mark name sharable
+  // mark name sharable     // THIS API IS NOT WORKING FOR NOW
   const handleCopyShare = (toggleItem) => {
     axios
       .post(
@@ -74,9 +74,7 @@ function TailwindAccordion() {
         }
       )
       .then((response) => {
-        if (response.data.success) {
-          // console.log(response.data);
-        }
+     
       })
       .catch((error) => {
         console.error("There was an error making the request!", error);
@@ -137,7 +135,6 @@ function TailwindAccordion() {
         `${config.api}archive-chat`,
         {
           chat_id: handleChat.id,
-          // archive: handleChat.is_archive,
         },
         {
           headers: {

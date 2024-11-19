@@ -11,9 +11,7 @@ function layout({children}) {
   return (
     <div>
         <Header path="profile"/>
-        {/* <DashLayout /> */}
         {children}
-        {/* <ChatInput /> */}
     </div>
   )
 }
