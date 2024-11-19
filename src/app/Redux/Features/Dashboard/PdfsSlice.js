@@ -27,17 +27,54 @@ export const getPdfsAction = createAsyncThunk(
         return new Error(response.data.error);
       }
 
-      // if(response.data?.meta?.last_page){
-      //   dispatch(handlePages(response.data?.meta?.last_page))
-      // }
       if (fileType == 0) {
         dispatch(setAllData(response.data.data));
       } else {
-        console.log(response.data.data.filter((item) => item.type == 1));
         dispatch(
           setAllData(response.data.data.filter((item) => item.type == 1))
         );
       }
+      dispatch(setPage(1))
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get pdfs
+
+// start get pdfs
+export const getDeletedPdfsAction = createAsyncThunk(
+  "pdfs/getDeletedPdfsAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, page, fileType } = arg;
+    try {
+      const response = await axios.get(
+        `${config.api}admin/all_files?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "*/*",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      if (fileType == 0) {
+        dispatch(setAllData(response.data.data));
+      } else {
+        dispatch(
+          setAllData(response.data.data.filter((item) => item.type == 1))
+        );
+      }
+      dispatch(setPage(1))
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -328,6 +365,23 @@ export const pdfsSlice = createSlice({
         state.error = action.payload?.message;
       })
       // end get pdfs
+
+      //start get deleted pdfs
+      .addCase(getDeletedPdfsAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getDeletedPdfsAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.pdfs = action.payload;
+        state.addModule = false;
+      })
+      .addCase(getDeletedPdfsAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end get deleted pdfs
 
       // start add pdf file
       .addCase(addpdffileAction.pending, (state) => {

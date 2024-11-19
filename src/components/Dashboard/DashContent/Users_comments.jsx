@@ -120,17 +120,23 @@ function Users_comments({}) {
   };
 
   const filteredData = usersCommentsData.filter((item) => {
-    const searchLower = searchTerm.toLowerCase();  
+    const searchLower = searchTerm.toLowerCase();
     return (
-      (item.comment?.toLowerCase().includes(searchLower) || false) ||
-      (item.status?.toLowerCase().includes(searchLower) || false) ||
-      (item.disliked_by?.name?.toLowerCase().includes(searchLower) || false) ||
-      (item.whoAssigned?.toLowerCase().includes(searchLower) || false) ||
-      (item.created_at?.toLowerCase().includes(searchLower) || false) ||
-      (item.actions?.toLowerCase().includes(searchLower) || false)
+      item.comment?.toLowerCase().includes(searchLower) ||
+      false ||
+      item.status?.toLowerCase().includes(searchLower) ||
+      false ||
+      item.disliked_by?.name?.toLowerCase().includes(searchLower) ||
+      false ||
+      item.whoAssigned?.toLowerCase().includes(searchLower) ||
+      false ||
+      item.created_at?.toLowerCase().includes(searchLower) ||
+      false ||
+      item.actions?.toLowerCase().includes(searchLower) ||
+      false
     );
   });
-  
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -327,12 +333,19 @@ function Users_comments({}) {
                         )}
                       </td>
                       <td className="px-6 py-4">{item.disliked_by.name}</td>
-                      <td className="px-6 py-4">{item.disliked_by.name}
+                      <td className="px-6 py-4">
+                        {item.disliked_by.name}
                         <ul>
                           <li></li>
                         </ul>
                       </td>
-                      <td className="px-6 py-4">code</td>
+                      <td className="px-6 py-4">
+                        <ul>
+                          {item?.dislike_pdf?.length > 0 ? item.dislike_pdf.map((item, i) => (
+                            <li key={i}>{item.name}</li>
+                          )): 'NAN'}
+                        </ul>
+                      </td>
                       <td className="px-6 py-4">
                         {formatDate(item.created_at)}
                       </td>

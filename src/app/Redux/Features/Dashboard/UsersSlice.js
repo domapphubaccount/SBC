@@ -33,6 +33,7 @@ export const getUsersAction = createAsyncThunk(
           dispatch(setAllData(response.data.data[0]));
         }
       }
+      dispatch(setPage(1))
       return response.data.data[0];
     } catch (error) {
       if (error?.response?.status === 401) {

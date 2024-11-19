@@ -12,7 +12,7 @@ export const getCommentsAction = createAsyncThunk(
   async (arg, { dispatch , rejectWithValue }) => {
     const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/chat-user-dislikes?page=${page}`, {
+      const response = await axios.get(`${config.api}admin/chat-user-dislikes`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
