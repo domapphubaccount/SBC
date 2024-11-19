@@ -1,9 +1,12 @@
 "use client";
-import Profile from "@/components/Profile/Profile";
+// import Profile from "@/components/Profile/Profile";
 import { redirect } from "next/navigation";
 import React, { Suspense, useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 import Loading from "../loading";
+import { lazy } from "react";
+const Profile = lazy(() => import("@/components/Profile/Profile"));
+
 
 function Page() {
   const isLogged = useSelector((state) => state.loginSlice.logged);

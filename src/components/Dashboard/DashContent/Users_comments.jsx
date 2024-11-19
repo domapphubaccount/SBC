@@ -25,6 +25,8 @@ import { Reviewer } from "../DashModules/UserComments/Reviewer";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
+import { IconButton } from "@material-tailwind/react";
+import ArticleIcon from "@mui/icons-material/Article";
 
 function Users_comments({}) {
   const dispatch = useDispatch();
@@ -340,11 +342,29 @@ function Users_comments({}) {
                         </ul>
                       </td>
                       <td className="px-6 py-4">
-                        <ul>
-                          {item?.dislike_pdf?.length > 0 ? item.dislike_pdf.map((item, i) => (
-                            <li key={i}>{item.name}</li>
-                          )): 'NAN'}
-                        </ul>
+                        <Tooltip
+                          className="w-60"
+                          content={
+                            <ul>
+                              {item?.dislike_pdf?.length > 0
+                                ? item.dislike_pdf.map((item, i) => (
+                                    <>
+                                      <li key={i} className="flex">
+                                        {i + 1}: {item.name}
+                                      </li>
+                                    </>
+                                  ))
+                                : "NO CODE ASSIGNED"}
+                            </ul>
+                          }
+                        >
+                          {/* <IconButton
+                            // color="secondary"
+                            aria-label="add an alarm"
+                          > */}
+                          <ArticleIcon />
+                          {/* </IconButton> */}
+                        </Tooltip>
                       </td>
                       <td className="px-6 py-4">
                         {formatDate(item.created_at)}
