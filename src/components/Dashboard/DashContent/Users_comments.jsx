@@ -349,7 +349,7 @@ function Users_comments({}) {
                               {item?.dislike_pdf?.length > 0
                                 ? item.dislike_pdf.map((item, i) => (
                                     <>
-                                      <li key={i} className="flex">
+                                      <li key={i} className="flex text-sm" style={{fontSize:'12px'}}>
                                         {i + 1}: {item.name}
                                       </li>
                                     </>
