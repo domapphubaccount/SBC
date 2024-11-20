@@ -153,9 +153,10 @@ function Users({}) {
             <th scope="col" className="px-6 py-3">
               Role
             </th>
+            {permissionsData && permissionsData.includes(27,28,29) &&
             <th scope="col" className="px-6 py-3">
               Actions
-            </th>
+            </th>}
           </tr>
         </thead>
         <tbody>
