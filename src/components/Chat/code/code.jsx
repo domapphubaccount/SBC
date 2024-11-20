@@ -69,7 +69,7 @@ function MultipleSelect() {
    // end search bar logic
 
   return (
-    <div className="dropdown-container relative w-60">
+    <div className="dropdown-container relative w-80">
       <button
         onClick={() => setDropdownOpen((prevState) => !prevState)}
         className="w-full p-2 bg-transparent text-white rounded-lg focus:outline-none"
@@ -99,7 +99,7 @@ function MultipleSelect() {
               className="block w-full p-2 mb-2 border border-gray-300 rounded-lg dark:bg-gray-600 dark:text-white dark:border-gray-500"
             />
           )}
-          <ul className="max-h-48 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
+          <ul className="max-h-60 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
             {/* code before selections */}
 
             {available.length <= 0 ? (
@@ -111,7 +111,7 @@ function MultipleSelect() {
                     <Accordion key={i} className="p-2">
                       <Accordion.Panel className="p-2">
                         <Accordion.Title className="p-2">
-                          {item.name}
+                        <span style={{fontSize:"14px",fontWeight:'600'}}>{item.name}</span>
                         </Accordion.Title>
                         <Accordion.Content className="p-2">
                           {item.pdfs.length > 0 ? (
@@ -134,7 +134,7 @@ function MultipleSelect() {
                                   />
                                   <label
                                     htmlFor={`checkbox-item-${pdfItem.id}`}
-                                    className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs"
                                   >
                                     {pdfItem.name}
                                   </label>
@@ -164,9 +164,9 @@ function MultipleSelect() {
                       <Accordion key={i} className="p-2">
                         <Accordion.Panel className="p-2">
                           <Accordion.Title className="p-2">
-                            {item.name}
+                            <span style={{fontSize:"14px",fontWeight:'600'}}>{item.name}</span>
                           </Accordion.Title>
-                          <Accordion.Content className="p-2">
+                          <Accordion.Content className="p-2" style={{fontSize: '8px'}}>
                             {item.pdfs
                               .filter((pdfItem) =>
                                 storedCode.includes(pdfItem.chatgpt_file_id)
@@ -190,7 +190,7 @@ function MultipleSelect() {
                                     />
                                     <label
                                       htmlFor={`checkbox-item-${pdfItem.id}`}
-                                      className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                      className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs"
                                     >
                                       {pdfItem.name}
                                     </label>
