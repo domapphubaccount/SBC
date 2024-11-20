@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { config } from "@/config/config";
-import LoginImg from "@/assets/login/login.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { forgetPasswordAction } from "@/app/Redux/Features/Auth/AuthSlice";
 

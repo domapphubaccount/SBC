@@ -358,12 +358,7 @@ function Users_comments({}) {
                             </ul>
                           }
                         >
-                          {/* <IconButton
-                            // color="secondary"
-                            aria-label="add an alarm"
-                          > */}
                           <ArticleIcon />
-                          {/* </IconButton> */}
                         </Tooltip>
                       </td>
                       <td className="px-6 py-4">

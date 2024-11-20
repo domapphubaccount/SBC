@@ -74,7 +74,6 @@ export function Train({ openTrain, handleClose }) {
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
             Train Information
           </h3>
-
           {loading ? (
             <div className="flex justify-center">
               <img
@@ -101,7 +100,6 @@ export function Train({ openTrain, handleClose }) {
                     value={`${commentData?.user_chat?.question}`}
                   />
                 </div>
-
                 <MathJaxContext>
                   <MathJax dynamic>
                     <div className="my-5 rounded border p-3">
@@ -119,7 +117,6 @@ export function Train({ openTrain, handleClose }) {
                     </div>
                   </MathJax>
                 </MathJaxContext>
-
                 <div className="mb-5">
                   <TextInput
                     required

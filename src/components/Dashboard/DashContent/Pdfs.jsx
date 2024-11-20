@@ -28,8 +28,6 @@ import { ViewPdf } from "../DashModules/Pdfs/View";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import { setPage } from "@/app/Redux/Features/Dashboard/PdfsSlice";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton } from "@mui/material";
 import { RestorePdf } from "./RestorePdf";
 
 function Pdfs({}) {
@@ -81,7 +79,6 @@ function Pdfs({}) {
 
   // start open delete
   const handleOpenDelete = (id) => {
-    // dispatch(getRoleByIDAction({ token, id }));
     setFileID(id);
     dispatch(deleteModule(true));
   };
@@ -121,7 +118,6 @@ function Pdfs({}) {
       dispatch(getPdfsAction({ token, page, fileType }));
     }
   }, [
-    /* updates */
     updatePdfsData,
     page,
     fileType,
@@ -590,7 +586,6 @@ function Pdfs({}) {
         />
       )}
       {openAdd && <Addpdfs openAdd={openAdd} handleClose={handleClose} />}
-
       {openAssign && (
         <Assign
           fileId={fileId}
@@ -598,7 +593,6 @@ function Pdfs({}) {
           openAssign={openAssign}
         />
       )}
-
       {openView && (
         <ViewPdf
           handleClose={handleClose}

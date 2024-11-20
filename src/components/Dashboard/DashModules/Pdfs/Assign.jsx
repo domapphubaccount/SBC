@@ -97,7 +97,6 @@ export function Assign({ openAssign, handleClose, fileId }) {
                       id="Users"
                       name="user_ids"
                       isMulti
-                      // onMenuScrollToBottom={() => setPage(page + 1)}
                       options={usersOption}
                       value={usersOption.filter((option) =>
                         formik.values.user_ids.includes(option.value)

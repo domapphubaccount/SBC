@@ -37,7 +37,6 @@ export function EditReviewer({ openEdit, handleClose }) {
         updateReviewAction({
           token,
           id: reviewData.id,
-          // chat_user_dislike_id: reviewData?.chat_user_dislike_id?.id,
           ...values,
         })
       );
@@ -83,7 +82,6 @@ export function EditReviewer({ openEdit, handleClose }) {
                     placeholder="Enter reviewer comment"
                     style={{ opacity: 1 }}
                     defaultValue={reviewData?.comment_reviewr}
-                    // disabled={profileData.roles && profileData.roles[0].id != 3}
                   />
                   {formik.touched.comment_reviewr &&
                   formik.errors.comment_reviewr ? (

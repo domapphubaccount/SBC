@@ -214,6 +214,10 @@ nav{
   min-width: 150px;
 }
 
+.action-icon{
+  fill: rgb(174, 174, 174);
+}
+
 /* end chat */
 
 /* start chat input */

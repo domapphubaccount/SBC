@@ -88,9 +88,6 @@ export function Rename({ openAdd, handleClose }) {
                     closeMenuOnSelect={false}
                     isMulti
                     options={permissionsOptions}
-                    // value={permissionsOptions.filter((option) =>
-                    //   formik.values.permissions.includes(option.value)
-                    // )}
                     onChange={(selectedOptions) => {
                       formik.setFieldValue(
                         "permissions",
@@ -98,11 +95,6 @@ export function Rename({ openAdd, handleClose }) {
                       );
                     }}
                   />
-                  {/* {formik.touched.permissions && formik.errors.permissions ? (
-                    <div className="text-red-600">
-                      {formik.errors.permissions}
-                    </div>
-                  ) : null} */}
                 </div>
 
                 <div className="w-full flex justify-end">

@@ -34,10 +34,6 @@ function ChatInput() {
   let errorsStore = ["error 1", "error 2", "error 3", "error 4", "error 5"];
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
-    }
-
     document.getElementById("custom_text_area").addEventListener("focus" , ()=> document.getElementById("sendIcon").classList.add("text-gray-700"))
     document.getElementById("custom_text_area").addEventListener("blur" , ()=> document.getElementById("sendIcon").classList.remove("text-gray-700"))
   }, []);
@@ -141,7 +137,6 @@ function ChatInput() {
               id="custom_text_area"
               className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
               onKeyDown={handleKeyDown}
-              // disabled={!conversation.id || chatCode}
               dir={dir ? "ltr" : "rtl"}
               placeholder={
                 !conversation?.id
@@ -202,7 +197,6 @@ function ChatInput() {
                         </svg>
                       </div>
                       <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        {/* <h3 className="text-base font-semibold leading-6 text-gray-900" id="modal-title">Error</h3> */}
                         <div className="mt-5">
                           <p className="text-sm text-gray-500">
                             Please select the CODE before submitting your query.

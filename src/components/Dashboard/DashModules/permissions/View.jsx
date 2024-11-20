@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Modal, Table, TextInput } from "flowbite-react";
+import { Button, Modal, TextInput } from "flowbite-react";
 import { useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
@@ -41,31 +41,6 @@ export function ViewPermission({ openView, handleClose }) {
                         disabled
                         value={`Permission : ${permissionData.name}`}
                       />
-                    </div>
-                    <div>
-                      <div></div>
-                      <div>
-                        {/* <Table>
-                          <Table.Head>
-                            <Table.HeadCell className="p-1">
-                              Permission
-                            </Table.HeadCell>
-                          </Table.Head>
-                          <Table.Body className="divide-y">
-                            {roleData.permissions &&
-                              roleData.permissions.map((item, index) => (
-                                <Table.Row
-                                  className="bg-white dark:border-gray-700 dark:bg-gray-800 rounded"
-                                  key={index}
-                                >
-                                  <Table.Cell className="p-1">
-                                    <div className="text-xs">{item.name}</div>
-                                  </Table.Cell>
-                                </Table.Row>
-                              ))}
-                          </Table.Body>
-                        </Table> */}
-                      </div>
                     </div>
                   </>
                 ) : (

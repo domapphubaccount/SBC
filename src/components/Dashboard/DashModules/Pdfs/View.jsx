@@ -62,10 +62,7 @@ export function ViewPdf({ openView, handleClose, fileId }) {
                       style={{ opacity: 1 }}
                       type="text"
                       required
-                      // disabled
-                      value={
-                        fileId.file.replace("public/uploads/", "")
-                      }
+                      value={fileId.file.replace("public/uploads/", "")}
                     />
                   </div>
                 </>

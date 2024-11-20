@@ -9,9 +9,6 @@ import { deletePdfAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 export function DeletePdfs({ openDelete, handleClose , fileId }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const loading = useSelector(state => state.pdfsSlice.loading)
-
-  // const pdfData = useSelector((state) => state.pdfSlice.pdf);
-
   const dispatch = useDispatch();
 
   const handleDelete = () => {

@@ -1,4 +1,4 @@
-"use client"; // Ensure the component is treated as a client component
+"use client";
 
 import {
   Button,
@@ -22,7 +22,7 @@ export function Addpdfs({ openAdd, handleClose }) {
   const sections = useSelector((state) => state.sectionsSlice.sections);
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
-  const [check,setIsChecked] = useState(false)
+  const [check, setIsChecked] = useState(false);
 
   // Formik setup
   const formik = useFormik({
@@ -46,7 +46,7 @@ export function Addpdfs({ openAdd, handleClose }) {
         }),
     }),
     onSubmit: (values) => {
-      dispatch(addpdffileAction({ token, type: check ? 1 : 0 , ...values }));
+      dispatch(addpdffileAction({ token, type: check ? 1 : 0, ...values }));
     },
   });
 
@@ -146,12 +146,13 @@ export function Addpdfs({ openAdd, handleClose }) {
                 </div>
 
                 <div className="p-3">
-{check &&
-                  <div className="mt-2 mb-4 p-2 text-sm text-yellow-800 bg-red-100 border border-red-400 rounded">
-                    <strong>Warning:</strong> You can't use the assistant file ,it will be provided in only to <bold>Train</bold> model
-                    training.
-                  </div>
-}
+                  {check && (
+                    <div className="mt-2 mb-4 p-2 text-sm text-yellow-800 bg-red-100 border border-red-400 rounded">
+                      <strong>Warning:</strong> You can't use the assistant file
+                      ,it will be provided in only to <bold>Train</bold> model
+                      training.
+                    </div>
+                  )}
                   <div className="flex items-center">
                     <input
                       id="editAfterTrain"

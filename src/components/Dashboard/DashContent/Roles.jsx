@@ -36,7 +36,6 @@ function Roles({}) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const rolesData = useSelector((state) => state.rolesSlice.roles);
   const updateRolesData = useSelector((state) => state.rolesSlice.updates);
-  const total_pages = useSelector((state) => state.rolesSlice.total_pages);
   const [openWarn, setOpenWarn] = useState(false);
   const loading = useSelector((state) => state.rolesSlice.loading);
   const openEdit = useSelector((state) => state.rolesSlice.editModule);
@@ -107,8 +106,6 @@ function Roles({}) {
 
   // start open permissions
   const handlePermissionModule = (id) => {
-    // dispatch(editPermissionsModule({ token, id }));
-
     dispatch(getRoleByIDAction({ token, id }));
     dispatch(editPermissionsModule(true));
   };
@@ -424,7 +421,6 @@ function Roles({}) {
       )}
 
       {openEdit && <EditRole handleClose={handleClose} openEdit={openEdit} />}
-
       {openView && <ViewRole handleClose={handleClose} openView={openView} />}
       {openWarn && <WarnUser role={role} handleClose={handleClose} />}
       {openAdd && <AddRole openAdd={openAdd} handleClose={handleClose} />}

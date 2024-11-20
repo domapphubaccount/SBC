@@ -110,7 +110,6 @@ export function Reviewer({ openReviewer, handleClose }) {
                   <div className="my-8">
                     <div className="flex justify-between">
                       <small className="font-semibold">Admin comment</small>
-                      {/* <small>At: 25-12-2023</small> */}
                     </div>
                     <Textarea
                       rows={3}
