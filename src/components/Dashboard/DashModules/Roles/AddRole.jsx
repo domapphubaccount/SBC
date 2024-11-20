@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import Select from "react-select";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 export function AddRole({ openAdd, handleClose }) {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export function AddRole({ openAdd, handleClose }) {
   const loading = useSelector((state) => state.rolesSlice.loading);
   const [permissionsOptions, setPermissionsOptions] = useState([]);
   const ErrorMSG = useSelector((state) => state.rolesSlice.error);
-  
+
   const permissionsData = useSelector(
     (state) => state.permissionsSlice.permissions
   );
@@ -24,6 +25,7 @@ export function AddRole({ openAdd, handleClose }) {
   const formik = useFormik({
     initialValues: {
       name: "",
+      permissions: [],
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
@@ -48,7 +50,7 @@ export function AddRole({ openAdd, handleClose }) {
   return (
     <>
       <Modal show={openAdd} size="md" popup onClose={handleClose}>
-      {ErrorMSG && (
+        {ErrorMSG && (
           <div
             className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
@@ -57,7 +59,7 @@ export function AddRole({ openAdd, handleClose }) {
           </div>
         )}
         <Modal.Header />
-        <Modal.Body className="overflow-visible">
+        <Modal.Body className="overflow-auto">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {!loading ? (
               <>
@@ -81,25 +83,60 @@ export function AddRole({ openAdd, handleClose }) {
 
                 <div>
                   <Label htmlFor="permissions" value="Attach Permissions" />
-                  <Select
+                  <Autocomplete
                     id="permissions"
-                    name="permissions"
-                    closeMenuOnSelect={false}
-                    isMulti
-                    options={permissionsOptions}
-                    onChange={(selectedOptions) => {
+                    multiple
+                    options={permissionsOptions} // Use permissionsOptions for the available options
+                    getOptionLabel={(option) => option.label} // Display the label for each option
+                    value={permissionsOptions.filter(
+                      (option) =>
+                        formik.values.permissions.includes(option.value) // Filter selected options based on formik values
+                    )}
+                    onChange={(event, selectedOptions) => {
                       formik.setFieldValue(
                         "permissions",
-                        selectedOptions.map((option) => option.value)
+                        selectedOptions.map((option) => option.value) // Update formik with selected values
                       );
                     }}
+                    renderTags={(selectedOptions, getTagProps) =>
+                      selectedOptions.map((option, index) => (
+                        <Chip
+                          key={option.value}
+                          label={option.label} // Display label for each selected option
+                          {...getTagProps({ index })} // Pass props to Chip component for handling tags
+                        />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params} // Spread the params to the TextField input
+                        variant="outlined"
+                        label="Permissions" // Label for the input
+                        placeholder="Select permissions" // Placeholder text for the input
+                      />
+                    )}
                   />
+
                   {/* {formik.touched.permissions && formik.errors.permissions ? (
                     <div className="text-red-600">
                       {formik.errors.permissions}
                     </div>
                   ) : null} */}
                 </div>
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    formik.setFieldValue(
+                      "permissions",
+                      permissionsOptions.map((item) => item.value)
+                    );
+                  }}
+                  type="button"
+                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  Select All
+                </button>
 
                 <div className="w-full flex justify-end">
                   <Button type="submit">Submit</Button>

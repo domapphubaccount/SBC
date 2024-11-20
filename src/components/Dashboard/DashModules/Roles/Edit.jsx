@@ -9,6 +9,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 import { updateRoleAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 
 import Select from "react-select";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 export function EditRole({ openEdit, handleClose }) {
   const dispatch = useDispatch();
@@ -40,27 +41,31 @@ export function EditRole({ openEdit, handleClose }) {
       formik.setValues({
         name: roleData.name || "",
         permissions: roleData.permissions?.map((item) => item.id) || [],
-
       });
     }
   }, [roleData]);
-  
-    useEffect(()=>{
-      if(permissionsData){
+
+  useEffect(() => {
+    if (permissionsData) {
       // Set the options for the permissions
-        setPermissionsOptions(
-          permissionsData?.map((item) => ({
-            value: item.id,
-            label: item.slug,
-          })) || []
-        );
-      }
-    },[permissionsData])
+      setPermissionsOptions(
+        permissionsData?.map((item) => ({
+          value: item.id,
+          label: item.slug,
+        })) || []
+      );
+    }
+  }, [permissionsData]);
+
+    // Dynamically filter available options based on selected permissions
+    const availableOptions = permissionsOptions.filter(
+      (option) => !formik.values.permissions.includes(option.value)
+    );
 
   return (
     <>
       <Modal show={openEdit} size="md" popup onClose={handleClose}>
-      {ErrorMSG && (
+        {ErrorMSG && (
           <div
             className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
@@ -94,22 +99,52 @@ export function EditRole({ openEdit, handleClose }) {
 
                 <div>
                   <Label htmlFor="permissions" value="Permissions" />
-                  <Select
+                  <Autocomplete
                     id="permissions"
-                    name="permissions"
-                    closeMenuOnSelect={false}
-                    isMulti
-                    options={permissionsOptions}
-                    value={permissionsOptions.filter((option) =>
-                      formik.values.permissions.includes(option.value)
+                    multiple
+                    options={availableOptions} // Options for autocomplete
+                    getOptionLabel={(option) => option.label} // Use the 'label' property for displaying options
+                    value={permissionsOptions.filter(
+                      (option) =>
+                        formik.values.permissions.includes(option.value) // Filter selected options based on formik values
                     )}
-                    onChange={(selectedOptions) => {
+                    onChange={(event, selectedOptions) => {
                       formik.setFieldValue(
                         "permissions",
-                        selectedOptions.map((option) => option.value)
+                        selectedOptions.map((option) => option.value) // Set the selected values in formik
                       );
                     }}
+                    renderTags={(selectedOptions, getTagProps) =>
+                      selectedOptions.map((option, index) => (
+                        <Chip
+                          key={option.value}
+                          label={option.label} // Display the label in the Chip tag
+                          {...getTagProps({ index })} // Pass props to the Chip component for tag functionality
+                        />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params} // Spread the params to the TextField input
+                        variant="outlined"
+                        label="Permissions" // Label for the input
+                        placeholder="Select permissions" // Placeholder text for the input
+                      />
+                    )}
                   />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  formik.setFieldValue(
+                    "permissions",
+                    permissionsOptions.map((item) => item.value)
+                  );
+                }}
+                type="button"
+                className="py-2.5 px-5 me-2 mb-2 mt-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              >
+                Select All
+              </button>
                   {formik.touched.permissions && formik.errors.permissions ? (
                     <div className="text-red-600">
                       {formik.errors.permissions}
