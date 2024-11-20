@@ -39,6 +39,7 @@
     "react-typed": "^2.0.12",
     "styled-components": "^6.1.13",
     "yup": "^1.4.0"
+    
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
