@@ -36,7 +36,7 @@ export default function Home() {
   }, []);
 
   useLayoutEffect(() => {
-    if (isLogged == false && pathName.slice(0, 9) != "/sharable") {
+    if (isLogged == false && pathname?.slice(0, 9) != "/sharable") {
       redirect("/signIn");
     }
   }, [isLogged]);

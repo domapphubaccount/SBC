@@ -48,7 +48,6 @@ function MainChat({ elementWidth, windowWidth }) {
   const [copyIcon, setCopyIcon] = useState(false);
   const [user, setUser] = useState("");
   const [dislike, setDislike] = useState(false);
-  // const [loadingMessage, setLoadingMessage] = useState(false);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [itemId, setItemId] = useState(null);
   const [dislikeMessage, setDislikeMessage] = useState("");
@@ -144,33 +143,6 @@ function MainChat({ elementWidth, windowWidth }) {
       });
     setTimeout(() => setCopyIcon(false), 500);
   };
-  // const handleResendMessage = (id) => {
-  //   setResponseId(id);
-  //   axios
-  //     .post(
-  //       "https://sbc.designal.cc/api/resend-message",
-  //       {
-  //         chat_id: id,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       dispatch(updateSlice());
-  //       setLoadingMessage(false);
-  //       setResponseId("");
-  //     })
-  //     .catch((error) => {
-  //       setLoadingMessage(false);
-  //       setResponseId("");
-  //       console.error("There was an error making the request!", error);
-  //     });
-  // };
   const handleDislike = (data) => {
     dispatch(loading_chat_action(true));
     axios
@@ -246,9 +218,7 @@ function MainChat({ elementWidth, windowWidth }) {
       }
     }
   };
-
   dispatch(action_done(true));
-
   useEffect(() => {
     if (localStorage.getItem("data")) {
       setUser(JSON.parse(localStorage.getItem("data")).name);
@@ -261,12 +231,10 @@ function MainChat({ elementWidth, windowWidth }) {
       window.MathJax && window.MathJax.typeset();
     };
   }, []);
-
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [conversation]);
   const pattern = /Reference: SBC.*?\/\//g;
-
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);
@@ -278,7 +246,6 @@ function MainChat({ elementWidth, windowWidth }) {
     }
     return item; // Return the original item if no match is found
   };
-  
   // Scroll to the bottom function
   const scrollToBottom = () => {
     const element = document.getElementById("chat");
@@ -288,14 +255,12 @@ function MainChat({ elementWidth, windowWidth }) {
       }, 100); // Adjust delay if needed
     }
   };
-
   // start handle scroll bottom action 
   useEffect(() => {
     scrollToBottom();
     window.MathJax && window.MathJax.typeset();
   }, [conversation, chatData]);
   // end handle scroll bottom action 
-
   // start handle starter card
   function handleShowStart() {
     if (chatCode) {
@@ -305,13 +270,11 @@ function MainChat({ elementWidth, windowWidth }) {
     }
   }
   // end handle starter card
-
   useEffect(() => {
     if (localStorage.getItem("data")) {
       setUser(JSON.parse(localStorage.getItem("data")).name);
     }
   }, []);
-
   // start question card
   let questionCard = useCallback((item) => {
     return (
@@ -334,7 +297,6 @@ function MainChat({ elementWidth, windowWidth }) {
     );
   }, []);
   // end question card
-
   // start question card
   let answerCard = useCallback((item) => {
     return (
@@ -352,13 +314,11 @@ function MainChat({ elementWidth, windowWidth }) {
     );
   });
   // end question card
-
   // end handle when window Resize.
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [windowWidth]);
   // end handle when window Resize.
-
   // start chat space
   let chatSpace = useMemo(() => {
     return (
@@ -494,8 +454,7 @@ function MainChat({ elementWidth, windowWidth }) {
                                 key={i}
                                 className="text-sm text-gray-500 dark:text-gray-400"
                               >
-                                {/* <div className="border-b border-gray-200 gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"></div> */}
-                                <div className="px-3 py-2">
+                              <div className="px-3 py-2">
                                   <ul>
                                     <li>{item2}</li>
                                   </ul>
