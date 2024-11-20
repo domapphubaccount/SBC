@@ -31,19 +31,45 @@ function ChatInput() {
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
-  let errorsStore = ["error 1", "error 2", "error 3", "error 4", "error 5"];
+  let errorsStore = [
+    `error 🚫`,
+    `error 🚫`,
+    `error 🚫`,
+  ];
 
   useEffect(() => {
-    document.getElementById("custom_text_area").addEventListener("focus" , ()=> document.getElementById("sendIcon").classList.add("text-gray-700"))
-    document.getElementById("custom_text_area").addEventListener("blur" , ()=> document.getElementById("sendIcon").classList.remove("text-gray-700"))
+    document
+      .getElementById("custom_text_area")
+      .addEventListener("focus", () =>
+        document.getElementById("sendIcon").classList.add("text-gray-700")
+      );
+    document
+      .getElementById("custom_text_area")
+      .addEventListener("blur", () =>
+        document.getElementById("sendIcon").classList.remove("text-gray-700")
+      );
   }, []);
 
+  // start send message
   const handleSendMessage = () => {
+    let timer;
+
+    const startTimer = () => {
+      return new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error("No response after 40 seconds"));
+        }, 40000); // 40 seconds timeout
+      });
+    };
+
     if (storedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       setLoading(true);
-      axios
-        .post(
+
+      // Race the timer and API call
+      Promise.race([
+        startTimer(),
+        axios.post(
           `${config.api}ask_question`,
           {
             question: message,
@@ -58,8 +84,10 @@ function ChatInput() {
               Authorization: `Bearer ${token}`,
             },
           }
-        )
+        ),
+      ])
         .then((response) => {
+          clearTimeout(timer); // Clear the timeout if the response is received
           if (response.data) {
             dispatch(setTypeValue(true));
             dispatch(update());
@@ -79,7 +107,14 @@ function ChatInput() {
           setLoading(false);
         })
         .catch((error) => {
+          clearTimeout(timer); // Clear the timeout if an error occurs
           setLoading(false);
+
+          if (error.message === "No response after 40 seconds") {
+            console.error(error.message);
+          } else {
+            console.error("There was an error making the request!", error);
+          }
 
           dispatch(
             send_failed(
@@ -88,12 +123,13 @@ function ChatInput() {
           );
           dispatch(sendError(true));
           setTimeout(() => dispatch(sendError(false)), 1500);
-          console.error("There was an error making the request!", error);
         });
     } else if (storedCode.length === 0) {
       setSendMessage(true);
     }
   };
+
+  // end send message
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

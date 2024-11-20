@@ -40,8 +40,7 @@ import {
   clear_code_error,
   set_code_error,
 } from "@/app/Redux/Features/Code/CodeSlice";
-import { Fab, Snackbar } from "@mui/material";
-import StopIcon from "@mui/icons-material/Stop";
+
 
 function MainChat({ elementWidth, windowWidth }) {
   const pathName = usePathname();
@@ -514,7 +513,7 @@ function MainChat({ elementWidth, windowWidth }) {
                       )}
                     </div>
                   </div>
-                  {item?.answer ? (
+                  {item?.answer && !item.answer.includes("Sorry there is an ERROR please try again")? (
                     <div className="flex mb-3">
                       <svg
                         style={{ transition: "none" }}
