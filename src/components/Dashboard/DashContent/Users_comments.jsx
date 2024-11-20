@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addModule,
   getUserByIDAction,
+  getUsersAction,
   removeUser,
   roleModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
@@ -25,8 +26,8 @@ import { Reviewer } from "../DashModules/UserComments/Reviewer";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
-import { IconButton } from "@material-tailwind/react";
 import ArticleIcon from "@mui/icons-material/Article";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 function Users_comments({}) {
   const dispatch = useDispatch();
@@ -38,6 +39,8 @@ function Users_comments({}) {
   const updateUsersData = useSelector(
     (state) => state.userCommentsSlice.updates
   );
+  const usersData = useSelector((state) => state.usersSlice.users);
+
   const openAdd = useSelector((state) => state.userCommentsSlice.addModule);
   const openEdit = useSelector((state) => state.userCommentsSlice.editModule);
   const openDelete = useSelector(
@@ -111,6 +114,7 @@ function Users_comments({}) {
   };
   useEffect(() => {
     dispatch(getCommentsAction({ token, page }));
+    dispatch(getUsersAction({ token, page: 1 }));
   }, [updateUsersData, page]);
 
   // Step 1: State for search input
@@ -149,7 +153,22 @@ function Users_comments({}) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
+  const permissionId = 40; // The ID for "files.forceDelete"
 
+  // Filter the users who have the "files.forceDelete" permission
+  const whoAssignedUsers = usersData.filter(user =>
+    user?.roles[0]?.permissions?.some(permission => permission.id === permissionId)
+  );
+  
+  
+  console.log(
+    usersData.length > 0 &&
+      usersData.filter(
+        (item) =>
+          item?.roles[0]?.permissions?.includes(40) // Check if permission ID 40 is in the permissions array
+      )
+  );
+  
   return (
     <>
       <section>
@@ -336,10 +355,28 @@ function Users_comments({}) {
                       </td>
                       <td className="px-6 py-4">{item.disliked_by.name}</td>
                       <td className="px-6 py-4">
-                        {item.disliked_by.name}
-                        <ul>
-                          <li></li>
-                        </ul>
+                        <Tooltip
+                          className="w-60"
+                          content={
+                            <ul>
+                              {whoAssignedUsers?.length > 0
+                                ? whoAssignedUsers.map((item, i) => (
+                                    <>
+                                      <li
+                                        key={i}
+                                        className="flex text-sm"
+                                        style={{ fontSize: "12px" }}
+                                      >
+                                        {i + 1}: {item.name}
+                                      </li>
+                                    </>
+                                  ))
+                                : "NO ONE ASSIGNED"}
+                            </ul>
+                          }
+                        >
+                          <AdminPanelSettingsIcon />
+                        </Tooltip>
                       </td>
                       <td className="px-6 py-4">
                         <Tooltip
@@ -349,7 +386,11 @@ function Users_comments({}) {
                               {item?.dislike_pdf?.length > 0
                                 ? item.dislike_pdf.map((item, i) => (
                                     <>
-                                      <li key={i} className="flex text-sm" style={{fontSize:'12px'}}>
+                                      <li
+                                        key={i}
+                                        className="flex text-sm"
+                                        style={{ fontSize: "12px" }}
+                                      >
                                         {i + 1}: {item.name}
                                       </li>
                                     </>
