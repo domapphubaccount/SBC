@@ -21,7 +21,6 @@ export function EditRole({ openEdit, handleClose }) {
   );
   const ErrorMSG = useSelector((state) => state.rolesSlice.error);
 
-
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -70,7 +69,7 @@ export function EditRole({ openEdit, handleClose }) {
           </div>
         )}
         <Modal.Header />
-        <Modal.Body className="overflow-visible">
+        <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {!loading ? (
               <>

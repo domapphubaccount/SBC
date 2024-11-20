@@ -59,7 +59,7 @@ function ArchiveAction({
         }
       })
       .catch((error) => {
-        setError(error.response.data.message);
+        setError(error.response?.data?.message);
         setTimeout(() => setError(""), 1500);
         dispatch(loading_chat_action(false));
         console.error("There was an error making the request!", error);

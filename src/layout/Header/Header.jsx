@@ -116,9 +116,7 @@ function Header({ path }) {
                     permissionsData &&
                     permissionsData.includes(12) && (
                       <div id="code" className="hidden sm:block">
-                        <Tooltip content="Code" placement="left">
                           <MultipleSelect />
-                        </Tooltip>
                       </div>
                     )
                   ) : (
