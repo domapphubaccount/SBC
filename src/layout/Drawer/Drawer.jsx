@@ -34,7 +34,6 @@ export default function TemporaryDrawer() {
     <Box
       sx={{ width: 250 }}
       role="presentation"
-      //   onClick={() => dispatch(drawer_toggle())}
     >
       <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
         <Link href="/" class="flex items-center ps-2.5 mb-5">

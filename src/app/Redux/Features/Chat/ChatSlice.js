@@ -121,7 +121,7 @@ export const chatSlice = createSlice({
       if (state.chat_data.length > 0) {
         state.chat_data[
           state.chat_data.length - 1
-        ].answer = `<div style=font-weight:800> Sorry there is an ERROR please try again ${action.payload} </div>`;
+        ].answer = `<div style=font-weight:600> Sorry there is an ERROR please try again ${action.payload} </div>`;
       }
       state.loading = false;
     },

@@ -40,8 +40,6 @@ import {
   clear_code_error,
   set_code_error,
 } from "@/app/Redux/Features/Code/CodeSlice";
-import { Fab, Snackbar } from "@mui/material";
-import StopIcon from "@mui/icons-material/Stop";
 
 function MainChat({ elementWidth, windowWidth }) {
   const pathName = usePathname();
@@ -74,6 +72,7 @@ function MainChat({ elementWidth, windowWidth }) {
     (state) => state.profileSlice.permissions
   );
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const loadingResponse = useSelector((state) => state.chatInputSlice.loading);
 
   useEffect(() => {
     if (actionSuccess) {
@@ -255,12 +254,12 @@ function MainChat({ elementWidth, windowWidth }) {
       }, 100); // Adjust delay if needed
     }
   };
-  // start handle scroll bottom action 
+  // start handle scroll bottom action
   useEffect(() => {
     scrollToBottom();
     window.MathJax && window.MathJax.typeset();
   }, [conversation, chatData]);
-  // end handle scroll bottom action 
+  // end handle scroll bottom action
   // start handle starter card
   function handleShowStart() {
     if (chatCode) {
@@ -330,7 +329,7 @@ function MainChat({ elementWidth, windowWidth }) {
       >
         {chatData &&
           conversation &&
-          (conversation.userChats || conversation.user_chats) &&
+          (conversation.userChats || conversation.user_chats || chatData.length > 0) &&
           chatData.map((item, i) => (
             <React.Fragment key={i}>
               <div className="flex justify-end relative w-full">
@@ -396,79 +395,84 @@ function MainChat({ elementWidth, windowWidth }) {
                 </div>
               </div>
               <div className="relative w-full">
-                <div
-                  className="code"
-                  style={{
-                    width: elementWidth - 40 + "px",
-                    zIndex: 2,
-                  }}
-                >
-                  {windowWidth <= 800 ? (
-                    <Popover
-                      aria-labelledby="default-popover"
-                      content={
-                        <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
-                          <div className="px-3 py-2">
-                            <ul>
-                              {item?.answer?.includes("//") &&
-                              item.answer.match(pattern)
-                                ? item.answer
-                                    .match(pattern)
-                                    ?.map((item2, i) => (
-                                      <li key={i}>{item2}</li>
-                                    ))
-                                : "No Reference"}
-                            </ul>
+                {/* start reference */}
+                {item?.answer && (
+                  <div
+                    className="code"
+                    style={{
+                      width: elementWidth - 40 + "px",
+                      zIndex: 2,
+                    }}
+                  >
+                    {windowWidth <= 800 ? (
+                      <Popover
+                        aria-labelledby="default-popover"
+                        content={
+                          <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
+                            <div className="px-3 py-2">
+                              <ul>
+                                {item?.answer?.includes("//") &&
+                                item.answer.match(pattern)
+                                  ? item.answer
+                                      .match(pattern)
+                                      ?.map((item2, i) => (
+                                        <li key={i}>{item2}</li>
+                                      ))
+                                  : "No Reference"}
+                              </ul>
+                            </div>
                           </div>
-                        </div>
-                      }
-                    >
-                      <Button>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"
-                          />
-                        </svg>
-                      </Button>
-                    </Popover>
-                  ) : (
-                    <span
-                      style={{ maxHeight: "150%" }}
-                      className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-                    >
-                      <div className="w-full">
-                        <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                          {item?.answer?.includes("//") &&
-                          item.answer.match(pattern) ? (
-                            item.answer.match(pattern)?.map((item2, i) => (
-                              <div
-                                key={i}
-                                className="text-sm text-gray-500 dark:text-gray-400"
-                              >
-                              <div className="px-3 py-2">
-                                  <ul>
-                                    <li>{item2}</li>
-                                  </ul>
+                        }
+                      >
+                        <Button>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"
+                            />
+                          </svg>
+                        </Button>
+                      </Popover>
+                    ) : (
+                      <span
+                        style={{ maxHeight: "150%" }}
+                        className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
+                      >
+                        <div className="w-full">
+                          <span className="block ml-2 text-sm text-gray-600  font-semibold">
+                            {item?.answer?.includes("//") &&
+                            item.answer.match(pattern) ? (
+                              item.answer.match(pattern)?.map((item2, i) => (
+                                <div
+                                  key={i}
+                                  className="text-sm text-gray-500 dark:text-gray-400"
+                                >
+                                  <div className="px-3 py-2">
+                                    <ul>
+                                      <li>{item2}</li>
+                                    </ul>
+                                  </div>
                                 </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div>No Reference</div>
-                          )}
-                        </span>
-                      </div>
-                    </span>
-                  )}
-                </div>
+                              ))
+                            ) : (
+                              <div>No Reference</div>
+                            )}
+                          </span>
+                        </div>
+                      </span>
+                    )}
+                  </div>
+                )}
+                {/* end reference */}
+
                 <div>
                   <div className="chat_userName">
                     <img src={Logo.src} style={{ width: "30px" }} alt="logo" />
@@ -484,22 +488,10 @@ function MainChat({ elementWidth, windowWidth }) {
                       ) : (
                         <>
                           {item?.answer ? (
-                            chatData.length - 1 === i && false ? (
-                              <ReactTyped
-                                strings={[
-                                  textHandler(
-                                    item.answer.replaceAll("\n", "<br/>")
-                                  ),
-                                ]}
-                                showCursor={false}
-                                onComplete={() => dispatch(setTypeValue(false))}
-                                backSpeed={50}
-                                typeSpeed={5}
-                              />
-                            ) : (
+                            
                               // answer card
                               answerCard(item)
-                            )
+                            
                           ) : (
                             <div>
                               <img
@@ -514,7 +506,10 @@ function MainChat({ elementWidth, windowWidth }) {
                       )}
                     </div>
                   </div>
-                  {item?.answer ? (
+                  {item?.answer &&
+                  !item.answer.includes(
+                    "Sorry there is an ERROR please try again"
+                  ) ? (
                     <div className="flex mb-3">
                       <svg
                         style={{ transition: "none" }}
@@ -648,7 +643,7 @@ function MainChat({ elementWidth, windowWidth }) {
           ))}
       </li>
     );
-  }, [chatData, windowWidth]);
+  }, [chatData, windowWidth, chatData?.question,isSpeaking]);
   // end chat space
 
   return (
@@ -744,7 +739,7 @@ function MainChat({ elementWidth, windowWidth }) {
               {permissionsData && permissionsData.includes(4) && <ChatInput />}
             </div>
           ) : (
-            <div></div>
+            <></>
           )}
         </>
       ) : (

@@ -43,10 +43,11 @@ function Header({ path }) {
     {
       target: "#code",
       content: (
-        <div>
-          You can select up to 5 options here,
+        <div className="text-sm">
+          You can select up to 5 relevant codes here.
           <br />
-          and they cannot be changed after starting a new chat.
+          Once selected, they cannot be changed during this session until a new
+          session is started.
         </div>
       ),
       disableBeacon: true,
@@ -116,7 +117,7 @@ function Header({ path }) {
                     permissionsData &&
                     permissionsData.includes(12) && (
                       <div id="code" className="hidden sm:block">
-                          <MultipleSelect />
+                        <MultipleSelect />
                       </div>
                     )
                   ) : (
@@ -131,15 +132,9 @@ function Header({ path }) {
                       ) : (
                         <>
                           {permissionsData && permissionsData.includes(7) && (
-                            <Tooltip
-                              content="Chat History"
-                              placement="left"
-                              onClick={(e) => e.stopPropagation()}
-                            >
                               <li className="mr-3 relative" title="timeline">
                                 <Archive />
                               </li>
-                            </Tooltip>
                           )}
                           {/* start start new chat */}
                           {permissionsData && permissionsData.includes(3) && (

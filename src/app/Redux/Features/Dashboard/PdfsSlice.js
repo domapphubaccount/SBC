@@ -5,6 +5,7 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
+import { handleProgressFunction } from "./Progress/Progress";
 
 // start get pdfs
 export const getPdfsAction = createAsyncThunk(
@@ -175,6 +176,13 @@ export const addpdffileAction = createAsyncThunk(
             Accept: "application/json",
             // "Content-Type": "multipart/form-data",
           },
+          onUploadProgress: (progressEvent) => {
+            const { loaded, total } = progressEvent;
+            const progress = Math.round((loaded / total) * 100);
+            console.log(`Upload progress: ${progress}%`);
+
+            handleProgressFunction(progress,dispatch)
+          },
         }
       );
 
@@ -325,6 +333,8 @@ const initialState = {
   displayedData: [],
   currentPage: 1,
   itemsPerPage: 10,
+
+  confirmedCode:[]
 };
 
 export const pdfsSlice = createSlice({
@@ -357,6 +367,9 @@ export const pdfsSlice = createSlice({
     },
     handleAction: (state, action) => {
       state.action = action.payload;
+    },
+    handleConfirm: (state,action) => {
+      state.confirmedCode = action.payload
     },
 
     // pagination
@@ -539,7 +552,8 @@ export const {
   resetData,
   setPage,
   removeData,
-  restoreModule
+  restoreModule,
+  handleConfirm
 } = pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

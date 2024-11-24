@@ -42,7 +42,7 @@ export default function Home() {
   }, [isLogged]);
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       {pathname.slice(0, 9) !== "/sharable" &&
       Object.entries(profileData).length > 0 ? (
         <main>
@@ -72,6 +72,6 @@ export default function Home() {
       ) : (
         <Loading />
       )}
-    </>
+    </Suspense>
   );
 }

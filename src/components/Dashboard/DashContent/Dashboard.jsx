@@ -38,7 +38,6 @@ function DashboardData({ setPage }) {
   const handleClose = () => {
     dispatch(removeUser());
     dispatch(closeView());
-
     dispatch(editModule(false));
     dispatch(deleteModule(false));
     dispatch(viewModule(false));

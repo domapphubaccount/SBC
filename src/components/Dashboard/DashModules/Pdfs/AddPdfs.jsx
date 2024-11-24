@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSectionsAction } from "@/app/Redux/Features/Dashboard/SectionsSlice";
 import { addpdffileAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
+import ModuleProgress from "../../Progress/ModuleProgress";
 
 export function Addpdfs({ openAdd, handleClose }) {
   const dispatch = useDispatch();
@@ -23,6 +24,8 @@ export function Addpdfs({ openAdd, handleClose }) {
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
   const [check, setIsChecked] = useState(false);
+  const prog = useSelector((state) => state.progressSlice);
+  console.log(prog);
 
   // Formik setup
   const formik = useFormik({
@@ -35,7 +38,7 @@ export function Addpdfs({ openAdd, handleClose }) {
       name: Yup.string()
         .required("Name is required")
         .min(3, "Name must be at least 3 characters")
-        .max(20, "Name must be at most 20 characters"), // Adjust min and max lengths as needed
+        .max(40, "Name must be at most 40 characters"), // Adjust min and max lengths as needed
       section_id: Yup.string()
         .required("Section is required")
         .notOneOf([""], "Selecting 'NONE' is not allowed"), // Add this line
@@ -69,21 +72,34 @@ export function Addpdfs({ openAdd, handleClose }) {
             <span className="font-medium">Error!</span> {ErrorMSG}
           </div>
         )}
-        <Modal.Header />
-        <Modal.Body>
-          <form onSubmit={formik.handleSubmit} className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+        <Modal.Header>
+          {loading && (
+            <h3 className="text-base font-medium text-gray-900 dark:text-white">
               Add File
             </h3>
+          )}
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formik.handleSubmit} className="space-y-6">
+            {!loading && (
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                Add File
+              </h3>
+            )}
             {loading ? (
-              <div className="flex justify-center">
-                <img
-                  style={{ width: "100px" }}
-                  src={loadingImg.src}
-                  alt="loading"
-                  className="loading_logo"
-                />
-              </div>
+              <>
+                <div className="flex justify-center">
+                  <img
+                    style={{ width: "100px" }}
+                    src={loadingImg.src}
+                    alt="loading"
+                    className="loading_logo"
+                  />
+                </div>
+                <div className="mt-3">
+                  <ModuleProgress />
+                </div>
+              </>
             ) : (
               <>
                 <div>
