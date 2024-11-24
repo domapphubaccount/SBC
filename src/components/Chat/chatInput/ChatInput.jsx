@@ -5,6 +5,7 @@ import {
   getChatData,
   send_failed,
 } from "@/app/Redux/Features/Chat/ChatSlice";
+import { send_message } from "@/app/Redux/Features/ChatInputSlice/ChatInputSlice";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { update } from "@/app/Redux/Features/Update/UpdateSlice";
 import { config } from "@/config/config";
@@ -14,14 +15,14 @@ import {
   PopoverHandler,
 } from "@material-tailwind/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TextareaAutosize from "react-textarea-autosize";
 
 function ChatInput() {
   const [message, setMessage] = useState("");
   const [sendMessage, setSendMessage] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const textAreaRef = useRef(null);
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
@@ -31,11 +32,8 @@ function ChatInput() {
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
-  let errorsStore = [
-    `error 🚫`,
-    `error 🚫`,
-    `error 🚫`,
-  ];
+  const loading = useSelector((state) => state.chatInputSlice.loading);
+  let errorsStore = [`error 🚫`, `error 🚫`, `error 🚫`];
 
   useEffect(() => {
     document
@@ -50,6 +48,11 @@ function ChatInput() {
       );
   }, []);
 
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current?.focus();
+    }
+  }, [chatData]);
   // start send message
   const handleSendMessage = () => {
     let timer;
@@ -64,7 +67,7 @@ function ChatInput() {
 
     if (storedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
-      setLoading(true);
+      dispatch(send_message(true));
 
       // Race the timer and API call
       Promise.race([
@@ -104,12 +107,11 @@ function ChatInput() {
               )
             );
           }
-          setLoading(false);
+          dispatch(send_message(false));
         })
         .catch((error) => {
           clearTimeout(timer); // Clear the timeout if an error occurs
-          setLoading(false);
-
+          dispatch(send_message(false));
           if (error.message === "No response after 40 seconds") {
             console.error(error.message);
           } else {
@@ -128,7 +130,6 @@ function ChatInput() {
       setSendMessage(true);
     }
   };
-
   // end send message
 
   const handleKeyDown = (e) => {
@@ -180,6 +181,7 @@ function ChatInput() {
                   : "start question / إبدأ بسؤال"
               }
               maxRows={8}
+              ref={textAreaRef}
             />
 
             <button

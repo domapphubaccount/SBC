@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Accordion } from "flowbite-react";
+import { Accordion, Button } from "flowbite-react";
 import {
   clear_code_error,
   set_code_error,
   set_direct_code,
   set_stored_code,
 } from "@/app/Redux/Features/Code/CodeSlice";
+import { handleConfirm } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 
 function MultipleSelect() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -54,6 +55,10 @@ function MultipleSelect() {
       dispatch(set_direct_code([]));
     }
   };
+  const handleConfirmCode = () => {
+    dispatch(handleConfirm(storedCode))
+    setDropdownOpen(false);
+  }
 
   // start search bar logic
   const filteredCode =
@@ -66,7 +71,7 @@ function MultipleSelect() {
             )
         )
       : code && code.map((item) => item);
-   // end search bar logic
+  // end search bar logic
 
   return (
     <div className="dropdown-container relative w-80">
@@ -111,7 +116,9 @@ function MultipleSelect() {
                     <Accordion key={i} className="p-2">
                       <Accordion.Panel className="p-2">
                         <Accordion.Title className="p-2">
-                        <span style={{fontSize:"14px",fontWeight:'600'}}>{item.name}</span>
+                          <span style={{ fontSize: "14px", fontWeight: "600" }}>
+                            {item.name}
+                          </span>
                         </Accordion.Title>
                         <Accordion.Content className="p-2">
                           {item.pdfs.length > 0 ? (
@@ -164,9 +171,16 @@ function MultipleSelect() {
                       <Accordion key={i} className="p-2">
                         <Accordion.Panel className="p-2">
                           <Accordion.Title className="p-2">
-                            <span style={{fontSize:"14px",fontWeight:'600'}}>{item.name}</span>
+                            <span
+                              style={{ fontSize: "14px", fontWeight: "600" }}
+                            >
+                              {item.name}
+                            </span>
                           </Accordion.Title>
-                          <Accordion.Content className="p-2" style={{fontSize: '8px'}}>
+                          <Accordion.Content
+                            className="p-2"
+                            style={{ fontSize: "8px" }}
+                          >
                             {item.pdfs
                               .filter((pdfItem) =>
                                 storedCode.includes(pdfItem.chatgpt_file_id)
@@ -206,13 +220,22 @@ function MultipleSelect() {
           </ul>
 
           {!available && (
-            <a
-              href="#"
-              className="block p-2 mt-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-600"
-              onClick={removeStoredCode}
-            >
-              Clear Selections
-            </a>
+            <div className="flex justify-between items-center">
+              <a
+                href="#"
+                className="block p-2 mt-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-600"
+                onClick={removeStoredCode}
+              >
+                Clear Selections
+              </a>
+              {storedCode.length > 0 && (
+                <div>
+                  <Button size="xs" className="mx-3" onClick={handleConfirmCode}>
+                    SELECTED
+                  </Button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}

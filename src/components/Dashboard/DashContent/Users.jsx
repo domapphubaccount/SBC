@@ -153,7 +153,7 @@ function Users({}) {
             <th scope="col" className="px-6 py-3">
               Role
             </th>
-            {permissionsData && permissionsData.includes(27,28,29) &&
+            {permissionsData &&( permissionsData.includes(27) || permissionsData.includes(28) || permissionsData.includes(29) ) &&
             <th scope="col" className="px-6 py-3">
               Actions
             </th>}

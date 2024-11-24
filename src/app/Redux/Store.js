@@ -21,6 +21,8 @@ import dashboardSlice from "./Features/Dashboard/DashboardSlice";
 import usersChatSlice from "./Features/Dashboard/MasterUsersChat";
 import asideSlice from "./Features/Dashboard/SideBarSlice";
 import PaginationSlice from "./Features/Dashboard/Pagination/Pagination";
+import progressSlice from "./Features/Dashboard/Progress/Progress";
+import chatInputSlice from "./Features/ChatInputSlice/ChatInputSlice";
 
 
 export const store = configureStore({
@@ -40,10 +42,12 @@ export const store = configureStore({
     historySlice,
     userCommentsSlice,
     chatSlice,
+    chatInputSlice,
     updateSlice,
     typeSlice,
     chatActionsSlice,
     ReviewSlice,
-    PaginationSlice
+    PaginationSlice,
+    progressSlice
   },
 });
