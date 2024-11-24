@@ -97,11 +97,11 @@ function MainChat({ elementWidth, windowWidth }) {
   const handleReadText = async (textRead, id) => {
     setCopId(id);
     try {
-      const isArabic = /[^\u0000-\u007F]/.test(textRead);
-      if (isArabic) {
-        const { text } = await translate(textRead, { to: "en" });
-        textRead = text;
-      }
+      // const isArabic = /[^\u0000-\u007F]/.test(textRead);
+      // if (isArabic) {
+      //   const { text } = await translate(textRead, { to: "en" });
+      //   textRead = text;
+      // }
       if ("speechSynthesis" in window) {
         const utterance = new SpeechSynthesisUtterance(textRead);
         utterance.lang = "en-US"; // Set language to English (United States)
@@ -316,7 +316,7 @@ function MainChat({ elementWidth, windowWidth }) {
   // end handle when window Resize.
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [windowWidth]);
+  }, [windowWidth,isSpeaking]);
   // end handle when window Resize.
   // start chat space
   let chatSpace = useMemo(() => {
