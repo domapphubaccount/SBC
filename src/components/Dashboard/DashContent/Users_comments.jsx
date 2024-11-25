@@ -409,7 +409,7 @@ function Users_comments({}) {
                         <div className="flex gap-2 justify-start">
                           {/* start view */}
                           {/* start delete */}
-                          {permissionsData && permissionsData.includes(44) && (
+                          {permissionsData && permissionsData.includes("chat_user_dislikes.soft_delete") && (
                             <Tooltip content="Delete Comment">
                               <button
                                 title="Delete"

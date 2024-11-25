@@ -12,6 +12,7 @@ export function Sidebar({ children, handlePage }) {
     (state) => state.profileSlice.permissions
   );
 
+
   return (
     <>
       {permissionsData && (
@@ -33,7 +34,7 @@ export function Sidebar({ children, handlePage }) {
             }}
           >
             <nav className="z-20 bg-white absolute flex shrink-0 grow-0 justify-around gap-4 border-t border-gray-200 p-2.5 shadow-lg fixed left-6 min-h-[auto] min-w-[64px] flex-col rounded-lg border">
-              {permissionsData && permissionsData.includes(57) && (
+              {permissionsData && permissionsData.includes("analysis") && (
                   <Tooltip content="Dashbaord" style="dark" placement="top">
                     <a
                       href="#"
@@ -61,7 +62,7 @@ export function Sidebar({ children, handlePage }) {
                     </a>
                   </Tooltip>
                 )}
-              {permissionsData && permissionsData.includes(25) && (
+              {permissionsData && permissionsData.includes("users.index") && (
                 <Tooltip content="Users" style="dark" placement="top">
                   <a
                     href="#"
@@ -89,7 +90,7 @@ export function Sidebar({ children, handlePage }) {
                   </a>
                 </Tooltip>
               )}
-              {permissionsData && permissionsData.includes(39) && (
+              {permissionsData && permissionsData.includes("chat_user_dislikes.get") && (
                   <Tooltip
                     content="User's Dislikes"
                     style="dark"
@@ -121,7 +122,7 @@ export function Sidebar({ children, handlePage }) {
                     </a>
                   </Tooltip>
                 )}
-              {permissionsData && permissionsData.includes(49) && (
+              {permissionsData && permissionsData.includes("reviews.index") && (
                 <Tooltip content="Reviewer" style="dark" placement="top">
                   <a
                     onClick={() => handlePage(8)}
@@ -149,7 +150,7 @@ export function Sidebar({ children, handlePage }) {
                   </a>
                 </Tooltip>
               )}
-              {permissionsData && permissionsData.includes(56) && (
+              {permissionsData && permissionsData.includes("files.assign") && (
                   <Tooltip
                     content="Master User's Chat"
                     style="dark"
@@ -181,7 +182,7 @@ export function Sidebar({ children, handlePage }) {
                     </a>
                   </Tooltip>
                 )}
-              {permissionsData && permissionsData.includes(13) && (
+              {permissionsData && permissionsData.includes("files.index") && (
                 <Tooltip content="Building Code" style="dark" placement="top">
                   <a
                     onClick={() => {handlePage(4)}}
@@ -209,7 +210,7 @@ export function Sidebar({ children, handlePage }) {
                   </a>
                 </Tooltip>
               )}
-              {permissionsData && permissionsData.includes(8) && (
+              {permissionsData && permissionsData.includes("sections.index") && (
                 <Tooltip content="Sections" style="dark" placement="top">
                   <a
                     href="#"
@@ -235,7 +236,7 @@ export function Sidebar({ children, handlePage }) {
                   </a>
                 </Tooltip>
               )}
-              {permissionsData && permissionsData.includes(30) && (
+              {permissionsData && permissionsData.includes("roles.index") && (
                 <Tooltip content="ٌRoles" style="dark" placement="top">
                   <a
                     href="#"

@@ -138,7 +138,7 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   </div>
                 ) : null}
               </div>
-              {permissionsData && permissionsData.includes(24) && (
+              {permissionsData && permissionsData.includes("users.attach_role") && (
                 <div>
                   <Label htmlFor="role_id" value="User Role: " />
                   <select

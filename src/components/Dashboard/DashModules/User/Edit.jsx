@@ -128,7 +128,7 @@ export function EditUser({ openEdit, handleClose }) {
                   )}
                 </div>
 
-                {permissionsData && permissionsData.includes(24) && (
+                {permissionsData && permissionsData.includes("users.attach_role") && (
                   <div>
                     <Label htmlFor="role" value="User Role" />
                     <select

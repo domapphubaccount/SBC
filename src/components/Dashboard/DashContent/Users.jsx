@@ -153,7 +153,7 @@ function Users({}) {
             <th scope="col" className="px-6 py-3">
               Role
             </th>
-            {permissionsData &&( permissionsData.includes(27) || permissionsData.includes(28) || permissionsData.includes(29) ) &&
+            {permissionsData &&( permissionsData.includes("users.show") || permissionsData.includes("users.update") || permissionsData.includes("users.destroy") ) &&
             <th scope="col" className="px-6 py-3">
               Actions
             </th>}
@@ -225,7 +225,7 @@ function Users({}) {
                       color="gray"
                       onClick={() => handleOpenRole(item.id)}
                       disabled={
-                        permissionsData && !permissionsData.includes(24)
+                        permissionsData && !permissionsData.includes("users.attach_role")
                       }
                     >
                       {Array.isArray(item.roles) && item.roles[0]?.name
@@ -237,7 +237,7 @@ function Users({}) {
                 <td className="px-6 py-4">
                   <div className="flex gap-2 justify-start">
                     {/* start view */}
-                    {permissionsData && permissionsData.includes(27) && (
+                    {permissionsData && permissionsData.includes("users.show") && (
                       <Tooltip content="View User">
                         <button
                           type="button"
@@ -268,7 +268,7 @@ function Users({}) {
                     )}
                     {/* end view */}
                     {/* start edit */}
-                    {permissionsData && permissionsData.includes(28) && (
+                    {permissionsData && permissionsData.includes("users.update") && (
                       <Tooltip content="Edit User">
                         <button
                           type="button"
@@ -294,7 +294,7 @@ function Users({}) {
                     )}
                     {/* end edit */}
                     {/* start delete */}
-                    {permissionsData && permissionsData.includes(29) && (
+                    {permissionsData && permissionsData.includes("users.destroy") && (
                       <Tooltip content="Delete User">
                         <button
                           type="button"
@@ -380,7 +380,7 @@ function Users({}) {
             <div>
               <h1 className="text-white text-3xl">USERS</h1>
             </div>
-            {permissionsData && permissionsData.includes(26) && (
+            {permissionsData && permissionsData.includes("users.store") && (
               <div>
                 <Button color="blue" onClick={handleOpenAdd}>
                   Add User

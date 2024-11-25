@@ -186,7 +186,7 @@ function Pdfs({}) {
             <div>
               <h1 className="text-white text-3xl">BUILDING CODE</h1>
             </div>
-            {permissionsData && permissionsData.includes(15) && (
+            {permissionsData && permissionsData.includes("files.upload") && (
               <div className="flex">
                 <div className="checkbox-wrapper-16 mr-3">
                   <label className="checkbox-wrapper">
@@ -515,7 +515,7 @@ function Pdfs({}) {
 
                                   {/* start delete */}
                                   {permissionsData &&
-                                    permissionsData.includes(17) && (
+                                    permissionsData.includes("files.softDelete") && (
                                       <Tooltip content="Delete">
                                         <button
                                           type="button"

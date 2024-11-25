@@ -39,7 +39,7 @@ function ChatContainer() {
     ) {
       redirect("/signIn");
     } else {
-      if(permissionsData && permissionsData.includes(12)){
+      if(permissionsData && permissionsData.includes("sections.pdf")){
       dispatch(getCodeAction({ token }))
       }
     }
@@ -132,7 +132,7 @@ function ChatContainer() {
         <div className="w-screen overflow-x-hidden">
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
             <div className="grid grid-cols-4 min-w-full">
-              <Refrence setElementWidth={setElementWidth} />
+              <Refrence setElementWidth={setElementWidth}/>
               <MainChat elementWidth={elementWidth} windowWidth={windowWidth} />
             </div>
           </div>

@@ -217,7 +217,7 @@ function Roles({}) {
                 <td className="px-6 py-4">
                   <div className="flex gap-2 justify-start">
                     {/* start view */}
-                    {permissionsData && permissionsData.includes(32) && (
+                    {permissionsData && permissionsData.includes("roles.show") && (
                       <Tooltip content="View Role">
                         <button
                           type="button"
@@ -250,7 +250,7 @@ function Roles({}) {
                     {/* start edit */}
                     {item.id !== 1 &&
                       permissionsData &&
-                      permissionsData.includes(34) && (
+                      permissionsData.includes("roles.update") && (
                         <Tooltip content="Edit Role">
                           <button
                             type="button"
@@ -276,7 +276,7 @@ function Roles({}) {
                       )}
                     {/* end edit */}
                     {/* start delete */}
-                    {permissionsData && permissionsData.includes(35) && (
+                    {permissionsData && permissionsData.includes("roles.destroy") && (
                       <Tooltip content="Delete Role">
                         <button
                           type="button"
@@ -362,7 +362,7 @@ function Roles({}) {
             <div>
               <h1 className="text-white text-3xl">ROLES</h1>
             </div>
-            {permissionsData && permissionsData.includes(31) && (
+            {permissionsData && permissionsData.includes("roles.store") && (
               <div>
                 <Button color="blue" onClick={handleOpenAdd}>
                   Add Role

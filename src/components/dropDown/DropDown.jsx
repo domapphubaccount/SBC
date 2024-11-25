@@ -72,7 +72,7 @@ function DropDown() {
           </svg>
         </button>
       </div>
-      
+
       {dropDownToggle && permissionsData && (
         <div
           ref={dropdownRef}
@@ -108,7 +108,7 @@ function DropDown() {
                 Home
               </Link>
             )}
-            {permissionsData.includes(1) && (
+            {permissionsData.includes("profile.show") && (
               <Link
                 href="/profile"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-slate-200 flex"
@@ -134,7 +134,15 @@ function DropDown() {
               </Link>
             )}
             {profileData &&
-              [25,39,48,49,13,8,30,57].some(value => permissionsData.includes(value)) &&
+              [
+                "users.index",
+                "chat_user_dislikes.get",
+                "reviews.index",
+                "files.index",
+                "sections.index",
+                "roles.index",
+                "analysis",
+              ].some((value) => permissionsData.includes(value)) &&
               pathname.slice(0, 9) !== "/dashboar" && (
                 <Link
                   href="/dashboard"

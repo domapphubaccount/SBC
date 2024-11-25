@@ -12,21 +12,28 @@ import ReviewerAdmin from "./DashContent/Reviewer";
 import { useSelector } from "react-redux";
 
 function Dashboard({ page, setPage }) {
-  const permissions = { 9: 57, 1: 25, 2: 39, 4: 13, 5: 8, 6: 30, 8: 49 };
+  const permissions = {
+    9: "analysis",
+    1: "users.index",
+    2: "chat_user_dislikes.get",
+    4: "files.index",
+    5: "sections.index",
+    6: "roles.index",
+    8: "reviews.index",
+  };
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
 
   function handlePage() {
-    const showDashboard = permissionsData.some((item) => item === 57);
+    const showDashboard = permissionsData.some((item) => item == "analysis");
 
     const validPermission = Object.entries(permissions).find((item) =>
       permissionsData.includes(item[1])
     );
 
-    console.log(validPermission);
     // Fallback based on the first valid permission
-    switch (page || (showDashboard&&9) || Number(validPermission[0])) {
+    switch (page || (showDashboard && 9) || Number(validPermission[0])) {
       case 8:
         return <ReviewerAdmin />; //done 4
       case 1:

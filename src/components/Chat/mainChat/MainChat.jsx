@@ -317,7 +317,7 @@ function MainChat({ elementWidth, windowWidth }) {
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [windowWidth,isSpeaking]);
-  // end handle when window Resize.
+  
   // start chat space
   let chatSpace = useMemo(() => {
     return (
@@ -602,7 +602,7 @@ function MainChat({ elementWidth, windowWidth }) {
                       )}
                       {pathName.trim().slice(0, 9) !== "/sharable" &&
                         permissionsData &&
-                        permissionsData.includes(5) && (
+                        permissionsData.includes("openai.dislike_message") && (
                           <svg
                             style={{ transition: "none" }}
                             onClick={(e) => {
@@ -705,7 +705,7 @@ function MainChat({ elementWidth, windowWidth }) {
                               </div>
                             ) : (
                               permissionsData &&
-                              permissionsData.includes(3) && (
+                              permissionsData.includes("openai.create_thread") && (
                                 <button
                                   onClick={handleStartNewChat}
                                   className="learn-more start"
@@ -736,7 +736,7 @@ function MainChat({ elementWidth, windowWidth }) {
           ) : (conversation && Object.entries(conversation).length !== 0) ||
             chatCode.length > 0 ? (
             <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              {permissionsData && permissionsData.includes(4) && <ChatInput />}
+              {permissionsData && permissionsData.includes("openai.ask_question") && <ChatInput />}
             </div>
           ) : (
             <></>
