@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 function Page() {
   const profileData = useSelector((state) => state.profileSlice.profile);
-  const [page, setPage] = useState(9);
+  const [page, setPage] = useState();
   const isLogged = useSelector((state) => state.loginSlice.logged);
 
   useLayoutEffect(() => {

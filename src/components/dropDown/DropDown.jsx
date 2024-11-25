@@ -134,7 +134,7 @@ function DropDown() {
               </Link>
             )}
             {profileData &&
-              [25,39,48,49,13,8,30].some(value => permissionsData.includes(value)) &&
+              [25,39,48,49,13,8,30,57].some(value => permissionsData.includes(value)) &&
               pathname.slice(0, 9) !== "/dashboar" && (
                 <Link
                   href="/dashboard"
