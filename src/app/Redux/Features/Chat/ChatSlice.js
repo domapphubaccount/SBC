@@ -5,11 +5,40 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
+import { Errors } from "./ChatErrors";
 
-// start get 
+// if ($ErrorCode == 400 or $ErrorCode == 404 or $ErrorCode == 413) {
+//   $messages = [
+//       "Error Code 1002 Technical difficulties are preventing us from proceeding. Kindly contact support.",
+//       "Error Code 1002 We’re currently dealing with a technical problem. Please contact support for help.",
+//       "Error Code 1002 A technical issue has interrupted the process. Please reach out to support.",
+//       "Error Code 1002 We’ve encountered a technical problem. Please contact support for assistance.",
+//       "Error Code 1002 A technical malfunction has occurred. Please get in touch with technical support."
+//   ];
+//   return $messages[array_rand($messages)];
+// }else if ($ErrorCode == 401 or $ErrorCode == 403 or $ErrorCode == 429) {
+//   $messages = [
+//       "Error Code 1001 We’re experiencing a technical issue. Please contact support for assistance.",
+//       "Error Code 1001 A technical problem has occurred. Kindly reach out to support for help.",
+//       "Error Code 1001 There seems to be a technical glitch. Please contact technical support.",
+//       "Error Code 1001 We’re facing a technical issue. Please get in touch with support for resolution.",
+//       "Error Code 1001 A technical error has been detected. Please contact support for further assistance."
+//   ];
+
+//   return $messages[array_rand($messages)];
+// }else if ($ErrorCode == 500 or $ErrorCode == 502 or $ErrorCode == 503 or $ErrorCode == 504) {
+//   $messages = [
+//       "Error Code 1003 Here’s a technical error on our end. Kindly contact support for further help.",
+//       "Error Code 1003 We’re experiencing a glitch. Please reach out to support for resolution.",
+//       "Error Code 1003 Technical issues are affecting the process. Please contact support for help.",
+//       "Error Code 1003 A technical issue has arisen. Please contact support to resolve it.",
+//       "Error Code 1003 A We’ve run into a technical problem. Please get in touch with support for assistance."
+//   ];
+
+// start get
 export const getChatAction = createAsyncThunk(
   "chat/getChatAction",
-  async (arg, { dispatch , rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
     const { token, chat_id } = arg;
     try {
       const response = await axios.get(`${config.api}get_chat/${chat_id}`, {
@@ -25,8 +54,8 @@ export const getChatAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        RemoveAuth()
+      if (error?.response?.status === 401) {
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -58,9 +87,14 @@ export const addQuestionAction = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        RemoveAuth()
+      console.log('debug')
+      if (error?.response?.status === 401) {
+        RemoveAuth();
       }
+      // if (Errors.some((item) => item.error.includes(error?.response.status))) {
+      //   let errros = Errors.filter(item => item.error.includes(error?.response.status))
+      //   console.log(errros.error)
+      // }
       return rejectWithValue(error.response.data);
     }
   }
@@ -76,12 +110,11 @@ const initialState = {
   loading: false,
   error: null,
 
-
   // start chatInput
   input: {
     loading: false,
-    error: null
-  }
+    error: null,
+  },
   // end chatInput
 };
 
@@ -126,7 +159,7 @@ export const chatSlice = createSlice({
       state.loading = false;
     },
     chat_out: (state, action) => {
-      localStorage.removeItem("chat")
+      localStorage.removeItem("chat");
       return {
         ...state,
         value: 0,
@@ -136,8 +169,8 @@ export const chatSlice = createSlice({
         chat_code: "",
       };
     },
-    loading_main_chat: (state , action) => {
-      state.loading = action.payload
+    loading_main_chat: (state, action) => {
+      state.loading = action.payload;
     },
     // loading chat
     chatSlice_loading: (state, action) => {
@@ -150,23 +183,21 @@ export const chatSlice = createSlice({
       state.error = action.payload;
     },
     // end chat error
-    clearData: (state,action) => {
-      
-      state.value= 0;
-        state.chat_data= [];
-        state.conversation= [];
-        state.get_chat= "";
-        state.chat_code= "";
-        state.loading= false;
-      
-      
-        // start chatInput
-        state.input = {
-          loading: false,
-          error: null
-        }
-        // end chatInput
-    }
+    clearData: (state, action) => {
+      state.value = 0;
+      state.chat_data = [];
+      state.conversation = [];
+      state.get_chat = "";
+      state.chat_code = "";
+      state.loading = false;
+
+      // start chatInput
+      state.input = {
+        loading: false,
+        error: null,
+      };
+      // end chatInput
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -217,7 +248,7 @@ export const {
   chat_out,
   loading_main_chat,
   error_start_chat,
-  clearData
+  clearData,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -17,7 +17,6 @@ import { loading_get_chat_history } from "@/app/Redux/Features/Chat_History/hist
 
 function ChatContainer() {
   const [windowWidth, setWindowWidth] = useState();
-  const [elementWidth, setElementWidth] = useState();
 
   const pathName = usePathname();
   const dashboardData = useSelector((state) => state.chatSlice.value);
@@ -111,20 +110,7 @@ function ChatContainer() {
     }
   }, [token, dashboardData, updates, catchChat]);
 
-  useEffect(() => {
-    const updateElementWidth = () => {
-      setElementWidth(
-        document.getElementById("listRef") &&
-          document.getElementById("listRef").offsetWidth
-      );
-    };
 
-    updateElementWidth(); // Set initial width
-    window.addEventListener("resize", updateElementWidth);
-    return () => {
-      window.removeEventListener("resize", updateElementWidth);
-    };
-  }, []);
 
   return (
     <div className="h-screen chat_container">
@@ -132,8 +118,8 @@ function ChatContainer() {
         <div className="w-screen overflow-x-hidden">
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
             <div className="grid grid-cols-4 min-w-full">
-              <Refrence setElementWidth={setElementWidth}/>
-              <MainChat elementWidth={elementWidth} windowWidth={windowWidth} />
+              <Refrence />
+              <MainChat windowWidth={windowWidth} />
             </div>
           </div>
         </div>

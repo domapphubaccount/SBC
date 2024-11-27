@@ -1,19 +1,11 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 
-function Refrence({ setElementWidth }) {
-  const colRef = useRef();
+function Refrence() {
 
-  useEffect(() => {
-    window.onresize = () => {
-      setElementWidth(colRef.current?.offsetWidth);
-      window.MathJax && window.MathJax.typeset();
-    };
-  }, []);
 
   return (
     <div
-      ref={colRef}
       id="refContainer"
       className="col-span-1 bg-gray-100 border-r border-gray-300	relative"
     >
@@ -37,7 +29,6 @@ function Refrence({ setElementWidth }) {
               className="font-bold"
               style={{ fontFamily: "Alef, sans-serif", letterSpacing: "-1px" }}
             >
-              {" "}
               <span style={{ color: "#162C4C" }}>CPV</span>
               <span style={{ color: "#2C518E" }}>ARABIA</span>
             </span>

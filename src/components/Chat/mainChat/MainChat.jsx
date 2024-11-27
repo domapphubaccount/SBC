@@ -10,24 +10,16 @@ import ChatInput from "../chatInput/ChatInput";
 import axios from "axios";
 import Dislike from "./actions/Dislike";
 import { usePathname, useRouter } from "next/navigation";
-import MessageImg from "@/assets/chat/MESSAGE.png";
-import { MathJax, MathJaxContext } from "better-react-mathjax";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loading_chat,
-  updateSlice,
-} from "@/app/Redux/Features/Update/UpdateSlice";
+import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import {
   chat_out,
-  choseChate,
   error_start_chat,
   getChatCode,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import StartLogo from "@/assets/logo/start_logo.png";
 import Logo from "@/assets/logo/icon.png";
-import { ReactTyped } from "react-typed";
-import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { config } from "@/config/config";
 import {
   action_done,
@@ -40,28 +32,23 @@ import {
   clear_code_error,
   set_code_error,
 } from "@/app/Redux/Features/Code/CodeSlice";
+import { MathJax,MathJaxContext } from "better-react-mathjax";
 
-function MainChat({ elementWidth, windowWidth }) {
+function MainChat({ windowWidth }) {
   const pathName = usePathname();
   const [copyIcon, setCopyIcon] = useState(false);
-  const [user, setUser] = useState("");
   const [dislike, setDislike] = useState(false);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [itemId, setItemId] = useState(null);
   const [dislikeMessage, setDislikeMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
   const [copID, setCopId] = useState();
-  const updates = useSelector((state) => state.updateSlice.state);
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const loadingchat = useSelector((state) => state.chatSlice.loading);
-  const chatSlice_loading = useSelector((state) => state.chatSlice.loading);
-  const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
-  const [responseId, setResponseId] = useState("");
   const dispatch = useDispatch();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
-  const [windhtchat, setwidthchat] = useState();
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
@@ -71,8 +58,10 @@ function MainChat({ elementWidth, windowWidth }) {
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
+  const {name} = useSelector(
+    (state) => state.profileSlice.profile
+  );
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
-  const loadingResponse = useSelector((state) => state.chatInputSlice.loading);
 
   useEffect(() => {
     if (actionSuccess) {
@@ -89,7 +78,6 @@ function MainChat({ elementWidth, windowWidth }) {
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
     return percentageEnglish > 50;
   }
-
   const dislikeToggle = (id) => {
     setItemId(id);
     setDislike(!dislike);
@@ -97,11 +85,6 @@ function MainChat({ elementWidth, windowWidth }) {
   const handleReadText = async (textRead, id) => {
     setCopId(id);
     try {
-      // const isArabic = /[^\u0000-\u007F]/.test(textRead);
-      // if (isArabic) {
-      //   const { text } = await translate(textRead, { to: "en" });
-      //   textRead = text;
-      // }
       if ("speechSynthesis" in window) {
         const utterance = new SpeechSynthesisUtterance(textRead);
         utterance.lang = "en-US"; // Set language to English (United States)
@@ -218,21 +201,7 @@ function MainChat({ elementWidth, windowWidth }) {
     }
   };
   dispatch(action_done(true));
-  useEffect(() => {
-    if (localStorage.getItem("data")) {
-      setUser(JSON.parse(localStorage.getItem("data")).name);
-    }
-  }, []);
-  useEffect(() => {
-    setwidthchat(window.innerWidth);
-    window.onresize = () => {
-      setwidthchat(window.innerWidth);
-      window.MathJax && window.MathJax.typeset();
-    };
-  }, []);
-  useEffect(() => {
-    window.MathJax && window.MathJax.typeset();
-  }, [conversation]);
+
   const pattern = /Reference: SBC.*?\/\//g;
   const textHandler = (item) => {
     if (item.match(pattern)) {
@@ -257,7 +226,6 @@ function MainChat({ elementWidth, windowWidth }) {
   // start handle scroll bottom action
   useEffect(() => {
     scrollToBottom();
-    window.MathJax && window.MathJax.typeset();
   }, [conversation, chatData]);
   // end handle scroll bottom action
   // start handle starter card
@@ -269,29 +237,20 @@ function MainChat({ elementWidth, windowWidth }) {
     }
   }
   // end handle starter card
-  useEffect(() => {
-    if (localStorage.getItem("data")) {
-      setUser(JSON.parse(localStorage.getItem("data")).name);
-    }
-  }, []);
   // start question card
   let questionCard = useCallback((item) => {
     return (
       <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card">
-        <MathJaxContext>
-          <MathJax dynamic>
-            <span
-              style={{
-                textAlign: `${isEnglish(item.question) ? "left" : "right"}`,
-              }}
-              className="block"
-              dir={isEnglish(item.question) ? "ltr" : "rtl"}
-              dangerouslySetInnerHTML={{
-                __html: item.question.replaceAll("\n", "<br/>"),
-              }}
-            />
-          </MathJax>
-        </MathJaxContext>
+        <span
+          style={{
+            textAlign: `${isEnglish(item.question) ? "left" : "right"}`,
+          }}
+          className="block"
+          dir={isEnglish(item.question) ? "ltr" : "rtl"}
+          dangerouslySetInnerHTML={{
+            __html: item.question.replaceAll("\n", "<br/>"),
+          }}
+        />
       </div>
     );
   }, []);
@@ -299,25 +258,27 @@ function MainChat({ elementWidth, windowWidth }) {
   // start question card
   let answerCard = useCallback((item) => {
     return (
-      <span
-        style={{
-          overflowX: "auto",
-          textAlign: `${isEnglish(item.answer) ? "left" : "right"}`,
-        }}
-        className="block chat_box"
-        dir={isEnglish(item.answer) ? "ltr" : "rtl"}
-        dangerouslySetInnerHTML={{
-          __html: textHandler(item.answer.replaceAll("\n", "<br/>")),
-        }}
-      />
+      <MathJaxContext version={3} options={{
+        loader: { load: ['input/asciimath', 'output/chtml'] },
+        tex: { tags: 'ams' },
+      }}>
+        <MathJax>
+          <span
+            style={{
+              overflowX: "auto",
+              textAlign: `${isEnglish(item.answer) ? "left" : "right"}`,
+            }}
+            className="block chat_box"
+            dir={isEnglish(item.answer) ? "ltr" : "rtl"}
+            dangerouslySetInnerHTML={{
+              __html: textHandler(item.answer.replaceAll("\n", "<br/>")),
+            }}
+          />
+        </MathJax>
+      </MathJaxContext>
     );
   });
   // end question card
-  // end handle when window Resize.
-  useEffect(() => {
-    window.MathJax && window.MathJax.typeset();
-  }, [windowWidth,isSpeaking]);
-  
   // start chat space
   let chatSpace = useMemo(() => {
     return (
@@ -329,12 +290,14 @@ function MainChat({ elementWidth, windowWidth }) {
       >
         {chatData &&
           conversation &&
-          (conversation.userChats || conversation.user_chats || chatData.length > 0) &&
+          (conversation.userChats ||
+            conversation.user_chats ||
+            chatData.length > 0) &&
           chatData.map((item, i) => (
             <React.Fragment key={i}>
               <div className="flex justify-end relative w-full">
                 <div>
-                  <div className="chat_userName_2 text-right">{user}</div>
+                  <div className="chat_userName_2 text-right">{name}</div>
                   <div className="flex justify-end">
                     {/* answer */}
                     {questionCard(item)}
@@ -400,11 +363,11 @@ function MainChat({ elementWidth, windowWidth }) {
                   <div
                     className="code"
                     style={{
-                      width: elementWidth - 40 + "px",
                       zIndex: 2,
                     }}
                   >
                     {windowWidth <= 800 ? (
+                      <div className="flex justify-center">
                       <Popover
                         aria-labelledby="default-popover"
                         content={
@@ -441,6 +404,7 @@ function MainChat({ elementWidth, windowWidth }) {
                           </svg>
                         </Button>
                       </Popover>
+                      </div>
                     ) : (
                       <span
                         style={{ maxHeight: "150%" }}
@@ -479,19 +443,9 @@ function MainChat({ elementWidth, windowWidth }) {
                   </div>
                   <div className="w-full flex justify-start chat_card">
                     <div className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card">
-                      {responseId == item.id ? (
-                        <img
-                          src={loadingImg.src}
-                          className="loading_icon"
-                          alt="laoding"
-                        />
-                      ) : (
-                        <>
                           {item?.answer ? (
-                            
-                              // answer card
-                              answerCard(item)
-                            
+                            // answer card
+                            answerCard(item)
                           ) : (
                             <div>
                               <img
@@ -502,8 +456,6 @@ function MainChat({ elementWidth, windowWidth }) {
                               />
                             </div>
                           )}
-                        </>
-                      )}
                     </div>
                   </div>
                   {item?.answer &&
@@ -643,7 +595,7 @@ function MainChat({ elementWidth, windowWidth }) {
           ))}
       </li>
     );
-  }, [chatData, windowWidth, chatData?.question,isSpeaking]);
+  }, [chatData, windowWidth, chatData?.question, isSpeaking]);
   // end chat space
 
   return (
@@ -659,7 +611,7 @@ function MainChat({ elementWidth, windowWidth }) {
               id="chat"
               style={{
                 height: "calc(100vh - 120px)",
-                width: windhtchat + "px",
+                width: "100vw",
                 position: "absolute",
                 right: 0,
                 top: 0,
@@ -668,11 +620,10 @@ function MainChat({ elementWidth, windowWidth }) {
             >
               <div
                 className="col-span-1"
-                style={{ width: elementWidth + "px" }}
               ></div>
               {/* relative */}
               <div className="col-span-3 py-5">
-                {chatSlice_loading ? (
+                {loadingchat ? (
                   <div className="flex items-center justify-center min-h-screen">
                     <img
                       src={loadingImg.src}
@@ -705,7 +656,9 @@ function MainChat({ elementWidth, windowWidth }) {
                               </div>
                             ) : (
                               permissionsData &&
-                              permissionsData.includes("openai.create_thread") && (
+                              permissionsData.includes(
+                                "openai.create_thread"
+                              ) && (
                                 <button
                                   onClick={handleStartNewChat}
                                   className="learn-more start"
@@ -736,7 +689,10 @@ function MainChat({ elementWidth, windowWidth }) {
           ) : (conversation && Object.entries(conversation).length !== 0) ||
             chatCode.length > 0 ? (
             <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              {permissionsData && permissionsData.includes("openai.ask_question") && <ChatInput />}
+              {permissionsData &&
+                permissionsData.includes("openai.ask_question") && (
+                  <ChatInput />
+                )}
             </div>
           ) : (
             <></>
