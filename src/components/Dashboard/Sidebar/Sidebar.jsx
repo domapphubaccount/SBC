@@ -1,12 +1,10 @@
 "use client";
 
-import { removeData } from "@/app/Redux/Features/Dashboard/Pagination/Pagination";
 import { Tooltip } from "flowbite-react";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export function Sidebar({ children, handlePage }) {
-  const profileData = useSelector((state) => state.profileSlice.profile);
   const aside = useSelector(state => state.asideSlice.open);
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions

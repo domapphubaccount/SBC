@@ -6,10 +6,7 @@ import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { roleModule } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
-import {
-  editModule,
-  getRoleByIDAction,
-} from "@/app/Redux/Features/Dashboard/RolesSlice";
+import { editModule } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import {
   addModule,
   assignModule,
@@ -38,7 +35,9 @@ function Pdfs({}) {
   const [openWarn, setOpenWarn] = useState(false);
   const [fileId, setFileID] = useState("");
   const openDelete = useSelector((state) => state.pdfsSlice.deleteModule);
-  const openRestoreDeletedFile = useSelector((state) => state.pdfsSlice.restoreModule);
+  const openRestoreDeletedFile = useSelector(
+    (state) => state.pdfsSlice.restoreModule
+  );
   const openRole = useSelector((state) => state.usersSlice.roleModule);
   const openAdd = useSelector((state) => state.pdfsSlice.addModule);
   const openView = useSelector((state) => state.pdfsSlice.viewModule);
@@ -117,12 +116,7 @@ function Pdfs({}) {
     } else {
       dispatch(getPdfsAction({ token, page, fileType }));
     }
-  }, [
-    updatePdfsData,
-    page,
-    fileType,
-    deleted,
-  ]);
+  }, [updatePdfsData, page, fileType, deleted]);
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -466,7 +460,9 @@ function Pdfs({}) {
                                   <button
                                     type="button"
                                     className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                                    onClick={() => handleOpenRestoreDeletedFile(item.id)}
+                                    onClick={() =>
+                                      handleOpenRestoreDeletedFile(item.id)
+                                    }
                                   >
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
@@ -515,7 +511,9 @@ function Pdfs({}) {
 
                                   {/* start delete */}
                                   {permissionsData &&
-                                    permissionsData.includes("files.softDelete") && (
+                                    permissionsData.includes(
+                                      "files.softDelete"
+                                    ) && (
                                       <Tooltip content="Delete">
                                         <button
                                           type="button"

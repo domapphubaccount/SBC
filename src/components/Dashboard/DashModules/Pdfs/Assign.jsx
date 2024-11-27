@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { Button, Modal, Label } from "flowbite-react";
 import Select from "react-select"; // Import react-select
@@ -8,9 +8,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import {
-  assignUserToPdfAction,
-} from "@/app/Redux/Features/Dashboard/PdfsSlice";
+import { assignUserToPdfAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 
 export function Assign({ openAssign, handleClose, fileId }) {
   const dispatch = useDispatch();
@@ -20,6 +18,9 @@ export function Assign({ openAssign, handleClose, fileId }) {
   const usersData = useSelector((state) => state.usersSlice.users);
   const [usersOption, setUsersOption] = useState([]);
   const [page, setPage] = useState(1);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   // Formik setup
   const formik = useFormik({
@@ -39,28 +40,29 @@ export function Assign({ openAssign, handleClose, fileId }) {
     dispatch(getUsersAction({ token, page }));
   }, [page]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (usersData) {
       let data = usersData.filter(
         (item) => !item.pdfs.some((pdf) => pdf.id === fileId)
       );
-      if(page == 1){
-        setUsersOption([...
-          data.map((item) => ({
+      if (page == 1) {
+        setUsersOption([
+          ...(data.map((item) => ({
             value: item.id,
             label: item.name,
-          })) || []
+          })) || []),
         ]);
-      }else{
-      setUsersOption([...usersOption,...
-        data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        })) || []
-      ])
+      } else {
+        setUsersOption([
+          ...usersOption,
+          ...(data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          })) || []),
+        ]);
+      }
     }
-    }
-  },[usersData, fileId])
+  }, [usersData, fileId]);
 
   return (
     <>
@@ -91,32 +93,41 @@ export function Assign({ openAssign, handleClose, fileId }) {
             ) : (
               <>
                 <div>
-                  <div>
-                    <Label htmlFor="Users" value="User" />
-                    <Select
-                      id="Users"
-                      name="user_ids"
-                      isMulti
-                      options={usersOption}
-                      value={usersOption.filter((option) =>
-                        formik.values.user_ids.includes(option.value)
-                      )}
-                      onChange={(selectedOptions) => {
-                        formik.setFieldValue(
-                          "user_ids",
-                          selectedOptions
-                            ? selectedOptions.map((option) => option.value)
-                            : []
-                        );
-                      }}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.user_ids && formik.errors.user_ids ? (
-                      <div className="text-red-600">
-                        {formik.errors.user_ids}
-                      </div>
-                    ) : null}
-                  </div>
+                  {permissionsData &&
+                  permissionsData.includes("users.index") ? (
+                    <div>
+                      <Label htmlFor="Users" value="User" />
+                      <Select
+                        id="Users"
+                        name="user_ids"
+                        isMulti
+                        options={usersOption}
+                        value={usersOption.filter((option) =>
+                          formik.values.user_ids.includes(option.value)
+                        )}
+                        onChange={(selectedOptions) => {
+                          formik.setFieldValue(
+                            "user_ids",
+                            selectedOptions
+                              ? selectedOptions.map((option) => option.value)
+                              : []
+                          );
+                        }}
+                        onBlur={formik.handleBlur}
+                      />
+                      {formik.touched.user_ids && formik.errors.user_ids ? (
+                        <div className="text-red-600">
+                          {formik.errors.user_ids}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <div>
+                      <small className="text-red-700	">
+                        You need "Users" permission to assign a user
+                      </small>
+                    </div>
+                  )}
                 </div>
 
                 <div className="w-full flex justify-end">

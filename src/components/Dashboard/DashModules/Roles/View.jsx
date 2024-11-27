@@ -25,10 +25,6 @@ export function ViewRole({ openView, handleClose }) {
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Role Iformation
-            </h3>
-
             {loading ? (
               <div className="flex justify-center">
                 <img
@@ -42,9 +38,14 @@ export function ViewRole({ openView, handleClose }) {
               <div>
                 {roleData.name ? (
                   <>
-                  <div className="mb-3">
-                    <small>Created-At: {formatDate(roleData.created_at)}</small>
-                  </div>
+                    <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                      Role Iformation
+                    </h3>
+                    <div className="mb-3">
+                      <small>
+                        Created-At: {formatDate(roleData.created_at)}
+                      </small>
+                    </div>
                     <div className="mb-3">
                       <TextInput
                         id="role_name"
@@ -62,7 +63,9 @@ export function ViewRole({ openView, handleClose }) {
                         type="text"
                         required
                         disabled
-                        value={`Assigned to : ${roleData.user_count ? roleData.user_count : 'No One'}`}
+                        value={`Assigned to : ${
+                          roleData.user_count ? roleData.user_count : "No One"
+                        }`}
                       />
                     </div>
                     <div>
@@ -90,6 +93,9 @@ export function ViewRole({ openView, handleClose }) {
                         </Table>
                       </div>
                     </div>
+                    <div className="w-full flex justify-end">
+                      <Button onClick={handleClose}>CLOSE</Button>
+                    </div>
                   </>
                 ) : (
                   <div className="flex justify-center">
@@ -103,10 +109,6 @@ export function ViewRole({ openView, handleClose }) {
                 )}
               </div>
             )}
-
-            <div className="w-full flex justify-end">
-              <Button onClick={handleClose}>CLOSE</Button>
-            </div>
           </div>
         </Modal.Body>
       </Modal>

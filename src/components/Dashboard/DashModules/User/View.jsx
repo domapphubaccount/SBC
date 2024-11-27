@@ -25,10 +25,6 @@ export function ViewUser({ openView, handleClose }) {
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              User Iformation
-            </h3>
-
             {loading ? (
               <div className="flex justify-center">
                 <img
@@ -40,16 +36,10 @@ export function ViewUser({ openView, handleClose }) {
               </div>
             ) : (
               <div>
-                {/* <div className="mb-3">
-                  <TextInput
-                    id="user id"
-                    style={{ opacity: 1 }}
-                    type="text"
-                    required
-                    disabled
-                    value={`User ID: ${userData.id}`}
-                  />
-                </div> */}
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                  User Iformation
+                </h3>
+
                 <div className="mb-3">
                   <small className="px-2">
                     Created-At: {formatDate(userData.created_at)}
@@ -116,12 +106,11 @@ export function ViewUser({ openView, handleClose }) {
                     value={`Status : ${userData.status}`}
                   />
                 </div>
+                <div className="w-full flex justify-end">
+                  <Button onClick={handleClose}>CLOSE</Button>
+                </div>
               </div>
             )}
-
-            <div className="w-full flex justify-end">
-              <Button onClick={handleClose}>CLOSE</Button>
-            </div>
           </div>
         </Modal.Body>
       </Modal>

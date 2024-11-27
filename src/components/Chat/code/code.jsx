@@ -130,14 +130,14 @@ const filteredCode =
                   <li className="p-2 text-gray-500">No results found</li>
                 ) : (
                   filteredCode.map((item, i) => (
-                    <Accordion key={i} className="p-2">
-                      <Accordion.Panel className="p-2">
-                        <Accordion.Title className="p-2">
+                    <Accordion key={i} className="p-1">
+                      <Accordion.Panel className="p-1">
+                        <Accordion.Title className="p-1">
                           <span style={{ fontSize: "14px", fontWeight: "600" }}>
                             {item.name}
                           </span>
                         </Accordion.Title>
-                        <Accordion.Content className="p-2">
+                        <Accordion.Content className="p-1">
                           {item.pdfs.length > 0 ? (
                             item.pdfs.map((pdfItem, j) => (
                               <li key={j}>
@@ -185,9 +185,9 @@ const filteredCode =
                       )
                     )
                     .map((item, i) => (
-                      <Accordion key={i} className="p-2">
-                        <Accordion.Panel className="p-2">
-                          <Accordion.Title className="p-2">
+                      <Accordion key={i} className="p-1">
+                        <Accordion.Panel className="p-1">
+                          <Accordion.Title className="p-1">
                             <span
                               style={{ fontSize: "14px", fontWeight: "600" }}
                             >
@@ -195,7 +195,7 @@ const filteredCode =
                             </span>
                           </Accordion.Title>
                           <Accordion.Content
-                            className="p-2"
+                            className="p-1"
                             style={{ fontSize: "8px" }}
                           >
                             {item.pdfs

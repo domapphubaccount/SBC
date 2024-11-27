@@ -110,8 +110,6 @@ function ChatContainer() {
     }
   }, [token, dashboardData, updates, catchChat]);
 
-
-
   return (
     <div className="h-screen chat_container">
       <div className="w-full bg-neutral-200 chat_input">

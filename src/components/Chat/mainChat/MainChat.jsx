@@ -366,8 +366,7 @@ function MainChat({ windowWidth }) {
                       zIndex: 2,
                     }}
                   >
-                    {windowWidth <= 800 ? (
-                      <div className="flex justify-center">
+                      <div id="ref-Mob" className="flex justify-center">
                       <Popover
                         aria-labelledby="default-popover"
                         content={
@@ -405,8 +404,8 @@ function MainChat({ windowWidth }) {
                         </Button>
                       </Popover>
                       </div>
-                    ) : (
                       <span
+                        id="ref-Pc"
                         style={{ maxHeight: "150%" }}
                         className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
                       >
@@ -432,7 +431,7 @@ function MainChat({ windowWidth }) {
                           </span>
                         </div>
                       </span>
-                    )}
+                   
                   </div>
                 )}
                 {/* end reference */}
