@@ -138,29 +138,41 @@ export function AddUser({ openAdd, handleOpenAdd, handleClose }) {
                   </div>
                 ) : null}
               </div>
-              {permissionsData && permissionsData.includes(24) && (
+
+              {permissionsData && permissionsData.includes("roles.index") ? (
+                permissionsData &&
+                permissionsData.includes("users.attach_role") && (
+                  <div>
+                    <Label htmlFor="role_id" value="User Role: " />
+                    <select
+                      className="border-0"
+                      id="role_id"
+                      name="role_id"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.role_id}
+                      required
+                    >
+                      <option value="">Select Role</option>
+                      {roles.length > 0 &&
+                        roles.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                    </select>
+                    {formik.touched.role_id && formik.errors.role_id ? (
+                      <div className="text-red-600">
+                        {formik.errors.role_id}
+                      </div>
+                    ) : null}
+                  </div>
+                )
+              ) : (
                 <div>
-                  <Label htmlFor="role_id" value="User Role: " />
-                  <select
-                    className="border-0"
-                    id="role_id"
-                    name="role_id"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.role_id}
-                    required
-                  >
-                    <option value="">Select Role</option>
-                    {roles.length > 0 &&
-                      roles.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                  </select>
-                  {formik.touched.role_id && formik.errors.role_id ? (
-                    <div className="text-red-600">{formik.errors.role_id}</div>
-                  ) : null}
+                  <small className="text-red-700	">
+                    You need "Roles" permission to add a user
+                  </small>
                 </div>
               )}
               <div className="flex items-center gap-2">

@@ -174,7 +174,7 @@ function ReviewerAdmin({}) {
             <div>
               <h1 className="text-white text-3xl">REVIEWERS</h1>
             </div>
-            {permissionsData && permissionsData.includes(49) && (
+            {permissionsData && permissionsData.includes("reviews.index") && (
               <div>
                 <Button color="blue" onClick={handleOpenAdd}>
                   Add Review
@@ -333,7 +333,7 @@ function ReviewerAdmin({}) {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
                           {/* start view */}
-                          {permissionsData && permissionsData.includes(50) && (
+                          {permissionsData && permissionsData.includes("reviews.show") && (
                             <Tooltip content="View">
                               <button
                                 title="View"
@@ -365,7 +365,7 @@ function ReviewerAdmin({}) {
                           )}
                           {/* end view */}
                           {/* start edit */}
-                          {permissionsData && permissionsData.includes(51) && (
+                          {permissionsData && permissionsData.includes("reviews.update") && (
                             <Tooltip content="ٌReview">
                               <button
                                 type="button"
@@ -391,7 +391,7 @@ function ReviewerAdmin({}) {
                           )}
                           {/* end edit */}
                           {/* start delete */}
-                          {permissionsData && permissionsData.includes(52) &&
+                          {permissionsData && permissionsData.includes("reviews.destroy") &&
                           <Tooltip content="Delete">
                             <button
                               title="Delete"
@@ -417,7 +417,7 @@ function ReviewerAdmin({}) {
                           </Tooltip>}
                           {/* start delete */}
                           {/* start train */}
-                          {permissionsData && permissionsData.includes(51) &&(
+                          {permissionsData && permissionsData.includes("reviews.update") &&(
                               <Tooltip content="Train">
                                 <button
                                   title="Train"

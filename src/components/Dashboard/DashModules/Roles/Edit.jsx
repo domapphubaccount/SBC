@@ -82,7 +82,7 @@ export function EditRole({ openEdit, handleClose }) {
                   Edit Role Details
                 </h3>
                 <div>
-                  <Label htmlFor="name" value="User Name" />
+                  <Label htmlFor="name" value="Role Name" />
                   <TextInput
                     id="name"
                     name="name"

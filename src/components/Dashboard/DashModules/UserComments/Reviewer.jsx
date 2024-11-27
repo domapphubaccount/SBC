@@ -92,10 +92,6 @@ export function Reviewer({ openReviewer, handleClose }) {
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Reviewer
-            </h3>
-
             {loading ? (
               <div className="flex justify-center">
                 <img
@@ -107,6 +103,9 @@ export function Reviewer({ openReviewer, handleClose }) {
               </div>
             ) : (
               <>
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                  Reviewer
+                </h3>
                 <form onSubmit={formik.handleSubmit}>
                   <div>
                     <div className="mb-3">
@@ -153,21 +152,19 @@ export function Reviewer({ openReviewer, handleClose }) {
 
                     <MathJaxContext>
                       {/* <MathJax dynamic> */}
-                        <div className="my-5 rounded border p-3">
-                          <div>
-                            <small className="font-semibold">
-                              BYLD response
-                            </small>
-                          </div>
-                          <div
-                            id="byldResponse"
-                            style={{ opacity: 1, overflowX: "auto" }}
-                            className="textarea text-xs	" // Add any styling class if needed
-                            dangerouslySetInnerHTML={{
-                              __html: commentData?.user_chat?.answer,
-                            }}
-                          />
+                      <div className="my-5 rounded border p-3">
+                        <div>
+                          <small className="font-semibold">BYLD response</small>
                         </div>
+                        <div
+                          id="byldResponse"
+                          style={{ opacity: 1, overflowX: "auto" }}
+                          className="textarea text-xs	" // Add any styling class if needed
+                          dangerouslySetInnerHTML={{
+                            __html: commentData?.user_chat?.answer,
+                          }}
+                        />
+                      </div>
                       {/* </MathJax> */}
                     </MathJaxContext>
                     <div className="mb-3">

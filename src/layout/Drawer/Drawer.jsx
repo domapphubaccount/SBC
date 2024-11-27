@@ -51,7 +51,7 @@ export default function TemporaryDrawer() {
         </Link>
 
         <ul class="space-y-2 font-medium">
-          {permissionsData && permissionsData.includes(3) && (
+          {permissionsData && permissionsData.includes("openai.create_thread") && (
             <li
               title="start new chat"
               className="mr-3"
@@ -83,7 +83,7 @@ export default function TemporaryDrawer() {
 
           {pathname.trim().slice(0, 9) === "/"
             ? permissionsData &&
-              permissionsData.includes(12) && (
+              permissionsData.includes("sections.pdf") && (
                 <li
                   title="Code"
                   className="mr-3"

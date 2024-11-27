@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -145,59 +145,60 @@ function Profile() {
               )}
             </div>
           )}
-
-          {/* Password Field */}
-          <div className="mb-4">
-            <Label htmlFor="password">Password</Label>
-            <TextInput
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="mt-1"
-              disabled={formik.isSubmitting}
-            />
-            {formik.touched.password && formik.errors.password && (
-              <div className="text-red-600 text-sm">
-                {formik.errors.password}
-              </div>
-            )}
-          </div>
-
-          {/* Confirm Password Field */}
-          <div className="mb-4">
-            <Label htmlFor="password_confirmation">Confirm Password</Label>
-            <TextInput
-              id="password_confirmation"
-              name="password_confirmation"
-              type="password"
-              placeholder="Confirm your password"
-              value={formik.values.password_confirmation}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="mt-1"
-              disabled={formik.isSubmitting}
-            />
-            {formik.touched.password_confirmation &&
-              formik.errors.password_confirmation && (
-                <div className="text-red-600 text-sm">
-                  {formik.errors.password_confirmation}
-                </div>
-              )}
-          </div>
-
           {/* Update Button (conditionally rendered based on permissions) */}
-          {permissionsData.includes(2) && (
-            <button
-              type="submit"
-              className="bg-blue-500 text-white w-full py-2 rounded mt-4"
-              disabled={formik.isSubmitting}
-            >
-              Update Profile
-            </button>
+          {permissionsData.includes("profile.update") && (
+            <Suspense fallback={""}>
+              {/* Password Field */}
+              <div className="mb-4">
+                <Label htmlFor="password">Password</Label>
+                <TextInput
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="mt-1"
+                  disabled={formik.isSubmitting}
+                />
+                {formik.touched.password && formik.errors.password && (
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.password}
+                  </div>
+                )}
+              </div>
+
+              {/* Confirm Password Field */}
+              <div className="mb-4">
+                <Label htmlFor="password_confirmation">Confirm Password</Label>
+                <TextInput
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={formik.values.password_confirmation}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="mt-1"
+                  disabled={formik.isSubmitting}
+                />
+                {formik.touched.password_confirmation &&
+                  formik.errors.password_confirmation && (
+                    <div className="text-red-600 text-sm">
+                      {formik.errors.password_confirmation}
+                    </div>
+                  )}
+              </div>
+
+              <button
+                type="submit"
+                className="bg-blue-500 text-white w-full py-2 rounded mt-4"
+                disabled={formik.isSubmitting}
+              >
+                Update Profile
+              </button>
+            </Suspense>
           )}
         </form>
       </Card>

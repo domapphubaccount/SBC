@@ -70,7 +70,7 @@ function DashboardData({ setPage }) {
         </div>
         <div className="overflow-x-auto">
           <div>
-            <div className="p-4">
+            <div className="p-3">
               <div className="mt-5">
                 <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
                   <div
@@ -93,7 +93,7 @@ function DashboardData({ setPage }) {
                         />
                       </svg>
                     </div>
-                    <div className="p-4 text-right">
+                    <div className="p-3 text-right">
                       <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
                         Total Building Files
                       </p>
@@ -101,7 +101,7 @@ function DashboardData({ setPage }) {
                         {dashboardData?.Pdfs_count}
                       </h4>
                     </div>
-                    <div className="border-t border-blue-gray-50 p-4">
+                    <div className="border-t border-blue-gray-50 p-3">
                       {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
                         <strong className="text-green-500">+55%</strong>
                         &nbsp;than last week
@@ -127,7 +127,7 @@ function DashboardData({ setPage }) {
                         ></path>
                       </svg>
                     </div>
-                    <div className="p-4 text-right">
+                    <div className="p-3 text-right">
                       <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
                         Total Users
                       </p>
@@ -135,7 +135,7 @@ function DashboardData({ setPage }) {
                         {dashboardData?.users_count}
                       </h4>
                     </div>
-                    <div className="border-t border-blue-gray-50 p-4">
+                    <div className="border-t border-blue-gray-50 p-3">
                       {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
                         <strong className="text-green-500">+3%</strong>
                         &nbsp;than last month
@@ -162,7 +162,7 @@ function DashboardData({ setPage }) {
                         />
                       </svg>
                     </div>
-                    <div className="p-4 text-right">
+                    <div className="p-3 text-right">
                       <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
                         Total Deslikes
                       </p>
@@ -170,7 +170,7 @@ function DashboardData({ setPage }) {
                         {dashboardData?.ChatUserDislikes_count}
                       </h4>
                     </div>
-                    <div className="border-t border-blue-gray-50 p-4">
+                    <div className="border-t border-blue-gray-50 p-3">
                       {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
                         <strong className="text-red-500">-2%</strong>&nbsp;than
                         yesterday
@@ -197,7 +197,7 @@ function DashboardData({ setPage }) {
                         />
                       </svg>
                     </div>
-                    <div className="p-4 text-right">
+                    <div className="p-3 text-right">
                       <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
                         Total Reviews
                       </p>
@@ -205,7 +205,7 @@ function DashboardData({ setPage }) {
                         {dashboardData?.reviews_count}
                       </h4>
                     </div>
-                    <div className="border-t border-blue-gray-50 p-4">
+                    <div className="border-t border-blue-gray-50 p-3">
                       {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
                         <strong className="text-green-500">+5%</strong>
                         &nbsp;than yesterday
@@ -232,13 +232,19 @@ function DashboardData({ setPage }) {
                         />
                       </svg>
                     </div>
-                    <div className="p-4 text-right">
+                    <div className="p-3 text-right">
                       <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
                         Total Chats
                       </p>
                       <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
                         {dashboardData?.total_chats}
                       </h4>
+                      <div className="border-t border-blue-gray-50 p-3">
+                        {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
+                        <strong className="text-green-500">+5%</strong>
+                        &nbsp;than yesterday
+                      </p> */}
+                      </div>
                     </div>
                   </div>
                   <div className="cursor-pointer relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
@@ -258,13 +264,19 @@ function DashboardData({ setPage }) {
                         />
                       </svg>
                     </div>
-                    <div className="p-4 text-right">
+                    <div className="p-3 text-right">
                       <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
                         Total Trains
                       </p>
                       <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
                         {dashboardData?.total_trains}
                       </h4>
+                      <div className="border-t border-blue-gray-50 p-3">
+                        {/* <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
+                        <strong className="text-green-500">+5%</strong>
+                        &nbsp;than yesterday
+                      </p> */}
+                      </div>
                     </div>
                   </div>
                 </div>

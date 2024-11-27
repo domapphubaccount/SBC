@@ -40,11 +40,11 @@ export function UserRole({ openRole, handleClose }) {
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
+            {!loading && !loading_roles ? (
+              <>
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
               Edit User Role
             </h3>
-            {!loading && !loading_roles ? (
-              <>
                 <div>
                   <Label htmlFor="role" value="User Role: " />
                   <select

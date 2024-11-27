@@ -38,13 +38,13 @@ export function Train({ openTrain, handleClose }) {
 
   const handleSubmit = () => {
     const stripHtml = (html) => {
-      return html.replace(/<[^>]*>/g, ''); // Regular expression to remove HTML tags
+      return html.replace(/<[^>]*>/g, ""); // Regular expression to remove HTML tags
     };
-  
+
     const userQuestion = commentData?.user_chat?.question;
     const providedAnswer = stripHtml(commentData?.user_chat?.answer); // Stripped answer
     const correctAnswer = reviewData.comment_reviewr;
-  
+
     dispatch(
       trainAction({
         token,
@@ -52,11 +52,10 @@ export function Train({ openTrain, handleClose }) {
         Provided Answer: ${providedAnswer}
         Evaluation: Wrong
         Correct Answer: ${correctAnswer}`,
-        id: reviewData.id || ''
+        id: reviewData.id || "",
       })
     );
   };
-  
 
   return (
     <Modal show={openTrain} size="md" popup onClose={handleClose}>
@@ -71,9 +70,6 @@ export function Train({ openTrain, handleClose }) {
       <Modal.Header />
       <Modal.Body>
         <div className="space-y-6">
-          <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-            Train Information
-          </h3>
           {loading ? (
             <div className="flex justify-center">
               <img
@@ -85,6 +81,9 @@ export function Train({ openTrain, handleClose }) {
             </div>
           ) : (
             <>
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                Train Information
+              </h3>
               <div>
                 <div className="mb-3">
                   <div>
@@ -188,7 +187,6 @@ export function Train({ openTrain, handleClose }) {
                   />
                 </div>
               </div>
-
               <div>
                 <h4 className="font-bold">Train</h4>
               </div>
@@ -237,7 +235,6 @@ export function Train({ openTrain, handleClose }) {
                   }}
                 />
               </div>
-
               <div className="p-3">
                 <div className="mt-2 mb-4 p-2 text-sm text-red-800 bg-red-100 border border-red-400 rounded">
                   <strong>Warning:</strong> You can't edit this after training.
@@ -259,7 +256,6 @@ export function Train({ openTrain, handleClose }) {
                   </label>
                 </div>
               </div>
-
               <div className="flex justify-between">
                 <div className="w-full">
                   <Button onClick={handleClose}>CLOSE</Button>

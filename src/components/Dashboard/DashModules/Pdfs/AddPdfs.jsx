@@ -24,9 +24,9 @@ export function Addpdfs({ openAdd, handleClose }) {
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
   const [check, setIsChecked] = useState(false);
-  const prog = useSelector((state) => state.progressSlice);
-  console.log(prog);
-
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -117,33 +117,46 @@ export function Addpdfs({ openAdd, handleClose }) {
                     <div className="text-red-600">{formik.errors.name}</div>
                   ) : null}
                 </div>
-                <div>
-                  <div className="max-w-md">
-                    <div className="mb-2 block">
-                      <Label htmlFor="section_id" value="Select your section" />
-                    </div>
-                    <Select
-                      id="section_id"
-                      name="section_id"
-                      onChange={formik.handleChange}
-                      value={formik.values.section_id}
-                      onBlur={formik.handleBlur} // To trigger validation on blur
-                      required
-                    >
-                      <option value={""}>NONE</option>
-                      {sections?.map((section) => (
-                        <option key={section.id} value={section.id}>
-                          {section.name}
-                        </option>
-                      ))}
-                    </Select>
-                    {formik.touched.section_id && formik.errors.section_id ? (
-                      <div className="text-red-600">
-                        {formik.errors.section_id}
+
+                {permissionsData &&
+                permissionsData.includes("sections.index") ? (
+                  <div>
+                    <div className="max-w-md">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="section_id"
+                          value="Select your section"
+                        />
                       </div>
-                    ) : null}
+                      <Select
+                        id="section_id"
+                        name="section_id"
+                        onChange={formik.handleChange}
+                        value={formik.values.section_id}
+                        onBlur={formik.handleBlur} // To trigger validation on blur
+                        required
+                      >
+                        <option value={""}>NONE</option>
+                        {sections?.map((section) => (
+                          <option key={section.id} value={section.id}>
+                            {section.name}
+                          </option>
+                        ))}
+                      </Select>
+                      {formik.touched.section_id && formik.errors.section_id ? (
+                        <div className="text-red-600">
+                          {formik.errors.section_id}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <small className="text-red-700	">
+                      You need "Sections" permission to add a File
+                    </small>
+                  </div>
+                )}
 
                 <div>
                   <Label htmlFor="file_path" value="Upload PDF file" />

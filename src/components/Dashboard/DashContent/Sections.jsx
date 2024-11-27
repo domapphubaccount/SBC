@@ -145,7 +145,7 @@ function Sections() {
             <div>
               <h1 className="text-white text-3xl">SECTIONS</h1>
             </div>
-            {permissionsData && permissionsData.includes(9) && (
+            {permissionsData && permissionsData.includes("sections.store") && (
               <div>
                 <Button color="blue" onClick={handleOpenAdd}>
                   New Section
@@ -232,7 +232,7 @@ function Sections() {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-center">
                           {/* start edit */}
-                          {permissionsData && permissionsData.includes(10) && (
+                          {permissionsData && permissionsData.includes("sections.update") && (
                             <Tooltip content="Edit Section">
                               <button
                                 type="button"
@@ -260,7 +260,7 @@ function Sections() {
                           )}
                           {/* end edit */}
                           {/* start delete */}
-                          {permissionsData && permissionsData.includes(11) && (
+                          {permissionsData && permissionsData.includes("sections.destroy") && (
                             <Tooltip content="Delete Section">
                               <button
                                 type="button"

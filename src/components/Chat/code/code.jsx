@@ -49,28 +49,45 @@ function MultipleSelect() {
       }
     }
   };
-
   const removeStoredCode = () => {
     if (!available) {
       dispatch(set_direct_code([]));
     }
   };
   const handleConfirmCode = () => {
-    dispatch(handleConfirm(storedCode))
+    dispatch(handleConfirm(storedCode));
     setDropdownOpen(false);
-  }
+  };
 
   // start search bar logic
-  const filteredCode =
-    code && available.length == 0
-      ? code.filter(
-          (item) =>
+const filteredCode =
+  code && available.length === 0
+    ? code
+        .map((item) => {
+          // Filter PDFs (li elements) within the Accordion
+          const matchingPdfs = item.pdfs.filter((pdf) =>
+            pdf.name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          // Check if the Accordion header matches or if any PDFs match
+          const matchesItem =
             item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.pdfs.some((pdf) =>
-              pdf.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        )
-      : code && code.map((item) => item);
+            matchingPdfs.length > 0;
+
+          if (matchesItem) {
+            return {
+              ...item,
+              pdfs: matchingPdfs, // Include only matching PDFs
+            };
+          }
+
+          return null;
+        })
+        .filter(Boolean) // Remove null values (non-matching items)
+    : code && code.map((item) => item); // Default behavior when not searching
+
+  // end search bar logic
+
   // end search bar logic
 
   return (
@@ -113,14 +130,14 @@ function MultipleSelect() {
                   <li className="p-2 text-gray-500">No results found</li>
                 ) : (
                   filteredCode.map((item, i) => (
-                    <Accordion key={i} className="p-2">
-                      <Accordion.Panel className="p-2">
-                        <Accordion.Title className="p-2">
+                    <Accordion key={i} className="p-1">
+                      <Accordion.Panel className="p-1">
+                        <Accordion.Title className="p-1">
                           <span style={{ fontSize: "14px", fontWeight: "600" }}>
                             {item.name}
                           </span>
                         </Accordion.Title>
-                        <Accordion.Content className="p-2">
+                        <Accordion.Content className="p-1">
                           {item.pdfs.length > 0 ? (
                             item.pdfs.map((pdfItem, j) => (
                               <li key={j}>
@@ -168,9 +185,9 @@ function MultipleSelect() {
                       )
                     )
                     .map((item, i) => (
-                      <Accordion key={i} className="p-2">
-                        <Accordion.Panel className="p-2">
-                          <Accordion.Title className="p-2">
+                      <Accordion key={i} className="p-1">
+                        <Accordion.Panel className="p-1">
+                          <Accordion.Title className="p-1">
                             <span
                               style={{ fontSize: "14px", fontWeight: "600" }}
                             >
@@ -178,7 +195,7 @@ function MultipleSelect() {
                             </span>
                           </Accordion.Title>
                           <Accordion.Content
-                            className="p-2"
+                            className="p-1"
                             style={{ fontSize: "8px" }}
                           >
                             {item.pdfs
@@ -230,7 +247,11 @@ function MultipleSelect() {
               </a>
               {storedCode.length > 0 && (
                 <div>
-                  <Button size="xs" className="mx-3" onClick={handleConfirmCode}>
+                  <Button
+                    size="xs"
+                    className="mx-3"
+                    onClick={handleConfirmCode}
+                  >
                     SELECTED
                   </Button>
                 </div>

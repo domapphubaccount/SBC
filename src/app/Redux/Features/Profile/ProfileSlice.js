@@ -112,7 +112,7 @@ export const profileSlice = createSlice({
       .addCase(getProfileAction.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
-        state.permissions = action.payload?.roles[0]?.permissions.map(item => item.id)
+        state.permissions = action.payload?.roles[0]?.permissions.map(item => item.name)
       })
       .addCase(getProfileAction.rejected, (state, action) => {
         state.loading = false;

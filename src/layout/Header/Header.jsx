@@ -115,7 +115,7 @@ function Header({ path }) {
                 <>
                   {!path ? (
                     permissionsData &&
-                    permissionsData.includes(12) && (
+                    permissionsData.includes("sections.pdf") && (
                       <div id="code" className="hidden sm:block">
                         <MultipleSelect />
                       </div>
@@ -131,13 +131,13 @@ function Header({ path }) {
                         ""
                       ) : (
                         <>
-                          {permissionsData && permissionsData.includes(7) && (
+                          {permissionsData && permissionsData.includes("openai.chat_history_show") && (
                               <li className="mr-3 relative" title="timeline">
                                 <Archive />
                               </li>
                           )}
                           {/* start start new chat */}
-                          {permissionsData && permissionsData.includes(3) && (
+                          {permissionsData && permissionsData.includes("openai.create_thread") && (
                             <Tooltip
                               content="Start new chat"
                               placement="bottom"

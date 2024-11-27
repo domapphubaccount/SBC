@@ -69,11 +69,11 @@ export function EditUser({ openEdit, handleClose }) {
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Edit User Details
-            </h3>
             {!loading ? (
               <>
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                  Edit User Details
+                </h3>
                 <div>
                   <Label htmlFor="name" value="User Name" />
                   <TextInput
@@ -127,31 +127,39 @@ export function EditUser({ openEdit, handleClose }) {
                     <div className="text-red-600">{formik.errors.status}</div>
                   )}
                 </div>
-
-                {permissionsData && permissionsData.includes(24) && (
+                {permissionsData && permissionsData.includes("roles.index") ? (
+                  permissionsData &&
+                  permissionsData.includes("users.attach_role") && (
+                    <div>
+                      <Label htmlFor="role" value="User Role" />
+                      <select
+                        className="border-0"
+                        id="role"
+                        name="role_id"
+                        onChange={formik.handleChange}
+                        value={formik.values.role_id}
+                        required
+                      >
+                        <option value="">None</option>
+                        {roles.length > 0 &&
+                          roles.map((item, index) => (
+                            <option key={index} value={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                      </select>
+                      {formik.touched.role_id && formik.errors.role_id && (
+                        <div className="text-red-600">
+                          {formik.errors.role_id}
+                        </div>
+                      )}
+                    </div>
+                  )
+                ) : (
                   <div>
-                    <Label htmlFor="role" value="User Role" />
-                    <select
-                      className="border-0"
-                      id="role"
-                      name="role_id"
-                      onChange={formik.handleChange}
-                      value={formik.values.role_id}
-                      required
-                    >
-                      <option value="">None</option>
-                      {roles.length > 0 &&
-                        roles.map((item, index) => (
-                          <option key={index} value={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                    </select>
-                    {formik.touched.role_id && formik.errors.role_id && (
-                      <div className="text-red-600">
-                        {formik.errors.role_id}
-                      </div>
-                    )}
+                    <small className="text-red-700	">
+                      You need "Roles" permission to update a user
+                    </small>
                   </div>
                 )}
                 <div className="w-full flex justify-end">
