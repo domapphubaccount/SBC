@@ -417,7 +417,7 @@ function ReviewerAdmin({}) {
                           </Tooltip>}
                           {/* start delete */}
                           {/* start train */}
-                          {permissionsData && permissionsData.includes("reviews.update") &&(
+                          {permissionsData && permissionsData?.includes("reviews.update") && item.status != "reject" && (
                               <Tooltip content="Train">
                                 <button
                                   title="Train"

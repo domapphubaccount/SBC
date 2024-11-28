@@ -33,7 +33,13 @@ function ChatInput() {
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.chatInputSlice.loading);
-  let errorsStore = [`error 🚫`, `error 🚫`, `error 🚫`];
+  let errorsStore = [[
+    "Error Code 1003 Here’s a technical error on our end. Kindly contact support for further help.",
+    "Error Code 1003 We’re experiencing a glitch. Please reach out to support for resolution.",
+    "Error Code 1003 Technical issues are affecting the process. Please contact support for help.",
+    "Error Code 1003 A technical issue has arisen. Please contact support to resolve it.",
+    "Error Code 1003 A We’ve run into a technical problem. Please get in touch with support for assistance.",
+  ]];
 
   useEffect(() => {
     document
