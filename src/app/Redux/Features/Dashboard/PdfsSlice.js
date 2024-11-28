@@ -151,6 +151,41 @@ export const deletePdfAction = createAsyncThunk(
   }
 );
 // end delete pdf
+// start delete pdf force
+export const deleteForcePdfAction = createAsyncThunk(
+  "pdfs/deleteForcePdfAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id } = arg;
+
+    try {
+      const response = await axios.delete(
+        `${config.api}admin/force_delete_file/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end delete pdf force
 
 // Start add PDF file
 export const addpdffileAction = createAsyncThunk(
@@ -321,6 +356,7 @@ const initialState = {
   viewModule: false,
   assignModule: false,
   restoreModule: false,
+  forceDeleteModule:false,
 
   editModule: false,
   roleModule: false,
@@ -349,6 +385,9 @@ export const pdfsSlice = createSlice({
     },
     deleteModule: (state, action) => {
       state.deleteModule = action.payload;
+    },
+    forceDeleteModule: (state, action) => {
+      state.forceDeleteModule = action.payload;
     },
     addModule: (state, action) => {
       state.addModule = action.payload;
@@ -502,6 +541,23 @@ export const pdfsSlice = createSlice({
       })
       // end delete pdf file
 
+      //start force delete pdf file
+      .addCase(deleteForcePdfAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteForcePdfAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.forceDeleteModule = false;
+      })
+      .addCase(deleteForcePdfAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end force delete pdf file
+
       //start get role by id
       .addCase(getRoleByIDAction.pending, (state) => {
         state.loading = true;
@@ -553,7 +609,8 @@ export const {
   setPage,
   removeData,
   restoreModule,
-  handleConfirm
+  handleConfirm,
+  forceDeleteModule
 } = pdfsSlice.actions;
 
 export default pdfsSlice.reducer;

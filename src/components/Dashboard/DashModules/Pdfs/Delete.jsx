@@ -4,20 +4,36 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import { deletePdfAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
+import { deleteForcePdfAction, deletePdfAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 
-export function DeletePdfs({ openDelete, handleClose , fileId }) {
+export function DeletePdfs({ openDelete, handleClose , fileId,force }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const loading = useSelector(state => state.pdfsSlice.loading)
+  const loading = useSelector(state => state.pdfsSlice.loading);
+  const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
+
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    dispatch(deletePdfAction({ token, id: fileId }));
+    if(force){
+
+      dispatch(deleteForcePdfAction({ token, id: fileId }));
+    }else{
+
+      dispatch(deletePdfAction({ token, id: fileId }));
+    }
   };
 
   return (
     <>
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
+      {ErrorMSG && (
+          <div
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           {!loading && fileId ? (
