@@ -8,7 +8,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 import { addReviewAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 import { useEffect } from "react";
 import { updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
-import { MathJaxContext } from "better-react-mathjax";
+import { MathJaxContext, MathJax } from "better-react-mathjax";
 
 export function Reviewer({ openReviewer, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -16,15 +16,30 @@ export function Reviewer({ openReviewer, handleClose }) {
   const loading = useSelector((state) => state.userCommentsSlice.loading);
   const profileData = useSelector((state) => state.profileSlice.profile);
   const dispatch = useDispatch();
+  const ErrorMSG = useSelector((state) => state.userCommentsSlice.error);
 
   // Formik setup
   const formik = useFormik({
     initialValues: {
       reviewerResponse: commentData?.review_data?.comment_reviewr || "",
+      status: "",
     },
+    // validationSchema: Yup.object({
+    //   reviewerResponse: Yup.string().required("Reviewer response is required"),
+    //   status: Yup.string().required("Status is required"),
+    // }),
+
     validationSchema: Yup.object({
       reviewerResponse: Yup.string().required("Reviewer response is required"),
-      status: Yup.string().required("Status is required"),
+      status: Yup.string().when([], {
+        is: () =>
+          !(
+            commentData?.review_data?.comment_reviewr &&
+            commentData?.review_data?.reviewer.id !== profileData.id
+          ),
+        then: Yup.string().required("Status is required"),
+        otherwise: Yup.string(), // No validation if field is disabled
+      }),
     }),
 
     onSubmit: (values) => {
@@ -89,6 +104,14 @@ export function Reviewer({ openReviewer, handleClose }) {
   return (
     <>
       <Modal show={openReviewer} size="md" popup onClose={handleClose}>
+        {ErrorMSG && (
+          <div
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error!</span> {ErrorMSG}
+          </div>
+        )}
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
@@ -151,21 +174,23 @@ export function Reviewer({ openReviewer, handleClose }) {
                     </div>
 
                     <MathJaxContext>
-                      {/* <MathJax dynamic> */}
-                      <div className="my-5 rounded border p-3">
-                        <div>
-                          <small className="font-semibold">BYLD response</small>
+                      <MathJax dynamic>
+                        <div className="my-5 rounded border p-3">
+                          <div>
+                            <small className="font-semibold">
+                              BYLD response
+                            </small>
+                          </div>
+                          <div
+                            id="byldResponse"
+                            style={{ opacity: 1, overflowX: "auto" }}
+                            className="textarea text-xs	" // Add any styling class if needed
+                            dangerouslySetInnerHTML={{
+                              __html: commentData?.user_chat?.answer,
+                            }}
+                          />
                         </div>
-                        <div
-                          id="byldResponse"
-                          style={{ opacity: 1, overflowX: "auto" }}
-                          className="textarea text-xs	" // Add any styling class if needed
-                          dangerouslySetInnerHTML={{
-                            __html: commentData?.user_chat?.answer,
-                          }}
-                        />
-                      </div>
-                      {/* </MathJax> */}
+                      </MathJax>
                     </MathJaxContext>
                     <div className="mb-3">
                       <div className="flex justify-between">
@@ -223,7 +248,15 @@ export function Reviewer({ openReviewer, handleClose }) {
                       ""
                     ) : (
                       <div>
-                        <Label htmlFor="status" value="Status" />
+                        <Label
+                          htmlFor="status"
+                          className="text-bold"
+                          value="Dislike Status "
+                        />
+                        <br />
+                        <small style={{ fontSize: "10px" }}>
+                          !only admin can change the status
+                        </small>
                         <select
                           id="status"
                           name="status"
@@ -257,9 +290,10 @@ export function Reviewer({ openReviewer, handleClose }) {
                       <Button
                         type="submit"
                         disabled={
-                          commentData?.review_data?.comment_reviewr &&
-                          commentData?.review_data?.reviewer.id !==
-                            profileData.id
+                          !formik.values.status || // Disable if no status is selected
+                          (commentData?.review_data?.comment_reviewr &&
+                            commentData?.review_data?.reviewer.id !==
+                              profileData.id)
                         }
                       >
                         SUBMIT

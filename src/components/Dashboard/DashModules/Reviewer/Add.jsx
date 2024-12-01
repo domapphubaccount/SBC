@@ -65,7 +65,7 @@ export function AddReview({ openAdd, handleClose }) {
             {!loading ? (
               <>
                 {permissionsData &&
-                permissionsData.includes("chat_user_dislikes.get") ? (
+                 permissionsData.includes("chat_user_dislikes.get") ? (
                   <div>
                     <Label htmlFor="comments" value="Users comments" />
                     <select

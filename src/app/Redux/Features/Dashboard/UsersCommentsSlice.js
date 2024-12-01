@@ -191,6 +191,7 @@ const initialState = {
   action: false,
 
   total_pages: 1,
+  error: null
 
 };
 
@@ -254,8 +255,9 @@ export const userCommentsSlice = createSlice({
         state.addModule = false;
       })
       .addCase(addReviewAction.rejected, (state, action) => {
+        console.log(action.payload?.message)
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       })
       // end add review
 
