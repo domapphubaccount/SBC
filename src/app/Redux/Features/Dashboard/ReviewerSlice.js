@@ -116,6 +116,7 @@ export const addReviewAction = createAsyncThunk(
       if (error?.response?.status === 401) {
         RemoveAuth();
       }
+
       return rejectWithValue(error.response.data);
     }
   }
@@ -166,6 +167,7 @@ export const updateReviewAction = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
+
       if (error?.response?.status === 401) {
         RemoveAuth();
       }
@@ -305,6 +307,8 @@ export const ReviewSlice = createSlice({
         state.addModule = false;
       })
       .addCase(addReviewAction.rejected, (state, action) => {
+        console.log('error' , action.payload)
+
         state.loading = false;
         state.error = action.payload.message;
       })
