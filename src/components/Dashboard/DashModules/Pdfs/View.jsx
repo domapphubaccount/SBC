@@ -56,6 +56,26 @@ export function ViewPdf({ openView, handleClose, fileId }) {
                       value={`File Name : ${fileId.name}`}
                     />
                   </div>
+                  <div className="mb-3 p-2">
+                    <div className="text-sm mb-2">Who Assigned:</div>
+                    <ul>
+                      {fileId?.who_assigneds?.length > 0 ? (
+                        fileId?.who_assigneds?.map((item2, i) => (
+                          <>
+                            <li
+                              key={i}
+                              className="flex mb-1"
+                              style={{ fontSize: "12px" }}
+                            >
+                              {i + 1}: {item2.name}
+                            </li>
+                          </>
+                        ))
+                      ) : (
+                        <small>"NO ONE ASSIGNED"</small>
+                      )}
+                    </ul>
+                  </div>
                   <div className="mb-3">
                     <TextInput
                       id=""

@@ -33,13 +33,50 @@ function ChatInput() {
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.chatInputSlice.loading);
-  let errorsStore = [[
+  let errorsStore = [
     "Error Code 1003 Here’s a technical error on our end. Kindly contact support for further help.",
     "Error Code 1003 We’re experiencing a glitch. Please reach out to support for resolution.",
     "Error Code 1003 Technical issues are affecting the process. Please contact support for help.",
     "Error Code 1003 A technical issue has arisen. Please contact support to resolve it.",
     "Error Code 1003 A We’ve run into a technical problem. Please get in touch with support for assistance.",
-  ]];
+  ];
+
+  function handleErrorResponse(item) {
+    switch (item) {
+      case 400 || 404 || 413:
+        return [
+          "Error Code 1002 Technical difficulties are preventing us from proceeding. Kindly contact support.",
+          "Error Code 1002 We’re currently dealing with a technical problem. Please contact support for help.",
+          "Error Code 1002 A technical issue has interrupted the process. Please reach out to support.",
+          "Error Code 1002 We’ve encountered a technical problem. Please contact support for assistance.",
+          "Error Code 1002 A technical malfunction has occurred. Please get in touch with technical support.",
+        ];
+      case 401 || 403 || 429:
+        [
+          "Error Code 1001 We’re experiencing a technical issue. Please contact support for assistance.",
+          "Error Code 1001 A technical problem has occurred. Kindly reach out to support for help.",
+          "Error Code 1001 There seems to be a technical glitch. Please contact technical support.",
+          "Error Code 1001 We’re facing a technical issue. Please get in touch with support for resolution.",
+          "Error Code 1001 A technical error has been detected. Please contact support for further assistance.",
+        ];
+      case 500 || 502 || 503 || 504:
+        [
+          "Error Code 1003 Here’s a technical error on our end. Kindly contact support for further help.",
+          "Error Code 1003 We’re experiencing a glitch. Please reach out to support for resolution.",
+          "Error Code 1003 Technical issues are affecting the process. Please contact support for help.",
+          "Error Code 1003 A technical issue has arisen. Please contact support to resolve it.",
+          "Error Code 1003 A We’ve run into a technical problem. Please get in touch with support for assistance.",
+        ];
+      default:
+        return  [
+          "Error Code 1002 Technical difficulties are preventing us from proceeding. Kindly contact support.",
+          "Error Code 1002 We’re currently dealing with a technical problem. Please contact support for help.",
+          "Error Code 1002 A technical issue has interrupted the process. Please reach out to support.",
+          "Error Code 1002 We’ve encountered a technical problem. Please contact support for assistance.",
+          "Error Code 1002 A technical malfunction has occurred. Please get in touch with technical support.",
+        ];
+    }
+  }
 
   useEffect(() => {
     document
@@ -96,6 +133,7 @@ function ChatInput() {
         ),
       ])
         .then((response) => {
+          console.log(response)
           clearTimeout(timer); // Clear the timeout if the response is received
           if (response.data) {
             dispatch(setTypeValue(true));
@@ -109,7 +147,7 @@ function ChatInput() {
             setSendMessage(true);
             dispatch(
               send_failed(
-                errorsStore[Math.floor(Math.random() * errorsStore.length)]
+                handleErrorResponse()[Math.floor(Math.random() * handleErrorResponse().length)]
               )
             );
           }
@@ -118,6 +156,7 @@ function ChatInput() {
         .catch((error) => {
           clearTimeout(timer); // Clear the timeout if an error occurs
           dispatch(send_message(false));
+          console.log(error);
           if (error.message === "No response after 40 seconds") {
             console.error(error.message);
           } else {
@@ -126,7 +165,7 @@ function ChatInput() {
 
           dispatch(
             send_failed(
-              errorsStore[Math.floor(Math.random() * errorsStore.length)]
+              handleErrorResponse(error?.response)[Math.floor(Math.random() * handleErrorResponse(error?.response).length)]
             )
           );
           dispatch(sendError(true));

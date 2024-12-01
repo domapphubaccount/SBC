@@ -27,6 +27,7 @@ import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import { setPage } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import { RestorePdf } from "./RestorePdf";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -36,7 +37,9 @@ function Pdfs({}) {
   const [openWarn, setOpenWarn] = useState(false);
   const [fileId, setFileID] = useState("");
   const openDelete = useSelector((state) => state.pdfsSlice.deleteModule);
-  const openForceDelete = useSelector((state) => state.pdfsSlice.forceDeleteModule);
+  const openForceDelete = useSelector(
+    (state) => state.pdfsSlice.forceDeleteModule
+  );
   const openRestoreDeletedFile = useSelector(
     (state) => state.pdfsSlice.restoreModule
   );
@@ -336,7 +339,21 @@ function Pdfs({}) {
                           deleted ? "bg-red-200 " : "bg-gray-100 "
                         } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
                       >
+                        Who Assigned
+                      </th>
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
                         File
+                      </th>
+                      <th
+                        className={`px-5 py-3 border-b-2 border-gray-200 ${
+                          deleted ? "bg-red-200 " : "bg-gray-100 "
+                        } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
+                      >
+                        Section
                       </th>
                       <th
                         className={`px-5 py-3 border-b-2 border-gray-200 ${
@@ -391,6 +408,32 @@ function Pdfs({}) {
                             </div>
                           </td>
                           <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
+                            <Tooltip
+                              className="w-60 text-center"
+                              content={
+                                <ul>
+                                  {item?.who_assigneds?.length > 0 ? (
+                                    item?.who_assigneds?.map((item2, i) => (
+                                      <>
+                                        <li
+                                          key={i}
+                                          className="flex"
+                                          style={{ fontSize: "10px" }}
+                                        >
+                                          {i + 1}: {item2.name}
+                                        </li>
+                                      </>
+                                    ))
+                                  ) : (
+                                    <small>"NO ONE ASSIGNED"</small>
+                                  )}
+                                </ul>
+                              }
+                            >
+                              <div className="ms-5"><AdminPanelSettingsIcon /></div>
+                            </Tooltip>
+                          </td>
+                          <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">
                               <div className="ml-3">
                                 <Tooltip
@@ -411,6 +454,15 @@ function Pdfs({}) {
                                         )}
                                   </p>
                                 </Tooltip>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
+                            <div className="flex items-center">
+                              <div className="ml-3">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                  {item?.section?.name}
+                                </p>
                               </div>
                             </div>
                           </td>
