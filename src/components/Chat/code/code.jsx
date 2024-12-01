@@ -93,6 +93,7 @@ const filteredCode =
   return (
     <div className="dropdown-container relative w-80">
       <button
+        id="code-btn"
         onClick={() => setDropdownOpen((prevState) => !prevState)}
         className="w-full p-2 bg-transparent text-white rounded-lg focus:outline-none"
       >
