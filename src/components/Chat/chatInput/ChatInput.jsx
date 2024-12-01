@@ -122,7 +122,7 @@ function ChatInput() {
             thread_id:
               (conversation && conversation.chatgpt_id) ||
               (chatCode && chatCode),
-            "file_ids[]": storedCode && storedCode.join(","),
+            "file_ids": storedCode && storedCode.join(","),
           },
           {
             headers: {
