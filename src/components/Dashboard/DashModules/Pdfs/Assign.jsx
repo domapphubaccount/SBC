@@ -78,9 +78,6 @@ export function Assign({ openAssign, handleClose, fileId }) {
         <Modal.Header />
         <Modal.Body style={{ overflow: "visible" }}>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Assign User To File
-            </h3>
             {loading ? (
               <div className="flex justify-center">
                 <img
@@ -93,6 +90,9 @@ export function Assign({ openAssign, handleClose, fileId }) {
             ) : (
               <>
                 <div>
+                  <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                    Assign User To File
+                  </h3>
                   {permissionsData &&
                   permissionsData.includes("users.index") ? (
                     <div>

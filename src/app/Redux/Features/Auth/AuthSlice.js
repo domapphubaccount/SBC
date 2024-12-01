@@ -61,10 +61,10 @@ export const logoutAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
+      dispatch(logout())
       dispatch(clearData())
       dispatch(clearHistory())
       dispatch(clearProfile())
-      dispatch(logout())
       return response.data;
     } catch (error) {
       if(error?.response?.status === 401){
