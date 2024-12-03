@@ -34,13 +34,6 @@ function ChatInput() {
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.chatInputSlice.loading);
-  let errorsStore = [
-    "Error Code 1003 Here’s a technical error on our end. Kindly contact support for further help.",
-    "Error Code 1003 We’re experiencing a glitch. Please reach out to support for resolution.",
-    "Error Code 1003 Technical issues are affecting the process. Please contact support for help.",
-    "Error Code 1003 A technical issue has arisen. Please contact support to resolve it.",
-    "Error Code 1003 A We’ve run into a technical problem. Please get in touch with support for assistance.",
-  ];
 
   function handleErrorResponse(item) {
     switch (item) {
@@ -69,7 +62,7 @@ function ChatInput() {
           "Error Code 1003 A We’ve run into a technical problem. Please get in touch with support for assistance.",
         ];
       default:
-        return  [
+        return [
           "Error Code 1002 Technical difficulties are preventing us from proceeding. Kindly contact support.",
           "Error Code 1002 We’re currently dealing with a technical problem. Please contact support for help.",
           "Error Code 1002 A technical issue has interrupted the process. Please reach out to support.",
@@ -97,6 +90,8 @@ function ChatInput() {
       textAreaRef.current?.focus();
     }
   }, [chatData]);
+
+  console.log(storedCode);
   // start send message
   const handleSendMessage = () => {
     let timer;
@@ -109,7 +104,7 @@ function ChatInput() {
       });
     };
 
-    if (usedCode.length > 0 && message.length > 0) {
+    if (chatCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       dispatch(send_message(true));
 
@@ -123,7 +118,7 @@ function ChatInput() {
             thread_id:
               (conversation && conversation.chatgpt_id) ||
               (chatCode && chatCode),
-            "file_ids": usedCode && usedCode.join(","),
+            file_ids: chatCode && chatCode.join(","),
           },
           {
             headers: {
@@ -134,14 +129,14 @@ function ChatInput() {
         ),
       ])
         .then((response) => {
-          console.log(response)
+          console.log(response);
           clearTimeout(timer); // Clear the timeout if the response is received
           if (response.data) {
             dispatch(setTypeValue(true));
             dispatch(update());
             if (!chatslice) {
               localStorage.setItem("chat", response.data.data.master_chat_id);
-              localStorage.setItem("hints",false)
+              localStorage.setItem("hints", false);
               dispatch(choseChate(response.data.data.master_chat_id));
             }
             setMessage("");
@@ -149,7 +144,9 @@ function ChatInput() {
             setSendMessage(true);
             dispatch(
               send_failed(
-                handleErrorResponse()[Math.floor(Math.random() * handleErrorResponse().length)]
+                handleErrorResponse()[
+                  Math.floor(Math.random() * handleErrorResponse().length)
+                ]
               )
             );
           }
@@ -167,13 +164,17 @@ function ChatInput() {
 
           dispatch(
             send_failed(
-              handleErrorResponse(error?.response)[Math.floor(Math.random() * handleErrorResponse(error?.response).length)]
+              handleErrorResponse(error?.response)[
+                Math.floor(
+                  Math.random() * handleErrorResponse(error?.response).length
+                )
+              ]
             )
           );
           dispatch(sendError(true));
           setTimeout(() => dispatch(sendError(false)), 1500);
         });
-    } else if (usedCode.length === 0) {
+    } else if (chatCode.length === 0) {
       setSendMessage(true);
     }
   };
@@ -187,18 +188,12 @@ function ChatInput() {
   };
 
   function isEnglish(text) {
-    // Remove non-alphabetic characters for a better accuracy
-    const cleanedText = text.replace(/[^a-zA-Z]/g, "");
-    // Calculate the percentage of alphabetic characters that are English
-    const englishCharCount = cleanedText.length;
-    const totalCharCount = text.length;
+    // Check if the first character is an English letter or a digit
+    const isFirstCharEnglish = /^[A-Za-z0-9]$/.test(text.charAt(0));
 
-    // Determine the percentage of English characters
-    const percentageEnglish = (englishCharCount / totalCharCount) * 100;
-
-    // Check if the percentage is above a certain threshold (e.g., 50%)
-    setDir(percentageEnglish > 50);
-  }
+    // Set direction based on the result
+    setDir(isFirstCharEnglish);
+}
 
   return (
     <>
@@ -252,7 +247,7 @@ function ChatInput() {
           </>
         )}
 
-        {sendMessage && usedCode.length <= 0 && (
+        {sendMessage && chatCode.length <= 0 && (
           <div
             className="relative z-10"
             aria-labelledby="modal-title"
