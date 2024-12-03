@@ -325,12 +325,16 @@ function Users_comments({}) {
                       </th>
 
                       <td className="px-6 py-4">
-                        {item.status === "in_progress" ? (
+                        {item.status === "accept" ? (
                           <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                             {item.status}
                           </span>
-                        ) : item.status === "pending" ? (
+                        ) : item.status === "in_progress" ? (
                           <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                            {item.status}
+                          </span>
+                        ) : item.status === "pending" ? (
+                          <span className="bg-yellow-100 text-gray-200 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                             {item.status}
                           </span>
                         ) : (
@@ -345,12 +349,14 @@ function Users_comments({}) {
                           className="w-60"
                           content={
                             <ul>
-                              {item.dislike_pdf?.length > 0 ?
-                                item.dislike_pdf.map((item2, i) => (
-                                  <>
-                                  <div>{i+1}- {item2.name}</div>
-                                    {item2.who_assigneds.length > 0
-                                      ? item2.who_assigneds?.map((item3, i) => (
+                              {item.dislike_pdf?.length > 0
+                                ? item.dislike_pdf.map((item2, i) => (
+                                    <>
+                                      <div>
+                                        {i + 1}- {item2.name}
+                                      </div>
+                                      {item2.who_assigneds.length > 0 ? (
+                                        item2.who_assigneds?.map((item3, i) => (
                                           <>
                                             <li
                                               key={i}
@@ -361,11 +367,12 @@ function Users_comments({}) {
                                             </li>
                                           </>
                                         ))
-                                      : <small>"NO ONE ASSIGNED"</small>}
-                                  </>
-                                ))
-                                :"No PDF"
-                              }
+                                      ) : (
+                                        <small>"NO ONE ASSIGNED"</small>
+                                      )}
+                                    </>
+                                  ))
+                                : "No PDF"}
                             </ul>
                           }
                         >
