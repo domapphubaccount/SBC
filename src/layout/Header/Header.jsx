@@ -31,12 +31,10 @@ function Header({ path }) {
     dispatch(set_direct_code([]));
   };
 
-  let test = typeof window != "undefined" && localStorage.getItem("hints")
+  let test = typeof window != "undefined" && localStorage.getItem("hints");
 
   useEffect(() => {
-    console.log('render');
     setIsClient(true); // Ensure client-side rendering
-
     const updateRunState = () => {
       const hints = localStorage.getItem("hints");
       const chat = localStorage.getItem("chat");

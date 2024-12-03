@@ -17,18 +17,14 @@ import ArchiveAction from "./ArchiveActions/ArchiveAction";
 
 export default function TreeArchive() {
   const [sharableChat, setSharableChat] = React.useState([]);
-
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
-
   const dashboardData = useSelector((state) => state.historySlice.chat_history);
   const loadingHistory = useSelector((state) => state.historySlice.loading);
   const errorHistory = useSelector((state) => state.historySlice.error);
   const dispatch = useDispatch();
   const chatid = useSelector((state) => state.chatSlice.get_chat);
-
   const [renameToggle, setRenameToggle] = React.useState(false);
   const [deleteToggle, setDeleteToggle] = React.useState(false);
   const [handleChat, setHandleChat] = React.useState({});
@@ -72,6 +68,7 @@ export default function TreeArchive() {
                             innerItem[1].share_name
                           )
                         }
+                        className={`${innerItem[1].id === chatid && 'bg-slate-300'}`}
                         key={innerIndex}
                         itemId={`grid-community-${outerIndex}-${innerIndex}`} // Unique ID
                         label={
