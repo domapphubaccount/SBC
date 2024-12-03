@@ -31,19 +31,39 @@ function Header({ path }) {
     dispatch(set_direct_code([]));
   };
 
+  let test = typeof window != "undefined" && localStorage.getItem("hints")
+
   useEffect(() => {
+    console.log('render');
     setIsClient(true); // Ensure client-side rendering
-    if (localStorage) {
+
+    const updateRunState = () => {
       const hints = localStorage.getItem("hints");
       const chat = localStorage.getItem("chat");
-      // Show hints only if they are not set or explicitly set to "true"
       if ((hints === null || hints === "true") && chat === null) {
         setRun(true);
       } else {
-        setRun(false); // Do not run if hints are explicitly "false"
+        setRun(false);
       }
-    }
-  }, [typeof window != "undefined" && localStorage.getItem("hints")]);
+    };
+
+    // Initial run state
+    updateRunState();
+
+    // Listen for storage events
+    const handleStorageChange = (event) => {
+      if (event.key === "hints" || event.key === "chat") {
+        updateRunState();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Cleanup listener on unmount
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   const steps = [
     {
