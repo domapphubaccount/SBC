@@ -1349,3 +1349,9 @@ ul.roman-numerals li:before {
 .mob .dropdown-container{
   width: 100% !important;
 }
+
+.chat_card ul{
+  padding-inline-start: 40px;
+  list-style-type: circle;
+
+}

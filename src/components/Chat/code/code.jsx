@@ -24,9 +24,6 @@ function MultipleSelect() {
   const usedCode = useSelector((state) => state.codeSlice.usedCode);
   const available = useSelector((state) => state.chatSlice.chat_code);
 
-
-  console.log(usedCode)
-
   useEffect(() => {
     function handleClickOutside(event) {
       if (!event.target.closest(".dropdown-container")) {
