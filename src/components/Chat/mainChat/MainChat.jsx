@@ -201,7 +201,7 @@ function MainChat({ windowWidth }) {
   };
   dispatch(action_done(true));
 
-  const pattern = /Reference: SBC.*?\/\//g;
+  const pattern = /Reference:*?\/\//g;
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);
