@@ -130,7 +130,8 @@ function Users({}) {
     const matchesSearchTerm =
       item.name.toLowerCase().includes(searchTerm) ||
       item.email.toLowerCase().includes(searchTerm) ||
-      item.status.toLowerCase().includes(searchTerm);
+      item.status.toLowerCase().includes(searchTerm) ||
+      item.roles[0]?.name.toLowerCase().includes(searchTerm) 
     const matchesSuspensionDate = switch1 ? item.suspension_date : true;
     return matchesSearchTerm && matchesSuspensionDate;
   });
@@ -336,6 +337,14 @@ function Users({}) {
                         </Tooltip>
                       )}
                     {/* start delete */}
+                    {/* start reset */}
+                    {permissionsData &&
+                      permissionsData.includes("users.destroy") && (
+                        <Tooltip content="Reset Password">
+                          <BasicMenu />
+                        </Tooltip>
+                      )}
+                    {/* start reset */}
                   </div>
                 </td>
               </tr>
@@ -481,6 +490,63 @@ function Users({}) {
 
       {loading && <SnackbarTooltip />}
     </>
+  );
+}
+
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
+
+function BasicMenu() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+        id="basic-button"
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="size-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+          />
+        </svg>
+      </button>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem onClick={handleClose}><small>Reset Password</small></MenuItem>
+        <MenuItem onClick={handleClose}><small>Reset Password by email</small></MenuItem>
+        <MenuItem onClick={handleClose}><small>Reset Password by link</small></MenuItem>
+      </Menu>
+    </div>
   );
 }
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import { config } from "@/config/config";
 import { logout } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
+import { reviewerModel as revMode } from "./UsersCommentsSlice";
 
 // start get reviews
 export const getReviewsAction = createAsyncThunk(
@@ -110,6 +111,7 @@ export const addReviewAction = createAsyncThunk(
 
       dispatch(handleAction(true));
       setTimeout(() => dispatch(handleAction(false)), 1500);
+      dispatch(revMode(true))
 
       return response.data.data;
     } catch (error) {
@@ -161,6 +163,7 @@ export const updateReviewAction = createAsyncThunk(
       if (response.data?.meta?.total) {
         dispatch(handlePages(response.data?.meta?.total));
       }
+      dispatch(revMode(false))
 
       dispatch(handleAction(true));
       setTimeout(() => dispatch(handleAction(false)), 1500);
@@ -298,7 +301,7 @@ export const ReviewSlice = createSlice({
       // start add reviews
       .addCase(addReviewAction.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = true;
       })
       .addCase(addReviewAction.fulfilled, (state, action) => {
         state.loading = false;
@@ -363,7 +366,7 @@ export const ReviewSlice = createSlice({
       })
       .addCase(updateReviewAction.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       });
     // end update user comment
   },

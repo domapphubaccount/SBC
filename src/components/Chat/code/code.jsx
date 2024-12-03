@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Accordion, Button } from "flowbite-react";
 import {
   clear_code_error,
+  confirm_selected_code,
   set_code_error,
   set_direct_code,
   set_stored_code,
@@ -15,12 +16,16 @@ function MultipleSelect() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
-  const [showCodeOptions, setShowCodeOptions] = useState(false);
+  // const [showCodeOptions, setShowCodeOptions] = useState(false);
   const dispatch = useDispatch();
 
   const code = useSelector((state) => state.codeSlice.value);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const usedCode = useSelector((state) => state.codeSlice.usedCode);
   const available = useSelector((state) => state.chatSlice.chat_code);
+
+
+  console.log(usedCode)
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -55,7 +60,7 @@ function MultipleSelect() {
     }
   };
   const handleConfirmCode = () => {
-    dispatch(handleConfirm(storedCode));
+    dispatch(confirm_selected_code())
     setDropdownOpen(false);
   };
 
@@ -105,11 +110,6 @@ const filteredCode =
           {showTooltip && (
             <div className="p-2 bg-yellow-200 text-black text-sm rounded-lg shadow-md mb-2">
               You can only select up to 5 codes.
-            </div>
-          )}
-          {showCodeOptions && (
-            <div className="p-2 bg-yellow-200 text-black text-sm rounded-lg shadow-md mb-2">
-              You cannot change the code after starting a new chat.
             </div>
           )}
 

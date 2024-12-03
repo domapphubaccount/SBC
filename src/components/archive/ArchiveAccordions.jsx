@@ -126,6 +126,7 @@ function TailwindAccordion() {
       // dispatch(loading_chat(true));
       dispatch(loading_get_chat_history(true));
       localStorage.setItem("chat", chat_id);
+      localStorage.setItem("hints",false)
     }
   };
   const handleDeleteChate = (handleChat) => {
@@ -151,6 +152,7 @@ function TailwindAccordion() {
 
           if (handleChat.id === conversation.id) {
             localStorage.removeItem("chat");
+            localStorage.setItem("hints",true)
             setHandleChat({});
             dispatch(choseChate(null));
             dispatch(getConversation([]));

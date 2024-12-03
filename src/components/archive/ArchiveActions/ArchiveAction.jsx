@@ -89,6 +89,7 @@ function ArchiveAction({
 
           if (handleChat.id === conversation.id) {
             localStorage.removeItem("chat");
+            localStorage.setItem("hints",true)
             setHandleChat({});
             dispatch(choseChate(null));
             dispatch(getConversation([]));

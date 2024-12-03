@@ -369,8 +369,6 @@ const initialState = {
   displayedData: [],
   currentPage: 1,
   itemsPerPage: 10,
-
-  confirmedCode:[]
 };
 
 export const pdfsSlice = createSlice({
@@ -406,9 +404,6 @@ export const pdfsSlice = createSlice({
     },
     handleAction: (state, action) => {
       state.action = action.payload;
-    },
-    handleConfirm: (state,action) => {
-      state.confirmedCode = action.payload
     },
 
     // pagination
@@ -609,7 +604,6 @@ export const {
   setPage,
   removeData,
   restoreModule,
-  handleConfirm,
   forceDeleteModule
 } = pdfsSlice.actions;
 

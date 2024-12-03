@@ -46,6 +46,7 @@ export default function TreeArchive() {
       dispatch(loading_main_chat(true));
       dispatch(loading_get_chat_history(true));
       localStorage.setItem("chat", chat_id);
+      localStorage.setItem("hints",false)
     }
   };
 

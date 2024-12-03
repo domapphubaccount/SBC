@@ -145,7 +145,9 @@ function Pdfs({}) {
   const filteredData = displayedData.filter((item) => item.type === fileType);
   // Filter PDFs based on the search term
   const filteredPdfs = displayedData?.filter((pdf) =>
-    pdf.name.toLowerCase().includes(searchTerm.toLowerCase())
+    pdf.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    pdf?.section?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    pdf?.file.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const totalPages = Math.ceil(allData.length / 10);
 

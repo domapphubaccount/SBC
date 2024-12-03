@@ -57,10 +57,10 @@ export function EditRole({ openEdit, handleClose }) {
     }
   }, [permissionsData]);
 
-    // Dynamically filter available options based on selected permissions
-    const availableOptions = permissionsOptions.filter(
-      (option) => !formik.values.permissions.includes(option.value)
-    );
+  // Dynamically filter available options based on selected permissions
+  const availableOptions = permissionsOptions.filter(
+    (option) => !formik.values.permissions.includes(option.value)
+  );
 
   return (
     <>
@@ -132,19 +132,31 @@ export function EditRole({ openEdit, handleClose }) {
                       />
                     )}
                   />
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  formik.setFieldValue(
-                    "permissions",
-                    permissionsOptions.map((item) => item.value)
-                  );
-                }}
-                type="button"
-                className="py-2.5 px-5 me-2 mb-2 mt-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              >
-                Select All
-              </button>
+                  <div className="flex justify-between">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        formik.setFieldValue(
+                          "permissions",
+                          permissionsOptions.map((item) => item.value)
+                        );
+                      }}
+                      type="button"
+                      className="py-2.5 px-5 me-2 mb-2 mt-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                      Select All
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        formik.setFieldValue("permissions", []);
+                      }}
+                      type="button"
+                      className="py-2.5 px-5 me-2 mb-2 mt-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                      Clear
+                    </button>
+                  </div>
                   {formik.touched.permissions && formik.errors.permissions ? (
                     <div className="text-red-600">
                       {formik.errors.permissions}
