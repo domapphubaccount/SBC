@@ -28,6 +28,7 @@ function ChatInput() {
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
   const [dir, setDir] = useState(false);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const usedCode = useSelector((state) => state.codeSlice.usedCode);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
@@ -108,7 +109,7 @@ function ChatInput() {
       });
     };
 
-    if (storedCode.length > 0 && message.length > 0) {
+    if (usedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       dispatch(send_message(true));
 
@@ -122,7 +123,7 @@ function ChatInput() {
             thread_id:
               (conversation && conversation.chatgpt_id) ||
               (chatCode && chatCode),
-            "file_ids": storedCode && storedCode.join(","),
+            "file_ids": usedCode && usedCode.join(","),
           },
           {
             headers: {
@@ -172,7 +173,7 @@ function ChatInput() {
           dispatch(sendError(true));
           setTimeout(() => dispatch(sendError(false)), 1500);
         });
-    } else if (storedCode.length === 0) {
+    } else if (usedCode.length === 0) {
       setSendMessage(true);
     }
   };
@@ -251,7 +252,7 @@ function ChatInput() {
           </>
         )}
 
-        {sendMessage && storedCode.length <= 0 && (
+        {sendMessage && usedCode.length <= 0 && (
           <div
             className="relative z-10"
             aria-labelledby="modal-title"

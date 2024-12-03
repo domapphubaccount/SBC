@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import { addReviewAction } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { updateReviewAction } from "@/app/Redux/Features/Dashboard/ReviewerSlice";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
 
@@ -16,7 +16,7 @@ export function Reviewer({ openReviewer, handleClose }) {
   const loading = useSelector((state) => state.userCommentsSlice.loading);
   const profileData = useSelector((state) => state.profileSlice.profile);
   const dispatch = useDispatch();
-  const ErrorMSG = useSelector((state) => state.userCommentsSlice.error);
+  const ErrorMSG = useSelector((state) => state.ReviewSlice.error);
 
   // Formik setup
   const formik = useFormik({
@@ -31,15 +31,15 @@ export function Reviewer({ openReviewer, handleClose }) {
 
     validationSchema: Yup.object({
       reviewerResponse: Yup.string().required("Reviewer response is required"),
-      status: Yup.string().when([], {
-        is: () =>
-          !(
-            commentData?.review_data?.comment_reviewr &&
-            commentData?.review_data?.reviewer.id !== profileData.id
-          ),
-        then: Yup.string().required("Status is required"),
-        otherwise: Yup.string(), // No validation if field is disabled
-      }),
+      // status: Yup.string().when([], {
+      //   is: () =>
+      //     !(
+      //       commentData?.review_data?.comment_reviewr &&
+      //       commentData?.review_data?.reviewer.id !== profileData.id
+      //     ),
+      //   then: Yup.string().required("Status is required"),
+      //   otherwise: Yup.string(), // No validation if field is disabled
+      // }),
     }),
 
     onSubmit: (values) => {
@@ -66,7 +66,7 @@ export function Reviewer({ openReviewer, handleClose }) {
           })
         );
       }
-      handleClose();
+      // handleClose();
     },
   });
 
@@ -90,16 +90,36 @@ export function Reviewer({ openReviewer, handleClose }) {
 
       // Only update if the values are different
       if (
-        formik.values.reviewerResponse !== newReviewerResponse ||
-        formik.values.status !== newStatus
+        formik.values.reviewerResponse !== newReviewerResponse
+        // formik.values.status !== newStatus
       ) {
         formik.setValues({
           reviewerResponse: newReviewerResponse,
-          status: newStatus,
+          // status: newStatus,
         });
       }
     }
   }, [commentData]); // Removed 'formik' from the dependency array
+
+  const byldResponse = useCallback(() => {
+    if (!commentData?.user_chat?.answer && !window.MathJax) {
+      return <div>No response available</div>;
+    }
+    return (
+      <MathJaxContext>
+        <MathJax dynamic>
+          <div
+            id="byldResponse"
+            style={{ opacity: 1, overflowX: "auto" }}
+            className="textarea text-xs	" // Add any styling class if needed
+            dangerouslySetInnerHTML={{
+              __html: commentData?.user_chat?.answer,
+            }}
+          />
+        </MathJax>
+      </MathJaxContext>
+    );
+  }, [commentData]);
 
   return (
     <>
@@ -173,25 +193,13 @@ export function Reviewer({ openReviewer, handleClose }) {
                       />
                     </div>
 
-                    <MathJaxContext>
-                      <MathJax dynamic>
-                        <div className="my-5 rounded border p-3">
-                          <div>
-                            <small className="font-semibold">
-                              BYLD response
-                            </small>
-                          </div>
-                          <div
-                            id="byldResponse"
-                            style={{ opacity: 1, overflowX: "auto" }}
-                            className="textarea text-xs	" // Add any styling class if needed
-                            dangerouslySetInnerHTML={{
-                              __html: commentData?.user_chat?.answer,
-                            }}
-                          />
-                        </div>
-                      </MathJax>
-                    </MathJaxContext>
+                    <div className="my-5 rounded border p-3">
+                      <div>
+                        <small className="font-semibold">BYLD response</small>
+                      </div>
+                      {/* skal */}
+                      {byldResponse()}
+                    </div>
                     <div className="mb-3">
                       <div className="flex justify-between">
                         <small className="font-semibold">
@@ -260,21 +268,28 @@ export function Reviewer({ openReviewer, handleClose }) {
                         <select
                           id="status"
                           name="status"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          disabled={
+                            commentData?.review_data?.comment_reviewr &&
+                            commentData?.review_data?.reviewer.id !==
+                              profileData.id
+                          }
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           value={formik.values.status}
-                          defaultValue={commentData.status}
                         >
-                          <option value="">Select Status</option>
-                          {statusOptions.map((item, index) => (
-                            <option key={index} value={item}>
-                              {item}
+                          <option value="" disabled>
+                            Select status
+                          </option>
+                          {statusOptions.map((status) => (
+                            <option key={status} value={status}>
+                              {status.charAt(0).toUpperCase() +
+                                status.slice(1).replace("_", " ")}
                             </option>
                           ))}
                         </select>
                         {formik.touched.status && formik.errors.status ? (
-                          <div className="text-red-600">
+                          <div className="text-red-500 text-sm">
                             {formik.errors.status}
                           </div>
                         ) : null}

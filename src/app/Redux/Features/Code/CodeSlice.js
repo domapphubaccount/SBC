@@ -38,6 +38,7 @@ const initialState = {
   value: "",
   storedCode: [],
   error: null,
+  usedCode: []
 };
 
 export const codeSlice = createSlice({
@@ -90,6 +91,9 @@ export const codeSlice = createSlice({
     clear_code_error: (state) => {
       state.error = null;
     },
+    confirm_selected_code: (state) => {
+      state.usedCode = state.storedCode
+    }
   },
 
   extraReducers: (builder) => {
@@ -118,6 +122,7 @@ export const {
   clear_code_error,
   set_multi_stored_Code,
   set_direct_code,
+  confirm_selected_code
 } = codeSlice.actions;
 
 export default codeSlice.reducer;

@@ -60,6 +60,7 @@ function MainChat({ windowWidth }) {
   );
   const { name } = useSelector((state) => state.profileSlice.profile);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const usedCode = useSelector((state) => state.codeSlice.usedCode);
 
   useEffect(() => {
     if (actionSuccess) {
@@ -155,7 +156,7 @@ function MainChat({ windowWidth }) {
     if (pathName.trim().slice(0, 9) == "/sharable") {
       navigate.push("/signIn");
     } else {
-      if (storedCode.length > 0) {
+      if (usedCode.length > 0) {
         dispatch(chat_out());
         dispatch(loading_chat(true));
         dispatch(loading_chat_action(true));
@@ -164,7 +165,7 @@ function MainChat({ windowWidth }) {
           .post(
             `${config.api}create_thread`,
             {
-              file_ids: storedCode.join(),
+              file_ids: usedCode.join(),
             },
             {
               headers: {
@@ -200,7 +201,7 @@ function MainChat({ windowWidth }) {
   };
   dispatch(action_done(true));
 
-  const pattern = /reference: SBC.*?\/\//g;
+  const pattern = /Reference: SBC.*?\/\//g;
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);

@@ -22,7 +22,9 @@ function Header({ path }) {
   const dispatch = useDispatch();
   const pathname = usePathname();
 
-  const permissionsData = useSelector((state) => state.profileSlice.permissions);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
 
   const handleStartNewChat = () => {
     dispatch(chat_out());
@@ -30,18 +32,18 @@ function Header({ path }) {
   };
 
   useEffect(() => {
-    console.log(localStorage.getItem("hints"))
     setIsClient(true); // Ensure client-side rendering
-
-    const hints = localStorage.getItem("hints");
-    const chat = localStorage.getItem("chat")
-    // Show hints only if they are not set or explicitly set to "true"
-    if ((hints === null || hints === "true") && chat === null ) {
-      setRun(true);
-    } else {
-      setRun(false); // Do not run if hints are explicitly "false"
+    if (localStorage) {
+      const hints = localStorage.getItem("hints");
+      const chat = localStorage.getItem("chat");
+      // Show hints only if they are not set or explicitly set to "true"
+      if ((hints === null || hints === "true") && chat === null) {
+        setRun(true);
+      } else {
+        setRun(false); // Do not run if hints are explicitly "false"
+      }
     }
-  }, [localStorage.getItem("hints")]);
+  }, [typeof window != "undefined" && localStorage.getItem("hints")]);
 
   const steps = [
     {
@@ -86,7 +88,6 @@ function Header({ path }) {
         callback={(data) => {
           if (data.action === "skip" || data.status === "finished") {
             setRun(false); // Stop hints
-            // localStorage.setItem("hints", "false"); // Set hints to "false" in localStorage
           }
         }}
       />
