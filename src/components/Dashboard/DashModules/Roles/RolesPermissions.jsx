@@ -6,12 +6,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import loadingImg from "@/assets/logo/loading_icon.gif";
-import {
-  updatPermissionAction,
-} from "@/app/Redux/Features/Dashboard/RolesSlice";
-import {
-  getPermissionsAction,
-} from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
+import { updatPermissionAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
+import { getPermissionsAction } from "@/app/Redux/Features/Dashboard/PermmisionsSlice";
 import { Autocomplete, TextField, Chip } from "@mui/material";
 
 export function RolesPermissions({ openRole, handleClose }) {
@@ -76,10 +72,7 @@ export function RolesPermissions({ openRole, handleClose }) {
     <Modal show={openRole} size="xl" popup onClose={handleClose}>
       <Modal.Header />
       <Modal.Body className="overflow-auto">
-        <form
-          onSubmit={formik.handleSubmit}
-          className="space-y-6 h-full"
-        >
+        <form onSubmit={formik.handleSubmit} className="space-y-6 h-full">
           {!loading ? (
             <>
               <div>
@@ -122,19 +115,33 @@ export function RolesPermissions({ openRole, handleClose }) {
                   </div>
                 ) : null}
               </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  formik.setFieldValue(
-                    "permissions",
-                    permissionsOptions.map((item) => item.value)
-                  );
-                }}
-                type="button"
-                className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              >
-                Select All
-              </button>
+              <div className="flex justify-between">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    formik.setFieldValue(
+                      "permissions",
+                      permissionsOptions.map((item) => item.value)
+                    );
+                  }}
+                  type="button"
+                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  Select All
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    formik.setFieldValue("permissions", []);
+                  }}
+                  disabled={formik.values?.permissions?.length === 0}
+                  type="button"
+                  className="py-2.5 px-5 me-2 mb-2 mt-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  Clear
+                </button>
+              </div>
+
               <div className="w-full flex justify-end">
                 <Button type="submit">Save Changes</Button>
               </div>
