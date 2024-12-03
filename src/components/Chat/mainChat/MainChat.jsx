@@ -32,7 +32,7 @@ import {
   clear_code_error,
   set_code_error,
 } from "@/app/Redux/Features/Code/CodeSlice";
-import { MathJax,MathJaxContext } from "better-react-mathjax";
+import { MathJax, MathJaxContext } from "better-react-mathjax";
 
 function MainChat({ windowWidth }) {
   const pathName = usePathname();
@@ -58,9 +58,7 @@ function MainChat({ windowWidth }) {
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
-  const {name} = useSelector(
-    (state) => state.profileSlice.profile
-  );
+  const { name } = useSelector((state) => state.profileSlice.profile);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
 
   useEffect(() => {
@@ -72,7 +70,7 @@ function MainChat({ windowWidth }) {
   }, [actionSuccess]);
 
   function isEnglish(text) {
-    const cleanedText = text.replace(/[^a-zA-Z]/g, "");
+    const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
     const englishCharCount = cleanedText.length;
     const totalCharCount = text.length;
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
@@ -202,7 +200,7 @@ function MainChat({ windowWidth }) {
   };
   dispatch(action_done(true));
 
-  const pattern = /Reference: SBC.*?\/\//g;
+  const pattern = /reference: SBC.*?\/\//g;
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);
@@ -210,10 +208,23 @@ function MainChat({ windowWidth }) {
       dataArray.forEach((item2) => {
         data = data.replaceAll(item2, "");
       });
-      return data;
+      return (
+        <span
+          dangerouslySetInnerHTML={{
+            __html: data,
+          }}
+        />
+      );
     }
-    return item; // Return the original item if no match is found
+    return (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: item,
+        }}
+      />
+    );
   };
+
   // Scroll to the bottom function
   const scrollToBottom = () => {
     const element = document.getElementById("chat");
@@ -258,10 +269,13 @@ function MainChat({ windowWidth }) {
   // start question card
   let answerCard = useCallback((item) => {
     return (
-      <MathJaxContext version={3} options={{
-        loader: { load: ['input/asciimath', 'output/chtml'] },
-        tex: { tags: 'ams' },
-      }}>
+      <MathJaxContext
+        version={3}
+        options={{
+          loader: { load: ["input/asciimath", "output/chtml"] },
+          tex: { tags: "ams" },
+        }}
+      >
         <MathJax>
           <span
             style={{
@@ -270,10 +284,9 @@ function MainChat({ windowWidth }) {
             }}
             className="block chat_box"
             dir={isEnglish(item.answer) ? "ltr" : "rtl"}
-            dangerouslySetInnerHTML={{
-              __html: textHandler(item.answer.replaceAll("\n", "<br/>")),
-            }}
-          />
+          >
+            {textHandler(item.answer)}
+          </span>
         </MathJax>
       </MathJaxContext>
     );
@@ -366,7 +379,7 @@ function MainChat({ windowWidth }) {
                       zIndex: 2,
                     }}
                   >
-                      <div id="ref-Mob" className="flex justify-center">
+                    <div id="ref-Mob" className="flex justify-center">
                       <Popover
                         aria-labelledby="default-popover"
                         content={
@@ -403,35 +416,34 @@ function MainChat({ windowWidth }) {
                           </svg>
                         </Button>
                       </Popover>
-                      </div>
-                      <span
-                        id="ref-Pc"
-                        style={{ maxHeight: "150%" }}
-                        className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-                      >
-                        <div className="w-full">
-                          <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                            {item?.answer?.includes("//") &&
-                            item.answer.match(pattern) ? (
-                              item.answer.match(pattern)?.map((item2, i) => (
-                                <div
-                                  key={i}
-                                  className="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                  <div className="px-3 py-2">
-                                    <ul>
-                                      <li>{item2}</li>
-                                    </ul>
-                                  </div>
+                    </div>
+                    <span
+                      id="ref-Pc"
+                      style={{ maxHeight: "150%" }}
+                      className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
+                    >
+                      <div className="w-full">
+                        <span className="block ml-2 text-sm text-gray-600  font-semibold">
+                          {item?.answer?.includes("//") &&
+                          item.answer.match(pattern) ? (
+                            item.answer.match(pattern)?.map((item2, i) => (
+                              <div
+                                key={i}
+                                className="text-sm text-gray-500 dark:text-gray-400"
+                              >
+                                <div className="px-3 py-2">
+                                  <ul>
+                                    <li>{item2}</li>
+                                  </ul>
                                 </div>
-                              ))
-                            ) : (
-                              <div>No Reference</div>
-                            )}
-                          </span>
-                        </div>
-                      </span>
-                   
+                              </div>
+                            ))
+                          ) : (
+                            <div>No Reference</div>
+                          )}
+                        </span>
+                      </div>
+                    </span>
                   </div>
                 )}
                 {/* end reference */}
@@ -442,19 +454,19 @@ function MainChat({ windowWidth }) {
                   </div>
                   <div className="w-full flex justify-start chat_card">
                     <div className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card">
-                          {item?.answer ? (
-                            // answer card
-                            answerCard(item)
-                          ) : (
-                            <div>
-                              <img
-                                className="m-auto"
-                                src={loadingImg.src}
-                                style={{ width: "70px" }}
-                                alt="loading"
-                              />
-                            </div>
-                          )}
+                      {item?.answer ? (
+                        // answer card
+                        answerCard(item)
+                      ) : (
+                        <div>
+                          <img
+                            className="m-auto"
+                            src={loadingImg.src}
+                            style={{ width: "70px" }}
+                            alt="loading"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                   {item?.answer &&
@@ -617,9 +629,7 @@ function MainChat({ windowWidth }) {
                 overflowY: "scroll",
               }}
             >
-              <div
-                className="col-span-1"
-              ></div>
+              <div className="col-span-1"></div>
               {/* relative */}
               <div className="col-span-3 py-5">
                 {loadingchat ? (

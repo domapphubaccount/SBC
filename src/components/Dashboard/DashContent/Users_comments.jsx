@@ -155,20 +155,6 @@ function Users_comments({}) {
   }
   const permissionId = 40; // The ID for "files.forceDelete"
 
-  // Filter the users who have the "files.forceDelete" permission
-  const whoAssignedUsers = usersData.filter((user) =>
-    user?.roles[0]?.permissions?.some(
-      (permission) => permission.id === permissionId
-    )
-  );
-
-  console.log(
-    usersData.length > 0 &&
-      usersData.filter(
-        (item) => item?.roles[0]?.permissions?.includes(40) // Check if permission ID 40 is in the permissions array
-      )
-  );
-
   return (
     <>
       <section>

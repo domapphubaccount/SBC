@@ -6,7 +6,10 @@ import { getUsersChatAction } from "@/app/Redux/Features/Dashboard/MasterUsersCh
 import { useDispatch, useSelector } from "react-redux";
 import { Tooltip } from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { choseChate, loading_main_chat } from "@/app/Redux/Features/Chat/ChatSlice";
+import {
+  choseChate,
+  loading_main_chat,
+} from "@/app/Redux/Features/Chat/ChatSlice";
 import { loading_get_chat_history } from "@/app/Redux/Features/Chat_History/historySlice";
 
 function Users_chat() {
@@ -14,12 +17,12 @@ function Users_chat() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const dispatch = useDispatch();
   const navigate = useRouter();
-  const [page , setPage] = useState(1);
+  const [page, setPage] = useState(1);
   const total_pages = useSelector((state) => state.usersChatSlice.total_pages);
-  
+
   useEffect(() => {
-    dispatch(getUsersChatAction({ token , page }));
-  }, [getUsersChatAction , page]);
+    dispatch(getUsersChatAction({ token, page }));
+  }, [getUsersChatAction, page]);
 
   // Step 1: State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +34,10 @@ function Users_chat() {
 
   // Step 3: Filter the rows based on the search term
   const filteredData = masterUsersChat?.filter((item) => {
-    return item.name.toLowerCase().includes(searchTerm);
+    return (
+      item.name.toLowerCase().includes(searchTerm) ||
+      item.user_name?.name.toLowerCase().includes(searchTerm)
+    );
   });
 
   const handleOpenView = (id) => {
@@ -39,9 +45,9 @@ function Users_chat() {
     dispatch(loading_main_chat(true));
     dispatch(loading_get_chat_history(true));
     localStorage.setItem("chat", id);
-    navigate.push('/')
-
-  }
+    localStorage.setItem("hints",false)
+    navigate.push("/");
+  };
 
   return (
     <>
@@ -214,7 +220,11 @@ function Users_chat() {
             </table>
           </div>
         </div>
-        <PaginationPages page={page} total_pages={total_pages} setPage={setPage} />
+        <PaginationPages
+          page={page}
+          total_pages={total_pages}
+          setPage={setPage}
+        />
       </section>
     </>
   );

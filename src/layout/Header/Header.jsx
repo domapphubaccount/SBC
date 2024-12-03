@@ -3,7 +3,7 @@ import MultipleSelect from "@/components/Chat/code/code";
 import Archive from "@/components/archive/Archive";
 import DropDown from "@/components/dropDown/DropDown";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { chat_out } from "@/app/Redux/Features/Chat/ChatSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,26 +18,30 @@ import Joyride from "react-joyride";
 
 function Header({ path }) {
   const [isClient, setIsClient] = useState(false);
+  const [run, setRun] = useState(false);
   const dispatch = useDispatch();
   const pathname = usePathname();
 
-  const permissionsData = useSelector(
-    (state) => state.profileSlice.permissions
-  );
+  const permissionsData = useSelector((state) => state.profileSlice.permissions);
 
   const handleStartNewChat = () => {
     dispatch(chat_out());
     dispatch(set_direct_code([]));
   };
-  const [run, setRun] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    if (localStorage.getItem("hints")) {
-    } else {
+    console.log(localStorage.getItem("hints"))
+    setIsClient(true); // Ensure client-side rendering
+
+    const hints = localStorage.getItem("hints");
+    const chat = localStorage.getItem("chat")
+    // Show hints only if they are not set or explicitly set to "true"
+    if ((hints === null || hints === "true") && chat === null ) {
       setRun(true);
+    } else {
+      setRun(false); // Do not run if hints are explicitly "false"
     }
-  }, []);
+  }, [localStorage.getItem("hints")]);
 
   const steps = [
     {
@@ -60,35 +64,40 @@ function Header({ path }) {
       },
       title: "CODE",
     },
-    // Additional steps can go here if needed
   ];
+
+  const hint = useMemo(() => {
+    return (
+      <Joyride
+        steps={steps}
+        run={run}
+        continuous={false}
+        showSkipButton={false}
+        disableOverlayClose
+        styles={{
+          options: {
+            primaryColor: "#172d59",
+          },
+        }}
+        locale={{
+          next: "OK",
+          skip: "close",
+        }}
+        callback={(data) => {
+          if (data.action === "skip" || data.status === "finished") {
+            setRun(false); // Stop hints
+            // localStorage.setItem("hints", "false"); // Set hints to "false" in localStorage
+          }
+        }}
+      />
+    );
+  }, [run]);
 
   return (
     <>
       {isClient && (
         <>
-          <Joyride
-            steps={steps}
-            run={run}
-            continuous={false}
-            showSkipButton={false}
-            disableOverlayClose
-            styles={{
-              options: {
-                primaryColor: "#172d59",
-              },
-            }}
-            locale={{
-              next: "OK",
-              skip: "close",
-            }}
-            callback={(data) => {
-              if (data.action === "skip" || data.status === "finished") {
-                setRun(false);
-                localStorage.setItem("hints", true);
-              }
-            }}
-          />
+          {hint}
 
           <nav
             style={{ zIndex: 50 }}
@@ -131,38 +140,44 @@ function Header({ path }) {
                         ""
                       ) : (
                         <>
-                          {permissionsData && permissionsData.includes("openai.chat_history_show") && (
+                          {permissionsData &&
+                            permissionsData.includes(
+                              "openai.chat_history_show"
+                            ) && (
                               <li className="mr-3 relative" title="timeline">
                                 <Archive />
                               </li>
-                          )}
+                            )}
                           {/* start start new chat */}
-                          {permissionsData && permissionsData.includes("openai.create_thread") && (
-                            <Tooltip
-                              content="Start new chat"
-                              placement="bottom"
-                            >
-                              <li
-                                title="start new chat"
-                                className="mr-3 hidden sm:block"
-                                onClick={handleStartNewChat}
+                          {permissionsData &&
+                            permissionsData.includes(
+                              "openai.create_thread"
+                            ) && (
+                              <Tooltip
+                                content="Start new chat"
+                                placement="bottom"
                               >
-                                <div>
-                                  <div tabIndex="0" className="plusButton">
-                                    <svg
-                                      className="plusIcon"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 30 30"
-                                    >
-                                      <g mask="url(#mask0_21_345)">
-                                        <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
-                                      </g>
-                                    </svg>
+                                <li
+                                  title="start new chat"
+                                  className="mr-3 hidden sm:block"
+                                  onClick={handleStartNewChat}
+                                >
+                                  <div>
+                                    <div tabIndex="0" className="plusButton">
+                                      <svg
+                                        className="plusIcon"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 30 30"
+                                      >
+                                        <g mask="url(#mask0_21_345)">
+                                          <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                                        </g>
+                                      </svg>
+                                    </div>
                                   </div>
-                                </div>
-                              </li>
-                            </Tooltip>
-                          )}
+                                </li>
+                              </Tooltip>
+                            )}
                           {/* end start new chat */}
                         </>
                       )}

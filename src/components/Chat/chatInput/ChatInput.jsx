@@ -140,6 +140,7 @@ function ChatInput() {
             dispatch(update());
             if (!chatslice) {
               localStorage.setItem("chat", response.data.data.master_chat_id);
+              localStorage.setItem("hints",false)
               dispatch(choseChate(response.data.data.master_chat_id));
             }
             setMessage("");
