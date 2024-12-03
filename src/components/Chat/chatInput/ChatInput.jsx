@@ -91,7 +91,7 @@ function ChatInput() {
     }
   }, [chatData]);
 
-  console.log(storedCode);
+  console.log( "chatCode",chatCode , "usedCode",usedCode , "storedCode",storedCode);
   // start send message
   const handleSendMessage = () => {
     let timer;
@@ -104,7 +104,7 @@ function ChatInput() {
       });
     };
 
-    if (chatCode.length > 0 && message.length > 0) {
+    if (true) {
       dispatch(getChatData([...chatData, { question: message }]));
       dispatch(send_message(true));
 
@@ -118,7 +118,7 @@ function ChatInput() {
             thread_id:
               (conversation && conversation.chatgpt_id) ||
               (chatCode && chatCode),
-            file_ids: chatCode && chatCode.join(","),
+            file_ids: storedCode && storedCode.join(","),
           },
           {
             headers: {
@@ -174,7 +174,7 @@ function ChatInput() {
           dispatch(sendError(true));
           setTimeout(() => dispatch(sendError(false)), 1500);
         });
-    } else if (chatCode.length === 0) {
+    } else if (storedCode.length === 0) {
       setSendMessage(true);
     }
   };
@@ -247,7 +247,7 @@ function ChatInput() {
           </>
         )}
 
-        {sendMessage && chatCode.length <= 0 && (
+        {sendMessage && storedCode.length <= 0 && (
           <div
             className="relative z-10"
             aria-labelledby="modal-title"
@@ -305,7 +305,7 @@ function ChatInput() {
         style={{ color: "#545454" }}
       >
         Verify crucial details for accuracy by cross-referencing with reliable
-        sources.{" "}
+        sources.
       </div>
     </>
   );

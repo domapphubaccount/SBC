@@ -24,10 +24,6 @@ export function Reviewer({ openReviewer, handleClose }) {
       reviewerResponse: commentData?.review_data?.comment_reviewr || "",
       status: "",
     },
-    // validationSchema: Yup.object({
-    //   reviewerResponse: Yup.string().required("Reviewer response is required"),
-    //   status: Yup.string().required("Status is required"),
-    // }),
 
     validationSchema: Yup.object({
       reviewerResponse: Yup.string().required("Reviewer response is required"),
@@ -43,6 +39,8 @@ export function Reviewer({ openReviewer, handleClose }) {
     }),
 
     onSubmit: (values) => {
+
+      console.log(values)
       if (commentData?.review_data?.reviewer.id == profileData.id) {
         dispatch(
           updateReviewAction({
@@ -66,7 +64,6 @@ export function Reviewer({ openReviewer, handleClose }) {
           })
         );
       }
-      // handleClose();
     },
   });
 

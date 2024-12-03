@@ -245,7 +245,7 @@ export const userCommentsSlice = createSlice({
 
       // start add review
       .addCase(addReviewAction.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         state.error = null;
       })
       .addCase(addReviewAction.fulfilled, (state, action) => {
