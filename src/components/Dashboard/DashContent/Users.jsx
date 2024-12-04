@@ -1,6 +1,12 @@
 "use client";
 
-import React, { Suspense, useCallback, useEffect, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
@@ -16,6 +22,7 @@ import {
   getUsersAction,
   removeUser,
   roleModule,
+  setDisplayedData,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
@@ -46,7 +53,6 @@ function Users({}) {
   const { allData, displayedData, currentPage } = useSelector(
     (state) => state.usersSlice
   );
-
   useEffect(() => {
     if (action) {
       enqueueSnackbar("This action has been done successfully", {
@@ -54,7 +60,6 @@ function Users({}) {
       });
     }
   }, [action]);
-
   const handleClose = () => {
     dispatch(removeUser());
     dispatch(addModule(false));
@@ -63,7 +68,6 @@ function Users({}) {
     dispatch(viewModule(false));
     dispatch(roleModule(false));
   };
-
   // start open delete
   const handleOpenDelete = (id) => {
     if (id) {
@@ -72,7 +76,6 @@ function Users({}) {
     }
   };
   // end open delete
-
   // start open edit
   const handleOpenEdit = (id) => {
     if (id) {
@@ -82,7 +85,6 @@ function Users({}) {
     }
   };
   // end open edit
-
   // start open view
   const handleOpenView = (id) => {
     if (id) {
@@ -91,7 +93,6 @@ function Users({}) {
     }
   };
   // end open view
-
   // start open role
   const handleOpenRole = (id) => {
     if (id) {
@@ -100,7 +101,6 @@ function Users({}) {
     }
   };
   // end open role
-
   const handleOpenAdd = () => {
     dispatch(getRolesAction({ token }));
     dispatch(addModule(true));
@@ -116,45 +116,135 @@ function Users({}) {
     dispatch(getRolesAction({ token }));
   }, []);
 
-  // Step 1: State for search input
-  const [searchTerm, setSearchTerm] = useState("");
+  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
-  // Step 2: Handle input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  const handleGlobalSearch = (e) =>
+    setGlobalSearchTerm(e.target.value.toLowerCase());
+  const handleRolesFilter = (e) => setRoleFilter(e.target.value.toLowerCase());
+  const handleStatusFilter = (e) =>
+    setStatusFilter(e.target.value.toLowerCase());
 
-  const totalPages = Math.ceil(allData.length / 10);
+  // const filteredData = useMemo(() => {
+  //   return allData?.filter((item) => {
+  //     const matchesGlobal = globalSearchTerm
+  //       ? item.name.toLowerCase().includes(globalSearchTerm) ||
+  //         item.email.toLowerCase().includes(globalSearchTerm) ||
+  //         item.status.toLowerCase().includes(globalSearchTerm) ||
+  //         item.roles[0]?.name.toLowerCase().includes(globalSearchTerm)
+  //       : true;
 
-  const filteredData = displayedData?.filter((item) => {
-    const matchesSearchTerm =
-      item.name.toLowerCase().includes(searchTerm) ||
-      item.email.toLowerCase().includes(searchTerm) ||
-      item.status.toLowerCase().includes(searchTerm) ||
-      item.roles[0]?.name.toLowerCase().includes(searchTerm) 
-    const matchesSuspensionDate = switch1 ? item.suspension_date : true;
-    return matchesSearchTerm && matchesSuspensionDate;
-  });
-  let TableData = useCallback(() => {
+  //     const matchesRole = roleFilter
+  //       ? item.roles[0]?.name.toLowerCase().includes(roleFilter)
+  //       : true;
+
+  //     const matchesStatus = statusFilter
+  //       ? item.status.toLowerCase().includes(statusFilter)
+  //       : true;
+
+  //     return matchesGlobal && matchesRole && matchesStatus;
+  //   });
+  // }, [allData, globalSearchTerm, roleFilter, statusFilter]);
+
+  // useEffect(() => {
+  //   dispatch(setDisplayedData(filteredData)); // Update displayedData
+  // }, [filteredData, dispatch]);
+
+
+
+
+    // filter and pagination
+    const [searchTerms, setSearchTerms] = useState({});
+    const [pagez, setPagez] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    // Update search term for a column
+    const handleSearchChange = (column, value) => {
+      setPagez(0);
+      setSearchTerms((prev) => ({
+        ...prev,
+        [column]: value.toLowerCase(),
+      }));
+    };
+  
+    const filteredData = allData.filter((row) =>
+      Object.entries(searchTerms).every(([column, term]) => {
+        if (!term) return true; // Skip if no search term
+  
+        if (column === "roles") {
+          // Check if any of the names in roles matches the search term
+          return row.roles?.some((role) =>
+            role.name?.toLowerCase().includes(term)
+          );
+        }
+
+  
+        // Default case for other columns
+        return row[column]?.toLowerCase().includes(term);
+      })
+    );
+  
+    const paginatedData = filteredData.slice(
+      pagez * rowsPerPage,
+      pagez * rowsPerPage + rowsPerPage
+    );
+    const onPageChange = (event, pageNumber) => {
+      setPagez(pageNumber - 1);
+    };
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  
+  console.log(filteredData)
+
+
+
+
+
+
+  const TableData = useCallback(() => {
     // Step 3: Filter the rows based on the search term
     return (
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Name
+            <input
+                type="text"
+                placeholder="Name"
+                onChange={(e) => handleSearchChange("name", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Email
+            <input
+                type="text"
+                placeholder="Email"
+                onChange={(e) => handleSearchChange("email", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Status
+              <input
+                type="text"
+                placeholder="Status"
+                onChange={(e) => handleSearchChange("status", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Last Seen
+            <input
+                type="text"
+                placeholder="Last Seen"
+                onChange={(e) => handleSearchChange("last_seen", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Role
+              <input
+                type="text"
+                onChange={(e) => handleSearchChange("roles", e.target.value)}
+                placeholder="Role"
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             {permissionsData &&
               (permissionsData.includes("users.show") ||
@@ -167,8 +257,8 @@ function Users({}) {
           </tr>
         </thead>
         <tbody>
-          {displayedData?.length > 0 ? (
-            filteredData.map((item, index) => (
+          {paginatedData?.length > 0 ? (
+            paginatedData.map((item, index) => (
               <tr
                 key={index}
                 className={`${
@@ -423,7 +513,7 @@ function Users({}) {
                 Search
               </label>
               <div className="flex justify-between">
-                <div className="relative ">
+                {/* <div className="relative ">
                   <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                     <svg
                       className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -446,9 +536,9 @@ function Users({}) {
                     id="table-search"
                     className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Search for User"
-                    onChange={handleSearchChange} // Handle search input change
+                    onChange={handleGlobalSearch} // Handle search input change
                   />
-                </div>
+                </div> */}
                 <div className="m-2">
                   <ToggleSwitch
                     checked={switch1}
@@ -464,11 +554,11 @@ function Users({}) {
             </Suspense>
           </div>
         </div>
-        <PaginationPages
-          page={currentPage}
-          total_pages={totalPages}
-          setPage={setPage}
-          dynamic={true}
+
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
         />
       </section>
 
@@ -495,7 +585,7 @@ function Users({}) {
 
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-
+import PagePagination from "../Pagination/PagePagination";
 
 function BasicMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -542,9 +632,15 @@ function BasicMenu() {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}><small>Reset Password</small></MenuItem>
-        <MenuItem onClick={handleClose}><small>Reset Password by email</small></MenuItem>
-        <MenuItem onClick={handleClose}><small>Reset Password by link</small></MenuItem>
+        <MenuItem onClick={handleClose}>
+          <small>Reset Password</small>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <small>Reset Password by email</small>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <small>Reset Password by link</small>
+        </MenuItem>
       </Menu>
     </div>
   );

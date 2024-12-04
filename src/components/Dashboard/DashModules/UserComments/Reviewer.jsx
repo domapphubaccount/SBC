@@ -39,8 +39,6 @@ export function Reviewer({ openReviewer, handleClose }) {
     }),
 
     onSubmit: (values) => {
-
-      console.log(values)
       if (commentData?.review_data?.reviewer.id == profileData.id) {
         dispatch(
           updateReviewAction({

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { WarnUser } from "../DashModules/User/Warn";
 import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,7 @@ import {
   getRoleByIDAction,
   getRolesAction,
   removeRolesError,
+  setDisplayedData,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import { AddRole } from "../DashModules/Roles/AddRole";
@@ -30,6 +31,7 @@ import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import { setPage } from "@/app/Redux/Features/Dashboard/RolesSlice";
+import PagePagination from "../Pagination/PagePagination";
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -125,12 +127,13 @@ function Roles({}) {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Step 2: Handle input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  // const handleSearchChange = (e) => {
+  //   setSearchTerm(e.target.value.toLowerCase());
+  // };
 
   function formatDate(dateString) {
     const date = new Date(dateString);
+    if (isNaN(date)) return ""; // Handle invalid date case
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const day = String(date.getDate()).padStart(2, "0");
@@ -139,11 +142,45 @@ function Roles({}) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-  // Step 3: Filter the rows based on the search term
-  const filteredData = displayedData?.filter((item) => {
-    return item.name.toLowerCase().includes(searchTerm);
-  });
-  const totalPages = Math.ceil(allData.length / 10);
+
+  // filter and pagination
+  const [searchTerms, setSearchTerms] = useState({});
+  const [pagez, setPagez] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Update search term for a column
+  const handleSearchChange = (column, value) => {
+    setPagez(0);
+    setSearchTerms((prev) => ({
+      ...prev,
+      [column]: value.toLowerCase(),
+    }));
+  };
+  const filteredData = allData.filter((row) =>
+    Object.entries(searchTerms).every(([column, term]) => {
+      if (!term) return true; // Skip if no search term
+
+      if (column === "permissions") {
+        // Check if any of the slugs in permissions matches the search term
+        return row.permissions?.some((permission) =>
+          permission.slug?.toLowerCase().includes(term)
+        );
+      }
+
+
+      // Default case for other columns
+      return row[column]?.toLowerCase().includes(term);
+    })
+  );
+  const paginatedData = filteredData.slice(
+    pagez * rowsPerPage,
+    pagez * rowsPerPage + rowsPerPage
+  );
+  const onPageChange = (event, pageNumber) => {
+    setPagez(pageNumber - 1);
+  };
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
+  console.log(filteredData)
 
   let TableData = useCallback(() => {
     return (
@@ -151,16 +188,32 @@ function Roles({}) {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Name
+              <input
+                type="text"
+                placeholder="Name"
+                onChange={(e) => handleSearchChange("name", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
               Attached Users
             </th>
             <th scope="col" className="px-6 py-3">
-              Permissions
+            <input
+                type="text"
+                placeholder="Permissions"
+                onChange={(e) => handleSearchChange("permissions", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
+              
             </th>
             <th scope="col" className="px-6 py-3">
-              Created-At
+            <input
+                type="text"
+                placeholder="Created-At"
+                onChange={(e) => handleSearchChange("created_at", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
               Actions
@@ -168,8 +221,8 @@ function Roles({}) {
           </tr>
         </thead>
         <tbody>
-          {rolesData?.length > 0 ? (
-            filteredData.map((item, index) => (
+          {paginatedData?.length > 0 ? (
+            paginatedData.map((item, index) => (
               <tr
                 key={index}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -217,35 +270,36 @@ function Roles({}) {
                 <td className="px-6 py-4">
                   <div className="flex gap-2 justify-start">
                     {/* start view */}
-                    {permissionsData && permissionsData.includes("roles.show") && (
-                      <Tooltip content="View Role">
-                        <button
-                          type="button"
-                          className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
-                          onClick={() => handleOpenView(item.id)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="white"
-                            className="size-4"
+                    {permissionsData &&
+                      permissionsData.includes("roles.show") && (
+                        <Tooltip content="View Role">
+                          <button
+                            type="button"
+                            className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
+                            onClick={() => handleOpenView(item.id)}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                            />
-                          </svg>
-                        </button>
-                      </Tooltip>
-                    )}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="white"
+                              className="size-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                              />
+                            </svg>
+                          </button>
+                        </Tooltip>
+                      )}
                     {/* end view */}
                     {/* start edit */}
                     {item.id !== 1 &&
@@ -276,30 +330,31 @@ function Roles({}) {
                       )}
                     {/* end edit */}
                     {/* start delete */}
-                    {permissionsData && permissionsData.includes("roles.destroy") && (
-                      <Tooltip content="Delete Role">
-                        <button
-                          type="button"
-                          className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                          onClick={() => handleOpenDelete(item.id)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-4"
+                    {permissionsData &&
+                      permissionsData.includes("roles.destroy") && (
+                        <Tooltip content="Delete Role">
+                          <button
+                            type="button"
+                            className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                            onClick={() => handleOpenDelete(item.id)}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                            />
-                          </svg>
-                        </button>
-                      </Tooltip>
-                    )}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                              />
+                            </svg>
+                          </button>
+                        </Tooltip>
+                      )}
                     {/* start delete */}
                   </div>
                 </td>
@@ -313,7 +368,7 @@ function Roles({}) {
         </tbody>
       </table>
     );
-  }, [filteredData, rolesData]);
+  }, [displayedData, filteredData]);
 
   return (
     <>
@@ -378,7 +433,7 @@ function Roles({}) {
               <label for="table-search" className="sr-only">
                 Search
               </label>
-              <div className="relative mt-1">
+              {/* <div className="relative mt-1">
                 <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg
                     className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -403,16 +458,15 @@ function Roles({}) {
                   placeholder="Search for Role"
                   onChange={handleSearchChange}
                 />
-              </div>
+              </div> */}
             </div>
             {TableData()}
           </div>
         </div>
-        <PaginationPages
-          page={currentPage}
-          total_pages={totalPages}
-          setPage={setPage}
-          dynamic={true}
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
         />
       </section>
 

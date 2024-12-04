@@ -117,32 +117,6 @@ function Users_comments({}) {
     dispatch(getUsersAction({ token, page: 1 }));
   }, [updateUsersData, page]);
 
-  // Step 1: State for search input
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Step 2: Handle input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
-
-  const filteredData = usersCommentsData.filter((item) => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      item.comment?.toLowerCase().includes(searchLower) ||
-      false ||
-      item.status?.toLowerCase().includes(searchLower) ||
-      false ||
-      item.disliked_by?.name?.toLowerCase().includes(searchLower) ||
-      false ||
-      item.whoAssigned?.toLowerCase().includes(searchLower) ||
-      false ||
-      item.created_at?.toLowerCase().includes(searchLower) ||
-      false ||
-      item.actions?.toLowerCase().includes(searchLower) ||
-      false
-    );
-  });
-
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -153,7 +127,66 @@ function Users_comments({}) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-  const permissionId = 40; // The ID for "files.forceDelete"
+
+  // States for filters
+  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
+  const [codeFilter, setCodeFilter] = useState("");
+  const [commentFilter, setCommentFilter] = useState("");
+  const [whoAssignedFilter, setWhoAssignedFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  // Handle individual filters
+  const handleGlobalSearch = (e) =>
+    setGlobalSearchTerm(e.target.value.toLowerCase());
+  const handleCodeFilter = (e) => setCodeFilter(e.target.value.toLowerCase());
+  const handleCommentFilter = (e) =>
+    setCommentFilter(e.target.value.toLowerCase());
+  const handleWhoAssignedFilter = (e) =>
+    setWhoAssignedFilter(e.target.value.toLowerCase());
+  const handleStatusFilter = (e) =>
+    setStatusFilter(e.target.value.toLowerCase());
+
+  // Filtered data
+  const filteredData = usersCommentsData?.filter((item) => {
+    const matchesWhoAssignedInDislikePDF = whoAssignedFilter
+      ? item.dislike_pdf?.some((dislike) =>
+          dislike?.who_assigneds?.some((whoAssigned) =>
+            whoAssigned?.name.toLowerCase().includes(whoAssignedFilter)
+          )
+        )
+      : true;
+    const matchesGlobal = globalSearchTerm
+      ? item.comment?.toLowerCase().includes(globalSearchTerm) ||
+        item.status?.toLowerCase().includes(globalSearchTerm) ||
+        item.disliked_by?.name?.toLowerCase().includes(globalSearchTerm) ||
+        item.whoAssigned?.toLowerCase().includes(globalSearchTerm) ||
+        item.created_at?.toLowerCase().includes(globalSearchTerm) ||
+        item.actions?.toLowerCase().includes(globalSearchTerm)
+      : true;
+
+    const matchesCode = codeFilter
+      ? item.dislike_pdf?.some((dislike) =>
+          dislike.name?.toLowerCase().includes(codeFilter)
+        )
+      : true;
+
+    const matchesComment = commentFilter
+      ? item.disliked_by?.name?.toLowerCase().includes(commentFilter)
+      : true;
+
+    const matchesStatus = statusFilter
+      ? item.status?.toLowerCase().includes(statusFilter)
+      : true;
+
+    return (
+      matchesGlobal &&
+      matchesComment &&
+      matchesCode &&
+      matchesWhoAssignedInDislikePDF &&
+      matchesStatus
+    );
+  });
+  console.log(usersCommentsData)
 
   return (
     <>
@@ -239,7 +272,7 @@ function Users_comments({}) {
                   id="table-search"
                   className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search for items"
-                  onChange={handleSearchChange} // Handle search input change
+                  onChange={handleGlobalSearch} // Handle search input change
                 />
               </div>
             </div>
@@ -250,16 +283,36 @@ function Users_comments({}) {
                     Comment
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Status
+                    <input
+                      type="text"
+                      placeholder="Status"
+                      onChange={handleStatusFilter}
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Comment by
+                    <input
+                      type="text"
+                      placeholder="Comment By"
+                      onChange={handleCommentFilter}
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Who Assigned
+                    <input
+                      type="text"
+                      placeholder="Who Assigned"
+                      onChange={handleWhoAssignedFilter}
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Code
+                    <input
+                      type="text"
+                      placeholder="Code"
+                      onChange={handleCodeFilter}
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
                     date
@@ -334,7 +387,7 @@ function Users_comments({}) {
                             {item.status}
                           </span>
                         ) : item.status === "pending" ? (
-                          <span className="bg-yellow-100 text-gray-200 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                          <span className="bg-yellow-100 text-gray-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                             {item.status}
                           </span>
                         ) : (
@@ -361,9 +414,13 @@ function Users_comments({}) {
                                             <li
                                               key={i}
                                               className="flex"
-                                              style={{ fontSize: "8px" }}
+                                              style={{ fontSize: "12px" }}
                                             >
-                                              {i + 1}: {item3}
+                                              {i + 1}: {item3.name}
+                                              {console.log(
+                                                "who assigned",
+                                                item3
+                                              )}
                                             </li>
                                           </>
                                         ))

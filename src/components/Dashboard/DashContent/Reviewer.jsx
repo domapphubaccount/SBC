@@ -39,7 +39,7 @@ function ReviewerAdmin({}) {
   const openReviewer = useSelector((state) => state.ReviewSlice.reviewerModel);
   const openRole = useSelector((state) => state.ReviewSlice.roleModule);
   const loading = useSelector((state) => state.ReviewSlice.loading);
-  const total_pages = useSelector((state) => state.ReviewSlice.total_pages);
+  // const total_pages = useSelector((state) => state.ReviewSlice.total_pages);
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.ReviewSlice.action);
   const permissionsData = useSelector(
@@ -78,7 +78,6 @@ function ReviewerAdmin({}) {
   const handleOpenView = (id) => {
     dispatch(viewModule({ open: true, review: id }));
   };
-
   const handleOpenTrain = (id) => {
     dispatch(trainModule({ open: true, review: id }));
   };
@@ -108,17 +107,6 @@ function ReviewerAdmin({}) {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
-  // Step 3: Filter the rows based on the search term across multiple fields
-  const filteredData = ReviewsData.filter((item) => {
-    const nameMatch = item.reviewer?.name?.toLowerCase().includes(searchTerm);
-    const commentMatch = item.comment_reviewr?.toLowerCase().includes(searchTerm);
-    const dislikeCommentMatch = item.chat_user_dislike?.comment?.toLowerCase().includes(searchTerm);
-    const statusMatch = item.status?.toLowerCase().includes(searchTerm);
-    const dateMatch = formatDate(item.created_at).toLowerCase().includes(searchTerm); // Check formatted date
-    
-    return nameMatch || commentMatch || dislikeCommentMatch || statusMatch || dateMatch;
-  });
-
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -129,6 +117,44 @@ function ReviewerAdmin({}) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
+
+  // States for filters
+  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
+  const [nameFilter, setNameFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  // Handle individual filters
+  const handleGlobalSearch = (e) =>
+    setGlobalSearchTerm(e.target.value.toLowerCase());
+  const handleNameFilter = (e) => setNameFilter(e.target.value.toLowerCase());
+  const handleStatusFilter = (e) =>
+    setStatusFilter(e.target.value.toLowerCase());
+
+  // Filtered data
+  const filteredData = ReviewsData?.filter((item) => {
+    const matchesGlobal = globalSearchTerm
+      ? item.reviewer?.name?.toLowerCase().includes(globalSearchTerm) ||
+        item.comment_reviewr?.toLowerCase().includes(globalSearchTerm) ||
+        item.chat_user_dislike?.comment
+          ?.toLowerCase()
+          .includes(globalSearchTerm) ||
+        item.status?.toLowerCase().includes(globalSearchTerm) ||
+        formatDate(item.created_at).toLowerCase().includes(globalSearchTerm)
+      : true;
+
+    const matchesName = nameFilter
+      ? item.reviewer?.name?.toLowerCase().includes(nameFilter)
+      : true;
+
+    const matchesStatus = statusFilter
+      ? item.status?.toLowerCase().includes(statusFilter)
+      : true;
+
+    return matchesGlobal && matchesStatus && matchesName;
+  });
+
+  const total_pages = Math.ceil(filteredData.length / 10);
+
 
   return (
     <>
@@ -214,7 +240,7 @@ function ReviewerAdmin({}) {
                     id="table-search"
                     className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Search for items"
-                    onChange={handleSearchChange} // Handle search input change
+                    onChange={handleGlobalSearch} // Handle search input change
                   />
                 </div>
               </div>
@@ -224,7 +250,12 @@ function ReviewerAdmin({}) {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Name
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      onChange={handleNameFilter}
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Review
@@ -236,7 +267,12 @@ function ReviewerAdmin({}) {
                     Date
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Status
+                    <input
+                      type="text"
+                      placeholder="Status"
+                      onChange={handleStatusFilter}
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
@@ -245,7 +281,7 @@ function ReviewerAdmin({}) {
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
-                filteredData.map((item, index) => (
+                  filteredData.map((item, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -333,91 +369,97 @@ function ReviewerAdmin({}) {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-start">
                           {/* start view */}
-                          {permissionsData && permissionsData.includes("reviews.show") && (
-                            <Tooltip content="View">
-                              <button
-                                title="View"
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
-                                onClick={() => handleOpenView(item)} // item.id
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="white"
-                                  className="size-4"
+                          {permissionsData &&
+                            permissionsData.includes("reviews.show") && (
+                              <Tooltip content="View">
+                                <button
+                                  title="View"
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 py-1 px-2 rounded text-white"
+                                  onClick={() => handleOpenView(item)} // item.id
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                                  />
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                  />
-                                </svg>
-                              </button>
-                            </Tooltip>
-                          )}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="white"
+                                    className="size-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                            )}
                           {/* end view */}
                           {/* start edit */}
-                          {permissionsData && permissionsData.includes("reviews.update") && (
-                            <Tooltip content="ٌReview">
-                              <button
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                                onClick={() => handleOpenEdit(item)} //item.id
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="size-4"
+                          {permissionsData &&
+                            permissionsData.includes("reviews.update") && (
+                              <Tooltip content="ٌReview">
+                                <button
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
+                                  onClick={() => handleOpenEdit(item)} //item.id
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-                                  />
-                                </svg>
-                              </button>
-                            </Tooltip>
-                          )}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                            )}
                           {/* end edit */}
                           {/* start delete */}
-                          {permissionsData && permissionsData.includes("reviews.destroy") &&
-                          <Tooltip content="Delete">
-                            <button
-                              title="Delete"
-                              type="button"
-                              className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                              onClick={() => handleOpenDelete(item.id)} //item.id
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="size-4"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                />
-                              </svg>
-                            </button>
-                          </Tooltip>}
+                          {permissionsData &&
+                            permissionsData.includes("reviews.destroy") && (
+                              <Tooltip content="Delete">
+                                <button
+                                  title="Delete"
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                  onClick={() => handleOpenDelete(item.id)} //item.id
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                            )}
                           {/* start delete */}
                           {/* start train */}
-                          {permissionsData && permissionsData?.includes("reviews.update") && item.status != "reject" && (
+                          {permissionsData &&
+                            permissionsData?.includes("reviews.update") &&
+                            item.status != "reject" && (
                               <Tooltip content="Train">
                                 <button
                                   title="Train"

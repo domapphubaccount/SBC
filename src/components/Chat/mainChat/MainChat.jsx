@@ -70,6 +70,10 @@ function MainChat({ windowWidth }) {
     }
   }, [actionSuccess]);
 
+  useEffect(()=>{
+    window.MathJax && window.MathJax.typeset();
+  },[copyIcon,copID])
+
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
     const englishCharCount = cleanedText.length;
