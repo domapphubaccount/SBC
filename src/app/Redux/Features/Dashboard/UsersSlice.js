@@ -241,6 +241,8 @@ const initialState = {
   viewModule: false,
   roleModule: false,
   addModule: false,
+  resetPasswordModule: false,
+  resetPasswordLinkModule: false,
 
   action: false,
 
@@ -277,12 +279,19 @@ export const usersSlice = createSlice({
     roleModule: (state, action) => {
       state.roleModule = action.payload;
     },
+    resetPasswordModule: (state, action) => {
+      state.resetPasswordModule = action.payload
+    },
+    resetPasswordLinkModule: (state, action) => {
+      state.resetPasswordLinkModule = action.payload
+    },
     handlePages: (state, action) => {
       state.total_pages = action.payload;
     },
     handleAction: (state, action) => {
       state.action = action.payload;
     },
+
 
 
     // pagination
@@ -426,7 +435,7 @@ export const {
   addModule,
   handlePages,
   handleAction,
-  setAllData, setDisplayedData, resetData, setPage, removeData
+  setAllData, setDisplayedData, resetData, setPage, removeData , resetPasswordModule , resetPasswordLinkModule
 } = usersSlice.actions;
 
 export default usersSlice.reducer;
