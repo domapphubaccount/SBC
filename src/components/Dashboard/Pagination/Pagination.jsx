@@ -1,36 +1,3 @@
-// "use client";
-
-// import { useDispatch } from "react-redux";
-// import Pagination from '@mui/material/Pagination';
-// import Stack from '@mui/material/Stack';
-
-// export function PaginationPages({ page, setPage, dynamic, total_pages }) {
-//   const dispatch = useDispatch();
-
-//   // Define the onPageChange handler
-//   const onPageChange = (pageNumber) => {
-//     if (dynamic) {
-//       dispatch(setPage(pageNumber)); // Dispatch Redux action if dynamic
-//     } else {
-//       setPage(pageNumber); // Call the provided setPage function
-//     }
-//   };
-
-//   return (
-//     <div className="flex overflow-x-auto sm:justify-center">
-//       {/* <Pagination
-//         currentPage={page}
-//         totalPages={total_pages}
-//         onPageChange={onPageChange}
-//         showIcons
-//       /> */}
-//       <Pagination count={total_pages} showFirstButton showLastButton />
-
-//     </div>
-//   );
-// }
-
-
 
 "use client";
 

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { Suspense, useCallback, useEffect, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
@@ -15,26 +21,32 @@ import {
   getUserByIDAction,
   getUsersAction,
   removeUser,
+  resetPasswordLinkModule,
+  resetPasswordModule,
   roleModule,
+  setDisplayedData,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
 import { getRolesAction } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
-import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
-import { setPage } from "@/app/Redux/Features/Dashboard/UsersSlice";
 
 function Users({}) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
-  const usersData = useSelector((state) => state.usersSlice.users);
   const updateUsersData = useSelector((state) => state.usersSlice.updates);
   const loading = useSelector((state) => state.usersSlice.loading);
   const [openWarn, setOpenWarn] = useState(false);
   const openAdd = useSelector((state) => state.usersSlice.addModule);
   const openEdit = useSelector((state) => state.usersSlice.editModule);
   const openDelete = useSelector((state) => state.usersSlice.deleteModule);
+  const openReset = useSelector(
+    (state) => state.usersSlice.resetPasswordModule
+  );
+  const openResetByLink = useSelector(
+    (state) => state.usersSlice.resetPasswordLinkModule
+  );
   const openView = useSelector((state) => state.usersSlice.viewModule);
   const openRole = useSelector((state) => state.usersSlice.roleModule);
   const [switch1, setSwitch1] = useState(false);
@@ -46,7 +58,6 @@ function Users({}) {
   const { allData, displayedData, currentPage } = useSelector(
     (state) => state.usersSlice
   );
-
   useEffect(() => {
     if (action) {
       enqueueSnackbar("This action has been done successfully", {
@@ -54,7 +65,6 @@ function Users({}) {
       });
     }
   }, [action]);
-
   const handleClose = () => {
     dispatch(removeUser());
     dispatch(addModule(false));
@@ -62,17 +72,30 @@ function Users({}) {
     dispatch(deleteModule(false));
     dispatch(viewModule(false));
     dispatch(roleModule(false));
+    dispatch(resetPasswordModule(false));
+    dispatch(resetPasswordLinkModule(false));
   };
-
   // start open delete
   const handleOpenDelete = (id) => {
     if (id) {
       dispatch(getUserByIDAction({ token, id }));
       dispatch(deleteModule(true));
+      console.log(id)
+    }
+  };
+  const handleOpenResetPassword = (id) => {
+    if (id) {
+      dispatch(getUserByIDAction({ token, id }));
+      dispatch(resetPasswordModule(true));
+    }
+  };
+  const handleOpenResetPasswordByLink = (id) => {
+    if (id) {
+      dispatch(getUserByIDAction({ token, id }));
+      dispatch(resetPasswordLinkModule(true));
     }
   };
   // end open delete
-
   // start open edit
   const handleOpenEdit = (id) => {
     if (id) {
@@ -82,7 +105,6 @@ function Users({}) {
     }
   };
   // end open edit
-
   // start open view
   const handleOpenView = (id) => {
     if (id) {
@@ -91,7 +113,6 @@ function Users({}) {
     }
   };
   // end open view
-
   // start open role
   const handleOpenRole = (id) => {
     if (id) {
@@ -100,7 +121,6 @@ function Users({}) {
     }
   };
   // end open role
-
   const handleOpenAdd = () => {
     dispatch(getRolesAction({ token }));
     dispatch(addModule(true));
@@ -116,45 +136,90 @@ function Users({}) {
     dispatch(getRolesAction({ token }));
   }, []);
 
-  // Step 1: State for search input
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Step 2: Handle input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
+  // filter and pagination
+  const [searchTerms, setSearchTerms] = useState({});
+  const [pagez, setPagez] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Update search term for a column
+  const handleSearchChange = (column, value) => {
+    setPagez(0);
+    setSearchTerms((prev) => ({
+      ...prev,
+      [column]: value.toLowerCase(),
+    }));
   };
 
-  const totalPages = Math.ceil(allData.length / 10);
+  const filteredData = allData.filter((row) =>
+    Object.entries(searchTerms).every(([column, term]) => {
+      if (!term) return true; // Skip if no search term
 
-  const filteredData = displayedData?.filter((item) => {
-    const matchesSearchTerm =
-      item.name.toLowerCase().includes(searchTerm) ||
-      item.email.toLowerCase().includes(searchTerm) ||
-      item.status.toLowerCase().includes(searchTerm) ||
-      item.roles[0]?.name.toLowerCase().includes(searchTerm) 
-    const matchesSuspensionDate = switch1 ? item.suspension_date : true;
-    return matchesSearchTerm && matchesSuspensionDate;
-  });
-  let TableData = useCallback(() => {
+      if (column === "roles") {
+        // Check if any of the names in roles matches the search term
+        return row.roles?.some((role) =>
+          role.name?.toLowerCase().includes(term)
+        );
+      }
+      // Default case for other columns
+      return row[column]?.toLowerCase().includes(term);
+    })
+  );
+
+  const paginatedData = filteredData.slice(
+    pagez * rowsPerPage,
+    pagez * rowsPerPage + rowsPerPage
+  );
+  const onPageChange = (event, pageNumber) => {
+    setPagez(pageNumber - 1);
+  };
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
+  const TableData = useCallback(() => {
     // Step 3: Filter the rows based on the search term
     return (
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Name
+              <input
+                type="text"
+                placeholder="Name"
+                onChange={(e) => handleSearchChange("name", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Email
+              <input
+                type="text"
+                placeholder="Email"
+                onChange={(e) => handleSearchChange("email", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Status
+              <input
+                type="text"
+                placeholder="Status"
+                onChange={(e) => handleSearchChange("status", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Last Seen
+              <input
+                type="text"
+                placeholder="Last Seen"
+                onChange={(e) =>
+                  handleSearchChange("last_seen", e.target.value)
+                }
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             <th scope="col" className="px-6 py-3">
-              Role
+              <input
+                type="text"
+                onChange={(e) => handleSearchChange("roles", e.target.value)}
+                placeholder="Role"
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
             </th>
             {permissionsData &&
               (permissionsData.includes("users.show") ||
@@ -167,8 +232,8 @@ function Users({}) {
           </tr>
         </thead>
         <tbody>
-          {displayedData?.length > 0 ? (
-            filteredData.map((item, index) => (
+          {paginatedData?.length > 0 ? (
+            paginatedData.map((item, index) => (
               <tr
                 key={index}
                 className={`${
@@ -339,9 +404,16 @@ function Users({}) {
                     {/* start delete */}
                     {/* start reset */}
                     {permissionsData &&
-                      permissionsData.includes("users.destroy") && (
+                      permissionsData.includes("users.update") && (
                         <Tooltip content="Reset Password">
-                          <BasicMenu />
+                          <BasicMenu
+                            handleOpenResetPassword={() =>
+                              handleOpenResetPassword(item.id)
+                            }
+                            handleOpenResetPasswordByLink={() =>
+                              handleOpenResetPasswordByLink(item.id)
+                            }
+                          />
                         </Tooltip>
                       )}
                     {/* start reset */}
@@ -423,7 +495,7 @@ function Users({}) {
                 Search
               </label>
               <div className="flex justify-between">
-                <div className="relative ">
+                {/* <div className="relative ">
                   <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                     <svg
                       className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -446,9 +518,9 @@ function Users({}) {
                     id="table-search"
                     className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Search for User"
-                    onChange={handleSearchChange} // Handle search input change
+                    onChange={handleGlobalSearch} // Handle search input change
                   />
-                </div>
+                </div> */}
                 <div className="m-2">
                   <ToggleSwitch
                     checked={switch1}
@@ -464,16 +536,25 @@ function Users({}) {
             </Suspense>
           </div>
         </div>
-        <PaginationPages
-          page={currentPage}
-          total_pages={totalPages}
-          setPage={setPage}
-          dynamic={true}
+
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
         />
       </section>
 
       {openDelete && (
         <DeleteUser handleClose={handleClose} openDelete={openDelete} />
+      )}
+      {openReset && (
+        <ResetPassword handleClose={handleClose} openReset={openReset} />
+      )}
+      {openResetByLink && (
+        <ResetPasswordByLink
+          handleClose={handleClose}
+          openResetByLink={openResetByLink}
+        />
       )}
       {openEdit && <EditUser handleClose={handleClose} openEdit={openEdit} />}
       {openView && <ViewUser handleClose={handleClose} openView={openView} />}
@@ -495,9 +576,11 @@ function Users({}) {
 
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import PagePagination from "../Pagination/PagePagination";
+import { ResetPassword } from "../DashModules/User/ResetPassword";
+import { ResetPasswordByLink } from "../DashModules/User/ResetPasswordByLink";
 
-
-function BasicMenu() {
+function BasicMenu({ handleOpenResetPassword, handleOpenResetPasswordByLink }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -542,9 +625,54 @@ function BasicMenu() {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}><small>Reset Password</small></MenuItem>
-        <MenuItem onClick={handleClose}><small>Reset Password by email</small></MenuItem>
-        <MenuItem onClick={handleClose}><small>Reset Password by link</small></MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenResetPassword();
+            handleClose();
+          }}
+        >
+          <small className="flex items-center" title="Reset Directly">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4 me-1"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+              />
+            </svg>
+            <strong>Directly</strong>
+          </small>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleOpenResetPasswordByLink();
+            handleClose();
+          }}
+        >
+          <small className="flex items-center" title="Reset by LINK">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4 me-1"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+              />
+            </svg>
+            <strong>By Link</strong>
+          </small>
+        </MenuItem>
       </Menu>
     </div>
   );

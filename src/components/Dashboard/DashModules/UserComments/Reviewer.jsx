@@ -39,8 +39,6 @@ export function Reviewer({ openReviewer, handleClose }) {
     }),
 
     onSubmit: (values) => {
-
-      console.log(values)
       if (commentData?.review_data?.reviewer.id == profileData.id) {
         dispatch(
           updateReviewAction({
@@ -77,7 +75,7 @@ export function Reviewer({ openReviewer, handleClose }) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-  const statusOptions = ["accept", "reject", "in_progress"];
+  const statusOptions = ["accept", "reject", "in_progress","pending"];
 
   useEffect(() => {
     if (commentData) {

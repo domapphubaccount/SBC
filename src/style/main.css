@@ -1355,3 +1355,11 @@ ul.roman-numerals li:before {
   list-style-type: circle;
 
 }
+.filter-input{
+  border: none;
+  background-color: transparent;
+  outline: none;
+  font-size: 14px !important;
+  min-width: 120px;
+}
+
