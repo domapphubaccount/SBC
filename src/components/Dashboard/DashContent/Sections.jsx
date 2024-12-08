@@ -18,6 +18,7 @@ import { EditSections } from "../DashModules/Sections/EditSections";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
+import PagePagination from "../Pagination/PagePagination";
 
 function Sections() {
   const dispatch = useDispatch();
@@ -77,15 +78,15 @@ function Sections() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Step 2: Handle input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  // const handleSearchChange = (e) => {
+  //   setSearchTerm(e.target.value.toLowerCase());
+  // };
 
   // Step 3: Filter the rows based on the search term
-  const filteredData = sections.filter((item) => {
-    return item.name.toLowerCase().includes(searchTerm);
-    // item.email.toLowerCase().includes(searchTerm)
-  });
+  // const filteredData = sections.filter((item) => {
+  //   return item.name.toLowerCase().includes(searchTerm);
+  //   // item.email.toLowerCase().includes(searchTerm)
+  // });
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -97,6 +98,43 @@ function Sections() {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
+
+  // filter and pagination
+  const [searchTerms, setSearchTerms] = useState({});
+  const [pagez, setPagez] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Update search term for a column
+  const handleSearchChange = (column, value) => {
+    setPagez(0);
+    setSearchTerms((prev) => ({
+      ...prev,
+      [column]: value.toLowerCase(),
+    }));
+  };
+
+  const filteredData = sections.filter((row) =>
+    Object.entries(searchTerms).every(([column, term]) => {
+      if (!term) return true; // Skip if no search term
+
+      if (column === "roles") {
+        // Check if any of the names in roles matches the search term
+        return row.roles?.some((role) =>
+          role.name?.toLowerCase().includes(term)
+        );
+      }
+      // Default case for other columns
+      return row[column]?.toLowerCase().includes(term);
+    })
+  );
+
+  const paginatedData = filteredData.slice(
+    pagez * rowsPerPage,
+    pagez * rowsPerPage + rowsPerPage
+  );
+  const onPageChange = (event, pageNumber) => {
+    setPagez(pageNumber - 1);
+  };
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   return (
     <>
@@ -160,7 +198,7 @@ function Sections() {
               <label for="table-search" className="sr-only">
                 Search
               </label>
-              <div className="relative mt-1">
+              {/* <div className="relative mt-1">
                 <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg
                     className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -183,18 +221,32 @@ function Sections() {
                   id="table-search"
                   className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search for User"
-                  onChange={handleSearchChange} // Handle search input change
+                  // onChange={handleSearchChange} // Handle search input change
                 />
-              </div>
+              </div> */}
             </div>
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Name
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      onChange={(e) =>
+                        handleSearchChange("name", e.target.value)
+                      }
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Created At
+                    <input
+                      type="text"
+                      placeholder="Created At"
+                      onChange={(e) =>
+                        handleSearchChange("created_at", e.target.value)
+                      }
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">
                     Actions
@@ -202,8 +254,8 @@ function Sections() {
                 </tr>
               </thead>
               <tbody>
-                {sections.length > 0 ? (
-                  filteredData.map((item, index) => (
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -232,58 +284,60 @@ function Sections() {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-center">
                           {/* start edit */}
-                          {permissionsData && permissionsData.includes("sections.update") && (
-                            <Tooltip content="Edit Section">
-                              <button
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="size-4"
-                                  onClick={() =>
-                                    handleOpenEdit(item.id, item.name)
-                                  }
+                          {permissionsData &&
+                            permissionsData.includes("sections.update") && (
+                              <Tooltip content="Edit Section">
+                                <button
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                  />
-                                </svg>
-                              </button>
-                            </Tooltip>
-                          )}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                    onClick={() =>
+                                      handleOpenEdit(item.id, item.name)
+                                    }
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                            )}
                           {/* end edit */}
                           {/* start delete */}
-                          {permissionsData && permissionsData.includes("sections.destroy") && (
-                            <Tooltip content="Delete Section">
-                              <button
-                                type="button"
-                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                                onClick={() => handleOpenDelete(item.id)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="size-4"
+                          {permissionsData &&
+                            permissionsData.includes("sections.destroy") && (
+                              <Tooltip content="Delete Section">
+                                <button
+                                  type="button"
+                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                  onClick={() => handleOpenDelete(item.id)}
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                  />
-                                </svg>
-                              </button>
-                            </Tooltip>
-                          )}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                    />
+                                  </svg>
+                                </button>
+                              </Tooltip>
+                            )}
                           {/* start delete */}
                         </div>
                       </td>
@@ -298,10 +352,11 @@ function Sections() {
             </table>
           </div>
         </div>
-        <PaginationPages
-          page={page}
-          total_pages={total_pages}
-          setPage={setPage}
+
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
         />
       </section>
 

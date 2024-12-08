@@ -166,7 +166,6 @@ function Roles({}) {
         );
       }
 
-
       // Default case for other columns
       return row[column]?.toLowerCase().includes(term);
     })
@@ -180,7 +179,7 @@ function Roles({}) {
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
-  console.log(filteredData)
+  console.log(filteredData);
 
   let TableData = useCallback(() => {
     return (
@@ -199,19 +198,22 @@ function Roles({}) {
               Attached Users
             </th>
             <th scope="col" className="px-6 py-3">
-            <input
+              <input
                 type="text"
                 placeholder="Permissions"
-                onChange={(e) => handleSearchChange("permissions", e.target.value)}
+                onChange={(e) =>
+                  handleSearchChange("permissions", e.target.value)
+                }
                 className="filter w-full px-2 py-1 rounded filter-input"
               />
-              
             </th>
             <th scope="col" className="px-6 py-3">
-            <input
+              <input
                 type="text"
                 placeholder="Created-At"
-                onChange={(e) => handleSearchChange("created_at", e.target.value)}
+                onChange={(e) =>
+                  handleSearchChange("created_at", e.target.value)
+                }
                 className="filter w-full px-2 py-1 rounded filter-input"
               />
             </th>
@@ -255,7 +257,32 @@ function Roles({}) {
                     </div>
                   </div>
                 </th>
-                <td className="px-6 py-4">{item.user_count}</td>
+                <td className="px-6 py-4">
+                  <Tooltip
+                    className="w-60 text-center max-h-72 overflow-auto"
+                    content={
+                      <ul>
+                        {item?.attached_users?.length > 0 ? (
+                          item?.attached_users?.map((item2, i) => (
+                            <>
+                              <li
+                                key={i}
+                                className="flex"
+                                style={{ fontSize: "10px" }}
+                              >
+                                {i + 1}: {item2.name}
+                              </li>
+                            </>
+                          ))
+                        ) : (
+                          <small>"NO ONE USER ATTACHED"</small>
+                        )}
+                      </ul>
+                    }
+                  >
+                    <div className="ms-5">{item.user_count}</div>
+                  </Tooltip>
+                </td>
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handlePermissionModule(item.id)}

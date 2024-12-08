@@ -10,10 +10,10 @@ import RemoveAuth from "../RemoveAuth";
 export const getUsersChatAction = createAsyncThunk(
   "users-chat/getUsersChatAction",
   async (arg, { dispatch , rejectWithValue }) => {
-    const { token , page } = arg;
+    const { token } = arg;
     
     try {
-      const response = await axios.get(`${config.api}admin/master_user_chat?page=${page}`, {
+      const response = await axios.get(`${config.api}admin/master_user_chat`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "*/*",
@@ -27,7 +27,7 @@ export const getUsersChatAction = createAsyncThunk(
       if(response.data?.data.total_pages){
         dispatch(handlePages(response.data?.data.total_pages))
       }
-      return response.data.data[0].data;
+      return response.data.data[0];
     } catch (error) {
       if(error?.response?.status === 401){
         RemoveAuth()

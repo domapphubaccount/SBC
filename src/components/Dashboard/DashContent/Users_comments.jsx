@@ -28,6 +28,7 @@ import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import ArticleIcon from "@mui/icons-material/Article";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import PagePagination from "../Pagination/PagePagination";
 
 function Users_comments({}) {
   const dispatch = useDispatch();
@@ -147,46 +148,101 @@ function Users_comments({}) {
     setStatusFilter(e.target.value.toLowerCase());
 
   // Filtered data
-  const filteredData = usersCommentsData?.filter((item) => {
-    const matchesWhoAssignedInDislikePDF = whoAssignedFilter
-      ? item.dislike_pdf?.some((dislike) =>
-          dislike?.who_assigneds?.some((whoAssigned) =>
-            whoAssigned?.name.toLowerCase().includes(whoAssignedFilter)
+  // const filteredData = usersCommentsData?.filter((item) => {
+  //   const matchesWhoAssignedInDislikePDF = whoAssignedFilter
+  //     ? item.dislike_pdf?.some((dislike) =>
+  //         dislike?.who_assigneds?.some((whoAssigned) =>
+  //           whoAssigned?.name.toLowerCase().includes(whoAssignedFilter)
+  //         )
+  //       )
+  //     : true;
+  //   const matchesGlobal = globalSearchTerm
+  //     ? item.comment?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.status?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.disliked_by?.name?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.whoAssigned?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.created_at?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.actions?.toLowerCase().includes(globalSearchTerm)
+  //     : true;
+
+  //   const matchesCode = codeFilter
+  //     ? item.dislike_pdf?.some((dislike) =>
+  //         dislike.name?.toLowerCase().includes(codeFilter)
+  //       )
+  //     : true;
+
+  //   const matchesComment = commentFilter
+  //     ? item.disliked_by?.name?.toLowerCase().includes(commentFilter)
+  //     : true;
+
+  //   const matchesStatus = statusFilter
+  //     ? item.status?.toLowerCase().includes(statusFilter)
+  //     : true;
+
+  //   return (
+  //     matchesGlobal &&
+  //     matchesComment &&
+  //     matchesCode &&
+  //     matchesWhoAssignedInDislikePDF &&
+  //     matchesStatus
+  //   );
+  // });
+  // console.log(usersCommentsData)
+
+  // filter and pagination
+  const [searchTerms, setSearchTerms] = useState({});
+  const [pagez, setPagez] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Update search term for a column
+  const handleSearchChange = (column, value) => {
+    setPagez(0);
+    setSearchTerms((prev) => ({
+      ...prev,
+      [column]: value.toLowerCase(),
+    }));
+  };
+
+  const filteredData = usersCommentsData.filter((row) =>
+    Object.entries(searchTerms).every(([column, term]) => {
+      if (!term) return true; // Skip if no search term
+
+      if (column === "disliked_by") {
+        // Handle nested section.name filtering
+        return row.disliked_by?.name?.toLowerCase().includes(term);
+      }
+      // Handle "who_assigneds" field
+      if (column === "who_assigneds") {
+        return (
+          Array.isArray(row.dislike_pdf) &&
+          row.dislike_pdf.some(
+            (pdf) =>
+              Array.isArray(pdf.who_assigneds) &&
+              pdf.who_assigneds.some((assignee) =>
+                assignee.name?.toLowerCase().includes(term.toLowerCase())
+              )
           )
-        )
-      : true;
-    const matchesGlobal = globalSearchTerm
-      ? item.comment?.toLowerCase().includes(globalSearchTerm) ||
-        item.status?.toLowerCase().includes(globalSearchTerm) ||
-        item.disliked_by?.name?.toLowerCase().includes(globalSearchTerm) ||
-        item.whoAssigned?.toLowerCase().includes(globalSearchTerm) ||
-        item.created_at?.toLowerCase().includes(globalSearchTerm) ||
-        item.actions?.toLowerCase().includes(globalSearchTerm)
-      : true;
+        );
+      }
 
-    const matchesCode = codeFilter
-      ? item.dislike_pdf?.some((dislike) =>
-          dislike.name?.toLowerCase().includes(codeFilter)
-        )
-      : true;
+      if (column === "dislike_pdf") {
+        // Check if any of the names in who_assigneds matches the search term
+        return row.dislike_pdf?.some((assignee) =>
+          assignee.name?.toLowerCase().includes(term)
+        );
+      }
+      // Default case for other columns
+      return row[column]?.toLowerCase().includes(term);
+    })
+  );
 
-    const matchesComment = commentFilter
-      ? item.disliked_by?.name?.toLowerCase().includes(commentFilter)
-      : true;
-
-    const matchesStatus = statusFilter
-      ? item.status?.toLowerCase().includes(statusFilter)
-      : true;
-
-    return (
-      matchesGlobal &&
-      matchesComment &&
-      matchesCode &&
-      matchesWhoAssignedInDislikePDF &&
-      matchesStatus
-    );
-  });
-  console.log(usersCommentsData)
+  const paginatedData = filteredData.slice(
+    pagez * rowsPerPage,
+    pagez * rowsPerPage + rowsPerPage
+  );
+  const onPageChange = (event, pageNumber) => {
+    setPagez(pageNumber - 1);
+  };
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   return (
     <>
@@ -249,7 +305,7 @@ function Users_comments({}) {
               <label for="table-search" className="sr-only">
                 Search
               </label>
-              <div className="relative mt-1">
+              {/* <div className="relative mt-1">
                 <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg
                     className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -274,19 +330,28 @@ function Users_comments({}) {
                   placeholder="Search for items"
                   onChange={handleGlobalSearch} // Handle search input change
                 />
-              </div>
+              </div> */}
             </div>
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Comment
+                    <input
+                      type="text"
+                      placeholder="Comment"
+                      onChange={(e) =>
+                        handleSearchChange("comment", e.target.value)
+                      }
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <input
                       type="text"
                       placeholder="Status"
-                      onChange={handleStatusFilter}
+                      onChange={(e) =>
+                        handleSearchChange("status", e.target.value)
+                      }
                       className="filter w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
@@ -294,7 +359,9 @@ function Users_comments({}) {
                     <input
                       type="text"
                       placeholder="Comment By"
-                      onChange={handleCommentFilter}
+                      onChange={(e) =>
+                        handleSearchChange("disliked_by", e.target.value)
+                      }
                       className="filter w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
@@ -302,7 +369,9 @@ function Users_comments({}) {
                     <input
                       type="text"
                       placeholder="Who Assigned"
-                      onChange={handleWhoAssignedFilter}
+                      onChange={(e) =>
+                        handleSearchChange("who_assigneds", e.target.value)
+                      }
                       className="filter w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
@@ -310,12 +379,21 @@ function Users_comments({}) {
                     <input
                       type="text"
                       placeholder="Code"
-                      onChange={handleCodeFilter}
+                      onChange={(e) =>
+                        handleSearchChange("dislike_pdf", e.target.value)
+                      }
                       className="filter w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    date
+                    <input
+                      type="text"
+                      placeholder="Date"
+                      onChange={(e) =>
+                        handleSearchChange("created_at", e.target.value)
+                      }
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
@@ -323,8 +401,8 @@ function Users_comments({}) {
                 </tr>
               </thead>
               <tbody>
-                {usersCommentsData && usersCommentsData.length > 0 ? (
-                  filteredData.map((item, index) => (
+                {paginatedData && paginatedData.length > 0 ? (
+                  paginatedData.map((item, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -534,11 +612,14 @@ function Users_comments({}) {
             </table>
           </div>
         </div>
-        <PaginationPages
-          page={page}
-          total_pages={total_pages}
-          setPage={setPage}
+
+        {/* new pagination  */}
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
         />
+        
       </section>
 
       {openDelete && (

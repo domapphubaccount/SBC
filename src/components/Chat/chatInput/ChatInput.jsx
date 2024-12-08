@@ -91,7 +91,6 @@ function ChatInput() {
     }
   }, [chatData]);
 
-  console.log( "chatCode",chatCode , "usedCode",usedCode , "storedCode",storedCode);
   // start send message
   const handleSendMessage = () => {
     let timer;

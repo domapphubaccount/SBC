@@ -329,8 +329,9 @@ export const ReviewSlice = createSlice({
         state.updates = !state.updates;
       })
       .addCase(trainAction.rejected, (state, action) => {
+        console.log(action.payload)
         state.loading = false;
-        state.error = action.payload?.error;
+        state.error = action.payload?.message;
       })
       // end get comment by id
 
@@ -365,6 +366,7 @@ export const ReviewSlice = createSlice({
         state.editModule = false;
       })
       .addCase(updateReviewAction.rejected, (state, action) => {
+        console.log(action.payload)
         state.loading = false;
         state.error = action.payload?.message;
       });

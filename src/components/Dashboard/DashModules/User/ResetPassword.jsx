@@ -16,12 +16,8 @@ export function ResetPassword({ openReset, handleClose }) {
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
       password: "",
       password_confirmation: "",
-      role_id: "",
-      account_type: "user",
     },
     validationSchema: Yup.object({
       password: Yup.string()
@@ -47,7 +43,9 @@ export function ResetPassword({ openReset, handleClose }) {
             <span className="font-medium">Error!</span> {ErrorMSG}
           </div>
         )}
-        <Modal.Header />
+        <Modal.Header>
+          Reset Password
+        </Modal.Header>
         <Modal.Body>
           {!loading ? (
             <form onSubmit={formik.handleSubmit} className="space-y-6">

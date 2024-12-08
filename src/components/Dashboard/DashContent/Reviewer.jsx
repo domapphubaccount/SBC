@@ -25,6 +25,7 @@ import { AddReview } from "../DashModules/Reviewer/Add";
 import { Train } from "../DashModules/Reviewer/Train";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
+import PagePagination from "../Pagination/PagePagination";
 
 function ReviewerAdmin({}) {
   const dispatch = useDispatch();
@@ -39,7 +40,6 @@ function ReviewerAdmin({}) {
   const openReviewer = useSelector((state) => state.ReviewSlice.reviewerModel);
   const openRole = useSelector((state) => state.ReviewSlice.roleModule);
   const loading = useSelector((state) => state.ReviewSlice.loading);
-  // const total_pages = useSelector((state) => state.ReviewSlice.total_pages);
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.ReviewSlice.action);
   const permissionsData = useSelector(
@@ -103,9 +103,9 @@ function ReviewerAdmin({}) {
   }, [updateReviewerData, page]);
 
   const [searchTerm, setSearchTerm] = useState(""); // Step 1: State for search input
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  // const handleSearchChange = (e) => {
+  //   setSearchTerm(e.target.value.toLowerCase());
+  // };
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -131,30 +131,68 @@ function ReviewerAdmin({}) {
     setStatusFilter(e.target.value.toLowerCase());
 
   // Filtered data
-  const filteredData = ReviewsData?.filter((item) => {
-    const matchesGlobal = globalSearchTerm
-      ? item.reviewer?.name?.toLowerCase().includes(globalSearchTerm) ||
-        item.comment_reviewr?.toLowerCase().includes(globalSearchTerm) ||
-        item.chat_user_dislike?.comment
-          ?.toLowerCase()
-          .includes(globalSearchTerm) ||
-        item.status?.toLowerCase().includes(globalSearchTerm) ||
-        formatDate(item.created_at).toLowerCase().includes(globalSearchTerm)
-      : true;
+  // const filteredData = ReviewsData?.filter((item) => {
+  //   const matchesGlobal = globalSearchTerm
+  //     ? item.reviewer?.name?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.comment_reviewr?.toLowerCase().includes(globalSearchTerm) ||
+  //       item.chat_user_dislike?.comment
+  //         ?.toLowerCase()
+  //         .includes(globalSearchTerm) ||
+  //       item.status?.toLowerCase().includes(globalSearchTerm) ||
+  //       formatDate(item.created_at).toLowerCase().includes(globalSearchTerm)
+  //     : true;
 
-    const matchesName = nameFilter
-      ? item.reviewer?.name?.toLowerCase().includes(nameFilter)
-      : true;
+  //   const matchesName = nameFilter
+  //     ? item.reviewer?.name?.toLowerCase().includes(nameFilter)
+  //     : true;
 
-    const matchesStatus = statusFilter
-      ? item.status?.toLowerCase().includes(statusFilter)
-      : true;
+  //   const matchesStatus = statusFilter
+  //     ? item.status?.toLowerCase().includes(statusFilter)
+  //     : true;
 
-    return matchesGlobal && matchesStatus && matchesName;
-  });
+  //   return matchesGlobal && matchesStatus && matchesName;
+  // });
 
-  const total_pages = Math.ceil(filteredData.length / 10);
+  // const total_pages = Math.ceil(filteredData.length / 10);
 
+  // filter and pagination
+  const [searchTerms, setSearchTerms] = useState({});
+  const [pagez, setPagez] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Update search term for a column
+  const handleSearchChange = (column, value) => {
+    setPagez(0);
+    setSearchTerms((prev) => ({
+      ...prev,
+      [column]: value.toLowerCase(),
+    }));
+  };
+
+  const filteredData = ReviewsData.filter((row) =>
+    Object.entries(searchTerms).every(([column, term]) => {
+      if (!term) return true; // Skip if no search term
+
+      if (column === "reviewer") {
+        // Handle nested section.name filtering
+        return row.reviewer?.name?.toLowerCase().includes(term);
+      }
+      if (column === "chat_user_dislike") {
+        // Handle nested section.name filtering
+        return row.chat_user_dislike?.comment?.toLowerCase().includes(term);
+      }
+      // Default case for other columns
+      return row[column]?.toLowerCase().includes(term);
+    })
+  );
+
+  const paginatedData = filteredData.slice(
+    pagez * rowsPerPage,
+    pagez * rowsPerPage + rowsPerPage
+  );
+  const onPageChange = (event, pageNumber) => {
+    setPagez(pageNumber - 1);
+  };
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   return (
     <>
@@ -217,7 +255,7 @@ function ReviewerAdmin({}) {
                 <label for="table-search" className="sr-only">
                   Search
                 </label>
-                <div className="relative mt-1">
+                {/* <div className="relative mt-1">
                   <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                     <svg
                       className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -242,7 +280,7 @@ function ReviewerAdmin({}) {
                     placeholder="Search for items"
                     onChange={handleGlobalSearch} // Handle search input change
                   />
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -253,24 +291,49 @@ function ReviewerAdmin({}) {
                     <input
                       type="text"
                       placeholder="Name"
-                      onChange={handleNameFilter}
+                      onChange={(e) =>
+                        handleSearchChange("reviewer", e.target.value)
+                      }
                       className="filter w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Review
+                    <input
+                      type="text"
+                      onChange={(e) =>
+                        handleSearchChange("comment_reviewr", e.target.value)
+                      }
+                      placeholder="Review"
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Dislike
+                    <input
+                      type="text"
+                      onChange={(e) =>
+                        handleSearchChange("chat_user_dislike", e.target.value)
+                      }
+                      placeholder="Dislike"
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Date
+                    <input
+                      type="text"
+                      onChange={(e) =>
+                        handleSearchChange("created_at", e.target.value)
+                      }
+                      placeholder="Date"
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <input
                       type="text"
                       placeholder="Status"
-                      onChange={handleStatusFilter}
+                      onChange={(e) =>
+                        handleSearchChange("status", e.target.value)
+                      }
                       className="filter w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
@@ -280,8 +343,8 @@ function ReviewerAdmin({}) {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.length > 0 ? (
-                  filteredData.map((item, index) => (
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -459,7 +522,7 @@ function ReviewerAdmin({}) {
                           {/* start train */}
                           {permissionsData &&
                             permissionsData?.includes("reviews.update") &&
-                            item.status != "reject" && (
+                            item.status === "accept" && (
                               <Tooltip content="Train">
                                 <button
                                   title="Train"
@@ -498,10 +561,11 @@ function ReviewerAdmin({}) {
             </table>
           </div>
         </div>
-        <PaginationPages
-          page={page}
-          total_pages={total_pages}
-          setPage={setPage}
+
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
         />
       </section>
 

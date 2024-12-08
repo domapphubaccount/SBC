@@ -29,8 +29,6 @@ function ChatContainer() {
     (state) => state.profileSlice.permissions
   );
 
-  console.log(chatCode)
-
   // start manage window width and is logged or not
   useEffect(() => {
     setWindowWidth(window.innerWidth)
