@@ -11,6 +11,7 @@ import {
   loading_main_chat,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import { loading_get_chat_history } from "@/app/Redux/Features/Chat_History/historySlice";
+import PagePagination from "../Pagination/PagePagination";
 
 function Users_chat() {
   const masterUsersChat = useSelector((state) => state.usersChatSlice.data);
@@ -18,39 +19,11 @@ function Users_chat() {
   const dispatch = useDispatch();
   const navigate = useRouter();
   const [page, setPage] = useState(1);
-  const total_pages = useSelector((state) => state.usersChatSlice.total_pages);
   // Fetch users on component mount and page change
   useEffect(() => {
     dispatch(getUsersChatAction({ token, page }));
   }, [getUsersChatAction,page]);
 
-  // States for filters
-  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
-  const [nameFilter, setNameFilter] = useState("");
-  const [userFilter, setUserFilter] = useState("");
-
-  // Handle individual filters
-  const handleGlobalSearch = (e) => setGlobalSearchTerm(e.target.value.toLowerCase());
-  const handleNameFilter = (e) => setNameFilter(e.target.value.toLowerCase());
-  const handleUserFilter = (e) => setUserFilter(e.target.value.toLowerCase());
-
-  // Filtered data
-  const filteredData = masterUsersChat?.filter((item) => {
-    const matchesGlobal = globalSearchTerm
-      ? item.name.toLowerCase().includes(globalSearchTerm) ||
-        item.user_name?.name.toLowerCase().includes(globalSearchTerm)
-      : true;
-
-    const matchesName = nameFilter
-      ? item.name.toLowerCase().includes(nameFilter)
-      : true;
-
-    const matchesUser = userFilter
-      ? item.user_name?.name.toLowerCase().includes(userFilter)
-      : true;
-
-    return matchesGlobal && matchesName && matchesUser;
-  });
 
   const handleOpenView = (id) => {
     dispatch(choseChate(id));
@@ -61,11 +34,41 @@ function Users_chat() {
     navigate.push("/");
   };
 
-  // dispatch(handlePages(response.data?.data.total_pages))
 
-  console.log(filteredData)
-  // const total_pages = Math.ceil(masterUsersChat?.length / 10);
+  // filter and pagination
+  const [searchTerms, setSearchTerms] = useState({});
+  const [pagez, setPagez] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Update search term for a column
+  const handleSearchChange = (column, value) => {
+    setPagez(0);
+    setSearchTerms((prev) => ({
+      ...prev,
+      [column]: value.toLowerCase(),
+    }));
+  };
 
+  const filteredData = masterUsersChat?.filter((row) =>
+    Object.entries(searchTerms).every(([column, term]) => {
+      if (!term) return true; // Skip if no search term
+      // Default case for other columns
+      if (column === "user_name") {
+        // Handle nested section.name filtering
+        return row.user_name?.name?.toLowerCase().includes(term);
+      }
+
+      return row[column]?.toLowerCase().includes(term);
+    })
+  );
+
+  const paginatedData = filteredData?.slice(
+    pagez * rowsPerPage,
+    pagez * rowsPerPage + rowsPerPage
+  );
+  const onPageChange = (event, pageNumber) => {
+    setPagez(pageNumber - 1);
+  };
+  const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
 
   return (
     <section>
@@ -97,7 +100,7 @@ function Users_chat() {
             <label htmlFor="table-search" className="sr-only">
               Search
             </label>
-            <div className="relative mt-1">
+            {/* <div className="relative mt-1">
               <input
                 type="text"
                 id="global-search"
@@ -105,7 +108,7 @@ function Users_chat() {
                 placeholder="Global Search"
                 onChange={handleGlobalSearch}
               />
-            </div>
+            </div> */}
           </div>
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -115,24 +118,31 @@ function Users_chat() {
                     type="text"
                     placeholder="Name"
                     className="filter w-full px-2 py-1 rounded filter-input"
-                    onChange={handleNameFilter}
-                  />
+                    onChange={(e) => handleSearchChange("name", e.target.value)}
+                    />
                 </th>
                 <th className="px-5 py-3">
                   <input
                     type="text"
                     placeholder="User"
                     className="filter w-full px-2 py-1 rounded filter-input"
-                    onChange={handleUserFilter}
-                  />
+                    onChange={(e) => handleSearchChange("user_name", e.target.value)}
+                    />
                 </th>
-                <th className="px-5 py-3">ChatGPT ID</th>
+                <th className="px-5 py-3">
+                <input
+                type="text"
+                onChange={(e) => handleSearchChange("chatgpt_id", e.target.value)}
+                placeholder="ChatGPT ID"
+                className="filter w-full px-2 py-1 rounded filter-input"
+              />
+                </th>
                 <th className="px-5 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredData?.length > 0 ? (
-                filteredData.map((item, index) => (
+              {paginatedData?.length > 0 ? (
+                paginatedData.map((item, index) => (
                   <tr key={index} className="bg-white border-b hover:bg-gray-50">
                     <td className="px-6 py-4">{item.name}</td>
                     <td className="px-6 py-4">{item.user_name?.name}</td>
@@ -160,7 +170,15 @@ function Users_chat() {
           </table>
         </div>
         {/* Pagination Component */}
-        <PaginationPages page={page} setPage={setPage} total_pages={total_pages} />
+
+        <PagePagination
+          totalPages={totalPages}
+          pagez={pagez}
+          onPageChange={onPageChange}
+        />
+
+
+        {/* <PaginationPages page={page} setPage={setPage} total_pages={total_pages} /> */}
       </div>
     </section>
   );

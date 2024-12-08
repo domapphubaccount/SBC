@@ -230,6 +230,51 @@ export const updateRoleAction = createAsyncThunk(
 );
 // end edit user role
 
+
+// start reset password user
+export const resetPasswordAction = createAsyncThunk(
+  "users/resetPasswordAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const {
+      token,
+      password,
+      newPassword,
+    } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}admin/users`,
+        {
+          password,
+          newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end reset password user
+
 const initialState = {
   users: [],
   user: {},
@@ -422,8 +467,25 @@ export const usersSlice = createSlice({
       .addCase(addUserAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
-      });
+      })
     // end add user
+
+      //start reset password
+      .addCase(resetPasswordAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.resetPasswordModule = false;
+      })
+      .addCase(resetPasswordAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      });
+    // end reset password
   },
 });
 export const {

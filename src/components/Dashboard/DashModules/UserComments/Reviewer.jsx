@@ -75,7 +75,7 @@ export function Reviewer({ openReviewer, handleClose }) {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-  const statusOptions = ["accept", "reject", "in_progress","pending"];
+  const statusOptions = ["accept", "reject", "in_progress"];
 
   useEffect(() => {
     if (commentData) {

@@ -311,7 +311,7 @@ function Pdfs({}) {
                 <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm ">
                   <div className="flex justify-center">
                   <Tooltip
-                    className="w-60 text-center"
+                    className="w-60 text-center max-h-72 overflow-auto"
                     content={
                       <ul>
                         {item?.who_assigneds?.length > 0 ? (

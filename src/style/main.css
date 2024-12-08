@@ -303,9 +303,9 @@ nav{
   }
   .archive_card{
     position: absolute;
-    left: 20%;
+    right: -220%;
     width: 300px;
-    transform: translateX(-70%);
+    /* transform: translateX(-70%); */
   }
   .code_card{
     right: 0px;

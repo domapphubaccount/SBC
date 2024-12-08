@@ -3,9 +3,7 @@ import ArchiveSettings from "./ArchiveSettings";
 import ShareChatLink from "../Chat/shareChatLink/ShareChatLink";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  update_archive,
-} from "@/app/Redux/Features/Update/UpdateSlice";
+import { update_archive } from "@/app/Redux/Features/Update/UpdateSlice";
 import {
   choseChate,
   getConversation,
@@ -73,9 +71,7 @@ function TailwindAccordion() {
           },
         }
       )
-      .then((response) => {
-     
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error("There was an error making the request!", error);
       });
@@ -126,7 +122,7 @@ function TailwindAccordion() {
       // dispatch(loading_chat(true));
       dispatch(loading_get_chat_history(true));
       localStorage.setItem("chat", chat_id);
-      localStorage.setItem("hints",false)
+      localStorage.setItem("hints", false);
     }
   };
   const handleDeleteChate = (handleChat) => {
@@ -152,7 +148,7 @@ function TailwindAccordion() {
 
           if (handleChat.id === conversation.id) {
             localStorage.removeItem("chat");
-            localStorage.setItem("hints",true)
+            localStorage.setItem("hints", true);
             setHandleChat({});
             dispatch(choseChate(null));
             dispatch(getConversation([]));
@@ -171,103 +167,104 @@ function TailwindAccordion() {
   };
 
   return (
-    <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
-      <div className="accordion h-full">
-        {dashboardData?.chat_history &&
-        Object.entries(dashboardData.chat_history).length >= 1 ? (
-          Object.entries(dashboardData.chat_history).map((item, i) => (
-            <div className="border-b border-gray-200" key={item[0]}>
-              <div
-                className="cursor-pointer py-4 flex justify-between items-center"
-                onClick={() => toggle(i)}
-              >
-                <span className="text-sm font-bold text-gray-800">
-                  {item[0]}
-                </span>
-                {item[1]?.id && (
-                  <svg
-                    className={`w-5 h-5 transform transition-transform duration-300 ${
-                      open === 2 ? "rotate-180" : "rotate-0"
-                    }`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="white"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+    <>
+      <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
+        <div className="accordion h-full">
+          {dashboardData?.chat_history &&
+          Object.entries(dashboardData.chat_history).length >= 1 ? (
+            Object.entries(dashboardData.chat_history).map((item, i) => (
+              <div className="border-b border-gray-200" key={item[0]}>
+                <div
+                  className="cursor-pointer py-4 flex justify-between items-center"
+                  onClick={() => toggle(i)}
+                >
+                  <span className="text-sm font-bold text-gray-800">
+                    {item[0]}
+                  </span>
+                  {item[1]?.id && (
+                    <svg
+                      className={`w-5 h-5 transform transition-transform duration-300 ${
+                        open === 2 ? "rotate-180" : "rotate-0"
+                      }`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="white"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  )}
+                </div>
+                {open === i && (
+                  <div className="pb-2 text-sm font-bold text-gray-700">
+                    <ul>
+                      {item[1] &&
+                        Object.entries(item[1]).map((item, i) => (
+                          <li
+                            key={i}
+                            className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleGetChat(item[1].id, item[1].share_name);
+                            }}
+                          >
+                            -- {item[1].id ? item[1].name : item[1].name}
+                            <ArchiveSettings
+                              item={item[1]}
+                              setRenameToggle={setRenameToggle}
+                              setDeleteToggle={setDeleteToggle}
+                              setHandleChat={setHandleChat}
+                              setShareToggle={setShareToggle}
+                            />
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
                 )}
               </div>
-              {open === i && (
-                <div className="pb-2 text-sm font-bold text-gray-700">
-                  <ul>
-                    {item[1] &&
-                      Object.entries(item[1]).map((item, i) => (
-                        <li
-                          key={i}
-                          className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleGetChat(item[1].id, item[1].share_name);
-                          }}
-                        >
-                          -- {item[1].id ? item[1].name : item[1].name}
-                          <ArchiveSettings
-                            item={item[1]}
-                            setRenameToggle={setRenameToggle}
-                            setDeleteToggle={setDeleteToggle}
-                            setHandleChat={setHandleChat}
-                            setShareToggle={setShareToggle}
-                          />
-                        </li>
-                      ))}
-                  </ul>
+            ))
+          ) : loadingHistory ||
+            typeof dashboardData?.chat_history === "undefined" ||
+            loadingHistory ? (
+            <>
+              {errorHistory ? (
+                <div className="text-center">
+                  <img
+                    src={loadingImg.src}
+                    alt="loading"
+                    className="w-20 loading_logo inline"
+                  />
+                  <div className="font-semibold">Loading..</div>
+                </div>
+              ) : (
+                <div className="h-full w-full text-black flex justify-center items-center">
+                  <div className="text-center">
+                    <img className="w-20 inline" src={Logo.src} alt="logo" />
+                    <div className="font-semibold	">No History Yet</div>
+                  </div>
                 </div>
               )}
-            </div>
-          ))
-        ) : loadingHistory ||
-          typeof dashboardData?.chat_history === "undefined" ||
-          loadingHistory ? (
-          <>
-            {errorHistory ? (
-              <div className="text-center">
-                <img
-                  src={loadingImg.src}
-                  alt="loading"
-                  className="w-20 loading_logo inline"
-                />
-                <div className="font-semibold">Loading..</div>
-              </div>
-            ) : (
-              <div className="h-full w-full text-black flex justify-center items-center">
-                <div className="text-center">
-                  <img className="w-20 inline" src={Logo.src} alt="logo" />
-                  <div className="font-semibold	">No History Yet</div>
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          dashboardData.chat_history &&
-          Object.entries(dashboardData.chat_history).length === 0 && (
-            <>
-              <div className="h-full w-full text-black flex justify-center items-center">
-                <div className="text-center">
-                  <img className="w-20 inline" src={Logo.src} alt="logo" />
-                  <div className="font-semibold	">No History Yet</div>
-                </div>
-              </div>
             </>
-          )
-        )}
+          ) : (
+            dashboardData.chat_history &&
+            Object.entries(dashboardData.chat_history).length === 0 && (
+              <>
+                <div className="h-full w-full text-black flex justify-center items-center">
+                  <div className="text-center">
+                    <img className="w-20 inline" src={Logo.src} alt="logo" />
+                    <div className="font-semibold	">No History Yet</div>
+                  </div>
+                </div>
+              </>
+            )
+          )}
+        </div>
       </div>
-
       {renameToggle && handleChat && (
         <div
           className="relative z-10"
@@ -276,7 +273,7 @@ function TailwindAccordion() {
           aria-modal="true"
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="fixed inset-0 z-10 overflow-y-auto">
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -335,7 +332,7 @@ function TailwindAccordion() {
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="fixed inset-0 z-10  overflow-y-auto">
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -408,7 +405,7 @@ function TailwindAccordion() {
           shareName={shareName}
         />
       )}
-    </div>
+    </>
   );
 }
 
