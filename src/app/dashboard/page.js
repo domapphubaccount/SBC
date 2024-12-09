@@ -4,8 +4,8 @@ import { Sidebar } from "@/components/Dashboard/Sidebar/Sidebar";
 import { redirect } from "next/navigation";
 import React, { Suspense, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { lazy } from "react";
-const Dashboard = lazy(() => import("@/components/Dashboard/Dashboard"));
+import dynamic from "next/dynamic";
+const Dashboard = dynamic(() => import("@/components/Dashboard/Dashboard"), { ssr: false })
 
 function Page() {
   const profileData = useSelector((state) => state.profileSlice.profile);

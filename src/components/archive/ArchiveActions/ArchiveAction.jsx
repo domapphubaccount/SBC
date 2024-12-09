@@ -9,6 +9,12 @@ import {
 } from "@/app/Redux/Features/Chat_History/historySlice";
 import { update_archive } from "@/app/Redux/Features/Update/UpdateSlice";
 import ShareChatLink from "../../Chat/shareChatLink/ShareChatLink";
+import {
+  chat_out,
+  choseChate,
+  getConversation,
+} from "@/app/Redux/Features/Chat/ChatSlice";
+import { set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
 
 function ArchiveAction({
   setSharableChat,
@@ -29,6 +35,7 @@ function ArchiveAction({
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.chatActionsSlice.loading);
   const disabledAction = useSelector((state) => state.chatActionsSlice.loading);
+  const conversation = useSelector((state) => state.chatSlice.conversation);
 
   const handleRename = () => {
     dispatch(loading_chat_action(true));
@@ -53,7 +60,7 @@ function ArchiveAction({
           dispatch(update_archive());
           dispatch(loading_chat_action(false));
           dispatch(rename_module(false));
-          setOpen(false);
+          // setOpen(false);
           setAction(true);
           setTimeout(() => setAction(false), 1500);
         }
@@ -83,26 +90,27 @@ function ArchiveAction({
         }
       )
       .then((response) => {
+        console.log(response);
         if (response.data) {
           dispatch(loading_chat_action(false));
           dispatch(delete_module(false));
 
           if (handleChat.id === conversation.id) {
-            localStorage.removeItem("chat");
-            localStorage.setItem("hints",true)
+            dispatch(chat_out());
+            dispatch(set_direct_code([]));
             setHandleChat({});
-            dispatch(choseChate(null));
-            dispatch(getConversation([]));
           }
           dispatch(update_archive());
-          setOpen(false);
+          // setOpen(false);
           setAction(true);
           setTimeout(() => setAction(false), 1500);
         }
       })
       .catch((error) => {
+        console.log(error);
         dispatch(loading_chat_action(false));
-        setError(error.response.data.message);
+        console.log(error.response);
+        setError(error.response?.data?.message);
         setTimeout(() => setError(""), 1500);
         console.error("There was an error making the request!", error);
       });
@@ -152,7 +160,7 @@ function ArchiveAction({
           )}
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
           <div className="fixed inset-0 z-10 overflow-y-auto">
-          {ErrorMSG && (
+            {ErrorMSG && (
               <div
                 className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
                 role="alert"

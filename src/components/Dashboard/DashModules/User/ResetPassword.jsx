@@ -4,12 +4,13 @@ import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { addUserAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
+import { resetPasswordAction } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 
 export function ResetPassword({ openReset, handleClose }) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const userData = useSelector((state) => state.usersSlice.user);
   const loading = useSelector((state) => state.usersSlice.loading);
   const ErrorMSG = useSelector((state) => state.usersSlice.error);
 
@@ -18,6 +19,7 @@ export function ResetPassword({ openReset, handleClose }) {
     initialValues: {
       password: "",
       password_confirmation: "",
+      send_mail: 0,
     },
     validationSchema: Yup.object({
       password: Yup.string()
@@ -28,7 +30,9 @@ export function ResetPassword({ openReset, handleClose }) {
         .required("Password confirmation is required"),
     }),
     onSubmit: (values) => {
-    //   dispatch(addUserAction({ token, ...values }));
+      dispatch(
+        resetPasswordAction({ token, email: userData.email, ...values })
+      );
     },
   });
 
@@ -43,13 +47,10 @@ export function ResetPassword({ openReset, handleClose }) {
             <span className="font-medium">Error!</span> {ErrorMSG}
           </div>
         )}
-        <Modal.Header>
-          Reset Password
-        </Modal.Header>
+        <Modal.Header>Reset Password</Modal.Header>
         <Modal.Body>
           {!loading ? (
             <form onSubmit={formik.handleSubmit} className="space-y-6">
-
               <div>
                 <Label htmlFor="password" value="New Password" />
                 <TextInput
@@ -88,14 +89,14 @@ export function ResetPassword({ openReset, handleClose }) {
                 ) : null}
               </div>
 
-
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="accept"
-                  onChange={(e) =>
-                    e.target.checked
-                      ? formik.setFieldValue("account_type", "test")
-                      : formik.setFieldValue("account_type", "user")
+                  onChange={
+                    (e) =>
+                      e.target.checked
+                        ? formik.setFieldValue("send_mail", "1") // Send mail when checked
+                        : formik.setFieldValue("send_mail", "0") // Do not send mail when unchecked
                   }
                 />
                 <Label htmlFor="accept" className="flex">

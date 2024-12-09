@@ -179,8 +179,6 @@ function Roles({}) {
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
-  console.log(filteredData);
-
   let TableData = useCallback(() => {
     return (
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

@@ -11,6 +11,7 @@ import DashboardData from "./DashContent/Dashboard";
 import ReviewerAdmin from "./DashContent/Reviewer";
 import { useSelector } from "react-redux";
 
+
 function Dashboard({ page, setPage }) {
   const permissions = {
     9: "analysis",

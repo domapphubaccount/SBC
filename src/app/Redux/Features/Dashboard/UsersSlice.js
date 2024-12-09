@@ -28,12 +28,18 @@ export const getUsersAction = createAsyncThunk(
       }
       if (pathPage) {
         if (isTest) {
-          dispatch( setAllData(response.data.data[0].filter(item => item.account_type == "test")));
+          dispatch(
+            setAllData(
+              response.data.data[0].filter(
+                (item) => item.account_type == "test"
+              )
+            )
+          );
         } else {
           dispatch(setAllData(response.data.data[0]));
         }
       }
-      dispatch(setPage(1))
+      dispatch(setPage(1));
       return response.data.data[0];
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -230,23 +236,20 @@ export const updateRoleAction = createAsyncThunk(
 );
 // end edit user role
 
-
 // start reset password user
 export const resetPasswordAction = createAsyncThunk(
   "users/resetPasswordAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const {
-      token,
-      password,
-      newPassword,
-    } = arg;
+    const { token, email, password, password_confirmation, send_mail } = arg;
 
     try {
       const response = await axios.post(
-        `${config.api}admin/users`,
+        `${config.api}password/reset-admin`,
         {
+          email,
           password,
-          newPassword,
+          password_confirmation,
+          send_mail,
         },
         {
           headers: {
@@ -275,6 +278,45 @@ export const resetPasswordAction = createAsyncThunk(
 );
 // end reset password user
 
+// start reset password link
+export const resetPasswordLinkAction = createAsyncThunk(
+  "users/resetPasswordLinkAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, email } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}password/reset-link-admin`,
+        {
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end reset password link
+
 const initialState = {
   users: [],
   user: {},
@@ -298,8 +340,6 @@ const initialState = {
   displayedData: [],
   currentPage: 1,
   itemsPerPage: 10,
-
-
 };
 
 export const usersSlice = createSlice({
@@ -325,10 +365,10 @@ export const usersSlice = createSlice({
       state.roleModule = action.payload;
     },
     resetPasswordModule: (state, action) => {
-      state.resetPasswordModule = action.payload
+      state.resetPasswordModule = action.payload;
     },
     resetPasswordLinkModule: (state, action) => {
-      state.resetPasswordLinkModule = action.payload
+      state.resetPasswordLinkModule = action.payload;
     },
     handlePages: (state, action) => {
       state.total_pages = action.payload;
@@ -337,12 +377,10 @@ export const usersSlice = createSlice({
       state.action = action.payload;
     },
 
-
-
     // pagination
     setAllData: (state, action) => {
       state.allData = action.payload;
-      state.displayedData = state.allData.slice(0, 10); 
+      state.displayedData = state.allData.slice(0, 10);
     },
     setDisplayedData: (state, action) => {
       state.displayedData = action.payload;
@@ -361,9 +399,8 @@ export const usersSlice = createSlice({
     },
     removeData: (state, action) => {
       state.displayedData = [];
-      state.allData = []
-    }
-
+      state.allData = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -468,7 +505,7 @@ export const usersSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message;
       })
-    // end add user
+      // end add user
 
       //start reset password
       .addCase(resetPasswordAction.pending, (state) => {
@@ -484,8 +521,25 @@ export const usersSlice = createSlice({
       .addCase(resetPasswordAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
+      })
+      // end reset password
+
+      //start reset password link
+      .addCase(resetPasswordLinkAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordLinkAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.resetPasswordLinkModule = false;
+      })
+      .addCase(resetPasswordLinkAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
       });
-    // end reset password
+    // end reset password link
   },
 });
 export const {
@@ -497,7 +551,13 @@ export const {
   addModule,
   handlePages,
   handleAction,
-  setAllData, setDisplayedData, resetData, setPage, removeData , resetPasswordModule , resetPasswordLinkModule
+  setAllData,
+  setDisplayedData,
+  resetData,
+  setPage,
+  removeData,
+  resetPasswordModule,
+  resetPasswordLinkModule,
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

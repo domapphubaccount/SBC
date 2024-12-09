@@ -1,33 +1,32 @@
 "use client";
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "@/assets/logo/Logo.png";
 import { useSelector } from "react-redux";
-import ResetPassword from "./Password";
-import { useSearchParams, useRouter } from "next/navigation";
+import ResetPassword from "../Password";
+import { useSearchParams } from "next/navigation";
 
-function Page() {
+function Page({ params }) {
   const loading = useSelector((state) => state.loginSlice.password.loading);
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
-  const router = useRouter();
+  const [email, setEmail] = useState(null);
+  const token = params.token; // Get the token from the dynamic route
 
   useEffect(() => {
-    if (id) {
-      console.log(`Query parameter 'id' is: ${id}`);
-    } else {
-      console.log("No 'id' parameter found.");
-    }
-  }, [id]);
+    // Extract email from search parameters
+    const emailParam = searchParams.get("email");
+    setEmail(emailParam);
+  }, [searchParams]);
 
-  // Optional: Redirect if user is logged in (client-side)
-  // useEffect(() => {
-  //   const userData = JSON.parse(localStorage.getItem("data"));
-  //   if (userData) {
-  //     router.push("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (email && token) {
+      console.log(`Email: ${email}`);
+      console.log(`Token: ${token}`);
+    } else {
+      console.log("Email or token not found.");
+    }
+  }, [email, token]);
 
   return (
     <section className="log-bannar">
@@ -45,7 +44,7 @@ function Page() {
           )}
           {/* Reset Password Component */}
           <div className="mt-10">
-            <ResetPassword id={id} />
+            <ResetPassword email={email} token={token} />
           </div>
           {/* Link to Sign-Up Page */}
           <div className="flex justify-center items-center mt-6">

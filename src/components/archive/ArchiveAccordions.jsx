@@ -142,21 +142,26 @@ function TailwindAccordion() {
         }
       )
       .then((response) => {
-        if (response.data) {
+        console.log("debug",response)
+        if (response) {
+          console.log("debug")
           dispatch(loading_chat_action(false));
           setDeleteToggle(false);
-
-          if (handleChat.id === conversation.id) {
+          
+          if (handleChat.id == conversation.id) {
+            console.log("debug2")
             localStorage.removeItem("chat");
             localStorage.setItem("hints", true);
             setHandleChat({});
             dispatch(choseChate(null));
             dispatch(getConversation([]));
           }
+          console.log("debug3")
           dispatch(update_archive());
           setOpen(false);
           setAction(true);
           setTimeout(() => setAction(false), 1500);
+          console.log("debug4")
         }
       })
       .catch((error) => {
