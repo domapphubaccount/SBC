@@ -3,7 +3,7 @@
 import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import { clearData } from "../Chat/ChatSlice";
 import { clearHistory } from "../Chat_History/historySlice";
 import RemoveAuth from "../RemoveAuth";
@@ -31,7 +31,9 @@ export const updatePasswordAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      console.log(error.response)
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -58,7 +60,9 @@ export const getProfileAction = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
+      console.log(error.response.status === 401)
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);

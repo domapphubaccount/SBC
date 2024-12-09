@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
 
 // start get dashbaord
@@ -30,6 +30,7 @@ export const getUsersChatAction = createAsyncThunk(
       return response.data.data[0];
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);

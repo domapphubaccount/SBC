@@ -81,6 +81,9 @@ function MainChat({ windowWidth }) {
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
     return percentageEnglish > 50;
   }
+
+  
+  
   const dislikeToggle = (id) => {
     setItemId(id);
     setDislike(!dislike);

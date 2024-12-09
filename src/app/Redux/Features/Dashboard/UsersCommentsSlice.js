@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
 
 // start get comments
@@ -12,7 +12,7 @@ export const getCommentsAction = createAsyncThunk(
   async (arg, { dispatch , rejectWithValue }) => {
     const { token , page } = arg;
     try {
-      const response = await axios.get(`${config.api}admin/chat-user-dislikes?page=2`, {
+      const response = await axios.get(`${config.api}admin/chat-user-dislikes`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -28,6 +28,7 @@ export const getCommentsAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -57,6 +58,7 @@ export const getCommentByIDAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -91,6 +93,7 @@ export const deleteCommentAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -132,6 +135,7 @@ export const addReviewAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -165,6 +169,7 @@ export const updateCommentAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if(error?.response?.status === 401){
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);

@@ -3,7 +3,7 @@
 import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
 import { Errors } from "./ChatErrors";
 
@@ -55,6 +55,7 @@ export const getChatAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -89,6 +90,7 @@ export const addQuestionAction = createAsyncThunk(
     } catch (error) {
       console.log('debug')
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       // if (Errors.some((item) => item.error.includes(error?.response.status))) {
