@@ -32,6 +32,7 @@ export default function TreeArchive() {
 
   // Get archive data
   React.useEffect(() => {
+    console.log("update")
     dispatch(getHistoryAction({ token }));
   }, [updates, updateDashboard, token]);
 

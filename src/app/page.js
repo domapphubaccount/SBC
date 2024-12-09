@@ -3,7 +3,6 @@
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import SnackbarError from "@/components/Snackbar/SnackbarError";
 import SnackbarTime from "@/components/Snackbar/SnackbarTime";
-// import DashLayout from "@/layout/DashLayout/DashLayout";
 import Header from "@/layout/Header/Header";
 import { redirect, usePathname } from "next/navigation";
 import { Suspense, useLayoutEffect } from "react";
@@ -13,8 +12,8 @@ import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
 import SnackbarSendError from "@/components/Snackbar/SnackSendError";
 import SnackbarGlobalError from "@/components/Snackbar/SnackGlobalError";
 import Drawer from "@/layout/Drawer/Drawer";
-import { lazy } from "react";
-const DashLayout = lazy(() => import("@/layout/DashLayout/DashLayout"));
+import dynamic from "next/dynamic";
+const DashLayout = dynamic(() => import("@/layout/DashLayout/DashLayout"), { ssr: false })
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged);

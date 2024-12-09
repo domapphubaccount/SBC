@@ -4,9 +4,8 @@ import { redirect } from "next/navigation";
 import React, { Suspense, useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 import Loading from "../loading";
-import { lazy } from "react";
-const Profile = lazy(() => import("@/components/Profile/Profile"));
-
+import dynamic from "next/dynamic";
+const Profile = dynamic(() => import("@/components/Profile/Profile"), { ssr: false })
 
 function Page() {
   const isLogged = useSelector((state) => state.loginSlice.logged);
