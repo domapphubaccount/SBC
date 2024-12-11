@@ -271,13 +271,6 @@ function Users({}) {
               />
             </th>
             <th scope="col" className="px-6 py-3">
-              {/* <input
-                type="text"
-                onChange={(e) => handleSearchChange("roles", e.target.value)}
-                placeholder="Role"
-                className="filter w-full px-2 py-1 rounded filter-input"
-              /> */}
-
               <select
                 type="select"
                 placeholder="Role"

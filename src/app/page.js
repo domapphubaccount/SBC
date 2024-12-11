@@ -2,10 +2,9 @@
 
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import SnackbarError from "@/components/Snackbar/SnackbarError";
-import SnackbarTime from "@/components/Snackbar/SnackbarTime";
 import Header from "@/layout/Header/Header";
 import { redirect, usePathname } from "next/navigation";
-import { Suspense, useEffect, useLayoutEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "./loading";
 import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
@@ -18,11 +17,11 @@ const DashLayout = dynamic(() => import("@/layout/DashLayout/DashLayout"), { ssr
 
 export default function Home() {
   const isLogged = useSelector((state) => state.loginSlice.logged);
-  const loading = useSelector((state) => state.historySlice.loading); // here i have added the loading of the dashboard slice
-  const loading_out = useSelector((state) => state.loginSlice.loading); // here i have added the loading of loginslice
+  const loading = useSelector((state) => state.historySlice.loading);
+  const loading_out = useSelector((state) => state.loginSlice.loading); 
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
-  ); // and here is the loading of all chat actions
+  ); 
   const error = useSelector((state) => state.chatSlice.error);
   const pathname = usePathname();
   const dispatch = useDispatch();
