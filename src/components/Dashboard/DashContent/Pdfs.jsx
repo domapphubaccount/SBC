@@ -31,6 +31,7 @@ import { RestorePdf } from "./RestorePdf";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { Pagination } from "@mui/material";
 import PagePagination from "../Pagination/PagePagination";
+import DatePicker from "react-datepicker";
 
 function Pdfs({}) {
   const dispatch = useDispatch();
@@ -52,7 +53,6 @@ function Pdfs({}) {
   const openAssign = useSelector((state) => state.pdfsSlice.assignModule);
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const [page, setPagec] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const { enqueueSnackbar } = useSnackbar();
   const action = useSelector((state) => state.pdfsSlice.action);
   const permissionsData = useSelector(
@@ -107,8 +107,8 @@ function Pdfs({}) {
   // end open edit
 
   // start open assigned
-  const handleOpenAssigned = (id) => {
-    setFileID(id);
+  const handleOpenAssigned = (item) => {
+    setFileID(item);
     dispatch(assignModule(true));
   };
   // end open assigned
@@ -149,6 +149,8 @@ function Pdfs({}) {
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // Update search term for a column
   const handleSearchChange = (column, value) => {
     setPagez(0);
@@ -157,26 +159,55 @@ function Pdfs({}) {
       [column]: value.toLowerCase(),
     }));
   };
-  const filteredData = allData.filter((row) =>
-    Object.entries(searchTerms).every(([column, term]) => {
-      if (!term) return true; // Skip if no search term
 
-      if (column === "section") {
-        // Handle nested section.name filtering
-        return row.section?.name?.toLowerCase().includes(term);
-      }
+  const convertToDate = (dateString) => {
+    return new Date(dateString); // Ensure the string is in a format JavaScript can parse
+  };
 
-      if (column === "who_assigneds") {
-        // Check if any of the names in who_assigneds matches the search term
-        return row.who_assigneds?.some((assignee) =>
-          assignee.name?.toLowerCase().includes(term)
-        );
-      }
+  // Handle date range change
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
 
-      // Default case for other columns
-      return row[column]?.toLowerCase().includes(term);
-    })
-  );
+    // Set the date range in search terms
+    setSearchTerms((prev) => ({
+      ...prev,
+      created_at: start && end ? { start, end } : "", // Only set if both dates are present
+    }));
+  };
+
+  const filteredData = allData
+    .filter((item) => item.type === fileType)
+    .filter((row) =>
+      Object.entries(searchTerms).every(([column, term]) => {
+        console.log(column);
+        if (!term) return true; // Skip if no search term
+
+        if (column === "section") {
+          // Handle nested section.name filtering
+          return row.section?.name?.toLowerCase().includes(term);
+        }
+
+        if (column === "who_assigneds") {
+          // Check if any of the names in who_assigneds matches the search term
+          return row.who_assigneds?.some((assignee) =>
+            assignee.name?.toLowerCase().includes(term)
+          );
+        }
+
+        if (startDate && endDate) {
+          // Convert the last_seen string to Date
+          const rowDate = convertToDate(row[column]);
+
+          // Check if the date falls within the selected range
+          return rowDate >= startDate && rowDate <= endDate;
+        }
+
+        // Default case for other columns
+        return row[column]?.toLowerCase().includes(term);
+      })
+    );
   const paginatedData = filteredData.slice(
     pagez * rowsPerPage,
     pagez * rowsPerPage + rowsPerPage
@@ -185,7 +216,6 @@ function Pdfs({}) {
     setPagez(pageNumber - 1);
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-
 
   const tableData = useCallback(() => {
     return (
@@ -247,13 +277,23 @@ function Pdfs({}) {
                 deleted ? "bg-red-200 " : "bg-gray-100 "
               } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
             >
-              <input
+              {/* <input
                 type="text"
                 placeholder="Created At"
                 onChange={(e) =>
                   handleSearchChange("created_at", e.target.value)
                 }
                 className="filter w-full px-2 py-1 rounded filter-input"
+              /> */}
+
+              <DatePicker
+                selected={startDate}
+                onChange={handleDateChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
+                placeholderText="Select a date range"
+                className="w-full px-2 py-1 rounded filter-input"
               />
             </th>
             <th
@@ -310,32 +350,36 @@ function Pdfs({}) {
                 </td>
                 <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm ">
                   <div className="flex justify-center">
-                  <Tooltip
-                    className="w-60 text-center max-h-72 overflow-auto"
-                    content={
-                      <ul>
-                        {item?.who_assigneds?.length > 0 ? (
-                          item?.who_assigneds?.map((item2, i) => (
-                            <>
+                    <Tooltip
+                      className="w-60 bg-gray-50 border-2 border-gray-300 rounded-md shadow-lg p-2 text-center max-h-72 overflow-auto"
+                      style={{
+                        padding: "10px",
+                        backgroundColor: "#f9fafb",
+                        color: "#374151",
+                      }}
+                      content={
+                        <ul className="text-gray-700">
+                          {item?.who_assigneds?.length > 0 ? (
+                            item?.who_assigneds?.map((item2, i) => (
                               <li
                                 key={i}
-                                className="flex"
-                                style={{ fontSize: "10px" }}
+                                className="flex justify-start text-xs text-gray-800 mb-1"
                               >
                                 {i + 1}: {item2.name}
                               </li>
-                            </>
-                          ))
-                        ) : (
-                          <small>"NO ONE ASSIGNED"</small>
-                        )}
-                      </ul>
-                    }
-                  >
-                    <div className="ms-5">
-                      <AdminPanelSettingsIcon />
-                    </div>
-                  </Tooltip>
+                            ))
+                          ) : (
+                            <div className="text-sm text-red-500 font-medium">
+                              "NO ONE ASSIGNED"
+                            </div>
+                          )}
+                        </ul>
+                      }
+                    >
+                      <div className="ms-5">
+                        <AdminPanelSettingsIcon className="text-gray-700 hover:text-blue-500" />
+                      </div>
+                    </Tooltip>
                   </div>
                 </td>
                 <td className="px-2 py-2 text-center border-b border-gray-200 bg-white text-sm">
@@ -477,7 +521,7 @@ function Pdfs({}) {
                           <button
                             type="button"
                             className="flex items-center bg-slate-700 p-1 px-2 rounded text-white"
-                            onClick={() => handleOpenAssigned(item.id)}
+                            onClick={() => handleOpenAssigned(item)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -631,8 +675,7 @@ function Pdfs({}) {
         <div className="bg-white p-8 rounded-md w-full m-auto dashed overflow-auto">
           <div className="h-full">
             <div className="flex justify-between">
-              <div className="pb-4 bg-white dark:bg-gray-900">
-              </div>
+              <div className="pb-4 bg-white dark:bg-gray-900"></div>
               <div>
                 <div>
                   {deleted ? (

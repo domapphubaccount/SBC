@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
 import { reviewerModel as revMode } from "./UsersCommentsSlice";
 
@@ -33,6 +33,7 @@ export const getReviewsAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -65,6 +66,7 @@ export const deleteReviewsAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -116,6 +118,7 @@ export const addReviewAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
 
@@ -172,6 +175,7 @@ export const updateReviewAction = createAsyncThunk(
     } catch (error) {
 
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -212,6 +216,7 @@ export const trainAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);

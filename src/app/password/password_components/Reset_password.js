@@ -1,23 +1,24 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { config } from "@/config/config";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
 
+function ResetPassword({ storedCode }) {
+  const [loading, setLoading] = useState(false);
+  const [errorMSG, setErrorMSG] = useState("");
 
-function ResetPassword({storedCode}) {
   const validationSchema = Yup.object({
     password: Yup.string()
       .required("Required")
       .min(8, "Password must be at least 8 characters"),
-      password_confirmation: Yup.string()
+    password_confirmation: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Required"),
   });
-  const navigate = useRouter()
+  const navigate = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -26,9 +27,11 @@ function ResetPassword({storedCode}) {
     },
     validationSchema,
     onSubmit: (values) => {
+      setLoading(true);
+      setErrorMSG("");
       axios
         .post(
-          `${config.api}reset-password`,
+          `${config.api}password/reset`,
           {
             ...values,
             code: storedCode,
@@ -41,26 +44,62 @@ function ResetPassword({storedCode}) {
           }
         )
         .then((res) => {
-          navigate.push('/login')
+          setLoading(false);
+          setErrorMSG("");
+          navigate.push("/login");
 
           if (res.data.status === "SUCCESS") {
             localStorage.setItem("data", JSON.stringify(res.data.data));
           } else if (res.data.status === "ERROR") {
           }
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          setLoading(false);
+          setErrorMSG(e?.response?.data?.message);
+        });
     },
   });
 
   return (
     <div>
-      <div className="relative h-px bg-gray-300 mb-6">
-        <div className="absolute left-0 top-0  w-full -mt-2">
-          <span className="bg-white px-4 text-xs text-gray-500 uppercase">
-            Reset your password
-          </span>
+      {errorMSG && (
+        <div
+          className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4"
+          role="alert"
+        >
+          <svg
+            className="w-100 h-5 inline mr-3"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
+          <div>
+            <span className="font-medium">ERROR!</span> {errorMSG}
+          </div>
         </div>
-      </div>
+      )}
+      {loading ? (
+        <div className="flex justify-center pt-3">
+          <div
+            className="w-12 h-12 rounded-full animate-spin
+            border-2 border-dashed border-blue-500 border-t-transparent"
+          ></div>
+        </div>
+      ) : (
+        <div className="relative h-px bg-gray-300 mb-6">
+          <div className="absolute left-0 top-0  w-full -mt-2">
+            <span className="bg-white px-4 text-xs text-gray-500 uppercase">
+              Reset your password
+            </span>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={formik.handleSubmit}>
         {/* Code Input */}

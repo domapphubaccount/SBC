@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import RemoveAuth from "../RemoveAuth";
 import { handleProgressFunction } from "./Progress/Progress";
 
@@ -39,6 +39,7 @@ export const getPdfsAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -79,6 +80,7 @@ export const getDeletedPdfsAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -108,6 +110,7 @@ export const getRoleByIDAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -144,6 +147,7 @@ export const deletePdfAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -179,6 +183,7 @@ export const deleteForcePdfAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -231,6 +236,7 @@ export const addpdffileAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth();
       }
       return rejectWithValue(error.response?.data || error.message);

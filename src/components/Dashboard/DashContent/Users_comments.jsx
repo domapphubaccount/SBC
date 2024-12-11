@@ -24,11 +24,11 @@ import {
 } from "@/app/Redux/Features/Dashboard/UsersCommentsSlice";
 import { Reviewer } from "../DashModules/UserComments/Reviewer";
 import SnackbarTooltip from "@/components/Snackbar/Snackbar";
-import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import ArticleIcon from "@mui/icons-material/Article";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import PagePagination from "../Pagination/PagePagination";
+import DatePicker from "react-datepicker";
 
 function Users_comments({}) {
   const dispatch = useDispatch();
@@ -129,70 +129,12 @@ function Users_comments({}) {
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
 
-  // States for filters
-  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
-  const [codeFilter, setCodeFilter] = useState("");
-  const [commentFilter, setCommentFilter] = useState("");
-  const [whoAssignedFilter, setWhoAssignedFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-
-  // Handle individual filters
-  const handleGlobalSearch = (e) =>
-    setGlobalSearchTerm(e.target.value.toLowerCase());
-  const handleCodeFilter = (e) => setCodeFilter(e.target.value.toLowerCase());
-  const handleCommentFilter = (e) =>
-    setCommentFilter(e.target.value.toLowerCase());
-  const handleWhoAssignedFilter = (e) =>
-    setWhoAssignedFilter(e.target.value.toLowerCase());
-  const handleStatusFilter = (e) =>
-    setStatusFilter(e.target.value.toLowerCase());
-
-  // Filtered data
-  // const filteredData = usersCommentsData?.filter((item) => {
-  //   const matchesWhoAssignedInDislikePDF = whoAssignedFilter
-  //     ? item.dislike_pdf?.some((dislike) =>
-  //         dislike?.who_assigneds?.some((whoAssigned) =>
-  //           whoAssigned?.name.toLowerCase().includes(whoAssignedFilter)
-  //         )
-  //       )
-  //     : true;
-  //   const matchesGlobal = globalSearchTerm
-  //     ? item.comment?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.status?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.disliked_by?.name?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.whoAssigned?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.created_at?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.actions?.toLowerCase().includes(globalSearchTerm)
-  //     : true;
-
-  //   const matchesCode = codeFilter
-  //     ? item.dislike_pdf?.some((dislike) =>
-  //         dislike.name?.toLowerCase().includes(codeFilter)
-  //       )
-  //     : true;
-
-  //   const matchesComment = commentFilter
-  //     ? item.disliked_by?.name?.toLowerCase().includes(commentFilter)
-  //     : true;
-
-  //   const matchesStatus = statusFilter
-  //     ? item.status?.toLowerCase().includes(statusFilter)
-  //     : true;
-
-  //   return (
-  //     matchesGlobal &&
-  //     matchesComment &&
-  //     matchesCode &&
-  //     matchesWhoAssignedInDislikePDF &&
-  //     matchesStatus
-  //   );
-  // });
-  // console.log(usersCommentsData)
-
   // filter and pagination
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // Update search term for a column
   const handleSearchChange = (column, value) => {
     setPagez(0);
@@ -202,9 +144,48 @@ function Users_comments({}) {
     }));
   };
 
+  const convertToDate = (dateString) => {
+    return new Date(dateString); // Ensure the string is in a format JavaScript can parse
+  };
+
+  // Handle date range change
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // Set the date range in search terms
+    setSearchTerms((prev) => ({
+      ...prev,
+      created_at: start && end ? { start, end } : "", // Only set if both dates are present
+    }));
+  };
   const filteredData = usersCommentsData.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
+
+      if (column === "status") {
+        switch (term) {
+          case "accept":
+            return row.status === "accept";
+          case "reject":
+            return row.status === "reject";
+          case "in_progress":
+            return row.status === "in_progress";
+          case "pending":
+            return row.status === "pending";
+          default:
+            return true;
+        }
+      }
+
+      if (startDate && endDate) {
+        // Convert the last_seen string to Date
+        const rowDate = convertToDate(row[column]);
+
+        // Check if the date falls within the selected range
+        return rowDate >= startDate && rowDate <= endDate;
+      }
 
       if (column === "disliked_by") {
         // Handle nested section.name filtering
@@ -243,6 +224,8 @@ function Users_comments({}) {
     setPagez(pageNumber - 1);
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
+  const status = ["reject", "accept", "in_progress", "pending"];
 
   return (
     <>
@@ -300,7 +283,7 @@ function Users_comments({}) {
         </div>
 
         <div className="bg-white p-8 rounded-md w-full m-auto dashed">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg dashboard_table">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
                 Search
@@ -346,14 +329,31 @@ function Users_comments({}) {
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    <input
+                    {/* <input
                       type="text"
                       placeholder="Status"
                       onChange={(e) =>
                         handleSearchChange("status", e.target.value)
                       }
                       className="filter w-full px-2 py-1 rounded filter-input"
-                    />
+                    /> */}
+
+                    <select
+                      type="select"
+                      placeholder="Status"
+                      onChange={(e) =>
+                        handleSearchChange("status", e.target.value)
+                      }
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    >
+                      <option value={""}>ٍStatus</option>
+                      {status.length > 0 &&
+                        status.map((item, index) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                    </select>
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <input
@@ -386,13 +386,23 @@ function Users_comments({}) {
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    <input
+                    {/* <input
                       type="text"
                       placeholder="Date"
                       onChange={(e) =>
                         handleSearchChange("created_at", e.target.value)
                       }
                       className="filter w-full px-2 py-1 rounded filter-input"
+                    /> */}
+
+                    <DatePicker
+                      selected={startDate}
+                      onChange={handleDateChange}
+                      startDate={startDate}
+                      endDate={endDate}
+                      selectsRange
+                      placeholderText="Select a date range"
+                      className="w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
@@ -477,65 +487,75 @@ function Users_comments({}) {
                       <td className="px-6 py-4">{item.disliked_by.name}</td>
                       <td className="px-6 py-4">
                         <Tooltip
-                          className="w-60"
+                          className="w-60 max-h-72 overflow-auto border-2 bg-gray-50 border-gray-300 rounded-md shadow-lg p-2"
+                          style={{
+                            padding: "10px",
+                            backgroundColor: "#f9fafb",
+                            color: "#374151",
+                          }}
                           content={
-                            <ul>
-                              {item.dislike_pdf?.length > 0
-                                ? item.dislike_pdf.map((item2, i) => (
-                                    <>
-                                      <div>
-                                        {i + 1}- {item2.name}
-                                      </div>
-                                      {item2.who_assigneds.length > 0 ? (
-                                        item2.who_assigneds?.map((item3, i) => (
-                                          <>
-                                            <li
-                                              key={i}
-                                              className="flex"
-                                              style={{ fontSize: "12px" }}
-                                            >
-                                              {i + 1}: {item3.name}
-                                              {console.log(
-                                                "who assigned",
-                                                item3
-                                              )}
-                                            </li>
-                                          </>
-                                        ))
-                                      ) : (
-                                        <small>"NO ONE ASSIGNED"</small>
-                                      )}
-                                    </>
-                                  ))
-                                : "No PDF"}
+                            <ul className="text-gray-700">
+                              {item.dislike_pdf?.length > 0 ? (
+                                item.dislike_pdf.map((item2, i) => (
+                                  <div key={i} className="mb-2 border">
+                                    <div className="font-small text-sm">
+                                      {i + 1}- {item2.name}
+                                    </div>
+                                    {item2.who_assigneds.length > 0 ? (
+                                      item2.who_assigneds.map((item3, i) => (
+                                        <li
+                                          key={i}
+                                          className="flex text-xs ps-2"
+                                        >
+                                          {i + 1}: {item3.name}
+                                        </li>
+                                      ))
+                                    ) : (
+                                      <small className="text-red-500">
+                                        "NO ONE ASSIGNED"
+                                      </small>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="text-center text-sm text-gray-500">
+                                  No PDF
+                                </div>
+                              )}
                             </ul>
                           }
                         >
-                          <AdminPanelSettingsIcon />
+                          <AdminPanelSettingsIcon className="text-gray-700 hover:text-blue-500" />
                         </Tooltip>
                       </td>
                       <td className="px-6 py-4">
                         <Tooltip
-                          className="w-60"
+                          className="w-60 bg-gray-50 border-2 border-gray-300 rounded-md shadow-lg p-2"
+                          style={{
+                            padding: "10px",
+                            backgroundColor: "#f9fafb",
+                            color: "#374151",
+                          }}
                           content={
-                            <ul>
-                              {item?.dislike_pdf?.length > 0
-                                ? item.dislike_pdf.map((item, i) => (
-                                    <>
-                                      <li
-                                        key={i}
-                                        className="flex text-sm"
-                                        style={{ fontSize: "12px" }}
-                                      >
-                                        {i + 1}: {item.name}
-                                      </li>
-                                    </>
-                                  ))
-                                : "NO CODE ASSIGNED"}
+                            <ul className="text-gray-700">
+                              {item?.dislike_pdf?.length > 0 ? (
+                                item.dislike_pdf.map((item, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex text-xs text-gray-800 mb-1"
+                                  >
+                                    {i + 1}: {item.name}
+                                  </li>
+                                ))
+                              ) : (
+                                <div className="text-center text-sm text-red-500">
+                                  NO CODE ASSIGNED
+                                </div>
+                              )}
                             </ul>
                           }
                         >
-                          <ArticleIcon />
+                          <ArticleIcon className="text-gray-700 hover:text-blue-500" />
                         </Tooltip>
                       </td>
                       <td className="px-6 py-4">
@@ -619,7 +639,6 @@ function Users_comments({}) {
           pagez={pagez}
           onPageChange={onPageChange}
         />
-        
       </section>
 
       {openDelete && (

@@ -51,7 +51,6 @@ function ResetPassword({ token, email }) {
         })
         .catch((e) => {
           setLoading(false);
-          console.log(e);
           setErrorMSG(e?.response?.data?.message);
         });
     },

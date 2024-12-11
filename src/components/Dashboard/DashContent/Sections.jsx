@@ -19,6 +19,7 @@ import SnackbarTooltip from "@/components/Snackbar/Snackbar";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import PagePagination from "../Pagination/PagePagination";
+import DatePicker from "react-datepicker";
 
 function Sections() {
   const dispatch = useDispatch();
@@ -103,12 +104,30 @@ function Sections() {
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // Update search term for a column
   const handleSearchChange = (column, value) => {
     setPagez(0);
     setSearchTerms((prev) => ({
       ...prev,
       [column]: value.toLowerCase(),
+    }));
+  };
+  const convertToDate = (dateString) => {
+    return new Date(dateString); // Ensure the string is in a format JavaScript can parse
+  };
+
+  // Handle date range change
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // Set the date range in search terms
+    setSearchTerms((prev) => ({
+      ...prev,
+      created_at: start && end ? { start, end } : "", // Only set if both dates are present
     }));
   };
 
@@ -121,6 +140,14 @@ function Sections() {
         return row.roles?.some((role) =>
           role.name?.toLowerCase().includes(term)
         );
+      }
+
+      if (startDate && endDate) {
+        // Convert the last_seen string to Date
+        const rowDate = convertToDate(row[column]);
+
+        // Check if the date falls within the selected range
+        return rowDate >= startDate && rowDate <= endDate;
       }
       // Default case for other columns
       return row[column]?.toLowerCase().includes(term);
@@ -193,7 +220,7 @@ function Sections() {
           </div>
         </div>
         <div className="bg-white p-8 rounded-md w-full m-auto dashed">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg dashboard_table">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
                 Search
@@ -239,13 +266,23 @@ function Sections() {
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    <input
+                    {/* <input
                       type="text"
                       placeholder="Created At"
                       onChange={(e) =>
                         handleSearchChange("created_at", e.target.value)
                       }
                       className="filter w-full px-2 py-1 rounded filter-input"
+                    /> */}
+
+                    <DatePicker
+                      selected={startDate}
+                      onChange={handleDateChange}
+                      startDate={startDate}
+                      endDate={endDate}
+                      selectsRange
+                      placeholderText="Select a date range"
+                      className="w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">

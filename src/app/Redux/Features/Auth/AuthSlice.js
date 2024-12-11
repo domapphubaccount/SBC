@@ -6,6 +6,10 @@ import { clearData } from "../Chat/ChatSlice";
 import { clearHistory } from "../Chat_History/historySlice";
 import { clearProfile } from "../Profile/ProfileSlice";
 import RemoveAuth from "../RemoveAuth";
+import { removeData as usersData } from "../Dashboard/UsersSlice";
+import { removeData as pdfsData } from "../Dashboard/PdfsSlice";
+import { removeData as rolesData } from "../Dashboard/RolesSlice";
+import { removeData } from "../Dashboard/Pagination/Pagination";
 
 const isBrouse = typeof window !== "undefined";
 
@@ -61,14 +65,15 @@ export const logoutAction = createAsyncThunk(
       if (response.data.error) {
         return new Error(response.data.error);
       }
-      dispatch(logout())
-      dispatch(clearData())
-      dispatch(clearHistory())
-      dispatch(clearProfile())
+      dispatch(logout());
+      dispatch(clearData());
+      dispatch(clearHistory());
+      dispatch(clearProfile());
       return response.data;
     } catch (error) {
-      if(error?.response?.status === 401){
-        RemoveAuth()
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data);
     }
@@ -201,6 +206,25 @@ export const registerAction = createAsyncThunk(
 
 // end register
 
+// start remove auth
+export const removeAuthAction = createAsyncThunk(
+  "register/removeAuthAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(clearData());
+      dispatch(clearHistory());
+      dispatch(logout());
+      dispatch(removeData());
+      dispatch(usersData());
+      dispatch(pdfsData());
+      dispatch(rolesData());
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end remove auth
+
 const initialState = {
   value: "",
   loading: false,
@@ -240,8 +264,8 @@ export const loginSlice = createSlice({
       state.logged = true;
     },
     logout: (state, action) => {
-      state.logged = false;
       isBrouse && localStorage.clear();
+      state.logged = false;
       state.auth = null;
       state.value = "";
     },

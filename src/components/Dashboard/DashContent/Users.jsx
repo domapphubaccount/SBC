@@ -11,7 +11,7 @@ import { DeleteUser } from "../DashModules/User/Delete";
 import { EditUser } from "../DashModules/User/Edit";
 import { ViewUser } from "../DashModules/User/View";
 import { WarnUser } from "../DashModules/User/Warn";
-import { Button, ToggleSwitch, Tooltip } from "flowbite-react";
+import { Button, Dropdown, ToggleSwitch, Tooltip } from "flowbite-react";
 import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,7 +24,6 @@ import {
   resetPasswordLinkModule,
   resetPasswordModule,
   roleModule,
-  setDisplayedData,
   viewModule,
 } from "@/app/Redux/Features/Dashboard/UsersSlice";
 import { UserRole } from "../DashModules/User/UserRole";
@@ -55,9 +54,8 @@ function Users({}) {
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
-  const { allData, displayedData, currentPage } = useSelector(
-    (state) => state.usersSlice
-  );
+  const roles = useSelector((state) => state.rolesSlice.roles);
+  const { allData, displayedData } = useSelector((state) => state.usersSlice);
   useEffect(() => {
     if (action) {
       enqueueSnackbar("This action has been done successfully", {
@@ -80,7 +78,7 @@ function Users({}) {
     if (id) {
       dispatch(getUserByIDAction({ token, id }));
       dispatch(deleteModule(true));
-      console.log(id)
+      console.log(id);
     }
   };
   const handleOpenResetPassword = (id) => {
@@ -140,6 +138,8 @@ function Users({}) {
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // Update search term for a column
   const handleSearchChange = (column, value) => {
     setPagez(0);
@@ -149,18 +149,57 @@ function Users({}) {
     }));
   };
 
+  const convertToDate = (dateString) => {
+    return new Date(dateString); // Ensure the string is in a format JavaScript can parse
+  };
+
+  // Handle date range change
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // Set the date range in search terms
+    setSearchTerms((prev) => ({
+      ...prev,
+      last_seen: start && end ? { start, end } : "", // Only set if both dates are present
+    }));
+  };
+
   const filteredData = allData.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
 
+      if (column === "status") {
+        switch (term) {
+          case "active":
+            return row.status === "active";
+          case "deactive":
+            return row.status === "deactive";
+          case "suspend":
+            return row.status === "suspend";
+          default:
+            return true;
+        }
+      }
+
       if (column === "roles") {
         // Check if any of the names in roles matches the search term
         return row.roles?.some((role) =>
-          role.name?.toLowerCase().includes(term)
+          role.name?.toLowerCase().includes(term.toLowerCase())
         );
       }
+
+      if (startDate && endDate) {
+        // Convert the last_seen string to Date
+        const rowDate = convertToDate(row[column]);
+
+        // Check if the date falls within the selected range
+        return rowDate >= startDate && rowDate <= endDate;
+      }
+
       // Default case for other columns
-      return row[column]?.toLowerCase().includes(term);
+      return row[column]?.toString().toLowerCase().includes(term.toLowerCase());
     })
   );
 
@@ -172,6 +211,8 @@ function Users({}) {
     setPagez(pageNumber - 1);
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
+  const status = ["active", "deactive", "suspend"];
 
   const TableData = useCallback(() => {
     // Step 3: Filter the rows based on the search term
@@ -196,30 +237,61 @@ function Users({}) {
               />
             </th>
             <th scope="col" className="px-6 py-3">
-              <input
-                type="text"
+              <select
+                type="select"
                 placeholder="Status"
                 onChange={(e) => handleSearchChange("status", e.target.value)}
                 className="filter w-full px-2 py-1 rounded filter-input"
-              />
+              >
+                <option>Status</option>
+                {status.map((item, index) => (
+                  <option value={item} key={index}>
+                    {item}
+                  </option>
+                ))}
+              </select>
             </th>
             <th scope="col" className="px-6 py-3">
-              <input
+              {/* <input
                 type="text"
                 placeholder="Last Seen"
                 onChange={(e) =>
                   handleSearchChange("last_seen", e.target.value)
                 }
                 className="filter w-full px-2 py-1 rounded filter-input"
+              /> */}
+              <DatePicker
+                selected={startDate}
+                onChange={handleDateChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
+                placeholderText="Select a date range"
+                className="w-full px-2 py-1 rounded filter-input"
               />
             </th>
             <th scope="col" className="px-6 py-3">
-              <input
+              {/* <input
                 type="text"
                 onChange={(e) => handleSearchChange("roles", e.target.value)}
                 placeholder="Role"
                 className="filter w-full px-2 py-1 rounded filter-input"
-              />
+              /> */}
+
+              <select
+                type="select"
+                placeholder="Role"
+                onChange={(e) => handleSearchChange("roles", e.target.value)}
+                className="filter w-full px-2 py-1 rounded filter-input"
+              >
+                <option value={""}>Role</option>
+                {roles.length > 0 &&
+                  roles.map((item, index) => (
+                    <option key={index} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+              </select>
             </th>
             {permissionsData &&
               (permissionsData.includes("users.show") ||
@@ -488,39 +560,13 @@ function Users({}) {
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-md w-full m-auto dashed">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div className="bg-white p-8 rounded-md w-full m-auto dashed ">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg dashboard_table">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
                 Search
               </label>
               <div className="flex justify-between">
-                {/* <div className="relative ">
-                  <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    id="table-search"
-                    className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search for User"
-                    onChange={handleGlobalSearch} // Handle search input change
-                  />
-                </div> */}
                 <div className="m-2">
                   <ToggleSwitch
                     checked={switch1}
@@ -579,6 +625,7 @@ import MenuItem from "@mui/material/MenuItem";
 import PagePagination from "../Pagination/PagePagination";
 import { ResetPassword } from "../DashModules/User/ResetPassword";
 import { ResetPasswordByLink } from "../DashModules/User/ResetPasswordByLink";
+import DatePicker from "react-datepicker";
 
 function BasicMenu({ handleOpenResetPassword, handleOpenResetPasswordByLink }) {
   const [anchorEl, setAnchorEl] = React.useState(null);

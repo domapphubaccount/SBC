@@ -32,6 +32,7 @@ import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import { setPage } from "@/app/Redux/Features/Dashboard/RolesSlice";
 import PagePagination from "../Pagination/PagePagination";
+import DatePicker from "react-datepicker";
 
 function Roles({}) {
   const dispatch = useDispatch();
@@ -147,6 +148,8 @@ function Roles({}) {
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // Update search term for a column
   const handleSearchChange = (column, value) => {
     setPagez(0);
@@ -155,6 +158,24 @@ function Roles({}) {
       [column]: value.toLowerCase(),
     }));
   };
+
+  const convertToDate = (dateString) => {
+    return new Date(dateString); // Ensure the string is in a format JavaScript can parse
+  };
+
+  // Handle date range change
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // Set the date range in search terms
+    setSearchTerms((prev) => ({
+      ...prev,
+      created_at: start && end ? { start, end } : "", // Only set if both dates are present
+    }));
+  };
+
   const filteredData = allData.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
@@ -164,6 +185,14 @@ function Roles({}) {
         return row.permissions?.some((permission) =>
           permission.slug?.toLowerCase().includes(term)
         );
+      }
+
+      if (startDate && endDate) {
+        // Convert the last_seen string to Date
+        const rowDate = convertToDate(row[column]);
+
+        // Check if the date falls within the selected range
+        return rowDate >= startDate && rowDate <= endDate;
       }
 
       // Default case for other columns
@@ -206,13 +235,23 @@ function Roles({}) {
               />
             </th>
             <th scope="col" className="px-6 py-3">
-              <input
+              {/* <input
                 type="text"
                 placeholder="Created-At"
                 onChange={(e) =>
                   handleSearchChange("created_at", e.target.value)
                 }
                 className="filter w-full px-2 py-1 rounded filter-input"
+              /> */}
+
+              <DatePicker
+                selected={startDate}
+                onChange={handleDateChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
+                placeholderText="Select a date range"
+                className="w-full px-2 py-1 rounded filter-input"
               />
             </th>
             <th scope="col" className="px-6 py-3">
@@ -257,28 +296,34 @@ function Roles({}) {
                 </th>
                 <td className="px-6 py-4">
                   <Tooltip
-                    className="w-60 text-center max-h-72 overflow-auto"
+                    className="w-60 bg-gray-50 border-2 border-gray-300 rounded-md shadow-lg p-2 text-center max-h-72 overflow-auto"
+                    style={{
+                      padding: "10px",
+                      backgroundColor: "#f9fafb",
+                      color: "#374151",
+                    }}
                     content={
-                      <ul>
+                      <ul className="text-gray-700">
                         {item?.attached_users?.length > 0 ? (
                           item?.attached_users?.map((item2, i) => (
-                            <>
-                              <li
-                                key={i}
-                                className="flex"
-                                style={{ fontSize: "10px" }}
-                              >
-                                {i + 1}: {item2.name}
-                              </li>
-                            </>
+                            <li
+                              key={i}
+                              className="flex justify-start text-xs text-gray-800 mb-1"
+                            >
+                              {i + 1}: {item2.name}
+                            </li>
                           ))
                         ) : (
-                          <small>"NO ONE USER ATTACHED"</small>
+                          <div className="text-sm text-red-500 font-medium">
+                            "NO ONE USER ATTACHED"
+                          </div>
                         )}
                       </ul>
                     }
                   >
-                    <div className="ms-5">{item.user_count}</div>
+                    <div className="ms-5 text-gray-700 font-medium hover:text-blue-500">
+                      {item.user_count}
+                    </div>
                   </Tooltip>
                 </td>
                 <td className="px-6 py-4">
@@ -452,8 +497,8 @@ function Roles({}) {
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-md w-full m-auto dashed">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div className="bg-white p-8 rounded-md w-full m-auto dashed ">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg dashboard_table">
             <div className="pb-4 bg-white dark:bg-gray-900">
               <label for="table-search" className="sr-only">
                 Search

@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "@/config/config";
-import { logout } from "../Auth/AuthSlice";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
 import { addpdffileAction } from "./PdfsSlice";
 import RemoveAuth from "../RemoveAuth";
 
@@ -30,6 +30,7 @@ export const getSectionsAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -76,6 +77,7 @@ export const addSectionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -106,6 +108,7 @@ export const deleteSectionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);
@@ -153,6 +156,7 @@ export const editSectionAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
         RemoveAuth()
       }
       return rejectWithValue(error.response.data);

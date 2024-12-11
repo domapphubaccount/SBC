@@ -26,6 +26,7 @@ import { Train } from "../DashModules/Reviewer/Train";
 import { PaginationPages } from "../Pagination/Pagination";
 import { useSnackbar } from "notistack";
 import PagePagination from "../Pagination/PagePagination";
+import DatePicker from "react-datepicker";
 
 function ReviewerAdmin({}) {
   const dispatch = useDispatch();
@@ -82,18 +83,7 @@ function ReviewerAdmin({}) {
     dispatch(trainModule({ open: true, review: id }));
   };
   // end open view
-  // start open reviewer
-  const handleOpenReviewer = (id) => {
-    dispatch(getCommentByIDAction({ token, id }));
-    dispatch(reviewerModel(true));
-  };
-  // end open reviewer
 
-  // start open role
-  const handleOpenRole = (id) => {
-    dispatch(getUserByIDAction({ token, id }));
-    dispatch(roleModule(true));
-  };
   // end open role
   const handleOpenAdd = () => {
     dispatch(addModule(true));
@@ -101,11 +91,6 @@ function ReviewerAdmin({}) {
   useEffect(() => {
     dispatch(getReviewsAction({ token, page }));
   }, [updateReviewerData, page]);
-
-  const [searchTerm, setSearchTerm] = useState(""); // Step 1: State for search input
-  // const handleSearchChange = (e) => {
-  //   setSearchTerm(e.target.value.toLowerCase());
-  // };
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -118,47 +103,13 @@ function ReviewerAdmin({}) {
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
 
-  // States for filters
-  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
-  const [nameFilter, setNameFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-
-  // Handle individual filters
-  const handleGlobalSearch = (e) =>
-    setGlobalSearchTerm(e.target.value.toLowerCase());
-  const handleNameFilter = (e) => setNameFilter(e.target.value.toLowerCase());
-  const handleStatusFilter = (e) =>
-    setStatusFilter(e.target.value.toLowerCase());
-
-  // Filtered data
-  // const filteredData = ReviewsData?.filter((item) => {
-  //   const matchesGlobal = globalSearchTerm
-  //     ? item.reviewer?.name?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.comment_reviewr?.toLowerCase().includes(globalSearchTerm) ||
-  //       item.chat_user_dislike?.comment
-  //         ?.toLowerCase()
-  //         .includes(globalSearchTerm) ||
-  //       item.status?.toLowerCase().includes(globalSearchTerm) ||
-  //       formatDate(item.created_at).toLowerCase().includes(globalSearchTerm)
-  //     : true;
-
-  //   const matchesName = nameFilter
-  //     ? item.reviewer?.name?.toLowerCase().includes(nameFilter)
-  //     : true;
-
-  //   const matchesStatus = statusFilter
-  //     ? item.status?.toLowerCase().includes(statusFilter)
-  //     : true;
-
-  //   return matchesGlobal && matchesStatus && matchesName;
-  // });
-
-  // const total_pages = Math.ceil(filteredData.length / 10);
-
   // filter and pagination
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   // Update search term for a column
   const handleSearchChange = (column, value) => {
     setPagez(0);
@@ -168,9 +119,50 @@ function ReviewerAdmin({}) {
     }));
   };
 
+  const convertToDate = (dateString) => {
+    return new Date(dateString); // Ensure the string is in a format JavaScript can parse
+  };
+
+  // Handle date range change
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // Set the date range in search terms
+    setSearchTerms((prev) => ({
+      ...prev,
+      created_at: start && end ? { start, end } : "", // Only set if both dates are present
+    }));
+  };
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} At ${hours}:${minutes}`;
+  }
+
   const filteredData = ReviewsData.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
+
+      if (column === "status") {
+        switch (term) {
+          case "accept":
+            return row.status === "accept";
+          case "reject":
+            return row.status === "reject";
+          case "in_progress":
+            return row.status === "in_progress";
+          default:
+            return true;
+        }
+      }
 
       if (column === "reviewer") {
         // Handle nested section.name filtering
@@ -180,6 +172,15 @@ function ReviewerAdmin({}) {
         // Handle nested section.name filtering
         return row.chat_user_dislike?.comment?.toLowerCase().includes(term);
       }
+
+      if (startDate && endDate) {
+        // Convert the last_seen string to Date
+        const rowDate = convertToDate(row[column]);
+
+        // Check if the date falls within the selected range
+        return rowDate >= startDate && rowDate <= endDate;
+      }
+
       // Default case for other columns
       return row[column]?.toLowerCase().includes(term);
     })
@@ -193,6 +194,8 @@ function ReviewerAdmin({}) {
     setPagez(pageNumber - 1);
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
+  const status = ["reject", "accept", "in_progress"];
 
   return (
     <>
@@ -249,7 +252,7 @@ function ReviewerAdmin({}) {
         </div>
 
         <div className="bg-white p-8 rounded-md w-full m-auto dashed">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg dashboard_table">
             <div className="flex justify-between items-center">
               <div className="pb-4 bg-white dark:bg-gray-900">
                 <label for="table-search" className="sr-only">
@@ -318,24 +321,51 @@ function ReviewerAdmin({}) {
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    <input
+                    {/* <input
                       type="text"
                       onChange={(e) =>
                         handleSearchChange("created_at", e.target.value)
                       }
                       placeholder="Date"
                       className="filter w-full px-2 py-1 rounded filter-input"
+                    /> */}
+
+                    <DatePicker
+                      selected={startDate}
+                      onChange={handleDateChange}
+                      startDate={startDate}
+                      endDate={endDate}
+                      selectsRange
+                      placeholderText="Select a date range"
+                      className="w-full px-2 py-1 rounded filter-input"
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    <input
+                    {/* <input
                       type="text"
                       placeholder="Status"
                       onChange={(e) =>
                         handleSearchChange("status", e.target.value)
                       }
                       className="filter w-full px-2 py-1 rounded filter-input"
-                    />
+                    /> */}
+
+                    <select
+                      type="select"
+                      placeholder="Status"
+                      onChange={(e) =>
+                        handleSearchChange("status", e.target.value)
+                      }
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    >
+                      <option value={""}>ٍStatus</option>
+                      {status.length > 0 &&
+                        status.map((item, index) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                    </select>
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
