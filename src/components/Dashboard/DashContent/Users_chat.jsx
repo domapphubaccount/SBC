@@ -213,11 +213,7 @@ function Users_chat() {
                   </tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="4" className="text-center py-4">
-                    No Data Found
-                  </td>
-                </tr>
+                <tr className="border-2"><td colSpan={5} className="text-center p-4">NO DATA YET !</td></tr>
               )}
             </tbody>
           </table>

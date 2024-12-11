@@ -277,15 +277,6 @@ function Pdfs({}) {
                 deleted ? "bg-red-200 " : "bg-gray-100 "
               } text-left text-xs font-semibold text-gray-600 uppercase tracking-wider`}
             >
-              {/* <input
-                type="text"
-                placeholder="Created At"
-                onChange={(e) =>
-                  handleSearchChange("created_at", e.target.value)
-                }
-                className="filter w-full px-2 py-1 rounded filter-input"
-              /> */}
-
               <DatePicker
                 selected={startDate}
                 onChange={handleDateChange}
@@ -578,9 +569,7 @@ function Pdfs({}) {
               </tr>
             ))
           ) : (
-            <div className="p-4">
-              <p>NO DATA YET.</p>
-            </div>
+            <tr className="border-2"><td colSpan={5} className="text-center p-4">NO DATA YET !</td></tr>
           )}
         </tbody>
       </table>

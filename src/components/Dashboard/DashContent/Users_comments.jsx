@@ -624,9 +624,11 @@ function Users_comments({}) {
                     </tr>
                   ))
                 ) : (
-                  <div className="p-4">
-                    <h4>NO DATA YET.</h4>
-                  </div>
+                  <tr className="border-2">
+                    <td colSpan={5} className="text-center p-4">
+                      NO DATA YET !
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

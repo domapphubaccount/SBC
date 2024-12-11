@@ -77,12 +77,14 @@ export function ViewUser({ openView, handleClose }) {
                   />
                 </div>
                 <div className="mb-3">
+                {console.log(userData.roles,"*************")}
                   <TextInput
                     id="user role"
                     style={{ opacity: 1 }}
                     type="text"
                     required
                     disabled
+   
                     value={`User Role : ${userData?.roles[0]?.name} `}
                   />
                 </div>

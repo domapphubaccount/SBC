@@ -106,16 +106,12 @@ function DeletedPdfs({}) {
 
   useEffect(() => {
     dispatch(getPdfsAction({ token, page, fileType }));
-  }, [
-    updatePdfsData,
-    page,
-    fileType,
-  ]);
+  }, [updatePdfsData, page, fileType]);
 
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -365,7 +361,9 @@ function DeletedPdfs({}) {
 
                               {/* start delete */}
                               {permissionsData &&
-                                permissionsData.includes("files.softDelete") && (
+                                permissionsData.includes(
+                                  "files.softDelete"
+                                ) && (
                                   <Tooltip content="Delete">
                                     <button
                                       type="button"
@@ -397,9 +395,11 @@ function DeletedPdfs({}) {
                         </tr>
                       ))
                     ) : (
-                      <div className="p-4">
-                        <p>NO DATA YET.</p>
-                      </div>
+                      <tr className="border-2">
+                        <td colSpan={5} className="text-center p-4">
+                          NO DATA YET !
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>

@@ -190,6 +190,10 @@ function Users({}) {
         );
       }
 
+      if (column === "account_type" && row.account_type === "test") {
+        return row.account_type === "test";
+      }
+
       if (startDate && endDate) {
         // Convert the last_seen string to Date
         const rowDate = convertToDate(row[column]);
@@ -252,14 +256,6 @@ function Users({}) {
               </select>
             </th>
             <th scope="col" className="px-6 py-3">
-              {/* <input
-                type="text"
-                placeholder="Last Seen"
-                onChange={(e) =>
-                  handleSearchChange("last_seen", e.target.value)
-                }
-                className="filter w-full px-2 py-1 rounded filter-input"
-              /> */}
               <DatePicker
                 selected={startDate}
                 onChange={handleDateChange}
@@ -487,9 +483,7 @@ function Users({}) {
               </tr>
             ))
           ) : (
-            <tr>
-              <td className="p-4">NO DATA YET</td>
-            </tr>
+            <tr className="border-2"><td colSpan={5} className="text-center p-4">NO DATA YET !</td></tr>
           )}
         </tbody>
       </table>
@@ -544,7 +538,41 @@ function Users({}) {
               <h1 className="text-white text-3xl">USERS</h1>
             </div>
             {permissionsData && permissionsData.includes("users.store") && (
-              <div>
+              <div className="flex">
+                <div className="checkbox-wrapper-16 mr-3">
+                  <label className="checkbox-wrapper">
+                    <input
+                      className="checkbox-input"
+                      type="checkbox"
+                      onChange={(e) => {
+                        console.log(e.target.checked);
+                        handleSearchChange(
+                          "account_type",
+                          e.target.checked ? "test" : "user"
+                        );
+                      }}
+                    />
+                    <span className="checkbox-tile">
+                      <span className="checkbox-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-1"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                          />
+                        </svg>
+                      </span>
+                      <span className="checkbox-label">Test Accounts</span>
+                    </span>
+                  </label>
+                </div>
                 <Button color="blue" onClick={handleOpenAdd}>
                   Add User
                 </Button>
@@ -561,11 +589,11 @@ function Users({}) {
               </label>
               <div className="flex justify-between">
                 <div className="m-2">
-                  <ToggleSwitch
+                  {/* <ToggleSwitch
                     checked={switch1}
                     label="Test accounts"
                     onChange={setSwitch1}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -619,6 +647,7 @@ import PagePagination from "../Pagination/PagePagination";
 import { ResetPassword } from "../DashModules/User/ResetPassword";
 import { ResetPasswordByLink } from "../DashModules/User/ResetPasswordByLink";
 import DatePicker from "react-datepicker";
+import Image from "next/image";
 
 function BasicMenu({ handleOpenResetPassword, handleOpenResetPasswordByLink }) {
   const [anchorEl, setAnchorEl] = React.useState(null);

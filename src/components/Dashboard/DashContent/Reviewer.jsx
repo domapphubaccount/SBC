@@ -321,15 +321,6 @@ function ReviewerAdmin({}) {
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    {/* <input
-                      type="text"
-                      onChange={(e) =>
-                        handleSearchChange("created_at", e.target.value)
-                      }
-                      placeholder="Date"
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    /> */}
-
                     <DatePicker
                       selected={startDate}
                       onChange={handleDateChange}
@@ -341,15 +332,6 @@ function ReviewerAdmin({}) {
                     />
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    {/* <input
-                      type="text"
-                      placeholder="Status"
-                      onChange={(e) =>
-                        handleSearchChange("status", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    /> */}
-
                     <select
                       type="select"
                       placeholder="Status"
@@ -583,9 +565,11 @@ function ReviewerAdmin({}) {
                     </tr>
                   ))
                 ) : (
-                  <div className="p-4">
-                    <h4>NO DATA YET.</h4>
-                  </div>
+                  <tr className="border-2">
+                    <td colSpan={5} className="text-center p-4">
+                      NO DATA YET !
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

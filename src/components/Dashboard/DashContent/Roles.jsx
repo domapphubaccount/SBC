@@ -439,8 +439,10 @@ function Roles({}) {
               </tr>
             ))
           ) : (
-            <tr>
-              <td className="p-4">NO DATA YET</td>
+            <tr className="border-2">
+              <td colSpan={5} className="text-center p-4">
+                NO DATA YET !
+              </td>
             </tr>
           )}
         </tbody>
