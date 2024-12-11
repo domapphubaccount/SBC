@@ -117,7 +117,6 @@ function Header({ path }) {
       {isClient && (
         <>
           {hint}
-
           <nav
             style={{ zIndex: 50 }}
             className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue"

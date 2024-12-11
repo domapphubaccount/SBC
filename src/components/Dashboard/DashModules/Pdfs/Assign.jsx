@@ -16,6 +16,7 @@ export function Assign({ openAssign, handleClose, fileId }) {
   const loading = useSelector((state) => state.pdfsSlice.loading);
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
   const usersData = useSelector((state) => state.usersSlice.users);
+  const usersDataLoading = useSelector((state) => state.usersSlice.loading);
   const [usersOption, setUsersOption] = useState([]);
   const [page, setPage] = useState(1);
   const permissionsData = useSelector(
@@ -80,7 +81,7 @@ export function Assign({ openAssign, handleClose, fileId }) {
         <Modal.Header />
         <Modal.Body style={{ overflow: "visible" }}>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            {loading ? (
+            {loading || usersDataLoading ? (
               <div className="flex justify-center">
                 <img
                   style={{ width: "100px" }}

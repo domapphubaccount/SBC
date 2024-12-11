@@ -1,10 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import loadingImg from "@/assets/logo/loading_icon.gif";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { suspendedModule } from "@/app/Redux/Features/Profile/ProfileSlice";
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { IconButton, Slide, Snackbar } from "@mui/material";
 
 export function SuspendedWarn() {
@@ -12,7 +9,11 @@ export function SuspendedWarn() {
   const suspended = useSelector((state) => state.profileSlice.suspendedModule);
   const profileData = useSelector((state) => state.profileSlice.profile);
 
-  const handleClose = () => {
+  const handleClose = (event, reason) => {
+    // Prevent closing if the reason is "clickaway"
+    if (reason === "clickaway") {
+      return;
+    }
     dispatch(suspendedModule(false));
   };
   function formatDate(dateString) {
@@ -25,35 +26,47 @@ export function SuspendedWarn() {
 
     return `${year}-${month}-${day} At ${hours}:${minutes}`;
   }
-  const handleSlideTransition = (props) => {
-    return <Slide {...props} direction="down" />;
-  };
-  const action = (
-    <>
-      <Button color="secondary" size="small" onClick={handleClose}>
-        UNDO
-      </Button>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        {/* <CloseIcon fontSize="small" /> */}
-      </IconButton>
-    </>
-  );
   return (
     <>
       <Snackbar
         open={suspended}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         onClose={handleClose}
-        message="Note archived"
-        action={action}
-        TransitionComponent={handleSlideTransition}
-      >
-        <div
+        message={
+          <>
+            Your Account will be Suspended At{" "}
+            <span class="font-semibold underline hover:no-underline">
+              . {formatDate(profileData.suspension_date)} .
+            </span>
+            <button
+              type="button"
+              onClick={handleClose}
+              class="ms-auto -mx-1.5 -my-1.5 text-red-50 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 inline-flex items-center justify-center h-8 w-8   dark:hover:bg-gray-700"
+              data-dismiss-target="#alert-border-2"
+              aria-label="Close"
+            >
+              <span class="sr-only">Dismiss</span>
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+            </button>
+          </>
+        }
+        // action={action}
+      />
+      {/* <div
           id="alert-border-2"
           class="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
           role="alert"
@@ -98,7 +111,7 @@ export function SuspendedWarn() {
             </svg>
           </button>
         </div>
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 }
