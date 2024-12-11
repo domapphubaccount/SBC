@@ -25,7 +25,7 @@ export function Assign({ openAssign, handleClose, fileId }) {
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      file_id: fileId,
+      file_id: fileId.id,
       user_ids: [],
     },
     validationSchema: Yup.object({
@@ -43,7 +43,7 @@ export function Assign({ openAssign, handleClose, fileId }) {
   useEffect(() => {
     if (usersData) {
       let data = usersData.filter(
-        (item) => !item.pdfs.some((pdf) => pdf.id === fileId)
+        (item) => !item.pdfs.some((pdf) => pdf.id === fileId.id)
       );
       if (page == 1) {
         setUsersOption([
@@ -62,7 +62,9 @@ export function Assign({ openAssign, handleClose, fileId }) {
         ]);
       }
     }
-  }, [usersData, fileId]);
+  }, [usersData, fileId.id]);
+
+  console.log(fileId.who_assigneds);
 
   return (
     <>
@@ -102,9 +104,12 @@ export function Assign({ openAssign, handleClose, fileId }) {
                         name="user_ids"
                         isMulti
                         options={usersOption}
-                        value={usersOption.filter((option) =>
-                          formik.values.user_ids.includes(option.value)
-                        )}
+                        // value={usersOption.filter((option) =>
+                        //   formik.values.user_ids.includes(option.value)
+                        // )}
+                        defaultValue={fileId.who_assigneds.map((item) => {
+                          return { value: item.id, label: item.name };
+                        })}
                         onChange={(selectedOptions) => {
                           formik.setFieldValue(
                             "user_ids",

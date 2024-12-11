@@ -1363,3 +1363,6 @@ ul.roman-numerals li:before {
   min-width: 120px;
 }
 
+.dashboard_table{
+  min-height: 550px;
+}

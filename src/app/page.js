@@ -5,7 +5,7 @@ import SnackbarError from "@/components/Snackbar/SnackbarError";
 import SnackbarTime from "@/components/Snackbar/SnackbarTime";
 import Header from "@/layout/Header/Header";
 import { redirect, usePathname } from "next/navigation";
-import { Suspense, useLayoutEffect } from "react";
+import { Suspense, useEffect, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "./loading";
 import { getProfileAction } from "./Redux/Features/Profile/ProfileSlice";
@@ -13,6 +13,7 @@ import SnackbarSendError from "@/components/Snackbar/SnackSendError";
 import SnackbarGlobalError from "@/components/Snackbar/SnackGlobalError";
 import Drawer from "@/layout/Drawer/Drawer";
 import dynamic from "next/dynamic";
+import { SuspendedWarn } from "@/components/Warning/Warn";
 const DashLayout = dynamic(() => import("@/layout/DashLayout/DashLayout"), { ssr: false })
 
 export default function Home() {
@@ -29,12 +30,14 @@ export default function Home() {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sendError = useSelector((state) => state.chatActionsSlice.error);
   const codeError = useSelector((state) => state.codeSlice.error);
+  const suspended = useSelector(state => state.profileSlice.suspendedModule)
 
-  useLayoutEffect(() => {
+
+  useEffect(() => {
     dispatch(getProfileAction({ token }));
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isLogged == false && pathname?.slice(0, 9) != "/sharable") {
       redirect("/signIn");
     }
@@ -50,6 +53,9 @@ export default function Home() {
             <DashLayout />
           </Suspense>
           <Drawer />
+          {/* start warn */}
+          {suspended && <SuspendedWarn />}
+          {/* end warn */}
           {/* start loading change chat from history */}
           {loading && <SnackbarTooltip />}
           {/* end loading change chat from history */}

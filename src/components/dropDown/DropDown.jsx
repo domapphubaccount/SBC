@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAction } from "@/app/Redux/Features/Auth/AuthSlice";
@@ -17,7 +17,7 @@ function DropDown() {
     (state) => state.profileSlice.permissions
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     dispatch(getProfileAction({ token }));
   }, []);
 

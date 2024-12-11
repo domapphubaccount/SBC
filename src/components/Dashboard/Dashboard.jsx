@@ -10,6 +10,7 @@ import Permmisions from "./DashContent/permissions";
 import DashboardData from "./DashContent/Dashboard";
 import ReviewerAdmin from "./DashContent/Reviewer";
 import { useSelector } from "react-redux";
+import 'react-datepicker/dist/react-datepicker.css';
 
 
 function Dashboard({ page, setPage }) {

@@ -28,9 +28,7 @@ function SnackbarTooltip() {
     <Snackbar
       open={open}
       autoHideDuration={6000}
-      //   onClose={'handleClose'}
       message={message}
-      //   action={'action'}
     />
   );
 }

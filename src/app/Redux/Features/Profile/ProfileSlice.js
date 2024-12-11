@@ -4,8 +4,6 @@ import { config } from "@/config/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logout, removeAuthAction } from "../Auth/AuthSlice";
-import { clearData } from "../Chat/ChatSlice";
-import { clearHistory } from "../Chat_History/historySlice";
 import RemoveAuth from "../RemoveAuth";
 
 // start update password
@@ -57,7 +55,13 @@ export const getProfileAction = createAsyncThunk(
       });
       if (response.data.error) {
         return new Error(response.data.message);
+      }   
+
+      if(response.data.data.suspension_date && JSON.parse(sessionStorage.getItem("suspense")) !== true){
+        sessionStorage.setItem("suspense", true);
+        dispatch(suspendedModule(true))
       }
+
       return response.data.data;
     } catch (error) {
       console.log(error.response.status === 401)
@@ -76,7 +80,8 @@ const initialState = {
   value: "",
   error: "",
   profile: {},
-  permissions: []
+  permissions: [],
+  suspendedModule: false
 };
 
 export const profileSlice = createSlice({
@@ -88,6 +93,9 @@ export const profileSlice = createSlice({
       state.error= "";
       state.profile = {};
       state.permissions = [];
+    },
+    suspendedModule: (state , action) => {
+      state.suspendedModule = action.payload
     }
   },
 
@@ -126,6 +134,6 @@ export const profileSlice = createSlice({
   },
 });
 
-export const {clearProfile} = profileSlice.actions
+export const {clearProfile , suspendedModule} = profileSlice.actions
 
 export default profileSlice.reducer;
