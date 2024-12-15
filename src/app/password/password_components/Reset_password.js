@@ -31,7 +31,7 @@ function ResetPassword({ storedCode }) {
       setErrorMSG("");
       axios
         .post(
-          `${config.api}password/reset`,
+          `${config.api}password/reset-web`,
           {
             ...values,
             code: storedCode,
@@ -46,7 +46,7 @@ function ResetPassword({ storedCode }) {
         .then((res) => {
           setLoading(false);
           setErrorMSG("");
-          navigate.push("/login");
+          navigate.push("/signIn");
 
           if (res.data.status === "SUCCESS") {
             localStorage.setItem("data", JSON.stringify(res.data.data));

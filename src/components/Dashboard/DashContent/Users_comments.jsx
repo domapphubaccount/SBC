@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { EditUser } from "../DashModules/User/Edit";
-import { Popover, Textarea, Tooltip } from "flowbite-react";
+import { Button, Popover, Textarea, Tooltip } from "flowbite-react";
 import { AddUser } from "../DashModules/User/AddUser";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -226,7 +226,15 @@ function Users_comments({}) {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   const status = ["reject", "accept", "in_progress", "pending"];
-
+  const formRef = useRef(null);
+  const handleReset = (formRef) => {
+    formRef.current.reset();
+    setSearchTerms({});
+    setPagez(0);
+    setRowsPerPage(10); // Optional: Keep the default rows per page
+    setStartDate("");
+    setEndDate("");
+  };
   return (
     <>
       <section>
@@ -314,22 +322,47 @@ function Users_comments({}) {
                   onChange={handleGlobalSearch} // Handle search input change
                 />
               </div> */}
+              <div className="flex justify-between">
+                <div className="m-2">
+                  <Button className="flex" onClick={() => handleReset(formRef)}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-4"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+                      />
+                    </svg>
+                  </Button>
+                </div>
+              </div>
             </div>
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    <input
-                      type="text"
-                      placeholder="Comment"
-                      onChange={(e) =>
-                        handleSearchChange("comment", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    {/* <input
+            <form
+              ref={formRef}
+              onSubmit={(e) => e.preventDefault()}
+              className="w-full"
+            >
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      <input
+                        type="text"
+                        placeholder="Comment"
+                        onChange={(e) =>
+                          handleSearchChange("comment", e.target.value)
+                        }
+                        className="filter w-full px-2 py-1 rounded filter-input"
+                      />
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      {/* <input
                       type="text"
                       placeholder="Status"
                       onChange={(e) =>
@@ -338,55 +371,55 @@ function Users_comments({}) {
                       className="filter w-full px-2 py-1 rounded filter-input"
                     /> */}
 
-                    <select
-                      type="select"
-                      placeholder="Status"
-                      onChange={(e) =>
-                        handleSearchChange("status", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    >
-                      <option value={""}>ٍStatus</option>
-                      {status.length > 0 &&
-                        status.map((item, index) => (
-                          <option key={index} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                    </select>
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <input
-                      type="text"
-                      placeholder="Comment By"
-                      onChange={(e) =>
-                        handleSearchChange("disliked_by", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <input
-                      type="text"
-                      placeholder="Who Assigned"
-                      onChange={(e) =>
-                        handleSearchChange("who_assigneds", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <input
-                      type="text"
-                      placeholder="Code"
-                      onChange={(e) =>
-                        handleSearchChange("dislike_pdf", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    {/* <input
+                      <select
+                        type="select"
+                        placeholder="Status"
+                        onChange={(e) =>
+                          handleSearchChange("status", e.target.value)
+                        }
+                        className="filter w-full px-2 py-1 rounded filter-input"
+                      >
+                        <option value={""}>ٍStatus</option>
+                        {status.length > 0 &&
+                          status.map((item, index) => (
+                            <option key={index} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                      </select>
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <input
+                        type="text"
+                        placeholder="Comment By"
+                        onChange={(e) =>
+                          handleSearchChange("disliked_by", e.target.value)
+                        }
+                        className="filter w-full px-2 py-1 rounded filter-input"
+                      />
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <input
+                        type="text"
+                        placeholder="Who Assigned"
+                        onChange={(e) =>
+                          handleSearchChange("who_assigneds", e.target.value)
+                        }
+                        className="filter w-full px-2 py-1 rounded filter-input"
+                      />
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <input
+                        type="text"
+                        placeholder="Code"
+                        onChange={(e) =>
+                          handleSearchChange("dislike_pdf", e.target.value)
+                        }
+                        className="filter w-full px-2 py-1 rounded filter-input"
+                      />
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      {/* <input
                       type="text"
                       placeholder="Date"
                       onChange={(e) =>
@@ -395,241 +428,244 @@ function Users_comments({}) {
                       className="filter w-full px-2 py-1 rounded filter-input"
                     /> */}
 
-                    <DatePicker
-                      selected={startDate}
-                      onChange={handleDateChange}
-                      startDate={startDate}
-                      endDate={endDate}
-                      selectsRange
-                      placeholderText="Select a date range"
-                      className="w-full px-2 py-1 rounded filter-input"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData && paginatedData.length > 0 ? (
-                  paginatedData.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      <DatePicker
+                        selected={startDate}
+                        onChange={handleDateChange}
+                        startDate={startDate}
+                        endDate={endDate}
+                        selectsRange
+                        placeholderText="Date"
+                        className="w-full px-2 py-1 rounded filter-input"
+                      />
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedData && paginatedData.length > 0 ? (
+                    paginatedData.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                       >
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                              />
-                            </svg>
-                          </div>
-                          <div className="ml-3">
-                            <Popover
-                              content={
-                                <Textarea
-                                  rows={3}
-                                  cols={25}
-                                  id="comment id"
-                                  style={{ opacity: 1 }}
-                                  type="text"
-                                  required
-                                  disabled
-                                  value={item.comment}
-                                />
-                              }
-                              placement="bottom"
-                            >
-                              {/* <Button>Popover bottom</Button> */}
-                              <div className="hover:text-sky-700 cursor-pointer">
-                                {item.comment.length > 12
-                                  ? item.comment.slice(0, 12) + " ....."
-                                  : item.comment}
-                              </div>
-                            </Popover>
-                          </div>
-                        </div>
-                      </th>
-
-                      <td className="px-6 py-4">
-                        {item.status === "accept" ? (
-                          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                            {item.status}
-                          </span>
-                        ) : item.status === "in_progress" ? (
-                          <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
-                            {item.status}
-                          </span>
-                        ) : item.status === "pending" ? (
-                          <span className="bg-yellow-100 text-gray-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
-                            {item.status}
-                          </span>
-                        ) : (
-                          <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                            {item.status}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">{item.disliked_by.name}</td>
-                      <td className="px-6 py-4">
-                        <Tooltip
-                          className="w-60 max-h-72 overflow-auto border-2 bg-gray-50 border-gray-300 rounded-md shadow-lg p-2"
-                          style={{
-                            padding: "10px",
-                            backgroundColor: "#f9fafb",
-                            color: "#374151",
-                          }}
-                          content={
-                            <ul className="text-gray-700">
-                              {item.dislike_pdf?.length > 0 ? (
-                                item.dislike_pdf.map((item2, i) => (
-                                  <div key={i} className="mb-2 border">
-                                    <div className="font-small text-sm">
-                                      {i + 1}- {item2.name}
-                                    </div>
-                                    {item2.who_assigneds.length > 0 ? (
-                                      item2.who_assigneds.map((item3, i) => (
-                                        <li
-                                          key={i}
-                                          className="flex text-xs ps-2"
-                                        >
-                                          {i + 1}: {item3.name}
-                                        </li>
-                                      ))
-                                    ) : (
-                                      <small className="text-red-500">
-                                        "NO ONE ASSIGNED"
-                                      </small>
-                                    )}
-                                  </div>
-                                ))
-                              ) : (
-                                <div className="text-center text-sm text-gray-500">
-                                  No PDF
-                                </div>
-                              )}
-                            </ul>
-                          }
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                          <AdminPanelSettingsIcon className="text-gray-700 hover:text-blue-500" />
-                        </Tooltip>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Tooltip
-                          className="w-60 bg-gray-50 border-2 border-gray-300 rounded-md shadow-lg p-2"
-                          style={{
-                            padding: "10px",
-                            backgroundColor: "#f9fafb",
-                            color: "#374151",
-                          }}
-                          content={
-                            <ul className="text-gray-700">
-                              {item?.dislike_pdf?.length > 0 ? (
-                                item.dislike_pdf.map((item, i) => (
-                                  <li
-                                    key={i}
-                                    className="flex text-xs text-gray-800 mb-1"
-                                  >
-                                    {i + 1}: {item.name}
-                                  </li>
-                                ))
-                              ) : (
-                                <div className="text-center text-sm text-red-500">
-                                  NO CODE ASSIGNED
-                                </div>
-                              )}
-                            </ul>
-                          }
-                        >
-                          <ArticleIcon className="text-gray-700 hover:text-blue-500" />
-                        </Tooltip>
-                      </td>
-                      <td className="px-6 py-4">
-                        {formatDate(item.created_at)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2 justify-start">
-                          {/* start view */}
-                          {/* start delete */}
-                          {permissionsData &&
-                            permissionsData.includes(
-                              "chat_user_dislikes.soft_delete"
-                            ) && (
-                              <Tooltip content="Delete Comment">
-                                <button
-                                  title="Delete"
-                                  type="button"
-                                  className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                                  onClick={() => handleOpenDelete(item.id)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="size-4"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                    />
-                                  </svg>
-                                </button>
-                              </Tooltip>
-                            )}
-                          {/* start delete */}
-                          {/* start reviewer */}
-                          <Tooltip content="Reviewer">
-                            <button
-                              title="Reviewer"
-                              type="button"
-                              className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
-                              onClick={() => handleOpenReviewer(item.id)}
-                            >
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth={1.5}
                                 stroke="currentColor"
-                                className="size-4"
+                                className="size-6"
                               >
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                                  d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                                 />
                               </svg>
-                            </button>
+                            </div>
+                            <div className="ml-3">
+                              <Popover
+                                content={
+                                  <Textarea
+                                    rows={3}
+                                    cols={25}
+                                    id="comment id"
+                                    style={{ opacity: 1 }}
+                                    type="text"
+                                    required
+                                    disabled
+                                    value={item.comment}
+                                  />
+                                }
+                                placement="bottom"
+                              >
+                                {/* <Button>Popover bottom</Button> */}
+                                <div className="hover:text-sky-700 cursor-pointer">
+                                  {item.comment.length > 12
+                                    ? item.comment.slice(0, 12) + " ....."
+                                    : item.comment}
+                                </div>
+                              </Popover>
+                            </div>
+                          </div>
+                        </th>
+
+                        <td className="px-6 py-4">
+                          {item.status === "accept" ? (
+                            <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                              {item.status}
+                            </span>
+                          ) : item.status === "in_progress" ? (
+                            <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                              {item.status}
+                            </span>
+                          ) : item.status === "pending" ? (
+                            <span className="bg-yellow-100 text-gray-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                              {item.status}
+                            </span>
+                          ) : (
+                            <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                              {item.status}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">{item.disliked_by.name}</td>
+                        <td className="px-6 py-4">
+                          <Tooltip
+                            className="w-60 max-h-72 overflow-auto border-2 bg-gray-50 border-gray-300 rounded-md shadow-lg p-2"
+                            style={{
+                              padding: "10px",
+                              backgroundColor: "#f9fafb",
+                              color: "#374151",
+                            }}
+                            content={
+                              <ul className="text-gray-700">
+                                {item.dislike_pdf?.length > 0 ? (
+                                  item.dislike_pdf.map((item2, i) => (
+                                    <div key={i} className="mb-2 border">
+                                      <div className="font-small text-sm">
+                                        {i + 1}- {item2.name}
+                                      </div>
+                                      {item2.who_assigneds.length > 0 ? (
+                                        item2.who_assigneds.map((item3, i) => (
+                                          <li
+                                            key={i}
+                                            className="flex text-xs ps-2"
+                                          >
+                                            {i + 1}: {item3.name}
+                                          </li>
+                                        ))
+                                      ) : (
+                                        <small className="text-red-500">
+                                          "NO ONE ASSIGNED"
+                                        </small>
+                                      )}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="text-center text-sm text-gray-500">
+                                    No PDF
+                                  </div>
+                                )}
+                              </ul>
+                            }
+                          >
+                            <AdminPanelSettingsIcon className="text-gray-700 hover:text-blue-500" />
                           </Tooltip>
-                          {/* end reviewer */}
-                        </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Tooltip
+                            className="w-60 bg-gray-50 border-2 border-gray-300 rounded-md shadow-lg p-2"
+                            style={{
+                              padding: "10px",
+                              backgroundColor: "#f9fafb",
+                              color: "#374151",
+                            }}
+                            content={
+                              <ul className="text-gray-700">
+                                {item?.dislike_pdf?.length > 0 ? (
+                                  item.dislike_pdf.map((item, i) => (
+                                    <li
+                                      key={i}
+                                      className="flex text-xs text-gray-800 mb-1"
+                                    >
+                                      {i + 1}: {item.name}
+                                    </li>
+                                  ))
+                                ) : (
+                                  <div className="text-center text-sm text-red-500">
+                                    NO CODE ASSIGNED
+                                  </div>
+                                )}
+                              </ul>
+                            }
+                          >
+                            <ArticleIcon className="text-gray-700 hover:text-blue-500" />
+                          </Tooltip>
+                        </td>
+                        <td className="px-6 py-4">
+                          {formatDate(item.created_at)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2 justify-start">
+                            {/* start view */}
+                            {/* start delete */}
+                            {permissionsData &&
+                              permissionsData.includes(
+                                "chat_user_dislikes.soft_delete"
+                              ) && (
+                                <Tooltip content="Delete Comment">
+                                  <button
+                                    title="Delete"
+                                    type="button"
+                                    className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                    onClick={() => handleOpenDelete(item.id)}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      strokeWidth={1.5}
+                                      stroke="currentColor"
+                                      className="size-4"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                      />
+                                    </svg>
+                                  </button>
+                                </Tooltip>
+                              )}
+                            {/* start delete */}
+                            {/* start reviewer */}
+                            <Tooltip content="Reviewer">
+                              <button
+                                title="Reviewer"
+                                type="button"
+                                className="flex items-center bg-slate-700 p-1 px-2 rounded text-white "
+                                onClick={() => handleOpenReviewer(item.id)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="size-4"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                                  />
+                                </svg>
+                              </button>
+                            </Tooltip>
+                            {/* end reviewer */}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="border-2">
+                      <td colSpan={5} className="text-center p-4">
+                        NO DATA YET !
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <div className="p-4">
-                    <h4>NO DATA YET.</h4>
-                  </div>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </form>
           </div>
         </div>
 

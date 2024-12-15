@@ -257,6 +257,9 @@ export const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
+    remove_stored_page: (state,action) => {
+      state.step = 1
+    },
     storedCode: (state, action) => {
       state.password.code = action.payload;
     },
@@ -378,6 +381,6 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { storedCode, islogged, logout } = loginSlice.actions;
+export const { storedCode, islogged, logout,remove_stored_page } = loginSlice.actions;
 
 export default loginSlice.reducer;

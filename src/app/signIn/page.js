@@ -1,11 +1,11 @@
 "use client";
-import React, { Suspense, useLayoutEffect } from "react";
+import React, { Suspense, useEffect, useLayoutEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import Logo from "@/assets/logo/Logo.png";
-import { loginAction } from "../Redux/Features/Auth/AuthSlice";
+import { loginAction, remove_stored_page } from "../Redux/Features/Auth/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 
@@ -22,10 +22,11 @@ function Page() {
   const loading = useSelector((state) => state.loginSlice.loading);
   const isLogged = useSelector((state) => state.loginSlice.logged);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isLogged) {
       redirect("/");
     }
+    dispatch(remove_stored_page())
   }, [isLogged]);
 
   const formik = useFormik({
