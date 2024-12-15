@@ -52,7 +52,7 @@ export const getPdfsAction = createAsyncThunk(
 export const getDeletedPdfsAction = createAsyncThunk(
   "pdfs/getDeletedPdfsAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, page, fileType } = arg;
+    const { token, fileType } = arg;
     try {
       const response = await axios.get(
         `${config.api}admin/all_files/soft_deleted`,
