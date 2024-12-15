@@ -40,7 +40,7 @@ function MainChat({ windowWidth }) {
   const [dislike, setDislike] = useState(false);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [itemId, setItemId] = useState(null);
-  const [fileId,setFileId] = useState("")
+  const [fileId, setFileId] = useState("");
   const [dislikeMessage, setDislikeMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
   const [copID, setCopId] = useState();
@@ -53,7 +53,7 @@ function MainChat({ windowWidth }) {
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
-  console.log(fileId)
+  console.log(fileId);
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [actionSuccess, setAction] = useState(false);
@@ -72,9 +72,9 @@ function MainChat({ windowWidth }) {
     }
   }, [actionSuccess]);
 
-  useEffect(()=>{
+  useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  },[copyIcon,copID,isSpeaking])
+  }, [copyIcon, copID, isSpeaking]);
 
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
@@ -84,8 +84,6 @@ function MainChat({ windowWidth }) {
     return percentageEnglish > 50;
   }
 
-  
-  
   const dislikeToggle = (id) => {
     setItemId(id);
     setDislike(!dislike);
@@ -141,7 +139,7 @@ function MainChat({ windowWidth }) {
         {
           file_ids: fileId,
           user_chat_id: itemId,
-          comment: dislikeMessage
+          comment: dislikeMessage,
         },
         {
           headers: {
@@ -220,6 +218,14 @@ function MainChat({ windowWidth }) {
       dataArray.forEach((item2) => {
         data = data.replaceAll(item2, "");
       });
+
+      if (data.match(file_id_pattern)) {
+        let fileIdArray = data.match(file_id_pattern);
+        fileIdArray.forEach((item2) => {
+          data = data.replaceAll(item2, "");
+        });
+      }
+
       return (
         <span
           dangerouslySetInnerHTML={{
@@ -582,11 +588,12 @@ function MainChat({ windowWidth }) {
                             style={{ transition: "none" }}
                             onClick={(e) => {
                               dislikeToggle(item.id);
-                              console.log(item.file_ids)
-                              setFileId(item) 
+                              // console.log(item.file_ids);
+                              // console.log(item.answer.match(file_id_pattern)[0].slice(9,-1));
+                              setFileId(item.answer.match(file_id_pattern) && item.answer.match(file_id_pattern)[0].slice(9,-1));
                               const svgElement = e.currentTarget;
                               if (svgElement) {
-                                svgElement.classList.add("action-icon"); 
+                                svgElement.classList.add("action-icon");
                                 setTimeout(() => {
                                   if (svgElement) {
                                     svgElement.classList.remove("action-icon");
