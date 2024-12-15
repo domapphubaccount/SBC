@@ -74,7 +74,7 @@ function MainChat({ windowWidth }) {
 
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [copyIcon, copID, isSpeaking]);
+  }, [copyIcon, copID, isSpeaking,windowWidth]);
 
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
