@@ -40,6 +40,7 @@ function MainChat({ windowWidth }) {
   const [dislike, setDislike] = useState(false);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [itemId, setItemId] = useState(null);
+  const [fileId,setFileId] = useState("")
   const [dislikeMessage, setDislikeMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
   const [copID, setCopId] = useState();
@@ -52,6 +53,7 @@ function MainChat({ windowWidth }) {
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
+  console.log(fileId)
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [actionSuccess, setAction] = useState(false);
@@ -137,8 +139,9 @@ function MainChat({ windowWidth }) {
       .post(
         `${config.api}admin/chat-user-dislikes`,
         {
+          file_ids: fileId,
           user_chat_id: itemId,
-          comment: dislikeMessage,
+          comment: dislikeMessage
         },
         {
           headers: {
@@ -209,6 +212,7 @@ function MainChat({ windowWidth }) {
   dispatch(action_done(true));
 
   const pattern = /Reference: .*?\/\//g;
+  const file_id_pattern = /\[file_id:[^\]]+\]/g;
   const textHandler = (item) => {
     if (item.match(pattern)) {
       let dataArray = item.match(pattern);
@@ -577,17 +581,17 @@ function MainChat({ windowWidth }) {
                           <svg
                             style={{ transition: "none" }}
                             onClick={(e) => {
-                              dislikeToggle(item.id); // Execute copy function
-                              const svgElement = e.currentTarget; // Store the reference
+                              dislikeToggle(item.id);
+                              console.log(item.file_ids)
+                              setFileId(item) 
+                              const svgElement = e.currentTarget;
                               if (svgElement) {
-                                // Check if svgElement is not null
-                                svgElement.classList.add("action-icon"); // Add the class for styling
+                                svgElement.classList.add("action-icon"); 
                                 setTimeout(() => {
                                   if (svgElement) {
-                                    // Ensure svgElement is still available
                                     svgElement.classList.remove("action-icon");
                                   }
-                                }, 500); // Remove the class after 500ms
+                                }, 500);
                               }
                             }}
                             xmlns="http://www.w3.org/2000/svg"

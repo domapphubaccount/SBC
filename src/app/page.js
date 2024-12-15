@@ -13,6 +13,7 @@ import SnackbarGlobalError from "@/components/Snackbar/SnackGlobalError";
 import Drawer from "@/layout/Drawer/Drawer";
 import dynamic from "next/dynamic";
 import { SuspendedWarn } from "@/components/Warning/Warn";
+import { remove_stored_page } from "./Redux/Features/Auth/AuthSlice";
 const DashLayout = dynamic(() => import("@/layout/DashLayout/DashLayout"), { ssr: false })
 
 export default function Home() {
@@ -34,6 +35,7 @@ export default function Home() {
 
   useEffect(() => {
     dispatch(getProfileAction({ token }));
+    dispatch(remove_stored_page())
   }, []);
 
   useEffect(() => {

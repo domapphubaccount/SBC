@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PaginationPages } from "../Pagination/Pagination";
 import { getUsersChatAction } from "@/app/Redux/Features/Dashboard/MasterUsersChat";
 import { useDispatch, useSelector } from "react-redux";
-import { Tooltip } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import {
   choseChate,
@@ -77,7 +77,6 @@ function Users_chat() {
       }));
     }
   };
-  
 
   const filteredData = masterUsersChat?.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
@@ -92,7 +91,6 @@ function Users_chat() {
         const rowDate = convertToDate(row.created_at); // Assuming 'last_seen' is the key
         return rowDate >= startDate && rowDate <= endDate;
       }
-      
 
       return row[column]?.toLowerCase().includes(term);
     })
@@ -107,6 +105,15 @@ function Users_chat() {
   };
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
 
+  const formRef = useRef(null);
+  const handleReset = (formRef) => {
+    formRef.current.reset();
+    setSearchTerms({});
+    setPagez(0);
+    setRowsPerPage(10); // Optional: Keep the default rows per page
+    setStartDate("");
+    setEndDate("");
+  };
   return (
     <section>
       {/* Header Section */}
@@ -143,80 +150,115 @@ function Users_chat() {
             <label htmlFor="table-search" className="sr-only">
               Search
             </label>
-          </div>
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              <tr>
-                <th className="px-5 py-3">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className="filter w-full px-2 py-1 rounded filter-input"
-                    onChange={(e) => handleSearchChange("name", e.target.value)}
-                  />
-                </th>
-                <th className="px-5 py-3">
-                  <input
-                    type="text"
-                    placeholder="User"
-                    className="filter w-full px-2 py-1 rounded filter-input"
-                    onChange={(e) =>
-                      handleSearchChange("user_name", e.target.value)
-                    }
-                  />
-                </th>
-                <th className="px-5 py-3">
-                  <DatePicker
-                    selected={startDate}
-                    onChange={handleDateChange}
-                    startDate={startDate}
-                    endDate={endDate}
-                    selectsRange
-                    placeholderText="Select a date range"
-                    className="w-full px-2 py-1 rounded filter-input"
-                  />
-                </th>
-                <th className="px-5 py-3">
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      handleSearchChange("chatgpt_id", e.target.value)
-                    }
-                    placeholder="ChatGPT ID"
-                    className="filter w-full px-2 py-1 rounded filter-input"
-                  />
-                </th>
-                <th className="px-5 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData?.length > 0 ? (
-                paginatedData.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white border-b hover:bg-gray-50"
+
+            <div className="flex justify-between">
+              <div className="m-2">
+                <Button className="flex" onClick={() => handleReset(formRef)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-4"
                   >
-                    <td className="px-6 py-4">{item.name}</td>
-                    <td className="px-6 py-4">{item.user_name?.name}</td>
-                    <td className="px-6 py-4">{formatDate(item.created_at)}</td>
-                    <td className="px-6 py-4">{item.chatgpt_id}</td>
-                    <td className="px-6 py-4">
-                      <Tooltip content="View Chat">
-                        <button
-                          className="bg-slate-700 p-1 px-2 text-white rounded"
-                          onClick={() => handleOpenView(item.id)}
-                        >
-                          View
-                        </button>
-                      </Tooltip>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+                    />
+                  </svg>
+                </Button>
+              </div>
+            </div>
+          </div>
+          <form
+            ref={formRef}
+            onSubmit={(e) => e.preventDefault()}
+            className="w-full"
+          >
+            <table className="w-full text-sm text-left text-gray-500">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th className="px-5 py-3">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                      onChange={(e) =>
+                        handleSearchChange("name", e.target.value)
+                      }
+                    />
+                  </th>
+                  <th className="px-5 py-3">
+                    <input
+                      type="text"
+                      placeholder="User"
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                      onChange={(e) =>
+                        handleSearchChange("user_name", e.target.value)
+                      }
+                    />
+                  </th>
+                  <th className="px-5 py-3">
+                    <DatePicker
+                      selected={startDate}
+                      onChange={handleDateChange}
+                      startDate={startDate}
+                      endDate={endDate}
+                      selectsRange
+                      placeholderText="Date"
+                      className="w-full px-2 py-1 rounded filter-input"
+                    />
+                  </th>
+                  <th className="px-5 py-3">
+                    <input
+                      type="text"
+                      onChange={(e) =>
+                        handleSearchChange("chatgpt_id", e.target.value)
+                      }
+                      placeholder="ChatGPT ID"
+                      className="filter w-full px-2 py-1 rounded filter-input"
+                    />
+                  </th>
+                  <th className="px-5 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData?.length > 0 ? (
+                  paginatedData.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="bg-white border-b hover:bg-gray-50"
+                    >
+                      <td className="px-6 py-4">{item.name}</td>
+                      <td className="px-6 py-4">{item.user_name?.name}</td>
+                      <td className="px-6 py-4">
+                        {formatDate(item.created_at)}
+                      </td>
+                      <td className="px-6 py-4">{item.chatgpt_id}</td>
+                      <td className="px-6 py-4">
+                        <Tooltip content="View Chat">
+                          <button
+                            className="bg-slate-700 p-1 px-2 text-white rounded"
+                            onClick={() => handleOpenView(item.id)}
+                          >
+                            View
+                          </button>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr className="border-2">
+                    <td colSpan={5} className="text-center p-4">
+                      NO DATA YET !
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr className="border-2"><td colSpan={5} className="text-center p-4">NO DATA YET !</td></tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </form>
         </div>
         {/* Pagination Component */}
 

@@ -3,7 +3,7 @@
 import { Sidebar } from "@/components/Dashboard/Sidebar/Sidebar";
 import { redirect } from "next/navigation";
 import React, { Suspense, useLayoutEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 const Dashboard = dynamic(() => import("@/components/Dashboard/Dashboard"), { ssr: false })
 
@@ -11,8 +11,10 @@ function Page() {
   const profileData = useSelector((state) => state.profileSlice.profile);
   const [page, setPage] = useState();
   const isLogged = useSelector((state) => state.loginSlice.logged);
+  const dispatch = useDispatch()
 
   useLayoutEffect(() => {
+    dispatch(remove_stored_page())
     if (!isLogged) {
       redirect("/signIn");
     }
@@ -46,6 +48,7 @@ export default Page;
 
 import loadingImg from "@/assets/logo/loading.gif";
 import Loading from "../loading";
+import { remove_stored_page } from "../Redux/Features/Auth/AuthSlice";
 
 function Load() {
   return (
