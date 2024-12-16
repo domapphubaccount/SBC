@@ -202,17 +202,13 @@ export const trainAction = createAsyncThunk(
           params: {
             new_data: new_data,
           },
-
-          // Use params for GET requests
         }
       );
-
       if (response.data.error) {
         return new Error(response.data.error);
       }
       dispatch(handleAction(true));
       setTimeout(() => dispatch(handleAction(false)), 1500);
-
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -336,7 +332,7 @@ export const ReviewSlice = createSlice({
       .addCase(trainAction.rejected, (state, action) => {
         console.log(action.payload)
         state.loading = false;
-        state.error = action.payload?.message;
+        state.error = action.payload?.error;
       })
       // end get comment by id
 

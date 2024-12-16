@@ -124,17 +124,14 @@ function Users({}) {
     dispatch(getRolesAction({ token }));
     dispatch(addModule(true));
   };
-
   useEffect(() => {
     dispatch(
       getUsersAction({ token, page: 1, pathPage: true, isTest: switch1 })
     );
   }, [updateUsersData, switch1]);
-
   useEffect(() => {
     dispatch(getRolesAction({ token }));
   }, []);
-
   // filter and pagination
   const [searchTerms, setSearchTerms] = useState({});
   const [pagez, setPagez] = useState(0);
@@ -149,11 +146,9 @@ function Users({}) {
       [column]: value.toLowerCase(),
     }));
   };
-
   const convertToDate = (dateString) => {
     return new Date(dateString); // Ensure the string is in a format JavaScript can parse
   };
-
   // Handle date range change
   const handleDateChange = (dates) => {
     const [start, end] = dates;
@@ -166,7 +161,6 @@ function Users({}) {
       last_seen: start && end ? { start, end } : "", // Only set if both dates are present
     }));
   };
-
   const filteredData = allData.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
@@ -207,7 +201,6 @@ function Users({}) {
       return row[column]?.toString().toLowerCase().includes(term.toLowerCase());
     })
   );
-
   const paginatedData = filteredData.slice(
     pagez * rowsPerPage,
     pagez * rowsPerPage + rowsPerPage
@@ -216,9 +209,7 @@ function Users({}) {
     setPagez(pageNumber - 1);
   };
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-
   const status = ["active", "deactive", "suspend"];
-
   const formRef = useRef(null);
   const handleReset = (formRef) => {
     formRef.current.reset();
@@ -228,9 +219,7 @@ function Users({}) {
     setStartDate("");
     setEndDate("");
   };
-
   const TableData = useCallback(() => {
-    // Step 3: Filter the rows based on the search term
     return (
       <form
         ref={formRef}
@@ -278,7 +267,7 @@ function Users({}) {
                   startDate={startDate}
                   endDate={endDate}
                   selectsRange
-                  placeholderText="Date"
+                  placeholderText="Last Seen"
                   className="w-full px-2 py-1 rounded filter-input"
                 />
               </th>

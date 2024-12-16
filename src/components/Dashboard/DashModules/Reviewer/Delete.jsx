@@ -13,13 +13,14 @@ export function DeleteReview({ openDelete, handleClose }) {
   const handleDelete = () => {
     dispatch(deleteReviewsAction({ token, id: reviewData }));
   };
+  const loading = useSelector((state) => state.ReviewSlice.loading);
 
   return (
     <>
       <Modal show={openDelete} size="md" onClose={handleClose} popup>
         <Modal.Header />
         <Modal.Body>
-          {reviewData ? (
+          {!loading && reviewData ? (
             <div className="text-center">
               <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">

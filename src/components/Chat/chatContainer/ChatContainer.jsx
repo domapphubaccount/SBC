@@ -17,7 +17,6 @@ import { loading_get_chat_history } from "@/app/Redux/Features/Chat_History/hist
 
 function ChatContainer() {
   const [windowWidth, setWindowWidth] = useState();
-
   const pathName = usePathname();
   const dashboardData = useSelector((state) => state.chatSlice.value);
   const catchChat = useSelector((state) => state.chatSlice.get_chat);
