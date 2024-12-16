@@ -70,6 +70,7 @@ function Pdfs({}) {
     (state) => state.pdfsSlice
   );
   const [deleted, setDeleted] = useState(false);
+  console.log("render")
 
   useEffect(() => {
     if (action) {
@@ -134,7 +135,8 @@ function Pdfs({}) {
 
   useEffect(() => {
     if (deleted) {
-      dispatch(getDeletedPdfsAction({ token, page, fileType }));
+      setPagez(0)
+      dispatch(getDeletedPdfsAction({ token, fileType }));
     } else {
       dispatch(getPdfsAction({ token, page, fileType }));
     }

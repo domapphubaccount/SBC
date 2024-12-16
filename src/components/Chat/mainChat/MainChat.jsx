@@ -42,7 +42,7 @@ function MainChat({ windowWidth }) {
   const [itemId, setItemId] = useState(null);
   const [fileId, setFileId] = useState("");
   const [dislikeMessage, setDislikeMessage] = useState("");
-  const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
+  const [isSpeaking, setIsSpeaking] = useState(false); 
   const [copID, setCopId] = useState();
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
@@ -50,10 +50,10 @@ function MainChat({ windowWidth }) {
   const chatRef = useRef();
   const dispatch = useDispatch();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
+  const [errorMessage,setErrorMessage] = useState()
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
-  console.log(fileId);
   const navigate = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [actionSuccess, setAction] = useState(false);
@@ -61,7 +61,6 @@ function MainChat({ windowWidth }) {
     (state) => state.profileSlice.permissions
   );
   const { name } = useSelector((state) => state.profileSlice.profile);
-  const storedCode = useSelector((state) => state.codeSlice.storedCode);
   const usedCode = useSelector((state) => state.codeSlice.usedCode);
 
   useEffect(() => {
@@ -71,11 +70,9 @@ function MainChat({ windowWidth }) {
       });
     }
   }, [actionSuccess]);
-
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [copyIcon, copID, isSpeaking]);
-
+  }, [copyIcon, copID, isSpeaking,windowWidth,errorMessage]);
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
     const englishCharCount = cleanedText.length;
@@ -83,7 +80,6 @@ function MainChat({ windowWidth }) {
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
     return percentageEnglish > 50;
   }
-
   const dislikeToggle = (id) => {
     setItemId(id);
     setDislike(!dislike);
@@ -132,6 +128,7 @@ function MainChat({ windowWidth }) {
     setTimeout(() => setCopyIcon(false), 500);
   };
   const handleDislike = (data) => {
+    setErrorMessage()
     dispatch(loading_chat_action(true));
     axios
       .post(
@@ -149,6 +146,7 @@ function MainChat({ windowWidth }) {
         }
       )
       .then((response) => {
+        setErrorMessage()
         dispatch(loading_chat_action(false));
         setDislike(false);
         setAction(true);
@@ -156,7 +154,7 @@ function MainChat({ windowWidth }) {
       })
       .catch((error) => {
         dispatch(loading_chat_action(false));
-        setDislike(false);
+        setErrorMessage(error?.response?.data?.message)
         console.error("There was an error making the request!", error);
       });
   };
@@ -192,7 +190,7 @@ function MainChat({ windowWidth }) {
             dispatch(loading_chat(false));
             dispatch(loading_chat_action(false));
             console.error("There was an error making the request!", error);
-            if (error.response.data.error) {
+            if (error.response?.data?.error) {
               dispatch(error_start_chat(error.response.data.error));
             } else if (error.response.data.message) {
               dispatch(error_start_chat(error.response.data.message));
@@ -324,7 +322,7 @@ function MainChat({ windowWidth }) {
           (conversation.userChats ||
             conversation.user_chats ||
             chatData.length > 0) &&
-          chatData.map((item, i) => (
+            chatData.map((item, i) => (
             <React.Fragment key={i}>
               <div className="flex justify-end relative w-full">
                 <div>
@@ -341,17 +339,15 @@ function MainChat({ windowWidth }) {
                       <svg
                         style={{ transition: "none" }}
                         onClick={(e) => {
-                          handleCopyText(item.question, i); // Execute your copy function
-                          const svgElement = e.currentTarget; // Store the reference
+                          handleCopyText(item.question, i); 
+                          const svgElement = e.currentTarget;
                           if (svgElement) {
-                            // Check if svgElement is not null
-                            svgElement.classList.add("action-icon"); // Add the class for styling
+                            svgElement.classList.add("action-icon"); 
                             setTimeout(() => {
                               if (svgElement) {
-                                // Ensure svgElement is still available
                                 svgElement.classList.remove("action-icon");
                               }
-                            }, 500); // Remove the class after 500ms
+                            }, 500); 
                           }
                         }}
                         xmlns="http://www.w3.org/2000/svg"
@@ -409,7 +405,7 @@ function MainChat({ windowWidth }) {
                                   ? item.answer
                                       .match(pattern)
                                       ?.map((item2, i) => (
-                                        <li key={i}>{item2}</li>
+                                        <li key={i}>{item2.slice(10)}</li>
                                       ))
                                   : "No Reference"}
                               </ul>
@@ -451,7 +447,7 @@ function MainChat({ windowWidth }) {
                               >
                                 <div className="px-3 py-2">
                                   <ul>
-                                    <li>{item2}</li>
+                                    <li>{item2.slice(10)}</li>
                                   </ul>
                                 </div>
                               </div>
@@ -588,8 +584,6 @@ function MainChat({ windowWidth }) {
                             style={{ transition: "none" }}
                             onClick={(e) => {
                               dislikeToggle(item.id);
-                              // console.log(item.file_ids);
-                              // console.log(item.answer.match(file_id_pattern)[0].slice(9,-1));
                               setFileId(item.answer.match(file_id_pattern) && item.answer.match(file_id_pattern)[0].slice(9,-1));
                               const svgElement = e.currentTarget;
                               if (svgElement) {
@@ -731,6 +725,7 @@ function MainChat({ windowWidth }) {
       )}
       {dislike && (
         <Dislike
+          errorMessage={errorMessage} 
           loading_actions={loading_actions}
           handleDislike={handleDislike}
           setDislikeMessage={setDislikeMessage}
