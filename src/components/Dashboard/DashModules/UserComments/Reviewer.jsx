@@ -286,9 +286,9 @@ export function Reviewer({ openReviewer, handleClose }) {
                           value="Dislike Status "
                         />
                         <br />
-                        <small style={{ fontSize: "10px" }}>
+                        {/* <small style={{ fontSize: "10px" }}>
                           !only admin can change the status
-                        </small>
+                        </small> */}
                         <select
                           id="status"
                           name="status"
