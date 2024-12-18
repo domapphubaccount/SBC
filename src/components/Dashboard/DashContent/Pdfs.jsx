@@ -196,6 +196,18 @@ function Pdfs({}) {
           // Handle nested section.name filtering
           return row.section?.name?.toLowerCase().includes(term);
         }
+        if (column === "name") {
+          // Handle nested section.name filtering
+          return row?.name?.toLowerCase().includes(term);
+        }
+        if (column === "file") {
+          // Handle nested section.name filtering
+          return row.file?.toLowerCase().includes(term);
+        }
+        if (column === "uploaded_by") {
+          // Handle nested section.name filtering
+          return row.uploaded_by?.toLowerCase().includes(term);
+        }
 
         if (column === "who_assigneds") {
           // Check if any of the names in who_assigneds matches the search term

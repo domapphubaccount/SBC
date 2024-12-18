@@ -163,7 +163,6 @@ function Users_comments({}) {
   const filteredData = usersCommentsData.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
-
       if (column === "status") {
         switch (term) {
           case "accept":
@@ -178,38 +177,26 @@ function Users_comments({}) {
             return true;
         }
       }
-
-      if (startDate && endDate) {
-        // Convert the last_seen string to Date
-        const rowDate = convertToDate(row[column]);
-
-        // Check if the date falls within the selected range
-        return rowDate >= startDate && rowDate <= endDate;
-      }
-
       if (column === "disliked_by") {
         // Handle nested section.name filtering
         return row.disliked_by?.name?.toLowerCase().includes(term);
       }
+      if(column === "comment") {
+        return row.comment?.toLowerCase().includes(term);
+      }
       // Handle "who_assigneds" field
       if (column === "who_assigneds") {
-        return (
-          Array.isArray(row.dislike_pdf) &&
-          row.dislike_pdf.some(
-            (pdf) =>
-              Array.isArray(pdf.who_assigneds) &&
-              pdf.who_assigneds.some((assignee) =>
-                assignee.name?.toLowerCase().includes(term.toLowerCase())
-              )
-          )
+        return row.dislike_pdf?.who_assigneds.some((assignee) =>
+          assignee.name?.toLowerCase().includes(term.toLowerCase())
         );
       }
-
       if (column === "dislike_pdf") {
         // Check if any of the names in who_assigneds matches the search term
-        return row.dislike_pdf?.some((assignee) =>
-          assignee.name?.toLowerCase().includes(term)
-        );
+        return row.dislike_pdf?.name?.toLowerCase().includes(term);
+      }
+      if (startDate && endDate) {
+        const rowDate = convertToDate(row[column]);
+        return rowDate >= startDate && rowDate <= endDate;
       }
       // Default case for other columns
       return row[column]?.toLowerCase().includes(term);
@@ -282,11 +269,6 @@ function Users_comments({}) {
             <div>
               <h1 className="text-white text-3xl">USERS DISLIKES</h1>
             </div>
-            {/* <div>
-              <Button color="blue" onClick={handleOpenAdd}>
-                Add Comment
-              </Button>
-            </div> */}
           </div>
         </div>
 
@@ -296,32 +278,6 @@ function Users_comments({}) {
               <label for="table-search" className="sr-only">
                 Search
               </label>
-              {/* <div className="relative mt-1">
-                <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      strokeWidth="2"
-                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  id="table-search"
-                  className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Search for items"
-                  onChange={handleGlobalSearch} // Handle search input change
-                />
-              </div> */}
               <div className="flex justify-between">
                 <div className="m-2">
                   <Button className="flex" onClick={() => handleReset(formRef)}>
@@ -362,15 +318,6 @@ function Users_comments({}) {
                       />
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      {/* <input
-                      type="text"
-                      placeholder="Status"
-                      onChange={(e) =>
-                        handleSearchChange("status", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    /> */}
-
                       <select
                         type="select"
                         placeholder="Status"
@@ -419,15 +366,6 @@ function Users_comments({}) {
                       />
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      {/* <input
-                      type="text"
-                      placeholder="Date"
-                      onChange={(e) =>
-                        handleSearchChange("created_at", e.target.value)
-                      }
-                      className="filter w-full px-2 py-1 rounded filter-input"
-                    /> */}
-
                       <DatePicker
                         selected={startDate}
                         onChange={handleDateChange}
@@ -528,32 +466,21 @@ function Users_comments({}) {
                             }}
                             content={
                               <ul className="text-gray-700">
-                                {item.dislike_pdf?.length > 0 ? (
-                                  item.dislike_pdf.map((item2, i) => (
-                                    <div key={i} className="mb-2 border">
-                                      <div className="font-small text-sm">
-                                        {i + 1}- {item2.name}
-                                      </div>
-                                      {item2.who_assigneds.length > 0 ? (
-                                        item2.who_assigneds.map((item3, i) => (
-                                          <li
-                                            key={i}
-                                            className="flex text-xs ps-2"
-                                          >
-                                            {i + 1}: {item3.name}
-                                          </li>
-                                        ))
-                                      ) : (
-                                        <small className="text-red-500">
-                                          "NO ONE ASSIGNED"
-                                        </small>
-                                      )}
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="text-center text-sm text-gray-500">
-                                    No PDF
+                                {item.dislike_pdf?.who_assigneds &&
+                                item.dislike_pdf?.who_assigneds.length > 0 ? (
+                                  <div className="font-small text-sm">
+                                    {item.dislike_pdf?.who_assigneds.map(
+                                      (item, index) => (
+                                        <li key={index}>
+                                          {index + 1}- {item.name}
+                                        </li>
+                                      )
+                                    )}
                                   </div>
+                                ) : (
+                                  <small className="text-red-500">
+                                    "NO ONE ASSIGNED"
+                                  </small>
                                 )}
                               </ul>
                             }
@@ -571,15 +498,10 @@ function Users_comments({}) {
                             }}
                             content={
                               <ul className="text-gray-700">
-                                {item?.dislike_pdf?.length > 0 ? (
-                                  item.dislike_pdf.map((item, i) => (
-                                    <li
-                                      key={i}
-                                      className="flex text-xs text-gray-800 mb-1"
-                                    >
-                                      {i + 1}: {item.name}
-                                    </li>
-                                  ))
+                                {item?.dislike_pdf ? (
+                                  <li className="flex text-xs text-gray-800 mb-1">
+                                    {item.dislike_pdf.name}
+                                  </li>
                                 ) : (
                                   <div className="text-center text-sm text-red-500">
                                     NO CODE ASSIGNED

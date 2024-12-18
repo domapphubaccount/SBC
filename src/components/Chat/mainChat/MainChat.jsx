@@ -42,7 +42,7 @@ function MainChat({ windowWidth }) {
   const [itemId, setItemId] = useState(null);
   const [fileId, setFileId] = useState("");
   const [dislikeMessage, setDislikeMessage] = useState("");
-  const [isSpeaking, setIsSpeaking] = useState(false); 
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [copID, setCopId] = useState();
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
@@ -50,7 +50,7 @@ function MainChat({ windowWidth }) {
   const chatRef = useRef();
   const dispatch = useDispatch();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
-  const [errorMessage,setErrorMessage] = useState()
+  const [errorMessage, setErrorMessage] = useState();
   const loading_actions = useSelector(
     (state) => state.chatActionsSlice.loading
   );
@@ -72,7 +72,7 @@ function MainChat({ windowWidth }) {
   }, [actionSuccess]);
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [copyIcon, copID, isSpeaking,windowWidth,errorMessage]);
+  }, [copyIcon, copID, isSpeaking, windowWidth, errorMessage, fileId]);
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
     const englishCharCount = cleanedText.length;
@@ -128,11 +128,11 @@ function MainChat({ windowWidth }) {
     setTimeout(() => setCopyIcon(false), 500);
   };
   const handleDislike = (data) => {
-    setErrorMessage()
+    setErrorMessage();
     dispatch(loading_chat_action(true));
     axios
       .post(
-        `${config.api}admin/chat-user-dislikes`,
+        `${config.api}dislike/message`,
         {
           file_ids: fileId,
           user_chat_id: itemId,
@@ -146,7 +146,7 @@ function MainChat({ windowWidth }) {
         }
       )
       .then((response) => {
-        setErrorMessage()
+        setErrorMessage();
         dispatch(loading_chat_action(false));
         setDislike(false);
         setAction(true);
@@ -154,7 +154,7 @@ function MainChat({ windowWidth }) {
       })
       .catch((error) => {
         dispatch(loading_chat_action(false));
-        setErrorMessage(error?.response?.data?.message)
+        setErrorMessage(error?.response?.data?.message);
         console.error("There was an error making the request!", error);
       });
   };
@@ -208,14 +208,28 @@ function MainChat({ windowWidth }) {
   dispatch(action_done(true));
 
   const pattern = /Reference: .*?\/\//g;
-  const file_id_pattern = /\[file_id:[^\]]+\]/g;
+  const file_id_pattern = /Attachments:\s*\[([^\]]+)\]/;
+  const file_id_pattern_3 = /File ID:.*?\]/g;
   const textHandler = (item) => {
-    if (item.match(pattern)) {
-      let dataArray = item.match(pattern);
-      let data = item;
-      dataArray.forEach((item2) => {
-        data = data.replaceAll(item2, "");
-      });
+    let data = item;
+    if (
+      item.match(pattern) ||
+      data.match(file_id_pattern_3) ||
+      data.match(file_id_pattern)
+    ) {
+      if (item.match(pattern)) {
+        let dataArray = item.match(pattern);
+        dataArray.forEach((item2) => {
+          data = data.replaceAll(item2, "");
+        });
+      }
+
+      if (data.match(file_id_pattern_3)) {
+        let fileIdArray = data.match(file_id_pattern_3);
+        fileIdArray.forEach((item2) => {
+          data = data.replaceAll(item2, "");
+        });
+      }
 
       if (data.match(file_id_pattern)) {
         let fileIdArray = data.match(file_id_pattern);
@@ -232,6 +246,7 @@ function MainChat({ windowWidth }) {
         />
       );
     }
+
     return (
       <span
         dangerouslySetInnerHTML={{
@@ -322,7 +337,7 @@ function MainChat({ windowWidth }) {
           (conversation.userChats ||
             conversation.user_chats ||
             chatData.length > 0) &&
-            chatData.map((item, i) => (
+          chatData.map((item, i) => (
             <React.Fragment key={i}>
               <div className="flex justify-end relative w-full">
                 <div>
@@ -339,15 +354,15 @@ function MainChat({ windowWidth }) {
                       <svg
                         style={{ transition: "none" }}
                         onClick={(e) => {
-                          handleCopyText(item.question, i); 
+                          handleCopyText(item.question, i);
                           const svgElement = e.currentTarget;
                           if (svgElement) {
-                            svgElement.classList.add("action-icon"); 
+                            svgElement.classList.add("action-icon");
                             setTimeout(() => {
                               if (svgElement) {
                                 svgElement.classList.remove("action-icon");
                               }
-                            }, 500); 
+                            }, 500);
                           }
                         }}
                         xmlns="http://www.w3.org/2000/svg"
@@ -584,7 +599,32 @@ function MainChat({ windowWidth }) {
                             style={{ transition: "none" }}
                             onClick={(e) => {
                               dislikeToggle(item.id);
-                              setFileId(item.answer.match(file_id_pattern) && item.answer.match(file_id_pattern)[0].slice(9,-1));
+
+                              if (item.answer.match(file_id_pattern_3)) {
+                                setFileId(
+                                  item.answer.match(file_id_pattern_3) &&
+                                    item.answer
+                                      .match(file_id_pattern_3)[0]
+                                      .match(/(?<=File ID:\s\[)(.*?)(?=\])/g)[0]
+                                      .slice(8)
+                                );
+                              } else if (item.answer.match(file_id_pattern)) {
+                                console.log(
+                                  item.answer
+                                    .match(file_id_pattern)[0]
+                                    .match(/\[file_id:([^\]]+)\]/)[0]
+                                    .slice(9, -1)
+                                );
+                                setFileId(
+                                  item.answer.match(file_id_pattern) &&
+                                    item.answer
+                                      .match(file_id_pattern)[0]
+                                      .match(/\[file_id:([^\]]+)\]/)[0]
+                                      .slice(9, -1)
+                                );
+                              } else {
+                                setFileId();
+                              }
                               const svgElement = e.currentTarget;
                               if (svgElement) {
                                 svgElement.classList.add("action-icon");
@@ -725,7 +765,8 @@ function MainChat({ windowWidth }) {
       )}
       {dislike && (
         <Dislike
-          errorMessage={errorMessage} 
+          fileId={fileId}
+          errorMessage={errorMessage}
           loading_actions={loading_actions}
           handleDislike={handleDislike}
           setDislikeMessage={setDislikeMessage}

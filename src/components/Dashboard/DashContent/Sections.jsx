@@ -141,7 +141,10 @@ function Sections() {
           role.name?.toLowerCase().includes(term)
         );
       }
-
+      if (column === "name") {
+        // Handle nested section.name filtering
+        return row?.name?.toLowerCase().includes(term);
+      }
       if (startDate && endDate) {
         // Convert the last_seen string to Date
         const rowDate = convertToDate(row[column]);

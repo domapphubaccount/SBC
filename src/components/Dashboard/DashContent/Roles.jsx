@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { WarnUser } from "../DashModules/User/Warn";
 import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -186,6 +192,10 @@ function Roles({}) {
           permission.slug?.toLowerCase().includes(term)
         );
       }
+      if (column === "name") {
+        // Handle nested section.name filtering
+        return row?.name?.toLowerCase().includes(term);
+      } 
 
       if (startDate && endDate) {
         // Convert the last_seen string to Date
@@ -530,7 +540,11 @@ function Roles({}) {
                 Search
               </label>
               <div className="m-2">
-                <Button className="flex" title="reset filters" onClick={()=>handleReset(formRef)}>
+                <Button
+                  className="flex"
+                  title="reset filters"
+                  onClick={() => handleReset(formRef)}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

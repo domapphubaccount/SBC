@@ -96,6 +96,27 @@ export function Reviewer({ openReviewer, handleClose }) {
     }
   }, [commentData]); // Removed 'formik' from the dependency array
 
+  const file_id_pattern = /File ID:.*?\]/g;
+  const file_id_pattern_3 = /Attachments:\s*\[([^\]]+)\]/;
+
+
+  const texthandler = (item) => {
+    let data = item;
+    if (data?.match(file_id_pattern)) {
+      let fileIdArray = data.match(file_id_pattern);
+      fileIdArray.forEach((item2) => {
+        data = data.replaceAll(item2, "");
+      });
+    }
+    if (data?.match(file_id_pattern_3)) {
+      let fileIdArray = data.match(file_id_pattern_3);
+      fileIdArray.forEach((item2) => {
+        data = data.replaceAll(item2, "");
+      });
+    }
+    return data
+  }
+
   const byldResponse = useCallback(() => {
     if (!commentData?.user_chat?.answer && !window.MathJax) {
       return <div>No response available</div>;
@@ -108,7 +129,7 @@ export function Reviewer({ openReviewer, handleClose }) {
             style={{ opacity: 1, overflowX: "auto" }}
             className="textarea text-xs	" // Add any styling class if needed
             dangerouslySetInnerHTML={{
-              __html: commentData?.user_chat?.answer,
+              __html: texthandler(commentData?.user_chat?.answer),
             }}
           />
         </MathJax>
