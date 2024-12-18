@@ -635,8 +635,7 @@ function MainChat({ windowWidth }) {
                                   item.answer.match(file_id_pattern_3) &&
                                     item.answer
                                       .match(file_id_pattern_3)[0]
-                                      .match(/(?<=File ID:\s\[)(.*?)(?=\])/g)[0]
-                                      .slice(8)
+                                      .slice(10, -1)
                                 );
                               } else if (item.answer.match(file_id_pattern)) {
                                 console.log(
