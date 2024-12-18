@@ -184,6 +184,12 @@ function Users({}) {
           role.name?.toLowerCase().includes(term.toLowerCase())
         );
       }
+      if(column === "email") {
+        return row.email?.toLowerCase().includes(term);
+      }
+      if(column === "name") {
+        return row.name?.toLowerCase().includes(term);
+      }
 
       if (column === "account_type" && row.account_type === "test") {
         return row.account_type === "test";
