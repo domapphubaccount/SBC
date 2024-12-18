@@ -246,6 +246,7 @@ export const ReviewSlice = createSlice({
   initialState,
   reducers: {
     editModule: (state, action) => {
+      state.error = ""
       state.editModule = action.payload;
       state.editModule = action.payload.open;
       state.review = action.payload.review || "";
@@ -255,11 +256,12 @@ export const ReviewSlice = createSlice({
       state.review = action.payload.review || "";
     },
     viewModule: (state, action) => {
-      console.log(action.payload, "+-+-+");
+      state.error = ''
       state.viewModule = action.payload.open;
       state.review = action.payload.review || "";
     },
     trainModule: (state, action) => {
+      state.error = ''
       state.trainModule = action.payload.open;
       state.review = action.payload.review || "";
     },
@@ -267,9 +269,11 @@ export const ReviewSlice = createSlice({
       state.role = {};
     },
     addModule: (state, action) => {
+      state.error = ''
       state.addModule = action.payload;
     },
     reviewerModel: (state, action) => {
+      state.error = ''
       state.reviewerModel = action.payload;
     },
     handlePages: (state, action) => {
