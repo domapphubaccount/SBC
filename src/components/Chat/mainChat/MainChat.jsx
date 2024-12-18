@@ -114,8 +114,23 @@ function MainChat({ windowWidth }) {
     return temporalDivElement.textContent || temporalDivElement.innerText || "";
   };
   const handleCopyText = (textCopy, id) => {
+    let textCop = textCopy
+
+    if (textCop.match(file_id_pattern_3)) {
+      let fileIdArray = textCop.match(file_id_pattern_3);
+      fileIdArray.forEach((item2) => {
+        textCop = textCop.replaceAll(item2, "");
+      });
+    }
+
+    if (textCop.match(file_id_pattern)) {
+      let fileIdArray = textCop.match(file_id_pattern);
+      fileIdArray.forEach((item2) => {
+        textCop = textCop.replaceAll(item2, "");
+      });
+    }
     setCopId(id);
-    const textToCopy = stripHtml(textCopy);
+    const textToCopy = stripHtml(textCop);
     setCopyIcon(true);
     navigator.clipboard
       .writeText(textToCopy)
