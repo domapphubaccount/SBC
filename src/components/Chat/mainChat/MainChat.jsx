@@ -72,7 +72,7 @@ function MainChat({ windowWidth }) {
   }, [actionSuccess]);
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [copyIcon, copID, isSpeaking, windowWidth, errorMessage, fileId]);
+  }, [copyIcon, copID, isSpeaking, windowWidth, errorMessage, fileId , chatData]);
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
     const englishCharCount = cleanedText.length;
