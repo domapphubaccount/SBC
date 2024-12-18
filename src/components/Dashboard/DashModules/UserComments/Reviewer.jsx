@@ -98,6 +98,8 @@ export function Reviewer({ openReviewer, handleClose }) {
 
   const file_id_pattern = /File ID:.*?\]/g;
   const file_id_pattern_3 = /Attachments:\s*\[([^\]]+)\]/;
+  const file_id_pattern_4 = /\[file-[^\]]+\]/g;
+
 
 
   const texthandler = (item) => {
@@ -110,6 +112,12 @@ export function Reviewer({ openReviewer, handleClose }) {
     }
     if (data?.match(file_id_pattern_3)) {
       let fileIdArray = data.match(file_id_pattern_3);
+      fileIdArray.forEach((item2) => {
+        data = data.replaceAll(item2, "");
+      });
+    }
+    if (data?.match(file_id_pattern_4)) {
+      let fileIdArray = data.match(file_id_pattern_4);
       fileIdArray.forEach((item2) => {
         data = data.replaceAll(item2, "");
       });
