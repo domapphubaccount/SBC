@@ -69,26 +69,30 @@ function Users_chat() {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-    if (!start || !end) {
       // Clear the date filter if no range is selected
       setSearchTerms((prev) => ({
         ...prev,
-        created_at: "",
+        created_at: start && end ? { start, end } : "",
       }));
-    }
+    
   };
 
   const filteredData = masterUsersChat?.filter((row) =>
     Object.entries(searchTerms).every(([column, term]) => {
       if (!term) return true; // Skip if no search term
-      // Default case for other columns
       if (column === "user_name") {
-        // Handle nested section.name filtering
         return row.user_name?.name?.toLowerCase().includes(term);
+      }
+      if (column === "name") {
+        return row.name?.toLowerCase().includes(term);
+      }
+      if (column === "chatgpt_id") {
+        return row.chatgpt_id?.toLowerCase().includes(term);
       }
 
       if (startDate && endDate) {
-        const rowDate = convertToDate(row.created_at); // Assuming 'last_seen' is the key
+        console.log(row)
+        const rowDate = convertToDate(row[column]); // Assuming 'last_seen' is the key
         return rowDate >= startDate && rowDate <= endDate;
       }
 

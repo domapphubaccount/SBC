@@ -172,11 +172,13 @@ function ReviewerAdmin({}) {
         // Handle nested section.name filtering
         return row.chat_user_dislike?.comment?.toLowerCase().includes(term);
       }
+      if (column === "comment_reviewr") {
+        return row.comment_reviewr?.toLowerCase().includes(term);
+      }
 
       if (startDate && endDate) {
         // Convert the last_seen string to Date
         const rowDate = convertToDate(row[column]);
-
         // Check if the date falls within the selected range
         return rowDate >= startDate && rowDate <= endDate;
       }

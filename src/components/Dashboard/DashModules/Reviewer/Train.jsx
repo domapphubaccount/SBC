@@ -10,7 +10,7 @@ import { MathJax, MathJaxContext } from "better-react-mathjax";
 
 export function Train({ openTrain, handleClose }) {
   const reviewData = useSelector((state) => state.ReviewSlice.review);
-  const loading = useSelector((state) => state.userCommentsSlice.loading);
+  const loading = useSelector((state) => state.ReviewSlice.loading);
   const [isChecked, setIsChecked] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
@@ -56,6 +56,27 @@ export function Train({ openTrain, handleClose }) {
       })
     );
   };
+
+  const file_id_pattern = /File ID:.*?\]/g;
+  const file_id_pattern_3 = /Attachments:\s*\[([^\]]+)\]/;
+
+
+  const texthandler = (item) => {
+    let data = item;
+    if (data?.match(file_id_pattern)) {
+      let fileIdArray = data.match(file_id_pattern);
+      fileIdArray.forEach((item2) => {
+        data = data.replaceAll(item2, "");
+      });
+    }
+    if (data?.match(file_id_pattern_3)) {
+      let fileIdArray = data.match(file_id_pattern_3);
+      fileIdArray.forEach((item2) => {
+        data = data.replaceAll(item2, "");
+      });
+    }
+    return data
+  }
 
   return (
     <Modal show={openTrain} size="md" popup onClose={handleClose}>
@@ -110,7 +131,7 @@ export function Train({ openTrain, handleClose }) {
                         style={{ opacity: 1, overflowX: "auto" }}
                         className="textarea text-xs	"
                         dangerouslySetInnerHTML={{
-                          __html: commentData?.user_chat?.answer,
+                          __html: texthandler(commentData?.user_chat?.answer),
                         }}
                       />
                     </div>
@@ -213,7 +234,7 @@ export function Train({ openTrain, handleClose }) {
                       style={{ opacity: 1, overflowX: "auto" }}
                       className="textarea text-xs	" // Add any styling class if needed
                       dangerouslySetInnerHTML={{
-                        __html: commentData?.user_chat?.answer,
+                        __html: texthandler(commentData?.user_chat?.answer),
                       }}
                     />
                   </MathJax>

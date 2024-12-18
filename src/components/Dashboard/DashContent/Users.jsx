@@ -190,10 +190,7 @@ function Users({}) {
       }
 
       if (startDate && endDate) {
-        // Convert the last_seen string to Date
         const rowDate = convertToDate(row[column]);
-
-        // Check if the date falls within the selected range
         return rowDate >= startDate && rowDate <= endDate;
       }
 
