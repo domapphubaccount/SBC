@@ -72,7 +72,15 @@ function MainChat({ windowWidth }) {
   }, [actionSuccess]);
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
-  }, [copyIcon, copID, isSpeaking, windowWidth, errorMessage, fileId , chatData]);
+  }, [
+    copyIcon,
+    copID,
+    isSpeaking,
+    windowWidth,
+    errorMessage,
+    fileId,
+    chatData,
+  ]);
   function isEnglish(text) {
     const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
     const englishCharCount = cleanedText.length;
@@ -114,7 +122,7 @@ function MainChat({ windowWidth }) {
     return temporalDivElement.textContent || temporalDivElement.innerText || "";
   };
   const handleCopyText = (textCopy, id) => {
-    let textCop = textCopy
+    let textCop = textCopy;
 
     if (textCop.match(file_id_pattern_3)) {
       let fileIdArray = textCop.match(file_id_pattern_3);
@@ -225,12 +233,14 @@ function MainChat({ windowWidth }) {
   const pattern = /Reference: .*?\/\//g;
   const file_id_pattern = /Attachments:\s*\[([^\]]+)\]/;
   const file_id_pattern_3 = /File ID:.*?\]/g;
+  const file_id_pattern_4 = /\[file-[^\]]+\]/g;
   const textHandler = (item) => {
     let data = item;
     if (
       item.match(pattern) ||
       data.match(file_id_pattern_3) ||
-      data.match(file_id_pattern)
+      data.match(file_id_pattern) ||
+      data.match(file_id_pattern_4)
     ) {
       if (item.match(pattern)) {
         let dataArray = item.match(pattern);
@@ -245,9 +255,14 @@ function MainChat({ windowWidth }) {
           data = data.replaceAll(item2, "");
         });
       }
-
       if (data.match(file_id_pattern)) {
         let fileIdArray = data.match(file_id_pattern);
+        fileIdArray.forEach((item2) => {
+          data = data.replaceAll(item2, "");
+        });
+      }
+      if (data.match(file_id_pattern_4)) {
+        let fileIdArray = data.match(file_id_pattern_4);
         fileIdArray.forEach((item2) => {
           data = data.replaceAll(item2, "");
         });
@@ -636,6 +651,13 @@ function MainChat({ windowWidth }) {
                                       .match(file_id_pattern)[0]
                                       .match(/\[file_id:([^\]]+)\]/)[0]
                                       .slice(9, -1)
+                                );
+                              } else if (item.answer.match(file_id_pattern_4)) {
+                                setFileId(
+                                  item.answer.match(file_id_pattern_4) &&
+                                    item.answer
+                                      .match(file_id_pattern_4)[0]
+                                      .slice(1, -1)
                                 );
                               } else {
                                 setFileId();
