@@ -631,14 +631,22 @@ function MainChat({ windowWidth }) {
                               dislikeToggle(item.id);
 
                               if (item.answer.match(file_id_pattern_3)) {
+                                // console.log(file_id_pattern_3,
+                                //   "++++++",
+                                //   item.answer.match(file_id_pattern_3) &&
+                                //     item.answer
+                                //       .match(file_id_pattern_3)[0]
+                                //       .slice(18, -1)
+                                // );
                                 setFileId(
                                   item.answer.match(file_id_pattern_3) &&
                                     item.answer
                                       .match(file_id_pattern_3)[0]
-                                      .slice(10, -1)
+                                      .slice(18, -1)
                                 );
                               } else if (item.answer.match(file_id_pattern)) {
                                 console.log(
+                                  "**",
                                   item.answer
                                     .match(file_id_pattern)[0]
                                     .match(/\[file_id:([^\]]+)\]/)[0]
