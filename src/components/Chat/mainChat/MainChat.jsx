@@ -410,7 +410,7 @@ function MainChat({ elementWidth, storedCode }) {
                                           .match(pattern)
                                           ?.map((item3, i) => (
                                             <p className="w-100 my-3" key={i}>
-                                              {item3}
+                                              {item3.slice(0,-2)}
                                             </p>
                                           ))
                                       ) : (
@@ -444,10 +444,7 @@ function MainChat({ elementWidth, storedCode }) {
                                           <ReactTyped
                                             strings={[
                                               textHandler(
-                                                item.answer.replaceAll(
-                                                  "\n",
-                                                  "<br/>"
-                                                )
+                                                item.answer
                                               ),
                                             ]}
                                             showCursor={false}
@@ -468,10 +465,7 @@ function MainChat({ elementWidth, storedCode }) {
                                             }
                                             dangerouslySetInnerHTML={{
                                               __html: textHandler(
-                                                item.answer.replaceAll(
-                                                  "\n",
-                                                  "<br/>"
-                                                )
+                                                item.answer
                                               ),
                                             }}
                                           />
