@@ -3,7 +3,6 @@ const nextConfig = {
     // experimental: {
     //     output: 'hybrid',
     //   },
-    output: 'client'
-    
+    output: 'client'    
 }
 export default nextConfig;
