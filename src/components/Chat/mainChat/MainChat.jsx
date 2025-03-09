@@ -296,7 +296,7 @@ function MainChat({ elementWidth, storedCode }) {
                       <div className="m-auto mb-2" style={{ width: "200px" }}>
                         <img src={StartLogo.src} className="w-100" alt="" />
                       </div>
-                      <p className="mt-3 mb-3 text-xs leading-8 text-gray-600">
+                      <p className="mt-3 mb-5 text-xs leading-8 text-gray-600">
                         you can start new session or chose previous chat.
                       </p>
                       <div className="relative inline-block">
