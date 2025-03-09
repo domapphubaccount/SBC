@@ -17,6 +17,7 @@ import StartLogo from "@/assets/logo/start_logo.png";
 import Logo from "@/assets/logo/icon.png";
 import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
+import { Tooltip } from "@material-tailwind/react";
 
 function MainChat({ elementWidth, storedCode }) {
   const pathName = usePathname();
@@ -295,20 +296,26 @@ function MainChat({ elementWidth, storedCode }) {
                       <div className="m-auto mb-2" style={{ width: "200px" }}>
                         <img src={StartLogo.src} className="w-100" alt="" />
                       </div>
-
-                      {/* <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1> */}
-                      <p className="mt-3 text-xs leading-8 text-gray-600">
+                      <p className="mt-3 mb-3 text-xs leading-8 text-gray-600">
                         you can start new session or chose previous chat.
                       </p>
-                      <div className="mt-6 flex items-center justify-center gap-x-6">
+                      <div className="relative inline-block">
                         <button
                           onClick={handleStartNewChat}
-                          className="learn-more start"
+                          disabled={storedCode.length === 0}
+                          className="learn-more start relative group"
                         >
                           <span className="circle" aria-hidden="true">
                             <span className="icon arrow"></span>
                           </span>
                           <span className="button-text">Start Chat</span>
+
+                          {/* Tooltip */}
+                          {storedCode.length === 0 && (
+                            <div className="absolute bottom-full -bottom-full transform -translate-x-1/2 mb-2 w-max px-3 py-1 text-xs text-amber-700 bg-amber-200 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                              !You need to choose a code first
+                            </div>
+                          )}
                         </button>
                       </div>
                     </div>
