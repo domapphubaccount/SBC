@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   value: '',
-  storedCode: {},
+  storedCode: [],
 }
 
 export const codeSlice = createSlice({
@@ -14,12 +14,19 @@ export const codeSlice = createSlice({
     getCode: (state , action) => {
       state.value = action.payload
     },
-    set_stored_code: (state , action)=>{
-      state.storedCode = action.payload
+    set_code: (state, action) => {
+      if (state.storedCode.includes(action.payload)) {
+        state.storedCode = state.storedCode.filter(item => item !== action.payload);
+      } else {
+        state.storedCode.push(action.payload);
+      }
+    },
+    remove_code: (state , action) => {
+      state.storedCode = []
     }
   },
 })
 
-export const { getCode , set_stored_code } = codeSlice.actions
+export const { getCode , set_code , remove_code} = codeSlice.actions
 
 export default codeSlice.reducer

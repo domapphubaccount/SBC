@@ -19,7 +19,7 @@ import { ReactTyped } from "react-typed";
 import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
 import { Tooltip } from "@material-tailwind/react";
 
-function MainChat({ elementWidth, storedCode }) {
+function MainChat({ elementWidth }) {
   const pathName = usePathname();
   const [copyIcon, setCopyIcon] = useState(false);
   const [user, setUser] = useState("");
@@ -38,6 +38,7 @@ function MainChat({ elementWidth, storedCode }) {
   const typeComplete = useSelector((state) => state.typeSlice.value);
   const chatRef = useRef();
   const [responseId, setResponseId] = useState("");
+  const storedCode = useSelector((state) => state.codeSlice.storedCode);
 
   function isEnglish(text) {
     // Remove non-alphabetic characters for a better accuracy

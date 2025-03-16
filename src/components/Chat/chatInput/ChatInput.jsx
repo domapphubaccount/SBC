@@ -20,7 +20,7 @@ function ChatInput({ storedCode }) {
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
   const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
-  const [dir,setDir] = useState(false);
+  const [dir, setDir] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -33,12 +33,15 @@ function ChatInput({ storedCode }) {
     }
   }, []);
   const handleSendMessage = () => {
-    const selectedCode = storedCode.length > 0 ? storedCode : JSON.parse(localStorage.getItem('code')) || [];
+    const selectedCode =
+      storedCode.length > 0
+        ? storedCode
+        : JSON.parse(localStorage.getItem("code")) || [];
 
     if (selectedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       setLoading(true);
-      console.log(JSON.parse(localStorage.getItem('code')) , storedCode)
+      console.log(JSON.parse(localStorage.getItem("code")), storedCode);
       axios
         .post(
           "https://sbc.designal.cc/api/send-message",
@@ -79,7 +82,10 @@ function ChatInput({ storedCode }) {
           );
           console.error("There was an error making the request!", error);
         });
-    } else if (((storedCode.length == 0) || (JSON.parse(localStorage.getItem('code')).length == 0 ))) {
+    } else if (
+      storedCode.length == 0 ||
+      JSON.parse(localStorage.getItem("code")).length == 0
+    ) {
       setSendMessage(true);
     }
   };
@@ -93,16 +99,16 @@ function ChatInput({ storedCode }) {
 
   function isEnglish(text) {
     // Remove non-alphabetic characters for a better accuracy
-    const cleanedText = text.replace(/[^a-zA-Z]/g, '');
-    console.log("cleanedText: " , cleanedText);
-    
+    const cleanedText = text.replace(/[^a-zA-Z]/g, "");
+    console.log("cleanedText: ", cleanedText);
+
     // Calculate the percentage of alphabetic characters that are English
     const englishCharCount = cleanedText.length;
     const totalCharCount = text.length;
-  
+
     // Determine the percentage of English characters
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
-  
+
     // Check if the percentage is above a certain threshold (e.g., 50%)
     setDir(percentageEnglish > 50);
   }
@@ -122,15 +128,17 @@ function ChatInput({ storedCode }) {
           <>
             <TextareaAutosize
               onChange={(e) => {
-                isEnglish(e.target.value)
+                isEnglish(e.target.value);
                 setMessage(e.target.value);
               }}
               className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
               onKeyDown={handleKeyDown}
               disabled={!conversation.id}
-              dir={dir ? 'ltr' : 'rtl'}
+              dir={dir ? "ltr" : "rtl"}
               placeholder={
-                !conversation?.id ? "start new chat first / إبدأ محادثة جديدة" : "start question / إبدأ بسؤال"
+                !conversation?.id
+                  ? "start new chat first / إبدأ محادثة جديدة"
+                  : "start question / إبدأ بسؤال"
               }
               maxRows={8}
             />
@@ -163,7 +171,7 @@ function ChatInput({ storedCode }) {
             aria-modal="true"
           >
             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-            
+
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
               <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                 <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">

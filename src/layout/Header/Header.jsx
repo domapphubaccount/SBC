@@ -11,12 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import Logo from "/public/logo.png";
 
-function Header({ path, setStoredCode, storedCode }) {
+function Header({ path }) {
   const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
   const pathname = usePathname();
   const available = useSelector((state) => state.chatSlice.conversation);
-  console.log(available);
 
   useEffect(() => {
     if (localStorage.getItem("data")) {
@@ -96,10 +95,7 @@ function Header({ path, setStoredCode, storedCode }) {
               {!path ? (
                 <div>
                   {!available?.id && (
-                    <MultipleSelect
-                      setStoredCode={setStoredCode}
-                      storedCode={storedCode}
-                    />
+                    <MultipleSelect />
                   )}
                 </div>
               ) : (
