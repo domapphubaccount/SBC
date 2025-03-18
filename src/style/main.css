@@ -71,11 +71,6 @@ nav{
 /* end reference */
 
 /* start chat */
-.chat_container {
-  width: calc(100% - 300px);
-  position: relative;
-}
-
 .chat_userName {
   border-left: 3px solid var(--secondary-color);
   color: black;
