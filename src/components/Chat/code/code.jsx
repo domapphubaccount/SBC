@@ -6,10 +6,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function MultipleSelect() {
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [searchQuery, setSearchQuery] = useState(""); 
   const [showTooltip, setShowTooltip] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown open/close state
-  const code = useSelector((state) => state.codeSlice.value); // Assuming you are fetching this from Redux
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
+  const code = useSelector((state) => state.codeSlice.value); 
   const [showCodeOptions, setShowCodeOptions] = useState(true);
   const dispatch = useDispatch();
   const storedCode = useSelector((state) => state.codeSlice.storedCode);

@@ -1,14 +1,13 @@
-"use client"
-import Profile from '@/components/Profile/Profile'
-import React from 'react'
+"use client";
+import Profile from "@/components/Profile/Profile";
+import React from "react";
 
 function page() {
-
   return (
     <div className="bg-sky-950	">
-        <Profile />
+      <Profile />
     </div>
-  )
+  );
 }
 
-export default page
+export default page;

@@ -1,0 +1,45 @@
+
+.nav{
+    position: absolute;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1E293B;
+}
+.nav>div{
+    width: 100%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.profile{
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #fff;
+    background-color: rgb(0 0 0 / 35%);
+}
+.profile:hover{
+    background-color: rgba(0, 0, 0, 0.427);
+}
+.profile_list{
+    min-width: 150px;
+}
+.profile_list li button{
+    padding: 10px;
+    width: 100%;
+}
+.profile_list li button:hover{
+    background-color: var(--primary);
+    color: #fff;
+}

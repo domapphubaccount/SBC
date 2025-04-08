@@ -5,15 +5,15 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loading_chat,
-  updateSlice,
   update_archive,
 } from "@/app/Redux/Features/Update/UpdateSlice";
 import {
   choseChate,
   getChatHistory,
-  getConversation,
 } from "@/app/Redux/Features/Chat/ChatSlice";
-import Logo from "@/assets/logo/icon.png";
+import Logo from "@/assets/logo/loading_icon.gif";
+import { handleGetHistory } from "@/app/Redux/Features/History/History";
+import Loading from "../loading/Loading";
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
@@ -36,6 +36,8 @@ function TailwindAccordion() {
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("data")) {
       const storedData = JSON.parse(localStorage.getItem("data"));
+      dispatch(handleGetHistory({ token: storedData.token }));
+
       axios
         .get("https://sbc.designal.cc/api/dashboard", {
           headers: {
@@ -44,7 +46,6 @@ function TailwindAccordion() {
         })
         .then((res) => {
           if (res.data.success) {
-            // setDashboardData(res.data.data)
             dispatch(getChatHistory(res.data.data));
           }
         })
@@ -113,7 +114,7 @@ function TailwindAccordion() {
     window.MathJax && window.MathJax.typeset();
   };
   const handleGetChat = (chat_id, share_name) => {
-    localStorage.removeItem('code')
+    localStorage.removeItem("code");
     dispatch(choseChate(chat_id));
     dispatch(loading_chat(true));
     localStorage.setItem("chat", chat_id);
@@ -153,12 +154,9 @@ function TailwindAccordion() {
   };
 
   return (
-    <div
-      className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 "
-   
-    >
-      <div className="accordion">
-        {dashboardData.chat_history &&
+    <div className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 ">
+      <div className="accordion h-full">
+        {false &&
         Object.entries(dashboardData.chat_history).length >= 1 ? (
           Object.entries(dashboardData.chat_history).map((item, i) => (
             <div className="border-b border-gray-200" key={item[0]}>
@@ -214,15 +212,13 @@ function TailwindAccordion() {
             </div>
           ))
         ) : (
-          <>
-            <div className="h-100 w-100 text-black flex justify-center">
-              <div>
-                <img className="w-20" src={Logo.src} alt="logo" /> No History
-                Yet
-              </div>
-            </div>
-          </>
+          <>{/* <Loading /> */}</>
         )}
+        <div className="h-100 w-100 text-black flex justify-center items-center">
+          <div>
+            <img className="w-20" src={Logo.src} alt="logo" /> No History Yet
+          </div>
+        </div>
       </div>
 
       {renameToggle && handleChat && (

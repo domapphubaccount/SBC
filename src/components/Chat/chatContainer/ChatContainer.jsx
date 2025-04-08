@@ -5,7 +5,7 @@ import MainChat from "../mainChat/MainChat";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { getCode } from "@/app/Redux/Features/Code/CodeSlice";
+import { getCode, handleGetCode } from "@/app/Redux/Features/Code/CodeSlice";
 import {
   getChatData,
   getConversation,
@@ -25,6 +25,7 @@ function ChatContainer() {
     } else {
       if (typeof window !== "undefined" && localStorage.getItem("data")) {
         const storedData = JSON.parse(localStorage.getItem("data"));
+        dispatch(handleGetCode({token:storedData.token}))
         setToken(storedData.token);
         axios
           .get("https://sbc.designal.cc/api/sections", {

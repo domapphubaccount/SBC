@@ -7,9 +7,9 @@ export const metadata = {
 
 function layout({children}) {
   return (
-    <div>
+    <main>
         {children}
-    </div>
+    </main>
   )
 }
 

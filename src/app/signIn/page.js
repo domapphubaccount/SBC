@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import LoginImg from "@/assets/login/login.png";
 import Link from 'next/link';
 import axios from 'axios';
 import { config } from '@/config/config';
@@ -31,7 +30,6 @@ function Page() {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       setMessage("")
       setLoading(true)
       axios.post(`${config.api}login`,values)
@@ -54,9 +52,7 @@ function Page() {
 
   return (
     <section className='log-bannar'>
-      <link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v5.15.1/css/pro.min.css" />
       <div className="min-h-screen flex flex-col items-center justify-center">
-
         {message &&
         <div className="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700 mb-4" role="alert">
             <svg className="w-100 h-5 inline mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
@@ -163,9 +159,6 @@ function Page() {
             </Link>
           </div>
         </div>
-        {/* <div>
-          <img src={LoginImg.src} className="login_backdrop" alt="login bannar" />
-        </div> */}
       </div>
     </section>
   );

@@ -3,14 +3,18 @@ import MultipleSelect from "@/components/Chat/code/code";
 import DropDown from "@/components/dropDown/DropDown";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { chat_out } from "@/app/Redux/Features/Chat/ChatSlice";
 import Logo from "/public/logo.png";
 import Image from "next/image";
 import Archive from "@/components/archive/Archive";
 import { StartNew } from "./supplies/New";
+import Sidebar from "../sidebar/Sidebar";
+import { usePathname } from "next/navigation";
+import styles from "../../style/header.module.css";
 
 function Header() {
   const [userName, setUserName] = useState("");
+  const [aside, setAside] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (localStorage.getItem("data")) {
@@ -20,8 +24,9 @@ function Header() {
 
   return (
     <>
-      <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue">
-        <div className="w-full mx-auto flex flex-wrap items-center justify-between">
+      <nav className={styles.nav}>
+        <div>
+          {/* start logo */}
           <div className="relative">
             <Link className="inline-block mr-4 py-2" href="/">
               <Image
@@ -33,14 +38,15 @@ function Header() {
               />
             </Link>
           </div>
+          {/* end logo */}
 
           {/* start code selector */}
-          <div>
+          <div className={`hidden ${pathname !== "/profile" && "md:block"} `}>
             <MultipleSelect />
           </div>
           {/* end code selector */}
 
-          <div className="flex items-center shadow-none bg-primary">
+          <div className="flex items-center shadow-none bg-primary hidden md:block">
             <ul className="flex justify-between list-none ml-auto items-center">
               {/* start history */}
               <li className="mr-3 relative" title="timeline">
@@ -61,8 +67,31 @@ function Header() {
               {/* end profile dropdown */}
             </ul>
           </div>
+
+          {/* start mobe settings */}
+          <div
+            className="text-white hover:bg-gray-900 cursor-pointer md:hidden"
+            onClick={() => setAside(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5"
+              />
+            </svg>
+          </div>
+          {/* end mobe settings */}
         </div>
       </nav>
+      <Sidebar setAside={setAside} aside={aside} />
     </>
   );
 }

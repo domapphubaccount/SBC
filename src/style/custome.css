@@ -1,0 +1,54 @@
+.accordion {
+  width: 100%;
+  border: none;
+}
+
+.accordion label {
+  display: block;
+  box-shadow: 10px 10px 10px #ccc;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.accordion input {
+  display: none;
+}
+
+.accordion .content {
+  max-height: 0;
+  overflow: auto;
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+  background: #f1f1f1;
+  /* padding: 0 10px; */
+}
+
+.accordion .slide {
+  padding: 3px;
+  background-color: #eaeaea;
+  border: 1px solid #ccc;
+  padding: 3px 10px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.accordion .slide.selected{
+  background-color: var(--primary);
+  color: #fff;
+}
+.accordion .slide:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.accordion input:checked ~ .content {
+  max-height: 500px; /* Adjust for content */
+  /* padding: 10px; */
+}
+
+.sliders_container{
+  max-height: 40vh;
+  overflow-y: auto;
+}
