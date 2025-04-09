@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { getSectionsAction } from "@/app/Redux/Features/Dashboard/SectionsSlice";
-import { addpdffileAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
+import { addpdffileAction, getHostedPdfsAction } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import ModuleProgress from "../../Progress/ModuleProgress";
 
@@ -22,31 +22,29 @@ export function Addpdfs({ openAdd, handleClose }) {
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const sections = useSelector((state) => state.sectionsSlice.sections);
   const loading = useSelector((state) => state.pdfsSlice.loading);
+  const pdfsHosted = useSelector((state) => state.pdfsSlice.hostedPdfs);
   const ErrorMSG = useSelector((state) => state.pdfsSlice.error);
   const [check, setIsChecked] = useState(false);
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
+
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      name: "", // Add name field to initial values
+      pdf_name: "", // Add name field to initial values
       section_id: sections[0]?.id,
-      file_path: null, // Initial value for the file
+      pdf_path: null, // Initial value for the file
     },
     validationSchema: Yup.object({
-      name: Yup.string()
+      pdf_name: Yup.string()
         .required("Name is required")
         .min(3, "Name must be at least 3 characters")
         .max(40, "Name must be at most 40 characters"), // Adjust min and max lengths as needed
       section_id: Yup.string()
         .required("Section is required")
         .notOneOf([""], "Selecting 'NONE' is not allowed"), // Add this line
-      file_path: Yup.mixed()
-        .required("A file is required")
-        .test("fileType", "Only PDF files are allowed", (value) => {
-          return value && value.type === "application/pdf";
-        }),
+
     }),
     onSubmit: (values) => {
       dispatch(addpdffileAction({ token, type: check ? 1 : 0, ...values }));
@@ -55,11 +53,9 @@ export function Addpdfs({ openAdd, handleClose }) {
 
   useEffect(() => {
     dispatch(getSectionsAction({ token }));
+    dispatch(getHostedPdfsAction({ token }));
   }, [dispatch, token]);
 
-  const handleFileChange = (event) => {
-    formik.setFieldValue("file_path", event.currentTarget.files[0]);
-  };
 
   return (
     <>
@@ -103,21 +99,60 @@ export function Addpdfs({ openAdd, handleClose }) {
             ) : (
               <>
                 <div>
-                  <Label htmlFor="name" value="File Name" />
+                  <Label htmlFor="pdf_name" value="File Name" />
                   <TextInput
-                    id="name"
-                    name="name"
+                    id="pdf_name"
+                    name="pdf_name"
                     type="text"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur} // Handle blur for validation
-                    value={formik.values.name}
+                    value={formik.values.pdf_name}
                     required
                   />
-                  {formik.touched.name && formik.errors.name ? (
-                    <div className="text-red-600">{formik.errors.name}</div>
+                  {formik.touched.pdf_name && formik.errors.pdf_name ? (
+                    <div className="text-red-600">{formik.errors.pdf_name}</div>
                   ) : null}
                 </div>
 
+                {permissionsData &&
+                permissionsData.includes("files.host_files") ? (
+                  <div>
+                    <div className="max-w-md">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="pdf_path"
+                          value="Select File Path"
+                        />
+                      </div>
+                      <Select
+                        id="pdf_path"
+                        name="pdf_path"
+                        onChange={formik.handleChange}
+                        value={formik.values.pdf_path}
+                        onBlur={formik.handleBlur} // To trigger validation on blur
+                        required
+                      >
+                        <option value={""}>NONE</option>
+                        {pdfsHosted?.map((item,index) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </Select>
+                      {formik.touched.pdf_path && formik.errors.pdf_path ? (
+                        <div className="text-red-600">
+                          {formik.errors.pdf_path}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <small className="text-red-700	">
+                      You need "Hosted Files" permission to add a File
+                    </small>
+                  </div>
+                )}
                 {permissionsData &&
                 permissionsData.includes("sections.index") ? (
                   <div>
@@ -157,49 +192,6 @@ export function Addpdfs({ openAdd, handleClose }) {
                     </small>
                   </div>
                 )}
-
-                <div>
-                  <Label htmlFor="file_path" value="Upload PDF file" />
-                  <FileInput
-                    id="file_path"
-                    name="file_path"
-                    accept=".pdf"
-                    onChange={handleFileChange}
-                    helperText="Only PDF files are allowed."
-                  />
-                  {formik.touched.file_path && formik.errors.file_path ? (
-                    <div className="text-red-600">
-                      {formik.errors.file_path}
-                    </div>
-                  ) : null}
-                </div>
-
-                <div className="p-3">
-                  {check && (
-                    <div className="mt-2 mb-4 p-2 text-sm text-yellow-800 bg-red-100 border border-red-400 rounded">
-                      <strong>Warning:</strong> You can't use the assistant file
-                      ,it will be provided in only to <bold>Train</bold> model
-                      training.
-                    </div>
-                  )}
-                  <div className="flex items-center">
-                    <input
-                      id="editAfterTrain"
-                      type="checkbox"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                      onChange={(event) => {
-                        setIsChecked(event.target.checked);
-                      }}
-                    />
-                    <label
-                      htmlFor="editAfterTrain"
-                      className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                    >
-                      This is an assistant file
-                    </label>
-                  </div>
-                </div>
-
                 <div className="w-full flex justify-end">
                   <Button type="submit">Submit</Button>
                 </div>

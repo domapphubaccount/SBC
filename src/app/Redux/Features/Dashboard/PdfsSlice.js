@@ -48,6 +48,39 @@ export const getPdfsAction = createAsyncThunk(
 );
 // end get pdfs
 
+// start get hosted pdfs
+export const getHostedPdfsAction = createAsyncThunk(
+  "pdfs/getHostedPdfsAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, fileType } = arg;
+    try {
+      const response = await axios.get(
+        `${config.api}admin/host-files`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "*/*",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      console.log(response.data)
+      return response.data?.files;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get hosted pdfs
+
 // start get pdfs
 export const getDeletedPdfsAction = createAsyncThunk(
   "pdfs/getDeletedPdfsAction",
@@ -196,19 +229,19 @@ export const deleteForcePdfAction = createAsyncThunk(
 export const addpdffileAction = createAsyncThunk(
   "pdfs/addpdffileAction",
   async (arg, { dispatch, rejectWithValue }) => {
-    const { token, name, section_id, file_path, type } = arg;
+    const { token, pdf_name, section_id, pdf_path, type } = arg;
 
     // Create FormData object to handle file upload
     const formData = new FormData();
 
     formData.append("section_id", section_id);
-    formData.append("name", name);
-    formData.append("file_path", file_path); // Adjust this if the backend expects a different name
+    formData.append("pdf_name", pdf_name);
+    formData.append("pdf_path", pdf_path); // Adjust this if the backend expects a different name
     formData.append("type", type);
 
     try {
       const response = await axios.post(
-        `${config.api}admin/upload_file`,
+        `${config.api}admin/add-pdf`,
         formData,
         {
           headers: {
@@ -369,6 +402,7 @@ const initialState = {
   total_pages: 1,
   error: null,
   action: false,
+  hostedPdfs: [],
 
   // pagination
   allData: [],
@@ -451,6 +485,23 @@ export const pdfsSlice = createSlice({
         state.addModule = false;
       })
       .addCase(getPdfsAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end get pdfs
+
+      //start get hosted pdfs
+      .addCase(getHostedPdfsAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getHostedPdfsAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        console.log(action.payload)
+        state.hostedPdfs = action.payload;
+      })
+      .addCase(getHostedPdfsAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
       })

@@ -71,16 +71,18 @@ function ChatInput() {
   }
 
   useEffect(() => {
-    document
-      .getElementById("custom_text_area")
-      .addEventListener("focus", () =>
-        document.getElementById("sendIcon").classList.add("text-gray-700")
-      );
-    document
-      .getElementById("custom_text_area")
-      .addEventListener("blur", () =>
-        document.getElementById("sendIcon").classList.remove("text-gray-700")
-      );
+    if (document.getElementById("custom_text_area")) {
+      document
+        .getElementById("custom_text_area")
+        .addEventListener("focus", () =>
+          document.getElementById("sendIcon").classList.add("text-gray-700")
+        );
+      document
+        .getElementById("custom_text_area")
+        .addEventListener("blur", () =>
+          document.getElementById("sendIcon").classList.remove("text-gray-700")
+        );
+    }
   }, []);
 
   useEffect(() => {
@@ -186,60 +188,70 @@ function ChatInput() {
   };
 
   function isEnglish(text) {
-    // Check if the first character is an English letter or a digit
-    const isFirstCharEnglish = /^[A-Za-z0-9]$/.test(text.charAt(0));
+    const firstChar = text.trim().charAt(0);
 
-    // Set direction based on the result
-    setDir(isFirstCharEnglish);
+    // Check if it's an English character
+    const isEnglishChar = /^[A-Za-z]$/.test(firstChar);
+  
+    // Set direction
+    setDir(isEnglishChar);
   }
 
   return (
     <>
       <div className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300">
         {loading ? (
-          <>
+          <div className="w-full max-w-2xl mx-auto p-4">
             <div className="flex space-x-2 animate-pulse">
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
             </div>
-          </>
+          </div>
         ) : (
           <>
-            <TextareaAutosize
-              onChange={(e) => {
-                isEnglish(e.target.value);
-                setMessage(e.target.value);
-              }}
-              id="custom_text_area"
-              className="custom_textarea py-3 mx-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800"
-              onKeyDown={handleKeyDown}
-              dir={dir ? "ltr" : "rtl"}
-              placeholder={
-                !conversation?.id
-                  ? "start new chat first / إبدأ محادثة جديدة"
-                  : "start question / إبدأ بسؤال"
-              }
-              maxRows={8}
-              ref={textAreaRef}
-            />
+            <div className="w-full max-w-2xl mx-auto px-4">
+              <div className="flex items-center gap-3">
+                <TextareaAutosize
+                  onChange={(e) => {
+                    isEnglish(e.target.value);
+                    setMessage(e.target.value);
+                  }}
+                  id="custom_text_area"
+                  className="custom_textarea py-3 pl-5 block w-full bg-gray-100 outline-none focus:text-gray-700 text-gray-800 rounded-lg"
+                  onKeyDown={handleKeyDown}
+                  dir={dir ? "ltr" : "rtl"}
+                  placeholder={
+                    !conversation?.id
+                      ? "start new chat first / إبدأ محادثة جديدة"
+                      : "start question / إبدأ بسؤال"
+                  }
+                  maxRows={8}
+                  ref={textAreaRef}
+                />
 
-            <button
-              onClick={handleSendMessage}
-              disabled={message.length <= 0 && !conversation.id && message.length === 0}
-              className="outline-none focus:outline-none"
-              type="submit"
-            >
-              <svg
-                id="sendIcon"
-                className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-              </svg>
-            </button>
+                <button
+                  onClick={handleSendMessage}
+                  disabled={
+                    message.length <= 0 &&
+                    !conversation.id &&
+                    message.length === 0
+                  }
+                  className="outline-none focus:outline-none"
+                  type="submit"
+                >
+                  <svg
+                    id="sendIcon"
+                    className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </>
         )}
 
@@ -300,6 +312,24 @@ function ChatInput() {
         className="m-auto text-center text-black	footer-text py-2 text-xs"
         style={{ color: "#545454" }}
       >
+        <div
+          className="mx-auto absolute bottom-2.5 left-[10px] text-black text-center footer-text text-xs"
+          style={{ width: "4rem" }}
+        >
+          <span style={{ fontSize: "10px" }}>Powered By</span>{" "}
+          <span
+            className="font-bold"
+            style={{
+              fontFamily: "Alef, sans-serif",
+              letterSpacing: "-1px",
+            }}
+          >
+            <span style={{ color: "#162C4C" }}>CPV</span>
+            <span style={{ color: "#2C518E" }}>ARABIA</span>
+          </span>
+        </div>
+
+
         Verify crucial details for accuracy by cross-referencing with reliable
         sources.
       </div>
@@ -308,14 +338,3 @@ function ChatInput() {
 }
 
 export default ChatInput;
-
-function PopoverDefault({ children, popoverOpen }) {
-  return (
-    <Popover open={popoverOpen.open}>
-      <PopoverHandler>{children}</PopoverHandler>
-      <PopoverContent>
-        <p className="text-black">{popoverOpen.data}</p>
-      </PopoverContent>
-    </Popover>
-  );
-}

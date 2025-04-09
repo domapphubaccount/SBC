@@ -149,11 +149,11 @@ function MultipleSelect() {
                                         type="checkbox"
                                         id={`checkbox-item-${pdfItem.id}`}
                                         checked={storedCode.includes(
-                                          pdfItem.chatgpt_file_id
+                                          pdfItem.name
                                         )}
                                         onChange={() =>
                                           handleCheckboxChange(
-                                            pdfItem.chatgpt_file_id
+                                            pdfItem.name
                                           )
                                         }
                                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
@@ -186,7 +186,7 @@ function MultipleSelect() {
                       filteredCode
                         .filter((item) =>
                           item.pdfs.some((pdfItem) =>
-                            storedCode.includes(pdfItem.chatgpt_file_id)
+                            storedCode.includes(pdfItem.name)
                           )
                         )
                         .map((item, i) => (
@@ -208,7 +208,7 @@ function MultipleSelect() {
                               >
                                 {item.pdfs
                                   .filter((pdfItem) =>
-                                    storedCode.includes(pdfItem.chatgpt_file_id)
+                                    storedCode.includes(pdfItem.name)
                                   )
                                   .map((pdfItem, j) => (
                                     <li key={j}>
@@ -217,11 +217,11 @@ function MultipleSelect() {
                                           type="checkbox"
                                           id={`checkbox-item-${pdfItem.id}`}
                                           checked={storedCode.includes(
-                                            pdfItem.chatgpt_file_id
+                                            pdfItem.name
                                           )}
                                           onChange={() =>
                                             handleCheckboxChange(
-                                              pdfItem.chatgpt_file_id
+                                              pdfItem.name
                                             )
                                           }
                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"

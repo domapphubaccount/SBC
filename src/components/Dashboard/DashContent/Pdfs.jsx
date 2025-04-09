@@ -70,7 +70,6 @@ function Pdfs({}) {
     (state) => state.pdfsSlice
   );
   const [deleted, setDeleted] = useState(false);
-  console.log("render")
 
   useEffect(() => {
     if (action) {
@@ -135,7 +134,7 @@ function Pdfs({}) {
 
   useEffect(() => {
     if (deleted) {
-      setPagez(0)
+      setPagez(0);
       dispatch(getDeletedPdfsAction({ token, fileType }));
     } else {
       dispatch(getPdfsAction({ token, page, fileType }));
@@ -662,9 +661,9 @@ function Pdfs({}) {
             <div>
               <h1 className="text-white text-3xl">BUILDING CODE</h1>
             </div>
-            {permissionsData && permissionsData.includes("files.upload") && (
+            {permissionsData && permissionsData.includes("files.add_pdf") && (
               <div className="flex">
-                <div className="checkbox-wrapper-16 mr-3">
+                {/* <div className="checkbox-wrapper-16 mr-3">
                   <label className="checkbox-wrapper">
                     <input
                       className="checkbox-input"
@@ -693,7 +692,7 @@ function Pdfs({}) {
                       <span className="checkbox-label">Assistant</span>
                     </span>
                   </label>
-                </div>
+                </div> */}
 
                 <Button color="blue" onClick={handleOpenAdd}>
                   Add Pdfs
@@ -726,7 +725,7 @@ function Pdfs({}) {
               </div>
               <div>
                 <div>
-                  {deleted ? (
+                  {/* {deleted ? (
                     <button
                       type="button"
                       className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
@@ -770,7 +769,29 @@ function Pdfs({}) {
                       </svg>
                       SHOW DELETED
                     </button>
-                  )}
+                  )} */}
+
+                  <button
+                    type="button"
+                    className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
+                    // onClick={() => setDeleted(true)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6 mr-2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+                      />
+                    </svg>
+                    SHOW DELETED
+                  </button>
                 </div>
               </div>
             </div>

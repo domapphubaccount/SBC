@@ -5,7 +5,10 @@ import MainChat from "../mainChat/MainChat";
 import axios from "axios";
 import { redirect, usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { getCodeAction, set_direct_code } from "@/app/Redux/Features/Code/CodeSlice";
+import {
+  getCodeAction,
+  set_direct_code,
+} from "@/app/Redux/Features/Code/CodeSlice";
 import {
   getChatCode,
   getChatData,
@@ -30,22 +33,22 @@ function ChatContainer() {
 
   // start manage window width and is logged or not
   useEffect(() => {
-    setWindowWidth(window.innerWidth)
+    setWindowWidth(window.innerWidth);
     if (
       !JSON.parse(localStorage.getItem("data")) &&
       pathName.slice(0, 9) != "/sharable"
     ) {
       redirect("/signIn");
     } else {
-      if(permissionsData && permissionsData.includes("sections.pdf")){
-      dispatch(getCodeAction({ token }))
+      if (permissionsData && permissionsData.includes("sections.pdf")) {
+        dispatch(getCodeAction({ token }));
       }
     }
     const handleWindowWidth = () => {
       setWindowWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleWindowWidth);
-    
+
     return () => window.removeEventListener("resize", handleWindowWidth);
   }, []);
   // end manage window width and is logged or not
@@ -68,8 +71,11 @@ function ChatContainer() {
           )
           .then((response) => {
             if (response.data) {
-              let {userChats} = response.data.data
-              let lastQuestionCode = userChats[userChats.length - 1]?.pdfs.map(item => item.chatgpt_file_id) || "";
+              let { userChats } = response.data.data;
+              let lastQuestionCode =
+                userChats[userChats.length - 1]?.pdfs.map(
+                  (item) => item.chatgpt_file_id
+                ) || "";
               dispatch(set_direct_code(lastQuestionCode)); //here
 
               dispatch(getChatCode(lastQuestionCode));
@@ -113,14 +119,11 @@ function ChatContainer() {
   }, [token, dashboardData, updates, catchChat]);
 
   return (
-    <div className="h-screen chat_container">
+    <div className="h-screen">
       <div className="w-full bg-neutral-200 chat_input">
         <div className="w-screen overflow-x-hidden">
           <div className=" border rounded" style={{ minHeight: "80vh" }}>
-            <div className="grid grid-cols-4 min-w-full">
-              <Refrence />
-              <MainChat windowWidth={windowWidth} />
-            </div>
+            <MainChat windowWidth={windowWidth} />
           </div>
         </div>
       </div>

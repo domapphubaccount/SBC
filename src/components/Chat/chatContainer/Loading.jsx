@@ -4,7 +4,7 @@ import loadingImg from "@/assets/logo/loading_icon.gif";
 
 function Loading_chat() {
   return (
-    <section className="h-full w-full loading_main_chat">
+    <section className="h-screen w-full loading_main_chat">
       <div className="h-full w-full flex items-center justify-center">
         <div>
           <div className="text-center">

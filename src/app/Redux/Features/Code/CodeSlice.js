@@ -38,7 +38,7 @@ export const getCodeAction = createAsyncThunk(
 const isBrowser = typeof window === "undefined";
 const initialState = {
   value: "",
-  storedCode: (isBrowser && JSON.parse(localStorage.getItem("storedCode"))) || [],
+  storedCode: [],
   error: null,
   usedCode: [],
 };
@@ -77,9 +77,11 @@ export const codeSlice = createSlice({
 
             storedCodeSlice.push(action.payload);
             localStorage.setItem("storedCode", JSON.stringify(storedCodeSlice));
-          }
-          else{
-            localStorage.setItem("storedCode",JSON.stringify([action.payload]))
+          } else {
+            localStorage.setItem(
+              "storedCode",
+              JSON.stringify([action.payload])
+            );
           }
           state.storedCode.push(action.payload);
         }

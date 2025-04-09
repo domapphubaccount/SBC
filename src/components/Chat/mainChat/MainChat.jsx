@@ -82,12 +82,17 @@ function MainChat({ windowWidth }) {
     chatData,
   ]);
   function isEnglish(text) {
-    const cleanedText = text.replace(/^[A-Za-z0-9.,!?'"()\- ]+$/, "");
-    const englishCharCount = cleanedText.length;
+    const englishChars = text.match(/[A-Za-z]/g) || [];
+    const englishCharCount = englishChars.length;
     const totalCharCount = text.length;
+
+    if (totalCharCount === 0) return false;
+
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
+
     return percentageEnglish > 50;
   }
+
   const dislikeToggle = (id) => {
     setItemId(id);
     setDislike(!dislike);
@@ -315,13 +320,13 @@ function MainChat({ windowWidth }) {
   // start question card
   let questionCard = useCallback((item) => {
     return (
-      <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card">
+      <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card question">
         <span
           style={{
             textAlign: `${isEnglish(item.question) ? "left" : "right"}`,
           }}
           className="block"
-          dir={isEnglish(item.question) ? "ltr" : "rtl"}
+          dir={"auto"}
           dangerouslySetInnerHTML={{
             __html: item.question.replaceAll("\n", "<br/>"),
           }}
@@ -347,10 +352,15 @@ function MainChat({ windowWidth }) {
               textAlign: `${isEnglish(item.answer) ? "left" : "right"}`,
             }}
             className="block chat_box"
-            dir={isEnglish(item.answer) ? "ltr" : "rtl"}
+            dir={"auto"}
           >
             {textHandler(item.answer)}
           </span>
+
+          <div className="mt-4 text-xs">
+            <hr className="my-2"/>
+            📘 Reference: BYLD Documentation - Page 12
+          </div>
         </MathJax>
       </MathJaxContext>
     );
@@ -372,7 +382,7 @@ function MainChat({ windowWidth }) {
             chatData.length > 0) &&
           chatData.map((item, i) => (
             <React.Fragment key={i}>
-              <div className="flex justify-end relative w-full">
+              <div className="flex justify-end relative w-full my-4">
                 <div>
                   <div className="chat_userName_2 text-right">{name}</div>
                   <div className="flex justify-end">
@@ -434,7 +444,7 @@ function MainChat({ windowWidth }) {
               </div>
               <div className="relative w-full">
                 {/* start reference */}
-                {item?.answer && (
+                {/* {item?.answer && (
                   <div
                     className="code"
                     style={{
@@ -507,15 +517,15 @@ function MainChat({ windowWidth }) {
                       </div>
                     </span>
                   </div>
-                )}
+                )} */}
                 {/* end reference */}
 
                 <div>
                   <div className="chat_userName">
                     <img src={Logo.src} style={{ width: "30px" }} alt="logo" />
                   </div>
-                  <div className="w-full flex justify-start chat_card">
-                    <div className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card">
+                  <div className="w-full flex justify-start">
+                    <div className="rounded px-5 py-2 my-2 relative chat_card">
                       {item?.answer ? (
                         // answer card
                         answerCard(item)
@@ -634,13 +644,6 @@ function MainChat({ windowWidth }) {
                               dislikeToggle(item.id);
 
                               if (item.answer.match(file_id_pattern_3)) {
-                                // console.log(file_id_pattern_3,
-                                //   "++++++",
-                                //   item.answer.match(file_id_pattern_3) &&
-                                //     item.answer
-                                //       .match(file_id_pattern_3)[0]
-                                //       .slice(18, -1)
-                                // );
                                 setFileId(
                                   item.answer.match(file_id_pattern_3) &&
                                     item.answer
@@ -710,7 +713,7 @@ function MainChat({ windowWidth }) {
   // end chat space
 
   return (
-    <div className={`col-span-3 bg-white relative`}>
+    <div className={`relative`}>
       {!loadingchat ? (
         <>
           <div
@@ -718,7 +721,7 @@ function MainChat({ windowWidth }) {
             style={{ paddingTop: "100px", height: "100vh" }}
           >
             <div
-              className="w-full grid grid-cols-4"
+              className="w-full"
               id="chat"
               style={{
                 height: "calc(100vh - 120px)",
@@ -729,9 +732,8 @@ function MainChat({ windowWidth }) {
                 overflowY: "scroll",
               }}
             >
-              <div className="col-span-1"></div>
               {/* relative */}
-              <div className="col-span-3 py-5">
+              <div className="max-w-4xl mx-auto">
                 {loadingchat ? (
                   <div className="flex items-center justify-center min-h-screen">
                     <img
