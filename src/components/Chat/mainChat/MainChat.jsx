@@ -85,10 +85,10 @@ function MainChat({ windowWidth }) {
   function isEnglish(text) {
     const englishChars = text.match(/[A-Za-z]/g) || [];
     const englishCharCount = englishChars.length;
-    const totalCharCount = text.length;
+
+    const totalCharCount = text.replace(/[^A-Za-z]/g, "").length;
 
     if (totalCharCount === 0) return false;
-
     const percentageEnglish = (englishCharCount / totalCharCount) * 100;
 
     return percentageEnglish > 50;
@@ -631,46 +631,47 @@ function MainChat({ windowWidth }) {
                   <ul>
                     {handleShowStart() ? (
                       <div className="pt-[200px]">
-  <div className="text-center">
-    {/* Logo without box shadow */}
-    <div className="m-auto mb-4 w-[200px] transition-transform duration-500 hover:scale-105">
-      <img
-        src={StartLogo.src}
-        alt="Start Logo"
-        className="w-full rounded-lg"
-      />
-    </div>
+                        <div className="text-center">
+                          {/* Logo without box shadow */}
+                          <div className="m-auto mb-4 w-[200px] transition-transform duration-500 hover:scale-105">
+                            <img
+                              src={StartLogo.src}
+                              alt="Start Logo"
+                              className="w-full rounded-lg"
+                            />
+                          </div>
 
-    {/* Subheading text */}
-    <p className="mt-4 text-sm leading-7 text-gray-600 animate-fade-in">
-      You can start a new session or choose a previous chat.
-    </p>
+                          {/* Subheading text */}
+                          <p className="mt-4 text-sm leading-7 text-gray-600 animate-fade-in">
+                            You can start a new session or choose a previous
+                            chat.
+                          </p>
 
-    {/* Button or Loader */}
-    <div className="mt-8 flex items-center justify-center gap-x-6">
-      {loading_actions ? (
-        <div className="flex gap-1 animate-pulse">
-          <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-700 rounded-full"></div>
-        </div>
-      ) : (
-        permissionsData?.includes("openai.create_thread") && (
-          <button
-            onClick={handleStartNewChat}
-            className="relative px-4 py-2 rounded-full bg-[#1E293B] text-white text-lg font-semibold shadow-lg hover:bg-[#1E293B] hover:shadow-xl hover:scale-105 transition-all duration-300 transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E293B]"
-          >
-            <span className="inline-block mr-2">🚀</span>
-            Start Chat
-          </button>
-        )
-      )}
-    </div>
-  </div>
-</div>
-
-
+                          {/* Button or Loader */}
+                          <div className="mt-8 flex items-center justify-center gap-x-6">
+                            {loading_actions ? (
+                              <div className="flex gap-1 animate-pulse">
+                                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                                <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                <div className="w-2 h-2 bg-gray-700 rounded-full"></div>
+                              </div>
+                            ) : (
+                              permissionsData?.includes(
+                                "openai.create_thread"
+                              ) && (
+                                <button
+                                  onClick={handleStartNewChat}
+                                  className="relative px-4 py-2 rounded-full bg-[#1E293B] text-white text-lg font-semibold shadow-lg hover:bg-[#1E293B] hover:shadow-xl hover:scale-105 transition-all duration-300 transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E293B]"
+                                >
+                                  <span className="inline-block mr-2">🚀</span>
+                                  Start Chat
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       // chat space
                       chatSpace

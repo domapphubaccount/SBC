@@ -43,8 +43,6 @@ const initialState = {
   usedCode: [],
 };
 
-console.log(localStorage.getItem("storedCode"))
-
 export const codeSlice = createSlice({
   name: "code",
   initialState,
