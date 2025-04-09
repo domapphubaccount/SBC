@@ -76,7 +76,7 @@ function ChatContainer() {
                 userChats[userChats.length - 1]?.pdfs.map(
                   (item) => item.chatgpt_file_id
                 ) || "";
-              dispatch(set_direct_code(lastQuestionCode)); //here
+              // dispatch(set_direct_code(lastQuestionCode)); //here
 
               dispatch(getChatCode(lastQuestionCode));
               dispatch(getConversation(response.data.data));

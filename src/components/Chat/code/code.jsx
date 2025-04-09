@@ -23,6 +23,7 @@ function MultipleSelect() {
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
   const usedCode = useSelector((state) => state.codeSlice.usedCode);
   const available = useSelector((state) => state.chatSlice.chat_code);
+  const sss = useSelector((state) => state.codeSlice);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -147,7 +148,7 @@ function MultipleSelect() {
                                     <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
                                       <input
                                         type="checkbox"
-                                        id={`checkbox-item-${pdfItem.id}`}
+                                        id={`checkbox-item-${pdfItem.name}`}
                                         checked={storedCode.includes(
                                           pdfItem.name
                                         )}
@@ -160,7 +161,7 @@ function MultipleSelect() {
                                         // disabled={available}
                                       />
                                       <label
-                                        htmlFor={`checkbox-item-${pdfItem.id}`}
+                                        htmlFor={`checkbox-item-${pdfItem.name}`}
                                         className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs"
                                       >
                                         {pdfItem.name}
@@ -215,7 +216,7 @@ function MultipleSelect() {
                                       <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
                                         <input
                                           type="checkbox"
-                                          id={`checkbox-item-${pdfItem.id}`}
+                                          id={`checkbox-item-${pdfItem.name}`}
                                           checked={storedCode.includes(
                                             pdfItem.name
                                           )}
@@ -228,7 +229,7 @@ function MultipleSelect() {
                                           // disabled={available}
                                         />
                                         <label
-                                          htmlFor={`checkbox-item-${pdfItem.id}`}
+                                          htmlFor={`checkbox-item-${pdfItem.name}`}
                                           className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs"
                                         >
                                           {pdfItem.name}

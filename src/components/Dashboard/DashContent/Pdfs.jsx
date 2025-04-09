@@ -661,44 +661,6 @@ function Pdfs({}) {
             <div>
               <h1 className="text-white text-3xl">BUILDING CODE</h1>
             </div>
-            {permissionsData && permissionsData.includes("files.add_pdf") && (
-              <div className="flex">
-                {/* <div className="checkbox-wrapper-16 mr-3">
-                  <label className="checkbox-wrapper">
-                    <input
-                      className="checkbox-input"
-                      type="checkbox"
-                      onChange={(e) =>
-                        e.target.checked ? setFileType(1) : setFileType(0)
-                      }
-                    />
-                    <span className="checkbox-tile">
-                      <span className="checkbox-icon">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="size-1"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-                          />
-                        </svg>
-                      </span>
-                      <span className="checkbox-label">Assistant</span>
-                    </span>
-                  </label>
-                </div> */}
-
-                <Button color="blue" onClick={handleOpenAdd}>
-                  Add Pdfs
-                </Button>
-              </div>
-            )}
           </div>
         </div>
 
@@ -771,7 +733,7 @@ function Pdfs({}) {
                     </button>
                   )} */}
 
-                  <button
+                  {/* <button
                     type="button"
                     className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2"
                     // onClick={() => setDeleted(true)}
@@ -791,7 +753,46 @@ function Pdfs({}) {
                       />
                     </svg>
                     SHOW DELETED
-                  </button>
+                  </button> */}
+                  {permissionsData &&
+                    permissionsData.includes("files.add_pdf") && (
+                      <div className="flex">
+                        {/* <div className="checkbox-wrapper-16 mr-3">
+                  <label className="checkbox-wrapper">
+                    <input
+                      className="checkbox-input"
+                      type="checkbox"
+                      onChange={(e) =>
+                        e.target.checked ? setFileType(1) : setFileType(0)
+                      }
+                    />
+                    <span className="checkbox-tile">
+                      <span className="checkbox-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="size-1"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                          />
+                        </svg>
+                      </span>
+                      <span className="checkbox-label">Assistant</span>
+                    </span>
+                  </label>
+                </div> */}
+
+                        <Button color="blue" onClick={handleOpenAdd}>
+                          Add Pdfs
+                        </Button>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
