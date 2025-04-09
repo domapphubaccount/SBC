@@ -21,6 +21,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
     "better-react-mathjax": "^2.0.3",
+    "boxicons": "^2.1.4",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
     "katex": "^0.16.11",
