@@ -433,83 +433,6 @@ function MainChat({ windowWidth }) {
                 </div>
               </div>
               <div className="relative w-full">
-                {/* start reference */}
-                {/* {item?.answer && (
-                  <div
-                    className="code"
-                    style={{
-                      zIndex: 2,
-                    }}
-                  >
-                    <div id="ref-Mob" className="flex justify-center">
-                      <Popover
-                        aria-labelledby="default-popover"
-                        content={
-                          <div className="w-64 text-sm text-gray-500 dark:text-gray-400">
-                            <div className="px-3 py-2">
-                              <ul>
-                                {item?.answer?.includes("//") &&
-                                item.answer.match(pattern)
-                                  ? item.answer
-                                      .match(pattern)
-                                      ?.map((item2, i) => (
-                                        <li key={i}>{item2.slice(10)}</li>
-                                      ))
-                                  : "No Reference"}
-                              </ul>
-                            </div>
-                          </div>
-                        }
-                      >
-                        <Button>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"
-                            />
-                          </svg>
-                        </Button>
-                      </Popover>
-                    </div>
-                    <span
-                      id="ref-Pc"
-                      style={{ maxHeight: "150%" }}
-                      className="hover:bg-gray-100 border border-gray-300 px-3 py-2 overflow-auto	 flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-                    >
-                      <div className="w-full">
-                        <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                          {item?.answer?.includes("//") &&
-                          item.answer.match(pattern) ? (
-                            item.answer.match(pattern)?.map((item2, i) => (
-                              <div
-                                key={i}
-                                className="text-sm text-gray-500 dark:text-gray-400"
-                              >
-                                <div className="px-3 py-2">
-                                  <ul>
-                                    <li>{item2.slice(10)}</li>
-                                  </ul>
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div>No Reference</div>
-                          )}
-                        </span>
-                      </div>
-                    </span>
-                  </div>
-                )} */}
-                {/* end reference */}
-
                 <div>
                   <div className="chat_userName">
                     <img src={Logo.src} style={{ width: "30px" }} alt="logo" />
@@ -707,47 +630,47 @@ function MainChat({ windowWidth }) {
                 ) : (
                   <ul>
                     {handleShowStart() ? (
-                      <div className="pt-3" style={{ paddingTop: "200px" }}>
-                        <div className="text-center">
-                          <div
-                            className="m-auto mb-2"
-                            style={{ width: "200px" }}
-                          >
-                            <img src={StartLogo.src} className="w-100" alt="" />
-                          </div>
-                          {/* <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-6xl">No Chat yet !</h1> */}
-                          <p className="mt-3 text-xs leading-8 text-gray-600">
-                            you can start new session or chose previous chat.
-                          </p>
-                          <div className="mt-6 flex items-center justify-center gap-x-6">
-                            {loading_actions ? (
-                              <div className="dot-wave">
-                                <div className="dot-wave__dot"></div>
-                                <div className="dot-wave__dot"></div>
-                                <div className="dot-wave__dot"></div>
-                                <div className="dot-wave__dot"></div>
-                              </div>
-                            ) : (
-                              permissionsData &&
-                              permissionsData.includes(
-                                "openai.create_thread"
-                              ) && (
-                                <button
-                                  onClick={handleStartNewChat}
-                                  className="learn-more start"
-                                >
-                                  <span className="circle" aria-hidden="true">
-                                    <span className="icon arrow"></span>
-                                  </span>
-                                  <span className="button-text">
-                                    Start Chat
-                                  </span>
-                                </button>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      <div className="pt-[200px]">
+  <div className="text-center">
+    {/* Logo without box shadow */}
+    <div className="m-auto mb-4 w-[200px] transition-transform duration-500 hover:scale-105">
+      <img
+        src={StartLogo.src}
+        alt="Start Logo"
+        className="w-full rounded-lg"
+      />
+    </div>
+
+    {/* Subheading text */}
+    <p className="mt-4 text-sm leading-7 text-gray-600 animate-fade-in">
+      You can start a new session or choose a previous chat.
+    </p>
+
+    {/* Button or Loader */}
+    <div className="mt-8 flex items-center justify-center gap-x-6">
+      {loading_actions ? (
+        <div className="flex gap-1 animate-pulse">
+          <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-700 rounded-full"></div>
+        </div>
+      ) : (
+        permissionsData?.includes("openai.create_thread") && (
+          <button
+            onClick={handleStartNewChat}
+            className="relative px-4 py-2 rounded-full bg-[#1E293B] text-white text-lg font-semibold shadow-lg hover:bg-[#1E293B] hover:shadow-xl hover:scale-105 transition-all duration-300 transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E293B]"
+          >
+            <span className="inline-block mr-2">🚀</span>
+            Start Chat
+          </button>
+        )
+      )}
+    </div>
+  </div>
+</div>
+
+
                     ) : (
                       // chat space
                       chatSpace
