@@ -21,6 +21,7 @@ function Header({ path }) {
   const [run, setRun] = useState(false);
   const dispatch = useDispatch();
   const pathname = usePathname();
+  const chatCode = useSelector((state) => state.chatSlice.chat_code);
 
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
@@ -38,7 +39,9 @@ function Header({ path }) {
     const updateRunState = () => {
       const hints = localStorage.getItem("hints");
       const chat = localStorage.getItem("chat");
-      if ((hints === null || hints === "true") && chat === null) {
+      console.log(chatCode , "****")
+
+      if ((hints === null || hints === "true") && chatCode) {
         setRun(true);
       } else {
         setRun(false);

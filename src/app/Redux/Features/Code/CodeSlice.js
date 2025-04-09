@@ -26,8 +26,8 @@ export const getCodeAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(removeAuthAction())
-        RemoveAuth()
+        dispatch(removeAuthAction());
+        RemoveAuth();
       }
       return rejectWithValue(error.response.data.message);
     }
@@ -35,11 +35,12 @@ export const getCodeAction = createAsyncThunk(
 );
 // end get sections
 
+const isBrowser = typeof window === "undefined";
 const initialState = {
   value: "",
-  storedCode: [],
+  storedCode: (isBrowser && JSON.parse(localStorage.getItem("storedCode"))) || [],
   error: null,
-  usedCode: []
+  usedCode: [],
 };
 
 export const codeSlice = createSlice({
@@ -51,6 +52,7 @@ export const codeSlice = createSlice({
     },
     set_direct_code: (state, action) => {
       state.storedCode = action.payload;
+      // localStorage.setItem("storedCode", JSON.stringify(action.payload)); Error from response backend
     },
     set_stored_code: (state, action) => {
       if (state.storedCode.length < 5) {
@@ -58,7 +60,27 @@ export const codeSlice = createSlice({
           state.storedCode = state.storedCode.filter(
             (item) => item !== action.payload
           );
+
+          localStorage.setItem(
+            "storedCode",
+            JSON.stringify(
+              (state.storedCode = state.storedCode.filter(
+                (item) => item !== action.payload
+              ))
+            )
+          );
         } else {
+          if (localStorage.getItem("storedCode")) {
+            let storedCodeSlice = JSON.parse(
+              localStorage.getItem("storedCode")
+            ).slice();
+
+            storedCodeSlice.push(action.payload);
+            localStorage.setItem("storedCode", JSON.stringify(storedCodeSlice));
+          }
+          else{
+            localStorage.setItem("storedCode",JSON.stringify([action.payload]))
+          }
           state.storedCode.push(action.payload);
         }
       } else {
@@ -93,8 +115,8 @@ export const codeSlice = createSlice({
       state.error = null;
     },
     confirm_selected_code: (state) => {
-      state.usedCode = state.storedCode
-    }
+      state.usedCode = state.storedCode;
+    },
   },
 
   extraReducers: (builder) => {
@@ -123,7 +145,7 @@ export const {
   clear_code_error,
   set_multi_stored_Code,
   set_direct_code,
-  confirm_selected_code
+  confirm_selected_code,
 } = codeSlice.actions;
 
 export default codeSlice.reducer;
