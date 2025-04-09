@@ -181,11 +181,14 @@ function MainChat({ windowWidth }) {
         console.error("There was an error making the request!", error);
       });
   };
+
+  // start new chant
   const handleStartNewChat = () => {
     if (pathName.trim().slice(0, 9) == "/sharable") {
       navigate.push("/signIn");
     } else {
-      if (usedCode.length > 0) {
+      if (true) {
+        //usedCode.length > 0
         dispatch(chat_out());
         dispatch(loading_chat(true));
         dispatch(loading_chat_action(true));
@@ -194,7 +197,7 @@ function MainChat({ windowWidth }) {
           .post(
             `${config.api}create_thread`,
             {
-              file_ids: usedCode.join(),
+              // file_ids: usedCode.join(),
             },
             {
               headers: {
@@ -205,7 +208,7 @@ function MainChat({ windowWidth }) {
             }
           )
           .then((response) => {
-            dispatch(getChatCode(response.data.data[0]));
+            dispatch(getChatCode(response.data?.data));
             dispatch(loading_chat_action(false));
             dispatch(loading_chat(false));
           })
@@ -221,10 +224,10 @@ function MainChat({ windowWidth }) {
             setTimeout(() => dispatch(error_start_chat(null)), 2000);
           });
       } else {
-        dispatch(
-          set_code_error('You cant start new chat without mentioning "CODE"')
-        );
-        setTimeout(() => dispatch(clear_code_error()), 1000);
+        // dispatch(
+        //   set_code_error('You cant start new chat without mentioning "CODE"')
+        // );
+        // setTimeout(() => dispatch(clear_code_error()), 1000);
       }
     }
   };

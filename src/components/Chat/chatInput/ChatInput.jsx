@@ -25,10 +25,8 @@ function ChatInput() {
   const textAreaRef = useRef(null);
   const chatData = useSelector((state) => state.chatSlice.chat_data);
   const conversation = useSelector((state) => state.chatSlice.conversation);
-  const [popoverOpen, setPopoverOpen] = useState({ open: false, data: "" });
   const [dir, setDir] = useState(false);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
-  const usedCode = useSelector((state) => state.codeSlice.usedCode);
   const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
   const chatslice = useSelector((state) => state.chatSlice.get_chat);
@@ -103,10 +101,9 @@ function ChatInput() {
       });
     };
 
-    if (true) {
+    if (storedCode.length > 0 && message.length > 0) {
       dispatch(getChatData([...chatData, { question: message }]));
       dispatch(send_message(true));
-
       // Race the timer and API call
       Promise.race([
         startTimer(),
@@ -128,15 +125,17 @@ function ChatInput() {
         ),
       ])
         .then((response) => {
-          console.log(response);
           clearTimeout(timer); // Clear the timeout if the response is received
           if (response.data) {
             dispatch(setTypeValue(true));
             dispatch(update());
             if (!chatslice) {
-              localStorage.setItem("chat", response.data.data.master_chat_id);
+              localStorage.setItem(
+                "chat",
+                response?.data?.data?.master_chat_id
+              );
               localStorage.setItem("hints", false);
-              dispatch(choseChate(response.data.data.master_chat_id));
+              dispatch(choseChate(response.data?.data?.master_chat_id));
             }
             setMessage("");
           } else {
@@ -192,7 +191,7 @@ function ChatInput() {
 
     // Set direction based on the result
     setDir(isFirstCharEnglish);
-}
+  }
 
   return (
     <>
@@ -227,21 +226,19 @@ function ChatInput() {
 
             <button
               onClick={handleSendMessage}
-              disabled={message.length <= 0 && !conversation.id}
+              disabled={message.length <= 0 && !conversation.id && message.length === 0}
               className="outline-none focus:outline-none"
               type="submit"
             >
-              <PopoverDefault popoverOpen={popoverOpen}>
-                <svg
-                  id="sendIcon"
-                  className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                </svg>
-              </PopoverDefault>
+              <svg
+                id="sendIcon"
+                className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              </svg>
             </button>
           </>
         )}

@@ -68,8 +68,11 @@ function ChatContainer() {
           )
           .then((response) => {
             if (response.data) {
-              dispatch(set_direct_code(response.data.data.pdfs.map(item => item.chatgpt_file_id)));
-              dispatch(getChatCode(response.data.data.pdfs.map(item => item.chatgpt_file_id)));
+              let {userChats} = response.data.data
+              let lastQuestionCode = userChats[userChats.length - 1]?.pdfs.map(item => item.chatgpt_file_id) || "";
+              dispatch(set_direct_code(lastQuestionCode)); //here
+
+              dispatch(getChatCode(lastQuestionCode));
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));
