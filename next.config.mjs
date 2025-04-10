@@ -4,5 +4,6 @@ const nextConfig = {
     //     output: 'hybrid',
     //   },
     output: 'client'    
+    
 }
 export default nextConfig;
