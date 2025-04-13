@@ -239,61 +239,28 @@ function MainChat({ windowWidth }) {
   };
   dispatch(action_done(true));
 
-  const pattern = /Reference: .*?\/\//g;
-  const file_id_pattern = /Attachments:\s*\[([^\]]+)\]/;
-  const file_id_pattern_3 = /File ID:.*?\]/g;
-  const file_id_pattern_4 = /\[file-[^\]]+\]/g;
+  const pattern = /SBC\s+(.*?)\s*\/\//g;
+
   const textHandler = (item) => {
     let data = item;
-    if (
-      item.match(pattern) ||
-      data.match(file_id_pattern_3) ||
-      data.match(file_id_pattern) ||
-      data.match(file_id_pattern_4)
-    ) {
-      if (item.match(pattern)) {
-        let dataArray = item.match(pattern);
-        dataArray.forEach((item2) => {
-          data = data.replaceAll(item2, "");
-        });
-      }
-
-      if (data.match(file_id_pattern_3)) {
-        let fileIdArray = data.match(file_id_pattern_3);
-        fileIdArray.forEach((item2) => {
-          data = data.replaceAll(item2, "");
-        });
-      }
-      if (data.match(file_id_pattern)) {
-        let fileIdArray = data.match(file_id_pattern);
-        fileIdArray.forEach((item2) => {
-          data = data.replaceAll(item2, "");
-        });
-      }
-      if (data.match(file_id_pattern_4)) {
-        let fileIdArray = data.match(file_id_pattern_4);
-        fileIdArray.forEach((item2) => {
-          data = data.replaceAll(item2, "");
-        });
-      }
-
-      return (
-        <span
-          dangerouslySetInnerHTML={{
-            __html: data,
-          }}
-        />
-      );
+  
+    if (data.match(pattern)) {
+      const matches = data.match(pattern);
+      matches.forEach((match) => {
+        data = data.replaceAll(match, "");
+      });
     }
-
+  
     return (
       <span
         dangerouslySetInnerHTML={{
-          __html: item,
+          __html: data,
         }}
       />
     );
   };
+  
+  
 
   // Scroll to the bottom function
   const scrollToBottom = () => {
@@ -360,7 +327,12 @@ function MainChat({ windowWidth }) {
 
           <div className="mt-4 text-xs">
             <hr className="my-2" />
-            📘 Reference: BYLD Documentation - Page 12
+            {/*  BYLD Documentation - Page 12 */}
+            {item?.answer?.includes("//") && item.answer.match(pattern)
+              ? item.answer
+                  .match(pattern)
+                  ?.map((item2, i) => <li key={i}>📘 Reference: {item2}</li>)
+              : "No Reference"}
           </div>
         </MathJax>
       </MathJaxContext>
