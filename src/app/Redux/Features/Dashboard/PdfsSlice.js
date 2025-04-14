@@ -12,6 +12,7 @@ export const getPdfsAction = createAsyncThunk(
   "pdfs/getPdfsAction",
   async (arg, { dispatch, rejectWithValue }) => {
     const { token, page, fileType } = arg;
+
     try {
       const response = await axios.get(
         `${config.api}admin/all_files?page=${page}`,
@@ -20,6 +21,13 @@ export const getPdfsAction = createAsyncThunk(
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
             "Content-Type": "*/*",
+          },
+          onUploadProgress: (progressEvent) => {
+            const { loaded, total } = progressEvent;
+            const progress = Math.round((loaded / total) * 100);
+            console.log(`Upload progress: ${progress}%`);
+
+            handleProgressFunction(progress,dispatch)
           },
         }
       );
@@ -236,9 +244,16 @@ export const addpdffileAction = createAsyncThunk(
 
     formData.append("section_id", section_id);
     formData.append("pdf_name", pdf_name);
-    formData.append("pdf_path", pdf_path); // Adjust this if the backend expects a different name
+    formData.append("pdf_path", pdf_path); 
     formData.append("type", type);
 
+    let fakeProgress = 0;
+    const interval = setInterval(() => {
+      fakeProgress += 10;
+      if (fakeProgress <= 90) {
+        handleProgressFunction(fakeProgress, dispatch);
+      }
+    }, 150);
     try {
       const response = await axios.post(
         `${config.api}admin/add-pdf`,
@@ -258,7 +273,8 @@ export const addpdffileAction = createAsyncThunk(
           },
         }
       );
-
+      clearInterval(interval);
+      handleProgressFunction(100, dispatch);
       if (response.data.error) {
         return rejectWithValue(new Error(response.data.error));
       }
@@ -268,7 +284,8 @@ export const addpdffileAction = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {      clearInterval(interval);
+        handleProgressFunction(0, dispatch);
         dispatch(removeAuthAction())
         RemoveAuth();
       }

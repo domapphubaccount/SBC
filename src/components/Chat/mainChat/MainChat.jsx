@@ -130,15 +130,15 @@ function MainChat({ windowWidth }) {
   const handleCopyText = (textCopy, id) => {
     let textCop = textCopy;
 
-    if (textCop.match(file_id_pattern_3)) {
-      let fileIdArray = textCop.match(file_id_pattern_3);
+    if (textCop.match(pattern)) {
+      let fileIdArray = textCop.match(pattern);
       fileIdArray.forEach((item2) => {
         textCop = textCop.replaceAll(item2, "");
       });
     }
 
-    if (textCop.match(file_id_pattern)) {
-      let fileIdArray = textCop.match(file_id_pattern);
+    if (textCop.match(pattern)) {
+      let fileIdArray = textCop.match(pattern);
       fileIdArray.forEach((item2) => {
         textCop = textCop.replaceAll(item2, "");
       });
@@ -512,34 +512,27 @@ function MainChat({ windowWidth }) {
                             onClick={(e) => {
                               dislikeToggle(item.id);
 
-                              if (item.answer.match(file_id_pattern_3)) {
+                              if (item.answer?.match(pattern)) {
                                 setFileId(
-                                  item.answer.match(file_id_pattern_3) &&
+                                  item.answer?.match(pattern) &&
                                     item.answer
-                                      .match(file_id_pattern_3)[0]
-                                      .slice(18, -1)
+                                      ?.match(pattern)[0]
+                                      ?.slice(18, -1)
                                 );
-                              } else if (item.answer.match(file_id_pattern)) {
-                                console.log(
-                                  "**",
-                                  item.answer
-                                    .match(file_id_pattern)[0]
-                                    .match(/\[file_id:([^\]]+)\]/)[0]
-                                    .slice(9, -1)
-                                );
+                              } else if (item.answer?.match(pattern)) {
                                 setFileId(
-                                  item.answer.match(file_id_pattern) &&
+                                  item.answer?.match(pattern) &&
                                     item.answer
-                                      .match(file_id_pattern)[0]
-                                      .match(/\[file_id:([^\]]+)\]/)[0]
-                                      .slice(9, -1)
+                                      ?.match(pattern)[0]
+                                      ?.match(/\[file_id:([^\]]+)\]/)[0]
+                                      ?.slice(9, -1)
                                 );
                               } else if (item.answer.match(file_id_pattern_4)) {
                                 setFileId(
-                                  item.answer.match(file_id_pattern_4) &&
+                                  item.answer?.match(file_id_pattern_4) &&
                                     item.answer
-                                      .match(file_id_pattern_4)[0]
-                                      .slice(1, -1)
+                                      ?.match(file_id_pattern_4)[0]
+                                      ?.slice(1, -1)
                                 );
                               } else {
                                 setFileId();

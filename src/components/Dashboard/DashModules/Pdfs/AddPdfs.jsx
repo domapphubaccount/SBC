@@ -105,7 +105,7 @@ export function Addpdfs({ openAdd, handleClose }) {
                     name="pdf_name"
                     type="text"
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} // Handle blur for validation
+                    onBlur={formik.handleBlur} 
                     value={formik.values.pdf_name}
                     required
                   />

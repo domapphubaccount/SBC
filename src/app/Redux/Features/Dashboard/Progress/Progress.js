@@ -22,6 +22,7 @@ const progressSlice = createSlice({
 });
 
 export function handleProgressFunction(progress,dispatch){
+  console.log('progress',progress,'****************************', dispatch , 'dispatch')
     dispatch(setProgress({open:true,value:progress}))
     if(progress === 100){
       dispatch(setProgress({open:false,value:0}))

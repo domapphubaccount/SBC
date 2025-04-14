@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 function ModuleProgress() {
     const progress = useSelector((state) => state.progressSlice.progress);
+    console.log(progress)
 
   return (
     <>
