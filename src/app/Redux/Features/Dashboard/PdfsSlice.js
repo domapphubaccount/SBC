@@ -253,7 +253,7 @@ export const addpdffileAction = createAsyncThunk(
       if (fakeProgress <= 90) {
         handleProgressFunction(fakeProgress, dispatch);
       }
-    }, 150);
+    }, 2500);
     try {
       const response = await axios.post(
         `${config.api}admin/add-pdf`,
