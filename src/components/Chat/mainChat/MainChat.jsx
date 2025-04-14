@@ -239,7 +239,7 @@ function MainChat({ windowWidth }) {
   };
   dispatch(action_done(true));
 
-  const pattern = /SBC\s+(.*?)\s*\/\//g;
+  const pattern = /\[source:\s*(.*?)\s*\]/gi;
 
   const textHandler = (item) => {
     let data = item;
@@ -328,7 +328,7 @@ function MainChat({ windowWidth }) {
           <div className="mt-4 text-xs">
             <hr className="my-2" />
             {/*  BYLD Documentation - Page 12 */}
-            {item?.answer?.includes("//") && item.answer.match(pattern)
+            {item?.answer?.includes("[Source:") && item.answer.match(pattern)
               ? item.answer
                   .match(pattern)
                   ?.map((item2, i) => <li key={i}>📘 Reference: {item2}</li>)
