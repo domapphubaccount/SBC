@@ -31,9 +31,205 @@ import { useSnackbar } from "notistack";
 import {
   clear_code_error,
   set_code_error,
+  confirm_selected_code,
+  set_direct_code,
+  set_stored_code,
 } from "@/app/Redux/Features/Code/CodeSlice";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import "boxicons/css/boxicons.min.css";
+import MultipleSelect from "../code/code";
+import { Accordion } from "flowbite-react";
+
+// Code Selection Interface Component for Starter Page
+function CodeSelectionInterface() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showTooltip, setShowTooltip] = useState(false);
+  const dispatch = useDispatch();
+
+  const code = useSelector((state) => state.codeSlice.value);
+  const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const available = useSelector((state) => state.chatSlice.chat_code);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (!event.target.closest(".dropdown-container")) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleCheckboxChange = (fileId) => {
+    if (!available) {
+      if (storedCode.includes(fileId)) {
+        dispatch(set_stored_code(fileId));
+      } else if (storedCode.length < 5) {
+        dispatch(set_stored_code(fileId));
+      } else {
+        dispatch(set_code_error("You can't select more than 5 codes"));
+        setShowTooltip(true);
+        setTimeout(() => {
+          setShowTooltip(false);
+          dispatch(clear_code_error());
+        }, 1500);
+      }
+    }
+  };
+
+  const removeStoredCode = () => {
+    if (!available) {
+      dispatch(set_direct_code([]));
+    }
+  };
+
+  // Filter codes based on search query
+  const filteredCode = code
+    ? code
+        .map((item) => {
+          const matchingPdfs = item.pdfs.filter((pdf) =>
+            pdf.name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          const matchesItem =
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            matchingPdfs.length > 0;
+
+          if (matchesItem) {
+            return {
+              ...item,
+              pdfs: matchingPdfs,
+            };
+          }
+          return null;
+        })
+        .filter(Boolean)
+    : [];
+
+  return (
+    <div className="dropdown-container relative w-80 mx-auto">
+      {/* Dropdown Button */}
+      <button
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        className="w-full p-3 bg-white border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center hover:bg-gray-50"
+      >
+        <span className="text-sm text-gray-700">
+          {storedCode.length === 0
+            ? `Select Codes (${storedCode.length}/5)`
+            : `${storedCode.length} code${
+                storedCode.length !== 1 ? "s" : ""
+              } selected`}
+        </span>
+        <svg
+          className={`w-4 h-4 transition-transform duration-200 ${
+            dropdownOpen ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      {/* Dropdown Menu */}
+      {dropdownOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+          {/* Tooltip for max selection */}
+          {showTooltip && (
+            <div className="mx-3 mt-3 p-2 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded text-xs">
+              ⚠️ Maximum 5 codes allowed
+            </div>
+          )}
+
+          {/* Search Bar */}
+          <div className="p-3 border-b rounded-t-lg">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="w-full p-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          {/* Code List */}
+          <div className="max-h-60 overflow-y-auto">
+            {filteredCode.length === 0 ? (
+              <div className="text-center py-4 text-gray-500 text-sm">
+                {code && code.length === 0
+                  ? "No codes available"
+                  : "No results found"}
+              </div>
+            ) : (
+              filteredCode.map((item, i) => (
+                <Accordion key={i} className="p-1">
+                  <Accordion.Panel className="p-1">
+                    <Accordion.Title className="p-2 hover:bg-gray-50">
+                      <span className="text-sm font-semibold">{item.name}</span>
+                    </Accordion.Title>
+                    <Accordion.Content className="p-1">
+                      {item.pdfs.length > 0 ? (
+                        item.pdfs.map((pdfItem, j) => (
+                          <div
+                            key={j}
+                            className="flex items-center p-2 hover:bg-gray-100 rounded-md"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`checkbox-item-${i}-${j}`}
+                              checked={storedCode.includes(pdfItem.name)}
+                              onChange={() =>
+                                handleCheckboxChange(pdfItem.name)
+                              }
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                            <label
+                              htmlFor={`checkbox-item-${i}-${j}`}
+                              className="ml-2 text-xs font-medium text-gray-900 cursor-pointer"
+                            >
+                              {pdfItem.name}
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-2 text-gray-500 text-xs">
+                          No codes found
+                        </div>
+                      )}
+                    </Accordion.Content>
+                  </Accordion.Panel>
+                </Accordion>
+              ))
+            )}
+          </div>
+
+          {/* Footer with actions */}
+          {storedCode.length > 0 && (
+            <div className="bg-gray-50 px-3 py-2 border-t rounded-b-lg flex justify-between items-center">
+              <button
+                onClick={removeStoredCode}
+                className="text-red-600 hover:text-red-800 text-xs font-medium"
+              >
+                Clear All
+              </button>
+              <div className="text-xs text-gray-600">
+                {storedCode.length} selected
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function MainChat({ windowWidth }) {
   const pathName = usePathname();
@@ -63,6 +259,8 @@ function MainChat({ windowWidth }) {
   );
   const { name } = useSelector((state) => state.profileSlice.profile);
   const usedCode = useSelector((state) => state.codeSlice.usedCode);
+  const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const codeError = useSelector((state) => state.codeSlice.error);
 
   useEffect(() => {
     if (actionSuccess) {
@@ -193,8 +391,13 @@ function MainChat({ windowWidth }) {
     if (pathName.trim().slice(0, 9) == "/sharable") {
       navigate.push("/signIn");
     } else {
-      if (true) {
-        //usedCode.length > 0
+      if (storedCode.length > 0) {
+        // Clear any existing code errors
+        dispatch(clear_code_error());
+
+        // Confirm the selected codes first
+        dispatch(confirm_selected_code());
+
         dispatch(chat_out());
         dispatch(loading_chat(true));
         dispatch(loading_chat_action(true));
@@ -203,7 +406,7 @@ function MainChat({ windowWidth }) {
           .post(
             `${config.api}create_thread`,
             {
-              // file_ids: usedCode.join(),
+              file_ids: storedCode.join(","),
             },
             {
               headers: {
@@ -230,10 +433,12 @@ function MainChat({ windowWidth }) {
             setTimeout(() => dispatch(error_start_chat(null)), 2000);
           });
       } else {
-        // dispatch(
-        //   set_code_error('You cant start new chat without mentioning "CODE"')
-        // );
-        // setTimeout(() => dispatch(clear_code_error()), 1000);
+        dispatch(
+          set_code_error(
+            "You must select at least one code before starting a new chat"
+          )
+        );
+        setTimeout(() => dispatch(clear_code_error()), 3000);
       }
     }
   };
@@ -243,14 +448,14 @@ function MainChat({ windowWidth }) {
 
   const textHandler = (item) => {
     let data = item;
-  
+
     if (data.match(pattern)) {
       const matches = data.match(pattern);
       matches.forEach((match) => {
         data = data.replaceAll(match, "");
       });
     }
-  
+
     return (
       <span
         dangerouslySetInnerHTML={{
@@ -259,8 +464,6 @@ function MainChat({ windowWidth }) {
       />
     );
   };
-  
-  
 
   // Scroll to the bottom function
   const scrollToBottom = () => {
@@ -608,9 +811,21 @@ function MainChat({ windowWidth }) {
 
                           {/* Subheading text */}
                           <p className="mt-4 text-sm leading-7 text-gray-600 animate-fade-in">
-                            You can start a new session or choose a previous
-                            chat.
+                            Please select at least one code from the options
+                            below, then start a new session.
                           </p>
+
+                          {/* Code Selection Interface */}
+                          <div className="mt-6">
+                            <CodeSelectionInterface />
+                          </div>
+
+                          {/* Error Message */}
+                          {codeError && (
+                            <div className="mt-4 px-4 py-2 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm max-w-md mx-auto">
+                              {codeError}
+                            </div>
+                          )}
 
                           {/* Button or Loader */}
                           <div className="mt-8 flex items-center justify-center gap-x-6">
@@ -627,7 +842,12 @@ function MainChat({ windowWidth }) {
                               ) && (
                                 <button
                                   onClick={handleStartNewChat}
-                                  className="relative px-4 py-2 rounded-full bg-[#1E293B] text-white text-lg font-semibold shadow-lg hover:bg-[#1E293B] hover:shadow-xl hover:scale-105 transition-all duration-300 transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E293B]"
+                                  disabled={storedCode.length === 0}
+                                  className={`relative px-4 py-2 rounded-full text-lg font-semibold shadow-lg transition-all duration-300 transform focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                                    storedCode.length === 0
+                                      ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                      : "bg-[#1E293B] text-white hover:bg-[#1E293B] hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-[#1E293B]"
+                                  }`}
                                 >
                                   <span className="inline-block mr-2">🚀</span>
                                   Start Chat

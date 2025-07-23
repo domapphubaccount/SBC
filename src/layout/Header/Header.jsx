@@ -39,7 +39,7 @@ function Header({ path }) {
     const updateRunState = () => {
       const hints = localStorage.getItem("hints");
       const chat = localStorage.getItem("chat");
-      console.log(chatCode , "****")
+      console.log(chatCode, "****");
 
       if ((hints === null || hints === "true") && chatCode) {
         setRun(true);
