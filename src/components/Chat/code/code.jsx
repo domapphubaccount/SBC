@@ -54,9 +54,8 @@ function MultipleSelect() {
     }
   };
   const removeStoredCode = () => {
-    if (!available) {
-      dispatch(set_direct_code([]));
-    }
+    // Allow clearing selections in both contexts
+    dispatch(set_direct_code([]));
   };
   const handleConfirmCode = () => {
     dispatch(confirm_selected_code());
@@ -262,20 +261,26 @@ function MultipleSelect() {
                 )}
               </ul>
 
-              {!available && (
-                <div className="flex justify-between items-center">
+              {/* Show Clear button regardless of available status when codes are selected */}
+              {storedCode.length > 0 && (
+                <div className="flex justify-between items-center bg-gray-50 px-3 py-2 border-t">
                   <a
                     href="#"
-                    className="block p-2 mt-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    className="text-red-600 hover:text-red-800 text-xs font-medium"
                     onClick={removeStoredCode}
                   >
-                    Clear Selections
+                    Clear All
                   </a>
-                  {storedCode.length > 0 && (
+                  <div className="text-xs text-gray-600">
+                    {storedCode.length} selected
+                  </div>
+
+                  {/* Only show confirm button when not available */}
+                  {!available && (
                     <div>
                       <Button
                         size="xs"
-                        className="mx-3"
+                        className="ml-2"
                         onClick={handleConfirmCode}
                       >
                         SELECTED
