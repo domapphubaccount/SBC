@@ -97,13 +97,34 @@ function MultipleSelect() {
   return (
     <>
       {available && (
-        <div className="dropdown-container relative w-80">
+        <div className="dropdown-container relative">
           <button
             id="code-btn"
             onClick={() => setDropdownOpen((prevState) => !prevState)}
-            className="w-full p-2 bg-transparent text-white rounded-lg focus:outline-none"
+            className="w-full py-2 px-4 bg-white border border-gray-300 rounded-lg text-left focus:outline-none flex justify-between items-center"
           >
-            CODE
+            <span className="text-sm text-gray-700 flex-1">
+              {storedCode.length === 0
+                ? `Select Codes (${storedCode.length}/5)`
+                : `${storedCode.length} code${
+                    storedCode.length !== 1 ? "s" : ""
+                  } selected`}
+            </span>
+            <svg
+              className={`w-4 h-4 ml-2 transition-transform duration-200 ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
           </button>
 
           {dropdownOpen && (
@@ -153,9 +174,7 @@ function MultipleSelect() {
                                           pdfItem.name
                                         )}
                                         onChange={() =>
-                                          handleCheckboxChange(
-                                            pdfItem.name
-                                          )
+                                          handleCheckboxChange(pdfItem.name)
                                         }
                                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
                                         // disabled={available}
@@ -221,9 +240,7 @@ function MultipleSelect() {
                                             pdfItem.name
                                           )}
                                           onChange={() =>
-                                            handleCheckboxChange(
-                                              pdfItem.name
-                                            )
+                                            handleCheckboxChange(pdfItem.name)
                                           }
                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
                                           // disabled={available}

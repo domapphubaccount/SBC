@@ -31,14 +31,24 @@ function Header({ path }) {
 
   // Function to determine if we should show the code selection in header
   const shouldShowCodeSelection = () => {
-    // Show on homepage
-    if (pathname !== "/") return false;
+    // Show if conversation is empty or we're on the home page
+    if (pathname === "/" || pathname === "/dashboard") {
+      // Show only if no chat is started
+      if (chatCode) return false;
 
-    // Show only if no chat is started
-    if (chatCode) return false;
+      // Show if conversation is empty
+      if (conversation && Object.entries(conversation).length === 0)
+        return true;
+    }
 
-    // Show if conversation is empty
-    if (conversation && Object.entries(conversation).length === 0) return true;
+    // Allow showing on any page when there's no active chat
+    if (
+      !chatCode &&
+      conversation &&
+      Object.entries(conversation).length === 0
+    ) {
+      return true;
+    }
 
     return false;
   };
@@ -140,7 +150,7 @@ function Header({ path }) {
             className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between navbar-expand-lg bg-darkBlue"
           >
             <div className="w-full mx-auto flex flex-wrap items-center justify-between">
-              <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start ">
+              <div className="relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
                 <Link
                   className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
                   href="/"
@@ -162,21 +172,26 @@ function Header({ path }) {
                   {!path ? (
                     permissionsData &&
                     permissionsData.includes("sections.pdf") && (
-                      <div id="code" className="hidden sm:block">
-                        {shouldShowCodeSelection() ? (
-                          <div className="w-72 mx-2">
+                      <div
+                        id="code"
+                        className="flex-1 flex justify-center items-center max-w-md"
+                      >
+                        <div className="w-64">
+                          {shouldShowCodeSelection() ? (
                             <CodeSelectionInterface />
-                          </div>
-                        ) : (
-                          <MultipleSelect />
-                        )}
+                          ) : chatCode ? (
+                            <MultipleSelect />
+                          ) : (
+                            <CodeSelectionInterface />
+                          )}
+                        </div>
                       </div>
                     )
                   ) : (
                     <></>
                   )}
 
-                  <div className="flex items-center shadow-none  bg-darkBlue">
+                  <div className="flex items-center shadow-none bg-darkBlue">
                     <ul className="flex justify-between list-none ml-auto items-center">
                       {pathname.trim().slice(0, 8) === "/profile" ||
                       pathname.trim().slice(0, 10) === "/dashboard" ? (
