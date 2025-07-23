@@ -1,5 +1,6 @@
 "use client";
 import MultipleSelect from "@/components/Chat/code/code";
+import CodeSelectionInterface from "@/components/Chat/code/CodeSelection";
 import Archive from "@/components/archive/Archive";
 import DropDown from "@/components/dropDown/DropDown";
 import Link from "next/link";
@@ -22,10 +23,25 @@ function Header({ path }) {
   const dispatch = useDispatch();
   const pathname = usePathname();
   const chatCode = useSelector((state) => state.chatSlice.chat_code);
+  const conversation = useSelector((state) => state.chatSlice.conversation);
 
   const permissionsData = useSelector(
     (state) => state.profileSlice.permissions
   );
+
+  // Function to determine if we should show the code selection in header
+  const shouldShowCodeSelection = () => {
+    // Show on homepage
+    if (pathname !== "/") return false;
+
+    // Show only if no chat is started
+    if (chatCode) return false;
+
+    // Show if conversation is empty
+    if (conversation && Object.entries(conversation).length === 0) return true;
+
+    return false;
+  };
 
   const handleStartNewChat = () => {
     dispatch(chat_out());
@@ -39,7 +55,6 @@ function Header({ path }) {
     const updateRunState = () => {
       const hints = localStorage.getItem("hints");
       const chat = localStorage.getItem("chat");
-      console.log(chatCode, "****");
 
       if ((hints === null || hints === "true") && chatCode) {
         setRun(true);
@@ -139,6 +154,7 @@ function Header({ path }) {
                   />
                 </Link>
               </div>
+
               {pathname.trim().slice(0, 9) === "/sharable" ? (
                 ""
               ) : (
@@ -147,7 +163,13 @@ function Header({ path }) {
                     permissionsData &&
                     permissionsData.includes("sections.pdf") && (
                       <div id="code" className="hidden sm:block">
-                        <MultipleSelect />
+                        {shouldShowCodeSelection() ? (
+                          <div className="w-72 mx-2">
+                            <CodeSelectionInterface />
+                          </div>
+                        ) : (
+                          <MultipleSelect />
+                        )}
                       </div>
                     )
                   ) : (
