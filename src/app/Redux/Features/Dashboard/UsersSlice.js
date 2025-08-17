@@ -1,0 +1,566 @@
+"use client";
+
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { config } from "@/config/config";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
+
+// start get users
+export const getUsersAction = createAsyncThunk(
+  "users/getUsersAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, page, pathPage, isTest } = arg;
+    try {
+      const response = await axios.get(
+        `${config.api}admin/users?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      if (pathPage) {
+        if (isTest) {
+          dispatch(
+            setAllData(
+              response.data.data[0].filter(
+                (item) => item.account_type == "test"
+              )
+            )
+          );
+        } else {
+          dispatch(setAllData(response.data.data[0]));
+        }
+      }
+      dispatch(setPage(1));
+      return response.data.data[0];
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get users
+
+// start get user by id
+export const getUserByIDAction = createAsyncThunk(
+  "users/getUserByIDAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id } = arg;
+
+    try {
+      const response = await axios.get(`${config.api}admin/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get user by id
+
+// start edit user
+export const editUserAction = createAsyncThunk(
+  "users/editUserAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, name, email, status, role_id, account_type } = arg;
+
+    try {
+      const response = await axios.put(
+        `${config.api}admin/users/${id}`,
+        { name, email, status, role_id: Number(role_id), account_type },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end edit user
+
+// start add user
+export const addUserAction = createAsyncThunk(
+  "users/addUserAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const {
+      token,
+      name,
+      email,
+      password,
+      password_confirmation,
+      role_id,
+      account_type,
+    } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}admin/users`,
+        {
+          name,
+          email,
+          password,
+          password_confirmation,
+          role_id: Number(role_id),
+          status: "active",
+          account_type,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end add user
+
+// start delete user
+export const deleteUserAction = createAsyncThunk(
+  "users/deleteUserAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id } = arg;
+
+    try {
+      const response = await axios.delete(`${config.api}admin/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end delete user
+
+// start edit user role
+export const updateRoleAction = createAsyncThunk(
+  "users/updateRoleAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, id, role } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}admin/users/${id}/attach-role`,
+        { role },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end edit user role
+
+// start reset password user
+export const resetPasswordAction = createAsyncThunk(
+  "users/resetPasswordAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, email, password, password_confirmation, send_mail } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}password/reset-admin`,
+        {
+          email,
+          password,
+          password_confirmation,
+          send_mail,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end reset password user
+
+// start reset password link
+export const resetPasswordLinkAction = createAsyncThunk(
+  "users/resetPasswordLinkAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, email } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}password/reset-link-admin`,
+        {
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+
+      dispatch(handleAction(true));
+      setTimeout(() => dispatch(handleAction(false)), 1500);
+
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end reset password link
+
+const initialState = {
+  users: [],
+  user: {},
+  loading: false,
+  updates: false,
+
+  editModule: false,
+  deleteModule: false,
+  viewModule: false,
+  roleModule: false,
+  addModule: false,
+  resetPasswordModule: false,
+  resetPasswordLinkModule: false,
+
+  action: false,
+
+  total_pages: 1,
+
+  // pagination
+  allData: [],
+  displayedData: [],
+  currentPage: 1,
+  itemsPerPage: 10,
+};
+
+export const usersSlice = createSlice({
+  name: "users",
+  initialState,
+  reducers: {
+    addModule: (state, action) => {
+      state.addModule = action.payload;
+    },
+    removeUser: (state, action) => {
+      state.user = {};
+    },
+    editModule: (state, action) => {
+      state.editModule = action.payload;
+    },
+    deleteModule: (state, action) => {
+      state.deleteModule = action.payload;
+    },
+    viewModule: (state, action) => {
+      state.viewModule = action.payload;
+    },
+    roleModule: (state, action) => {
+      state.roleModule = action.payload;
+    },
+    resetPasswordModule: (state, action) => {
+      state.resetPasswordModule = action.payload;
+    },
+    resetPasswordLinkModule: (state, action) => {
+      state.resetPasswordLinkModule = action.payload;
+    },
+    handlePages: (state, action) => {
+      state.total_pages = action.payload;
+    },
+    handleAction: (state, action) => {
+      state.action = action.payload;
+    },
+
+    // pagination
+    setAllData: (state, action) => {
+      state.allData = action.payload;
+      state.displayedData = state.allData.slice(0, 10);
+    },
+    setDisplayedData: (state, action) => {
+      state.displayedData = action.payload;
+    },
+    resetData: (state) => {
+      state.allData = [];
+      state.displayedData = [];
+      state.currentPage = 1;
+    },
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.currentPage = page;
+      const startIndex = (page - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      state.displayedData = state.allData.slice(startIndex, endIndex);
+    },
+    removeData: (state, action) => {
+      state.displayedData = [];
+      state.allData = [];
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      //start get users
+      .addCase(getUsersAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUsersAction.fulfilled, (state, action) => {
+        state.error = null;
+        state.users = action.payload;
+        state.loading = false;
+      })
+      .addCase(getUsersAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end get users
+
+      //start get user by id
+      .addCase(getUserByIDAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserByIDAction.fulfilled, (state, action) => {
+        state.error = null;
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(getUserByIDAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // end get user by id
+
+      //start edit user
+      .addCase(editUserAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editUserAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.user = {};
+        state.editModule = false;
+      })
+      .addCase(editUserAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end edit user
+
+      //start delete user
+      .addCase(deleteUserAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUserAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.user = {};
+        state.deleteModule = false;
+      })
+      .addCase(deleteUserAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end delete user
+
+      //start update user role
+      .addCase(updateRoleAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateRoleAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.user = {};
+        state.roleModule = false;
+      })
+      .addCase(updateRoleAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end update user role
+
+      //start add user
+      .addCase(addUserAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addUserAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.addModule = false;
+      })
+      .addCase(addUserAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end add user
+
+      //start reset password
+      .addCase(resetPasswordAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.resetPasswordModule = false;
+      })
+      .addCase(resetPasswordAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // end reset password
+
+      //start reset password link
+      .addCase(resetPasswordLinkAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordLinkAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.updates = !state.updates;
+        state.resetPasswordLinkModule = false;
+      })
+      .addCase(resetPasswordLinkAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      });
+    // end reset password link
+  },
+});
+export const {
+  removeUser,
+  editModule,
+  deleteModule,
+  viewModule,
+  roleModule,
+  addModule,
+  handlePages,
+  handleAction,
+  setAllData,
+  setDisplayedData,
+  resetData,
+  setPage,
+  removeData,
+  resetPasswordModule,
+  resetPasswordLinkModule,
+} = usersSlice.actions;
+
+export default usersSlice.reducer;

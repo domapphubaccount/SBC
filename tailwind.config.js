@@ -1,3 +1,5 @@
+const flowbite = require("flowbite-react/tailwind");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -5,9 +7,21 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
-
+    flowbite.content(),
   ],
+  
   theme: {
+
+    animation: {
+      'fade-in': 'fadeIn 0.8s ease-out',
+    },
+    keyframes: {
+      fadeIn: {
+        '0%': { opacity: '0', transform: 'translateY(10px)' },
+        '100%': { opacity: '1', transform: 'translateY(0)' },
+      },
+    },
+    
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -19,5 +33,7 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    flowbite.plugin(),
+  ],
 };

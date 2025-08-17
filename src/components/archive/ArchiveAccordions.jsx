@@ -3,61 +3,58 @@ import ArchiveSettings from "./ArchiveSettings";
 import ShareChatLink from "../Chat/shareChatLink/ShareChatLink";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loading_chat,
-  updateSlice,
-  update_archive,
-} from "@/app/Redux/Features/Update/UpdateSlice";
+import { update_archive } from "@/app/Redux/Features/Update/UpdateSlice";
 import {
   choseChate,
-  getChatHistory,
   getConversation,
+  loading_main_chat,
 } from "@/app/Redux/Features/Chat/ChatSlice";
 import Logo from "@/assets/logo/icon.png";
+import { config } from "@/config/config";
+import {
+  getHistoryAction,
+  loading_get_chat_history,
+} from "@/app/Redux/Features/Chat_History/historySlice";
+import { loading_chat_action } from "@/app/Redux/Features/Chat/ChatActionsSlice";
+import loadingImg from "@/assets/logo/loading_icon.gif";
+import { useSnackbar } from "notistack";
 
 function TailwindAccordion() {
   const [open, setOpen] = useState(null);
   const [renameToggle, setRenameToggle] = useState(false);
   const [deleteToggle, setDeleteToggle] = useState(false);
   const [handleChat, setHandleChat] = useState({});
-  const [actionAlert, setActionAlert] = useState(false);
   const [inputName, setInputName] = useState("");
   const [shareName, setShareName] = useState("0");
   const [shareToggle, setShareToggle] = useState(false);
   const [sharableChat, setSharableChat] = useState([]);
-  const token =
-    localStorage.getItem("data") &&
-    JSON.parse(localStorage.getItem("data")).token;
-  const dispatch = useDispatch();
-  const dashboardData = useSelector((state) => state.chatSlice.value);
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
+  const dashboardData = useSelector((state) => state.historySlice.chat_history);
   const updateDashboard = useSelector((state) => state.updateSlice.archive);
   const updates = useSelector((state) => state.updateSlice.state);
+  const loading = useSelector((state) => state.chatActionsSlice.loading);
+  const loadingHistory = useSelector((state) => state.historySlice.loading);
+  const errorHistory = useSelector((state) => state.historySlice.error);
+  const dispatch = useDispatch();
+  const chatid = useSelector((state) => state.chatSlice.get_chat);
+  const conversation = useSelector((state) => state.chatSlice.conversation);
+  const disabledAction = useSelector((state) => state.chatActionsSlice.loading);
+  const [action, setAction] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
-      axios
-        .get("https://sbc.designal.cc/api/dashboard", {
-          headers: {
-            Authorization: `Bearer ${storedData.token}`,
-          },
-        })
-        .then((res) => {
-          if (res.data.success) {
-            // setDashboardData(res.data.data)
-            dispatch(getChatHistory(res.data.data));
-          }
-        })
-        .catch((e) => console.log(e));
+    if (action) {
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
     }
-    window.MathJax && window.MathJax.typeset();
-  }, [updates, updateDashboard]);
-  const handleAction = () => {
-    setActionAlert(true);
-    setTimeout(() => setActionAlert(false), 4000);
-    window.MathJax && window.MathJax.typeset();
-  };
-  // mark name sharable
+  }, [action]);
+
+  useEffect(() => {
+    dispatch(getHistoryAction({ token }));
+  }, [updates, updateDashboard, token]);
+
+  // mark name sharable     // THIS API IS NOT WORKING FOR NOW
   const handleCopyShare = (toggleItem) => {
     axios
       .post(
@@ -69,14 +66,12 @@ function TailwindAccordion() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       )
-      .then((response) => {
-        if (response.data.success) {
-          console.log(response.data);
-        }
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error("There was an error making the request!", error);
       });
@@ -85,9 +80,10 @@ function TailwindAccordion() {
     setOpen((prevId) => (prevId === id ? null : id));
   };
   const handleRename = (handleChat) => {
+    dispatch(loading_chat_action(true));
     axios
       .post(
-        "https://sbc.designal.cc/api/rename-chat",
+        `${config.api}rename-chat`,
         {
           chat_id: handleChat.id,
           new_name: inputName,
@@ -95,162 +91,211 @@ function TailwindAccordion() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       )
       .then((response) => {
-        if (response.data.success) {
-          setRenameToggle(false);
+        if (response.data) {
           setHandleChat({});
           handleAction();
           dispatch(update_archive());
+          dispatch(loading_chat_action(false));
+          setRenameToggle(false);
           setOpen(false);
+          setAction(true);
+          setTimeout(() => setAction(false), 1500);
         }
       })
       .catch((error) => {
+        dispatch(loading_chat_action(false));
         console.error("There was an error making the request!", error);
       });
     window.MathJax && window.MathJax.typeset();
   };
+
   const handleGetChat = (chat_id, share_name) => {
-    localStorage.removeItem('code')
-    dispatch(choseChate(chat_id));
-    dispatch(loading_chat(true));
-    localStorage.setItem("chat", chat_id);
+    if (chatid != chat_id) {
+      dispatch(choseChate(chat_id));
+      dispatch(loading_main_chat(true));
+      // dispatch(loading_chat(true));
+      dispatch(loading_get_chat_history(true));
+      localStorage.setItem("chat", chat_id);
+      localStorage.setItem("hints", false);
+    }
   };
   const handleDeleteChate = (handleChat) => {
-    dispatch(loading_chat(true));
+    dispatch(loading_chat_action(true));
     axios
       .post(
-        "https://sbc.designal.cc/api/delete-chat",
+        `${config.api}archive-chat`,
         {
           chat_id: handleChat.id,
-          archive: handleChat.is_archive,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       )
       .then((response) => {
-        if (response.data.success) {
-          // setCatchChat(null)
-          dispatch(update_archive());
-          dispatch(choseChate(null));
-          console.log("test");
-          setHandleChat({});
-          setOpen(false);
-          dispatch(loading_chat(false));
+        console.log("debug",response)
+        if (response) {
+          console.log("debug")
+          dispatch(loading_chat_action(false));
           setDeleteToggle(false);
+          
+          if (handleChat.id == conversation.id) {
+            console.log("debug2")
+            localStorage.removeItem("chat");
+            localStorage.setItem("hints", true);
+            setHandleChat({});
+            dispatch(choseChate(null));
+            dispatch(getConversation([]));
+          }
+          console.log("debug3")
+          dispatch(update_archive());
+          setOpen(false);
+          setAction(true);
+          setTimeout(() => setAction(false), 1500);
+          console.log("debug4")
         }
       })
       .catch((error) => {
-        dispatch(loading_chat(false));
+        dispatch(loading_chat_action(false));
         console.error("There was an error making the request!", error);
       });
     window.MathJax && window.MathJax.typeset();
   };
 
   return (
-    <div
-      className="history_card w-full bg-gray-50 rounded-lg shadow-lg p-2 "
-   
-    >
-      <div className="accordion">
-        {dashboardData.chat_history &&
-        Object.entries(dashboardData.chat_history).length >= 1 ? (
-          Object.entries(dashboardData.chat_history).map((item, i) => (
-            <div className="border-b border-gray-200" key={item[0]}>
-              <div
-                className="cursor-pointer py-4 flex justify-between items-center"
-                onClick={() => toggle(i)}
-              >
-                <span className="text-sm font-bold text-gray-800">
-                  {item[0]}
-                </span>
-                <svg
-                  className={`w-5 h-5 transform transition-transform duration-300 ${
-                    open === 2 ? "rotate-180" : "rotate-0"
-                  }`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="black"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+    <>
+      <div className="history_card w-full h-full bg-gray-50 rounded-lg shadow-lg p-2 ">
+        <div className="accordion h-full">
+          {dashboardData?.chat_history &&
+          Object.entries(dashboardData.chat_history).length >= 1 ? (
+            Object.entries(dashboardData.chat_history).map((item, i) => (
+              <div className="border-b border-gray-200" key={item[0]}>
+                <div
+                  className="cursor-pointer py-4 flex justify-between items-center"
+                  onClick={() => toggle(i)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                  <span className="text-sm font-bold text-gray-800">
+                    {item[0]}
+                  </span>
+                  {item[1]?.id && (
+                    <svg
+                      className={`w-5 h-5 transform transition-transform duration-300 ${
+                        open === 2 ? "rotate-180" : "rotate-0"
+                      }`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="white"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  )}
+                </div>
+                {open === i && (
+                  <div className="pb-2 text-sm font-bold text-gray-700">
+                    <ul>
+                      {item[1] &&
+                        Object.entries(item[1]).map((item, i) => (
+                          <li
+                            key={i}
+                            className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleGetChat(item[1].id, item[1].share_name);
+                            }}
+                          >
+                            -- {item[1].id ? item[1].name : item[1].name}
+                            <ArchiveSettings
+                              item={item[1]}
+                              setRenameToggle={setRenameToggle}
+                              setDeleteToggle={setDeleteToggle}
+                              setHandleChat={setHandleChat}
+                              setShareToggle={setShareToggle}
+                            />
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-              {open === i && (
-                <div className="pb-2 text-sm font-bold text-gray-700">
-                  <ul>
-                    {item[1].map((item, i) => (
-                      <li
-                        key={i}
-                        className="px-4 mb-3 hover:bg-slate-200 flex justify-between cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleGetChat(item.id, item.share_name);
-                        }}
-                      >
-                        -- {item.name}
-                        <ArchiveSettings
-                          item={item}
-                          setRenameToggle={setRenameToggle}
-                          setDeleteToggle={setDeleteToggle}
-                          setHandleChat={setHandleChat}
-                          setShareToggle={setShareToggle}
-                        />
-                      </li>
-                    ))}
-                  </ul>
+            ))
+          ) : loadingHistory ||
+            typeof dashboardData?.chat_history === "undefined" ||
+            loadingHistory ? (
+            <>
+              {errorHistory ? (
+                <div className="text-center">
+                  <img
+                    src={loadingImg.src}
+                    alt="loading"
+                    className="w-20 loading_logo inline"
+                  />
+                  <div className="font-semibold">Loading..</div>
+                </div>
+              ) : (
+                <div className="h-full w-full text-black flex justify-center items-center">
+                  <div className="text-center">
+                    <img className="w-20 inline" src={Logo.src} alt="logo" />
+                    <div className="font-semibold	">No History Yet</div>
+                  </div>
                 </div>
               )}
-            </div>
-          ))
-        ) : (
-          <>
-            <div className="h-100 w-100 text-black flex justify-center">
-              <div>
-                <img className="w-20" src={Logo.src} alt="logo" /> No History
-                Yet
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          ) : (
+            dashboardData.chat_history &&
+            Object.entries(dashboardData.chat_history).length === 0 && (
+              <>
+                <div className="h-full w-full text-black flex justify-center items-center">
+                  <div className="text-center">
+                    <img className="w-20 inline" src={Logo.src} alt="logo" />
+                    <div className="font-semibold	">No History Yet</div>
+                  </div>
+                </div>
+              </>
+            )
+          )}
+        </div>
       </div>
-
       {renameToggle && handleChat && (
         <div
-          class="relative z-10"
+          className="relative z-10"
           aria-labelledby="modal-title"
           role="dialog"
           aria-modal="true"
         >
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-          <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                  <div class=" sm:items-start">
-                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+          <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                  <div className=" sm:items-start">
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <h3
-                        class="text-base font-semibold leading-6 text-gray-900"
+                        className="text-base font-semibold leading-6 text-gray-900"
                         id="modal-title"
                       >
                         Rename Chat
                       </h3>
-                      <div class="mt-2">
+                      <div className="mt-2">
                         <div className="relative h-10 w-full">
                           <input
                             style={{ color: "black" }}
                             className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-indigo-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                            placeholder=" "
+                            defaultValue={handleChat.name}
                             onChange={(e) => setInputName(e.target.value)}
                           />
                           <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-indigo-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-indigo-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-indigo-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
@@ -261,18 +306,19 @@ function TailwindAccordion() {
                     </div>
                   </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
+                    disabled={loading || disabledAction}
                     onClick={() => handleRename(handleChat)}
                     type="button"
-                    class="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500	 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500	 sm:ml-3 sm:w-auto"
                   >
                     Rename
                   </button>
                   <button
                     onClick={() => setRenameToggle(false)}
                     type="button"
-                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                   >
                     Cancel
                   </button>
@@ -284,24 +330,24 @@ function TailwindAccordion() {
       )}
       {deleteToggle && handleChat && (
         <div
-          class="relative z-10"
+          className="relative z-10"
           aria-labelledby="modal-title"
           role="dialog"
           aria-modal="true"
         >
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-          <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                  <div class="sm:flex sm:items-start">
-                    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+          <div className="fixed inset-0 z-10  overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                       <svg
-                        class="h-6 w-6 text-red-600"
+                        className="h-6 w-6 text-red-600"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke="currentColor"
                         aria-hidden="true"
                       >
@@ -312,15 +358,15 @@ function TailwindAccordion() {
                         />
                       </svg>
                     </div>
-                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <h3
-                        class="text-base font-semibold leading-6 text-gray-900"
+                        className="text-base font-semibold leading-6 text-gray-900"
                         id="modal-title"
                       >
                         Delete Chat
                       </h3>
-                      <div class="mt-2">
-                        <p class="text-sm text-gray-500">
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">
                           Are you sure you want to delete this chat? All of your
                           data will be permanently removed. This action cannot
                           be undone.
@@ -329,18 +375,19 @@ function TailwindAccordion() {
                     </div>
                   </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     onClick={() => handleDeleteChate(handleChat)}
                     type="button"
-                    class="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    disabled={disabledAction}
                   >
                     Delete
                   </button>
                   <button
                     onClick={() => setDeleteToggle(false)}
                     type="button"
-                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                   >
                     Cancel
                   </button>
@@ -363,30 +410,7 @@ function TailwindAccordion() {
           shareName={shareName}
         />
       )}
-      {actionAlert && (
-        <div
-          class="flex bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
-          role="alert"
-        >
-          <svg
-            class="w-5 h-5 inline mr-3"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <div>
-            <span class="font-medium">Success!</span> Your action happened
-            successfully.
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
 

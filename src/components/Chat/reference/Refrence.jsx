@@ -1,60 +1,41 @@
-"use client"
-import React, { useEffect, useRef, useState } from 'react'
+"use client";
+import React from "react";
 
-function Refrence({setElementWidth}) {
-  const colRef = useRef()
-
-  useEffect(()=>{
-    window.onresize = () => {
-     setElementWidth(colRef.current?.offsetWidth)
-     window.MathJax && window.MathJax.typeset();
-    }
-  },[])
+function Refrence() {
 
   return (
-    <div ref={colRef} id="refContainer" className="col-span-1  bg-gray-100 border-r border-gray-300	relative">
-    <ul id="listRef" className="overflow-auto h-screen " style={{paddingTop:'100px' }}>
-      <h2 className="ml-2 mb-2 text-gray-600 text-lg my-2 absolute" style={{top:'80px',fontSize:'1rem',fontWeight:'bold',left:'50%',transform:'translateX(-50%)'}}>Reference</h2>
-      <li>
-        {/* <a className="hover:bg-gray-100 border-b border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-          <div className="w-full pb-2">
-            <div className="flex justify-between">
-              <span className="block ml-2 font-semibold text-base text-gray-600">Jhon C</span>
-              <span className="block ml-2 text-sm text-gray-600">5 minutes</span>
-            </div>
-            <span className="block ml-2 text-sm text-gray-600">Hello world!!</span>
+    <div
+      id="refContainer"
+      className="col-span-1 bg-gray-100 border-r border-gray-300	relative"
+    >
+      <ul
+        id="listRef"
+        className="overflow-auto h-screen "
+        style={{ paddingTop: "100px" }}
+      >
+        <h2
+          className="ref ml-2 mb-2 text-gray-600 my-2 absolute"
+        >
+          Reference
+        </h2>
+        <li>
+          <div
+            className="mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	"
+            style={{ color: "#545454" }}
+          >
+            <span style={{ fontSize: "10px" }}>Powered By</span>{" "}
+            <span
+              className="font-bold"
+              style={{ fontFamily: "Alef, sans-serif", letterSpacing: "-1px" }}
+            >
+              <span style={{ color: "#162C4C" }}>CPV</span>
+              <span style={{ color: "#2C518E" }}>ARABIA</span>
+            </span>
           </div>
-        </a>
-
-        <a className="bg-gray-100 border border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-          <div className="w-full pb-2">
-            <div className="flex justify-between">
-              <span className="block ml-2 font-semibold text-base text-gray-600">Eduard</span>
-              <span className="block ml-2 text-sm text-gray-600">15 minutes</span>
-            </div>
-            <span className="block ml-2 text-sm text-gray-600">I am fine</span>
-        </div>
-        </a>
-
-        <a className="hover:bg-gray-100 border-b border-gray-300 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-          <div className="w-full pb-2">
-            <div className="flex justify-between">
-              <span className="block ml-2 font-semibold text-base text-gray-600">Celia</span>
-              <span className="block ml-2 text-sm text-gray-600">1 hour</span>
-            </div>
-            <span className="block ml-2 text-sm text-gray-600">Last message</span>
-        </div>
-        </a> */}         
-
-         {/* <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	'>powered by <span className='font-semibold'>CPVARABIA</span></div> */}
-         <div className='mx-auto absolute bottom-2.5 w-full text-black text-center footer-text text-xs	' style={{color: "#545454"}}><span style={{fontSize:'10px'}}>Powered By</span> <span className='font-bold' style={{fontFamily: "Alef, sans-serif",letterSpacing: "-1px" }}>  <span style={{color:'#162C4C'}}>CPV</span><span style={{color: "#2C518E"}}>ARABIA</span></span></div>    
-         {/* </div> */}
-
-      </li>
-    </ul>
-
+        </li>
+      </ul>
     </div>
-  )
+  );
 }
 
-export default Refrence
+export default Refrence;

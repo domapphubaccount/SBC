@@ -1,29 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Menu,
   MenuHandler,
   MenuList,
-  MenuItem,
   Button,
 } from "@material-tailwind/react";
+import { useDispatch } from "react-redux";
+import { delete_module, rename_module } from "@/app/Redux/Features/Chat_History/historySlice";
 
 function ArchiveSettings({
-  setRenameToggle,
-  setDeleteToggle,
   item,
   setHandleChat,
   setShareToggle,
 }) {
+  const dispatch = useDispatch()
 
   return (
     <Menu placement="bottom-end">
       <MenuHandler>
         <Button className="p-0">
-          {" "}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            fill="black"
+            fill="white"
             className="size-6 cursor-pointer"
           >
             <path
@@ -35,7 +34,7 @@ function ArchiveSettings({
         </Button>
       </MenuHandler>
       <MenuList className="z-50">
-        <ul>
+        <ul onClick={(e)=>{e.stopPropagation()}}>
           <li
             onClick={() => {
               setShareToggle(true);
@@ -60,7 +59,8 @@ function ArchiveSettings({
 
           <li
             onClick={() => {
-              setRenameToggle(true);
+              dispatch(rename_module(true))
+              // setRenameToggle(true);
               setHandleChat(item);
             }}
             className="py-1 px-1 hover:bg-gray-100 flex items-center cursor-pointer text-black"
@@ -79,7 +79,7 @@ function ArchiveSettings({
 
           <li
             onClick={() => {
-              setDeleteToggle(true);
+              dispatch(delete_module(true));
               setHandleChat(item);
             }}
             className="py-1 px-1 hover:bg-gray-100 flex items-center cursor-pointer text-black"

@@ -1,42 +1,55 @@
 // pages/sharable/[chatId].js
-"use client"
-import { getChatData, getConversation } from "@/app/Redux/Features/Chat/ChatSlice";
+"use client";
+import {
+  getChatData,
+  getConversation,
+} from "@/app/Redux/Features/Chat/ChatSlice";
+import { config } from "@/config/config";
 import DashLayout from "@/layout/DashLayout/DashLayout";
 import Header from "@/layout/Header/Header";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-
-// export async function generateStaticParams() {
-
-//   const paths = {
-//     params: { chatId: '166828188af0e76.75112215' }
-//   }
-
-//   return paths;
-// }
-
+import Loading from "../../loading";
 
 export default function Home() {
   const [update, setUpdate] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`https://sbc.designal.cc/get-chat-by-hash/${pathname.slice(10)}`)
-      .then(response => {
-        dispatch(getConversation(response.data.data[0]));
-        dispatch(getChatData(response.data.data[0].user_chats));
+    axios
+      .get(`${config.api}sharable/${pathname.slice(10)}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       })
-      .catch(e => console.log(e));
+      .then((response) => {
+        if (response.data) {
+          dispatch(getConversation(response.data[0]));
+          dispatch(getChatData(response.data[0].user_chats));
+          setLoading(false);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        setLoading(false);
+      });
   }, [update]);
 
   return (
-    <main>
-      <Header setUpdate={setUpdate} update={update} setLoading={setLoading}/>
-      <DashLayout setUpdate={setUpdate} update={update} loading={loading}/>
-    </main>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <main>
+          <Header setUpdate={setUpdate} update={update} />
+          <DashLayout setUpdate={setUpdate} update={update} loading={loading} />
+        </main>
+      )}
+    </>
   );
 }

@@ -1,3 +1,3 @@
 export const config = {
-    api:'https://sbc.designal.cc/api/'
+    api:'https://chatpdf.designal.cc/api/v1/'
 }

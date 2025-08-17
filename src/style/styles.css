@@ -1,0 +1,17 @@
+:root {
+    --primary: #1E293B;
+    --secondary: #ffff;
+}
+
+nav {
+    
+    background-color: var(--primary);
+    color: var(--secondary)
+}
+
+.hover-icon {}
+
+.hover-icon:hover {
+    background-color: #ffffff1a;
+
+}

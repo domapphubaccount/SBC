@@ -1,13 +1,9 @@
-import ChatContainer from '@/components/Chat/chatContainer/ChatContainer'
-import Refrence from '@/components/Chat/reference/Refrence'
-import React from 'react'
+"use client"
+import ChatContainer from "@/components/Chat/chatContainer/ChatContainer";
+import React from "react";
 
-function DashLayout({storedCode}) {
-  return (
-    <main >
-        <ChatContainer storedCode={storedCode}/>
-    </main>
-  )
+function DashLayout() {
+  return <ChatContainer />;
 }
 
-export default DashLayout
+export default DashLayout;

@@ -1,65 +1,229 @@
 "use client";
 
-import { createSlice } from '@reduxjs/toolkit'
+import { config } from "@/config/config";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { logout, removeAuthAction } from "../Auth/AuthSlice";
+import RemoveAuth from "../RemoveAuth";
+import { Errors } from "./ChatErrors";
+
+// start get
+export const getChatAction = createAsyncThunk(
+  "chat/getChatAction",
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { token, chat_id } = arg;
+    try {
+      const response = await axios.get(`${config.api}get_chat/${chat_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.error) {
+        return new Error(response.data.error);
+      }
+      return response.data.data;
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end get
+
+// start add question
+export const addQuestionAction = createAsyncThunk(
+  "chat/addQuestionAction",
+  async (arg, { rejectWithValue }) => {
+    const { token, question, thread_id, files } = arg;
+
+    try {
+      const response = await axios.post(
+        `${config.api}ask_question`,
+        {
+          question,
+          thread_id,
+          "file_ids[]": files.join(","),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log('debug')
+      if (error?.response?.status === 401) {
+        dispatch(removeAuthAction())
+        RemoveAuth();
+      }
+      // if (Errors.some((item) => item.error.includes(error?.response.status))) {
+      //   let errros = Errors.filter(item => item.error.includes(error?.response.status))
+      //   console.log(errros.error)
+      // }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+// end add question
 
 const initialState = {
   value: 0,
-  chat_data:[],
+  chat_data: [],
   conversation: [],
-  get_chat:''
-}
+  get_chat: "",
+  chat_code: "",
+  loading: false,
+  error: null,
+
+  // start chatInput
+  input: {
+    loading: false,
+    error: null,
+  },
+  // end chatInput
+};
 
 export const chatSlice = createSlice({
-  name: 'counter',
+  name: "chat",
   initialState,
   reducers: {
-    getChatHistory: (state , action) => {
-      state.value = action.payload
+    getChatCode: (state, action) => {
+      state.chat_code = action.payload;
     },
-    getChatData: (state , action ) => {
-      state.chat_data = action.payload
+    getChatHistory: (state, action) => {
+      state.value = action.payload;
     },
-    getConversation: (state , action) => {
-      state.conversation = action.payload
+    getChatData: (state, action) => {
+      state.chat_data = action.payload;
     },
-    choseChate: (state , action) => {
-      state.get_chat = action.payload
+    getConversation: (state, action) => {
+      state.conversation = action.payload;
+    },
+    choseChate: (state, action) => {
+      state.get_chat = action.payload;
     },
     send_success: (state, action) => {
       const userChats = state.chat_data;
       if (userChats.length > 0) {
         userChats[userChats.length - 1].answer = action.payload.answer;
         if (userChats.length > 1 && userChats[userChats.length - 2].id) {
-          userChats[userChats.length - 1].id = userChats[userChats.length - 2].id + 1;
+          userChats[userChats.length - 1].id =
+            userChats[userChats.length - 2].id + 1;
         } else {
           state.first_message = !state.first_message;
         }
       }
       state.loading = false;
     },
-    send_failed: (state , action) => {
+    send_failed: (state, action) => {
       if (state.chat_data.length > 0) {
-        console.log('it works')
-        state.chat_data[state.chat_data.length - 1].answer = `<div style=font-weight:800> Sorry there is an ERROR please try again ${action.payload} </div>`;
+        state.chat_data[
+          state.chat_data.length - 1
+        ].answer = `<div style=font-weight:600> Sorry there is an ERROR please try again ${action.payload} </div>`;
       }
-      console.log('it works 2')
       state.loading = false;
     },
-
-    chat_out: (state , action) => {
-      localStorage.removeItem('chat')
-      localStorage.removeItem('code')
+    chat_out: (state, action) => {
+      localStorage.removeItem("chat");
+      localStorage.setItem("hints",true)
       return {
         ...state,
         value: 0,
-        chat_data:[],
+        chat_data: [],
         conversation: [],
-        get_chat:''
-      }
-    }
+        get_chat: "",
+        chat_code: "",
+      };
+    },
+    loading_main_chat: (state, action) => {
+      state.loading = action.payload;
+    },
+    // loading chat
+    chatSlice_loading: (state, action) => {
+      state.loading = action.payload;
+    },
+    // loading chat
+
+    // start chat error
+    error_start_chat: (state, action) => {
+      state.error = action.payload;
+    },
+    // end chat error
+    clearData: (state, action) => {
+      state.value = 0;
+      state.chat_data = [];
+      state.conversation = [];
+      state.get_chat = "";
+      state.chat_code = "";
+      state.loading = false;
+
+      // start chatInput
+      state.input = {
+        loading: false,
+        error: null,
+      };
+      // end chatInput
+    },
   },
-})
+  extraReducers: (builder) => {
+    builder
+      //start get chat
+      .addCase(getChatAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getChatAction.fulfilled, (state, action) => {
+        state.conversation = action.payload;
+        state.chat_data = action.payload;
+        state.error = null;
+        state.loading = false;
+      })
+      .addCase(getChatAction.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+      // end get chat
 
-export const { getChatHistory , getChatData , getConversation , get_chat , choseChate , send_success , send_failed , chat_out} = chatSlice.actions
+      // start add question
+      .addCase(addQuestionAction.pending, (state) => {
+        state.input.loading = true;
+        state.input.error = null;
+      })
+      .addCase(addQuestionAction.fulfilled, (state, action) => {
+        state.input.error = null;
+        state.input.loading = false;
+      })
+      .addCase(addQuestionAction.rejected, (state, action) => {
+        state.input.error = action.payload;
+        state.input.loading = false;
+      });
+    // end add question
+  },
+});
 
-export default chatSlice.reducer
+export const {
+  chatSlice_loading,
+  getChatCode,
+  getChatHistory,
+  getChatData,
+  getConversation,
+  get_chat,
+  choseChate,
+  send_success,
+  send_failed,
+  chat_out,
+  loading_main_chat,
+  error_start_chat,
+  clearData,
+} = chatSlice.actions;
+
+export default chatSlice.reducer;

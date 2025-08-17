@@ -1,100 +1,113 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ChatInput from "../chatInput/ChatInput";
 import axios from "axios";
 import Dislike from "./actions/Dislike";
-import { usePathname } from "next/navigation";
-import MessageImg from "@/assets/chat/MESSAGE.png";
-import { MathJax, MathJaxContext } from "better-react-mathjax";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { loading_chat } from "@/app/Redux/Features/Update/UpdateSlice";
 import {
-  loading_chat,
-  updateSlice,
-} from "@/app/Redux/Features/Update/UpdateSlice";
-import { choseChate } from "@/app/Redux/Features/Chat/ChatSlice";
+  chat_out,
+  error_start_chat,
+  getChatCode,
+} from "@/app/Redux/Features/Chat/ChatSlice";
 import loadingImg from "@/assets/logo/loading_icon.gif";
 import StartLogo from "@/assets/logo/start_logo.png";
 import Logo from "@/assets/logo/icon.png";
-import { ReactTyped } from "react-typed";
-import { setTypeValue } from "@/app/Redux/Features/type/typeSlice";
-import { Tooltip } from "@material-tailwind/react";
+import { config } from "@/config/config";
+import {
+  action_done,
+  loading_chat_action,
+} from "@/app/Redux/Features/Chat/ChatActionsSlice";
+import Loading_chat from "../chatContainer/Loading";
+import { Button, Popover } from "flowbite-react";
+import { useSnackbar } from "notistack";
+import {
+  clear_code_error,
+  set_code_error,
+  confirm_selected_code,
+  set_direct_code,
+  set_stored_code,
+} from "@/app/Redux/Features/Code/CodeSlice";
+import { MathJax, MathJaxContext } from "better-react-mathjax";
+import "boxicons/css/boxicons.min.css";
+import MultipleSelect from "../code/code";
+import { Accordion } from "flowbite-react";
 
-function MainChat({ elementWidth, storedCode }) {
+function MainChat({ windowWidth }) {
   const pathName = usePathname();
   const [copyIcon, setCopyIcon] = useState(false);
-  const [user, setUser] = useState("");
   const [dislike, setDislike] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState(false);
-  const [token, setToken] = useState("");
+  const token = useSelector((state) => state.loginSlice.auth?.access_token);
   const [itemId, setItemId] = useState(null);
+  const [fileId, setFileId] = useState("");
   const [dislikeMessage, setDislikeMessage] = useState("");
-  const [isSpeaking, setIsSpeaking] = useState(false); // State to track speech synthesis
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [copID, setCopId] = useState();
-  const disaptch = useDispatch();
   const chatData = useSelector((state) => state.chatSlice.chat_data);
-  const updates = useSelector((state) => state.updateSlice.state);
   const conversation = useSelector((state) => state.chatSlice.conversation);
-  const loading = useSelector((state) => state.updateSlice.loading_chat);
-  const typeComplete = useSelector((state) => state.typeSlice.value);
+  const loadingchat = useSelector((state) => state.chatSlice.loading);
   const chatRef = useRef();
-  const [responseId, setResponseId] = useState("");
+  const dispatch = useDispatch();
+  const chatCode = useSelector((state) => state.chatSlice.chat_code);
+  const [errorMessage, setErrorMessage] = useState();
+  const loading_actions = useSelector(
+    (state) => state.chatActionsSlice.loading
+  );
+  const navigate = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+  const [actionSuccess, setAction] = useState(false);
+  const permissionsData = useSelector(
+    (state) => state.profileSlice.permissions
+  );
+  const { name } = useSelector((state) => state.profileSlice.profile);
+  const usedCode = useSelector((state) => state.codeSlice.usedCode);
+  const storedCode = useSelector((state) => state.codeSlice.storedCode);
+  const codeError = useSelector((state) => state.codeSlice.error);
 
-  function isEnglish(text) {
-    // Remove non-alphabetic characters for a better accuracy
-    const cleanedText = text.replace(/[^a-zA-Z]/g, "");
-    // Calculate the percentage of alphabetic characters that are English
-    const englishCharCount = cleanedText.length;
-    const totalCharCount = text.length;
-
-    // Determine the percentage of English characters
-    const percentageEnglish = (englishCharCount / totalCharCount) * 100;
-
-    // Check if the percentage is above a certain threshold (e.g., 50%)
-    return percentageEnglish > 50;
-  }
-
+  useEffect(() => {
+    if (actionSuccess) {
+      enqueueSnackbar("This action has been done successfully", {
+        variant: "success",
+      });
+    }
+  }, [actionSuccess]);
   useEffect(() => {
     window.MathJax && window.MathJax.typeset();
   }, [
-    responseId,
-    user,
-    itemId,
-    dislike,
-    copID,
-    updates,
     copyIcon,
+    copID,
     isSpeaking,
-    elementWidth,
+    windowWidth,
+    errorMessage,
+    fileId,
     chatData,
-    storedCode,
-    conversation,
-    dislikeMessage,
-    loadingMessage,
-    typeComplete,
   ]);
+  function isEnglish(text) {
+    const englishChars = text.match(/[A-Za-z]/g) || [];
+    const englishCharCount = englishChars.length;
+
+    const totalCharCount = text.replace(/[^A-Za-z]/g, "").length;
+
+    if (totalCharCount === 0) return false;
+    const percentageEnglish = (englishCharCount / totalCharCount) * 100;
+
+    return percentageEnglish > 50;
+  }
+
   const dislikeToggle = (id) => {
     setItemId(id);
     setDislike(!dislike);
   };
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("data")) {
-      const storedData = JSON.parse(localStorage.getItem("data"));
-      setToken(storedData.token);
-    }
-  }, []);
   const handleReadText = async (textRead, id) => {
     setCopId(id);
     try {
-      // Check if the text is in Arabic
-      const isArabic = /[^\u0000-\u007F]/.test(textRead);
-
-      if (isArabic) {
-        // Translate Arabic text to English
-        const { text } = await translate(textRead, { to: "en" });
-        textRead = text;
-      }
-
-      // Speak the text in English
       if ("speechSynthesis" in window) {
         const utterance = new SpeechSynthesisUtterance(textRead);
         utterance.lang = "en-US"; // Set language to English (United States)
@@ -122,8 +135,23 @@ function MainChat({ elementWidth, storedCode }) {
     return temporalDivElement.textContent || temporalDivElement.innerText || "";
   };
   const handleCopyText = (textCopy, id) => {
+    let textCop = textCopy;
+
+    if (textCop.match(pattern)) {
+      let fileIdArray = textCop.match(pattern);
+      fileIdArray.forEach((item2) => {
+        textCop = textCop.replaceAll(item2, "");
+      });
+    }
+
+    if (textCop.match(pattern)) {
+      let fileIdArray = textCop.match(pattern);
+      fileIdArray.forEach((item2) => {
+        textCop = textCop.replaceAll(item2, "");
+      });
+    }
     setCopId(id);
-    const textToCopy = stripHtml(textCopy);
+    const textToCopy = stripHtml(textCop);
     setCopyIcon(true);
     navigator.clipboard
       .writeText(textToCopy)
@@ -135,113 +163,118 @@ function MainChat({ elementWidth, storedCode }) {
       });
     setTimeout(() => setCopyIcon(false), 500);
   };
-  const handleResendMessage = (id) => {
-    setResponseId(id);
-
-    setLoadingMessage(true);
-    axios
-      .post(
-        "https://sbc.designal.cc/api/resend-message",
-        {
-          chat_id: id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-        disaptch(updateSlice());
-        setLoadingMessage(false);
-        setResponseId("");
-      })
-      .catch((error) => {
-        setLoadingMessage(false);
-        setResponseId("");
-        console.error("There was an error making the request!", error);
-      });
-  };
   const handleDislike = (data) => {
+    setErrorMessage();
+    dispatch(loading_chat_action(true));
     axios
       .post(
-        "https://sbc.designal.cc/api/dislike",
+        `${config.api}dislike/message`,
         {
-          chat_id: itemId,
+          file_ids: fileId,
+          user_chat_id: itemId,
           comment: dislikeMessage,
         },
         {
           headers: {
+            Accept: "*/*",
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((response) => {
-        console.log(response.data);
-        setLoadingMessage(false);
-        setDislike(!dislike);
+        setErrorMessage();
+        dispatch(loading_chat_action(false));
+        setDislike(false);
+        setAction(true);
+        setTimeout(() => setAction(false), 1500);
       })
       .catch((error) => {
-        setLoadingMessage(false);
+        dispatch(loading_chat_action(false));
+        setErrorMessage(error?.response?.data?.message);
         console.error("There was an error making the request!", error);
       });
   };
+
+  // start new chant
   const handleStartNewChat = () => {
-    disaptch(loading_chat(true));
-    const token = JSON.parse(localStorage.getItem("data")).token;
-    axios
-      .get("https://sbc.designal.cc/api/start-chat", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          chat_id: "",
-          share_name: "1",
-        },
-      })
-      .then((response) => {
-        disaptch(choseChate(response.data.data.id));
-        localStorage.setItem("chat", response.data.data.id);
-        disaptch(loading_chat(false));
-      })
-      .catch((error) => {
-        disaptch(loading_chat(false));
-        console.error("There was an error making the request!", error);
-      });
-  };
-  useEffect(() => {
-    if (localStorage.getItem("data")) {
-      setUser(JSON.parse(localStorage.getItem("data")).name);
+    if (pathName.trim().slice(0, 9) == "/sharable") {
+      navigate.push("/signIn");
+    } else {
+      if (storedCode.length > 0) {
+        // Clear any existing code errors
+        dispatch(clear_code_error());
+
+        // Confirm the selected codes first
+        dispatch(confirm_selected_code());
+
+        dispatch(chat_out());
+        dispatch(loading_chat(true));
+        dispatch(loading_chat_action(true));
+
+        axios
+          .post(
+            `${config.api}create_thread`,
+            {
+              file_ids: storedCode.join(","),
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            dispatch(getChatCode(response.data?.data));
+            dispatch(loading_chat_action(false));
+            dispatch(loading_chat(false));
+          })
+          .catch((error) => {
+            dispatch(loading_chat(false));
+            dispatch(loading_chat_action(false));
+            console.error("There was an error making the request!", error);
+            if (error.response?.data?.error) {
+              dispatch(error_start_chat(error.response.data.error));
+            } else if (error.response.data.message) {
+              dispatch(error_start_chat(error.response.data.message));
+            }
+            setTimeout(() => dispatch(error_start_chat(null)), 2000);
+          });
+      } else {
+        dispatch(
+          set_code_error(
+            "You must select at least one code before starting a new chat"
+          )
+        );
+        setTimeout(() => dispatch(clear_code_error()), 3000);
+      }
     }
-  }, []);
-  const [windhtchat, setwidthchat] = useState();
-  useEffect(() => {
-    setwidthchat(window.innerWidth);
-    window.onresize = () => {
-      setwidthchat(window.innerWidth);
-      window.MathJax && window.MathJax.typeset();
-    };
-  }, []);
-  useEffect(() => {
-    window.MathJax && window.MathJax.typeset();
-  }, [windhtchat]);
-  useEffect(() => {
-    window.MathJax && window.MathJax.typeset();
-  }, [conversation]);
-  const pattern = /SBC.*?\/\//g;
+  };
+  dispatch(action_done(true));
+
+  const pattern = /\[source:\s*(.*?)\s*\]/gi;
+
   const textHandler = (item) => {
-    if (item.match(pattern)) {
-      let dataArray = item.match(pattern);
-      let data = item;
-      dataArray.forEach((item2) => {
-        data = data.replaceAll(item2, "");
+    let data = item;
+
+    if (data.match(pattern)) {
+      const matches = data.match(pattern);
+      matches.forEach((match) => {
+        data = data.replaceAll(match, "");
       });
-      return data;
     }
-    return item; // Return the original item if no match is found
+
+    return (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: data,
+        }}
+      />
+    );
   };
-  // Scroll to the bottom
+
+  // Scroll to the bottom function
   const scrollToBottom = () => {
     const element = document.getElementById("chat");
     if (element) {
@@ -250,377 +283,415 @@ function MainChat({ elementWidth, storedCode }) {
       }, 100); // Adjust delay if needed
     }
   };
-
+  // start handle scroll bottom action
   useEffect(() => {
     scrollToBottom();
-    window.MathJax && window.MathJax.typeset();
   }, [conversation, chatData]);
-
-  return (
-    <div className="col-span-3 bg-white relative">
-      <div
-        className="w-full log-bannar-2"
-        style={{ paddingTop: "100px", height: "100vh" }}
-      >
-        <div
-          className="w-full grid grid-cols-4"
-          id="chat"
+  // end handle scroll bottom action
+  // start handle starter card
+  function handleShowStart() {
+    if (chatCode) {
+      return false;
+    } else if (conversation && Object.entries(conversation).length === 0) {
+      return true;
+    }
+  }
+  // end handle starter card
+  // start question card
+  let questionCard = useCallback((item) => {
+    return (
+      <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card question">
+        <span
           style={{
-            height: "calc(100vh - 120px)",
-            width: windhtchat - 10 + "px",
-            position: "absolute",
-            right: 0,
-            top: 0,
-            overflowY: "scroll",
+            textAlign: `${isEnglish(item.question) ? "left" : "right"}`,
           }}
-        >
-          <div
-            className="col-span-1"
-            style={{ width: elementWidth + "px" }}
-          ></div>
-          {/* relative */}
-          <div className="col-span-3 py-5">
-            {loading ? (
-              <div className="flex items-center justify-center min-h-screen">
-                <img
-                  src={loadingImg.src}
-                  className="loading_icon"
-                  alt="laoding"
-                />
-              </div>
-            ) : (
-              <ul>
-                {conversation && Object.entries(conversation).length == 0 ? (
-                  <div className="pt-3" style={{ paddingTop: "200px" }}>
-                    <div className="text-center">
-                      <div className="m-auto mb-2" style={{ width: "200px" }}>
-                        <img src={StartLogo.src} className="w-100" alt="" />
-                      </div>
-                      <p className="mt-3 mb-5 text-xs leading-8 text-gray-600">
-                        you can start new session or chose previous chat.
-                      </p>
-                      <div className="relative inline-block">
-                        <button
-                          onClick={handleStartNewChat}
-                          disabled={storedCode.length === 0}
-                          className="learn-more start relative group"
-                        >
-                          <span className="circle" aria-hidden="true">
-                            <span className="icon arrow"></span>
-                          </span>
-                          <span className="button-text">Start Chat</span>
+          className="block"
+          dir={"auto"}
+          dangerouslySetInnerHTML={{
+            __html: item.question.replaceAll("\n", "<br/>"),
+          }}
+        />
+      </div>
+    );
+  }, []);
+  // end question card
+  // start question card
+  let answerCard = useCallback((item) => {
+    return (
+      <MathJaxContext
+        version={3}
+        options={{
+          loader: { load: ["input/asciimath", "output/chtml"] },
+          tex: { tags: "ams" },
+        }}
+      >
+        <MathJax>
+          <span
+            style={{
+              overflowX: "auto",
+              textAlign: `${isEnglish(item.answer) ? "left" : "right"}`,
+            }}
+            className="block chat_box"
+            dir={"auto"}
+          >
+            {textHandler(item.answer)}
+          </span>
 
-                          {/* Tooltip */}
-                          {storedCode.length === 0 && (
-                            <div className="absolute bottom-full -bottom-full transform -translate-x-1/2 mb-2 w-max px-3 py-1 text-xs text-amber-700 bg-amber-200 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                              !You need to choose a code first
-                            </div>
-                          )}
-                        </button>
-                      </div>
+          <div className="mt-4 text-xs">
+            <hr className="my-2" />
+            {/*  BYLD Documentation - Page 12 */}
+            {item?.answer?.includes("[Source:") && item.answer.match(pattern)
+              ? item.answer
+                  .match(pattern)
+                  ?.map((item2, i) => <li key={i}>📘 Reference: {item2}</li>)
+              : "No Reference"}
+          </div>
+        </MathJax>
+      </MathJaxContext>
+    );
+  });
+  // end question card
+  // start chat space
+  let chatSpace = useMemo(() => {
+    return (
+      <li
+        ref={chatRef}
+        id="chat-zeft"
+        className="clearfix2 mt-4 px-10 w-full"
+        style={{ paddingTop: "90px" }}
+      >
+        {chatData &&
+          conversation &&
+          (conversation.userChats ||
+            conversation.user_chats ||
+            chatData.length > 0) &&
+          chatData.map((item, i) => (
+            <React.Fragment key={i}>
+              <div className="flex justify-end relative w-full my-4">
+                <div>
+                  <div className="chat_userName_2 text-right">{name}</div>
+                  <div className="flex justify-end">
+                    {/* answer */}
+                    {questionCard(item)}
+                  </div>
+                  <div
+                    className="flex mb-3 justify-end"
+                    style={{ height: "20px" }}
+                  >
+                    {!copyIcon ? (
+                      <i
+                        class="bx bx-copy cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200"
+                        style={{ transition: "none" }}
+                        onClick={(e) => {
+                          handleCopyText(item.question, i);
+                          const svgElement = e.currentTarget;
+                          if (svgElement) {
+                            svgElement.classList.add("action-icon");
+                            setTimeout(() => {
+                              if (svgElement) {
+                                svgElement.classList.remove("action-icon");
+                              }
+                            }, 500);
+                          }
+                        }}
+                      ></i>
+                    ) : (
+                      i == copID && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="black"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-3.5 mr-4  ml-2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                          />
+                        </svg>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="relative w-full">
+                <div>
+                  <div className="chat_userName">
+                    <img src={Logo.src} style={{ width: "30px" }} alt="logo" />
+                  </div>
+                  <div className="w-full flex justify-start">
+                    <div className="rounded px-5 py-2 my-2 relative chat_card">
+                      {item?.answer ? (
+                        // answer card
+                        answerCard(item)
+                      ) : (
+                        <div>
+                          <img
+                            className="m-auto"
+                            src={loadingImg.src}
+                            style={{ width: "70px" }}
+                            alt="loading"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
-                ) : (
-                  <li
-                    ref={chatRef}
-                    id="chat-zeft"
-                    className="clearfix2 mt-4 px-10"
-                    style={{ paddingTop: "90px" }}
-                  >
-                    {chatData &&
-                      conversation &&
-                      conversation.user_chats &&
-                      chatData.map((item, i) => (
-                        <React.Fragment key={i}>
-                          <div className="flex justify-end relative">
-                            <div>
-                              <div className="chat_userName_2 text-right">
-                                {user}
-                              </div>
-                              <div className="flex justify-end">
-                                <div className="bg-sky-900 text-white rounded px-5 py-2 my-2 relative chat_card">
-                                  <MathJaxContext>
-                                    <MathJax dynamic>
-                                      <span
-                                        className="block"
-                                        dir={
-                                          isEnglish(item.question)
-                                            ? "ltr"
-                                            : "rtl"
-                                        }
-                                        dangerouslySetInnerHTML={{
-                                          __html: item.question.replaceAll(
-                                            "\n",
-                                            "<br/>"
-                                          ),
-                                        }}
-                                      />
-                                    </MathJax>
-                                  </MathJaxContext>
-                                </div>
-                              </div>
-                              <div className="flex mb-3 justify-end">
-                                {!copyIcon ? (
-                                  <svg
-                                    onClick={() =>
-                                      handleCopyText(item.question, i)
-                                    }
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="black"
-                                    className="size-3.5 mr-4 cursor-pointer"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M17.663 3.118c.225.015.45.032.673.05C19.876 3.298 21 4.604 21 6.109v9.642a3 3 0 0 1-3 3V16.5c0-5.922-4.576-10.775-10.384-11.217.324-1.132 1.3-2.01 2.548-2.114.224-.019.448-.036.673-.051A3 3 0 0 1 13.5 1.5H15a3 3 0 0 1 2.663 1.618ZM12 4.5A1.5 1.5 0 0 1 13.5 3H15a1.5 1.5 0 0 1 1.5 1.5H12Z"
-                                      clipRule="evenodd"
-                                    />
-                                    <path d="M3 8.625c0-1.036.84-1.875 1.875-1.875h.375A3.75 3.75 0 0 1 9 10.5v1.875c0 1.036.84 1.875 1.875 1.875h1.875A3.75 3.75 0 0 1 16.5 18v2.625c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625v-12Z" />
-                                    <path d="M10.5 10.5a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963 5.23 5.23 0 0 0-3.434-1.279h-1.875a.375.375 0 0 1-.375-.375V10.5Z" />
-                                  </svg>
-                                ) : (
-                                  i == copID && (
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="black"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth={1.5}
-                                      stroke="currentColor"
-                                      className="size-3.5 mr-4  ml-2"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                      />
-                                    </svg>
-                                  )
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="relative">
-                            <div
-                              className="code"
-                              style={{ width: elementWidth - 40 + "px" }}
-                            >
-                              {item?.answer?.includes("//") && (
-                                <span className="hover:bg-gray-100 border border-gray-300 px-3 py-2  flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                  <div className="w-full pb-2">
-                                    <div className="flex justify-between">
-                                      {/* <span className="block ml-2 font-semibold text-base text-gray-600">SBC</span> */}
-                                      {/* <span className="block ml-2 text-sm text-gray-600">5 minutes</span> */}
-                                    </div>
-                                    <span className="block ml-2 text-sm text-gray-600  font-semibold">
-                                      {item.answer.match(pattern) ? (
-                                        item.answer
-                                          .match(pattern)
-                                          ?.map((item3, i) => (
-                                            <p className="w-100 my-3" key={i}>
-                                              {item3.slice(0,-2)}
-                                            </p>
-                                          ))
-                                      ) : (
-                                        <div>No Reference</div>
-                                      )}
-                                    </span>
-                                  </div>
-                                </span>
-                              )}
-                            </div>
-                            <div>
-                              <div className="chat_userName">
-                                <img
-                                  src={Logo.src}
-                                  style={{ width: "30px" }}
-                                  alt="logo"
-                                />
-                              </div>
-                              <div className="w-full flex justify-start chat_card">
-                                <div className="bg-gray-200 rounded px-5 py-2 my-2 text-gray-700 relative chat_card">
-                                  {responseId == item.id ? (
-                                    <img
-                                      src={loadingImg.src}
-                                      className="loading_icon"
-                                      alt="laoding"
-                                    />
-                                  ) : (
-                                    <>
-                                      {item?.answer ? (
-                                        chatData.length - 1 === i && false ? (
-                                          <ReactTyped
-                                            strings={[
-                                              textHandler(
-                                                item.answer
-                                              ),
-                                            ]}
-                                            showCursor={false}
-                                            onComplete={() =>
-                                              disaptch(setTypeValue(false))
-                                            }
-                                            backSpeed={50}
-                                            typeSpeed={5}
-                                          />
-                                        ) : (
-                                          <span
-                                            className="block chat_box"
-                                            style={{ overflowX: "auto" }}
-                                            dir={
-                                              isEnglish(item.answer)
-                                                ? "ltr"
-                                                : "rtl"
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                              __html: textHandler(
-                                                item.answer
-                                              ),
-                                            }}
-                                          />
-                                        )
-                                      ) : (
-                                        <div>
-                                          <img
-                                            className="m-auto"
-                                            src={loadingImg.src}
-                                            style={{ width: "70px" }}
-                                            alt="loading"
-                                          />
-                                        </div>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                              {item?.answer ? (
-                                <div className="flex mb-3">
-                                  <svg
-                                    onClick={() =>
-                                      handleReadText(item.answer, i)
-                                    }
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="black"
-                                    className="size-3.5 ml-2 cursor-pointer"
-                                  >
-                                    <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
-                                    <path d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
-                                  </svg>
-                                  {isSpeaking && i == copID && (
-                                    <svg
-                                      onClick={handleStopReading}
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      fill="black"
-                                      className="size-3.5 ml-2 cursor-pointer"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z"
-                                        clipRule="evenodd"
-                                      />
-                                    </svg>
-                                  )}
-                                  {!copyIcon ? (
-                                    <svg
-                                      onClick={() =>
-                                        handleCopyText(item.answer, i)
-                                      }
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      fill="black"
-                                      className="size-3.5 ml-2 cursor-pointer"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        d="M17.663 3.118c.225.015.45.032.673.05C19.876 3.298 21 4.604 21 6.109v9.642a3 3 0 0 1-3 3V16.5c0-5.922-4.576-10.775-10.384-11.217.324-1.132 1.3-2.01 2.548-2.114.224-.019.448-.036.673-.051A3 3 0 0 1 13.5 1.5H15a3 3 0 0 1 2.663 1.618ZM12 4.5A1.5 1.5 0 0 1 13.5 3H15a1.5 1.5 0 0 1 1.5 1.5H12Z"
-                                        clipRule="evenodd"
-                                      />
-                                      <path d="M3 8.625c0-1.036.84-1.875 1.875-1.875h.375A3.75 3.75 0 0 1 9 10.5v1.875c0 1.036.84 1.875 1.875 1.875h1.875A3.75 3.75 0 0 1 16.5 18v2.625c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625v-12Z" />
-                                      <path d="M10.5 10.5a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963 5.23 5.23 0 0 0-3.434-1.279h-1.875a.375.375 0 0 1-.375-.375V10.5Z" />
-                                    </svg>
-                                  ) : (
-                                    i == copID && (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="black"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="size-3.5 ml-2"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                        />
-                                      </svg>
-                                    )
-                                  )}
-                                  <svg
-                                    onClick={(e) =>
-                                      handleResendMessage(item.id)
-                                    }
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="black"
-                                    className="size-3.5 ml-2 cursor-pointer"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                  {/* <svg
-                                    onClick={() => dislikeToggle(item.id)}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="black"
-                                    className="size-3.5 ml-2 cursor-pointer"
-                                  >
-                                    <path d="M15.73 5.5h1.035A7.465 7.465 0 0 1 18 9.625a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v.633A.75.75 0 0 1 9 22a2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 0 1 1.5 12.25c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23ZM21.669 14.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.958 8.958 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227Z" />
-                                  </svg> */}
+                  {item?.answer &&
+                  !item.answer.includes(
+                    "Sorry there is an ERROR please try again"
+                  ) ? (
+                    <div className="flex mb-3">
+                      <i
+                        style={{ transition: "none" }}
+                        onClick={(e) => {
+                          handleReadText(item.answer, i); // Execute your copy function
+                          const svgElement = e.currentTarget; // Store the reference
+                          if (svgElement) {
+                            // Check if svgElement is not null
+                            svgElement.classList.add("action-icon"); // Add the class for styling
+                            setTimeout(() => {
+                              if (svgElement) {
+                                // Ensure svgElement is still available
+                                svgElement.classList.remove("action-icon");
+                              }
+                            }, 500); // Remove the class after 500ms
+                          }
+                        }}
+                        className="bx bx-volume-low cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200"
+                      ></i>
 
-                                  <svg
-                                    onClick={() => dislikeToggle(item.id)}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="black"
-                                    className="size-3.5 ml-2 cursor-pointer"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                                    />
-                                  </svg>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                            </div>
+                      {isSpeaking && i == copID && (
+                        <svg
+                          onClick={handleStopReading}
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="black"
+                          className="size-3.5 ml-2 cursor-pointer"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+
+                      {!copyIcon ? (
+                        <i
+                          className="bx bx-copy ms-2 cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200"
+                          style={{ transition: "none" }}
+                          onClick={(e) => {
+                            handleCopyText(item.answer, i);
+                            const svgElement = e.currentTarget; // Store the reference
+                            if (svgElement) {
+                              // Check if svgElement is not null
+                              svgElement.classList.add("action-icon"); // Add the class for styling
+                              setTimeout(() => {
+                                if (svgElement) {
+                                  // Ensure svgElement is still available
+                                  svgElement.classList.remove("action-icon");
+                                }
+                              }, 500); // Remove the class after 500ms
+                            }
+                          }}
+                        ></i>
+                      ) : (
+                        i == copID && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="black"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-3.5 ml-2"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                          </svg>
+                        )
+                      )}
+                      {pathName.trim().slice(0, 9) !== "/sharable" &&
+                        permissionsData &&
+                        permissionsData.includes("openai.dislike_message") && (
+                          <i
+                            class="bx bx-dislike ms-2 cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200"
+                            style={{ transition: "none" }}
+                            onClick={(e) => {
+                              dislikeToggle(item.id);
+
+                              if (item.answer?.match(pattern)) {
+                                setFileId(
+                                  item.answer?.match(pattern) &&
+                                    item.answer
+                                      ?.match(pattern)[0]
+                                      ?.slice(18, -1)
+                                );
+                              } else if (item.answer?.match(pattern)) {
+                                setFileId(
+                                  item.answer?.match(pattern) &&
+                                    item.answer
+                                      ?.match(pattern)[0]
+                                      ?.match(/\[file_id:([^\]]+)\]/)[0]
+                                      ?.slice(9, -1)
+                                );
+                              } else if (item.answer.match(file_id_pattern_4)) {
+                                setFileId(
+                                  item.answer?.match(file_id_pattern_4) &&
+                                    item.answer
+                                      ?.match(file_id_pattern_4)[0]
+                                      ?.slice(1, -1)
+                                );
+                              } else {
+                                setFileId();
+                              }
+                              const svgElement = e.currentTarget;
+                              if (svgElement) {
+                                svgElement.classList.add("action-icon");
+                                setTimeout(() => {
+                                  if (svgElement) {
+                                    svgElement.classList.remove("action-icon");
+                                  }
+                                }, 500);
+                              }
+                            }}
+                          ></i>
+                        )}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
+      </li>
+    );
+  }, [chatData, windowWidth, chatData?.question, isSpeaking]);
+  // end chat space
+
+  return (
+    <div className={`relative`}>
+      {!loadingchat ? (
+        <>
+          <div
+            className="w-full log-bannar-2"
+            style={{ paddingTop: "100px", height: "100vh" }}
+          >
+            <div
+              className="w-full"
+              id="chat"
+              style={{
+                height: "calc(100vh - 120px)",
+                width: "100vw",
+                position: "absolute",
+                right: 0,
+                top: 0,
+                overflowY: "scroll",
+              }}
+            >
+              {/* relative */}
+              <div className="max-w-4xl mx-auto">
+                {loadingchat ? (
+                  <div className="flex items-center justify-center min-h-screen">
+                    <img
+                      src={loadingImg.src}
+                      className="loading_icon"
+                      alt="laoding"
+                    />
+                  </div>
+                ) : (
+                  <ul>
+                    {handleShowStart() ? (
+                      <div className="pt-[200px]">
+                        <div className="text-center">
+                          {/* Logo without box shadow */}
+                          <div className="m-auto mb-4 w-[200px] transition-transform duration-500 hover:scale-105">
+                            <img
+                              src={StartLogo.src}
+                              alt="Start Logo"
+                              className="w-full rounded-lg"
+                            />
                           </div>
-                        </React.Fragment>
-                      ))}
-                  </li>
+
+                          {/* Subheading text */}
+                          <p className="mt-4 text-sm leading-7 text-gray-600 animate-fade-in">
+                            Please select at least one code from the options
+                            below, then start a new session.
+                          </p>
+
+                          {/* Error Message */}
+                          {codeError && (
+                            <div className="mt-4 px-4 py-2 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm max-w-md mx-auto">
+                              {codeError}
+                            </div>
+                          )}
+
+                          {/* Button or Loader */}
+                          <div className="mt-8 flex items-center justify-center gap-x-6">
+                            {loading_actions ? (
+                              <div className="flex gap-1 animate-pulse">
+                                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                                <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                <div className="w-2 h-2 bg-gray-700 rounded-full"></div>
+                              </div>
+                            ) : (
+                              permissionsData?.includes(
+                                "openai.create_thread"
+                              ) && (
+                                <button
+                                  onClick={handleStartNewChat}
+                                  disabled={storedCode.length === 0}
+                                  className={`relative px-4 py-2 rounded-full text-lg font-semibold shadow-lg transition-all duration-300 transform focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                                    storedCode.length === 0
+                                      ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                      : "bg-[#1E293B] text-white hover:bg-[#1E293B] hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-[#1E293B]"
+                                  }`}
+                                >
+                                  <span className="inline-block mr-2">🚀</span>
+                                  Start Chat
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      // chat space
+                      chatSpace
+                    )}
+                  </ul>
                 )}
-              </ul>
-            )}
-          </div>
-        </div>
-      </div>
-      {pathName.slice(0, 9) == "/sharable"
-        ? ""
-        : conversation &&
-          Object.entries(conversation).length != 0 && (
-            <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
-              <ChatInput storedCode={storedCode} />
+              </div>
             </div>
+          </div>
+          {pathName.slice(0, 9) == "/sharable" ? (
+            ""
+          ) : (conversation && Object.entries(conversation).length !== 0) ||
+            chatCode.length > 0 ? (
+            <div style={{ width: "100%", position: "absolute", bottom: "0" }}>
+              {permissionsData &&
+                permissionsData.includes("openai.ask_question") && (
+                  <ChatInput />
+                )}
+            </div>
+          ) : (
+            <></>
           )}
+        </>
+      ) : (
+        <Loading_chat />
+      )}
       {dislike && (
         <Dislike
+          fileId={fileId}
+          errorMessage={errorMessage}
+          loading_actions={loading_actions}
           handleDislike={handleDislike}
           setDislikeMessage={setDislikeMessage}
           setDislike={setDislike}
