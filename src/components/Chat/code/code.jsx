@@ -10,20 +10,16 @@ import {
   set_direct_code,
   set_stored_code,
 } from "@/app/Redux/Features/Code/CodeSlice";
-import { handleConfirm } from "@/app/Redux/Features/Dashboard/PdfsSlice";
 
 function MultipleSelect() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
-  // const [showCodeOptions, setShowCodeOptions] = useState(false);
   const dispatch = useDispatch();
 
   const code = useSelector((state) => state.codeSlice.value);
   const storedCode = useSelector((state) => state.codeSlice.storedCode);
-  const usedCode = useSelector((state) => state.codeSlice.usedCode);
   const available = useSelector((state) => state.chatSlice.chat_code);
-  const sss = useSelector((state) => state.codeSlice);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -38,7 +34,6 @@ function MultipleSelect() {
 
   const handleCheckboxChange = (fileId) => {
     if (available) {
-      //!available
       if (storedCode.includes(fileId)) {
         dispatch(set_stored_code(fileId));
       } else if (storedCode.length < 5) {
@@ -53,10 +48,11 @@ function MultipleSelect() {
       }
     }
   };
+
   const removeStoredCode = () => {
-    // Allow clearing selections in both contexts
     dispatch(set_direct_code([]));
   };
+
   const handleConfirmCode = () => {
     dispatch(confirm_selected_code());
     setDropdownOpen(false);
@@ -67,12 +63,10 @@ function MultipleSelect() {
     code && available.length === 0
       ? code
           .map((item) => {
-            // Filter PDFs (li elements) within the Accordion
             const matchingPdfs = item.pdfs.filter((pdf) =>
               pdf.name.toLowerCase().includes(searchQuery.toLowerCase())
             );
 
-            // Check if the Accordion header matches or if any PDFs match
             const matchesItem =
               item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
               matchingPdfs.length > 0;
@@ -80,18 +74,14 @@ function MultipleSelect() {
             if (matchesItem) {
               return {
                 ...item,
-                pdfs: matchingPdfs, // Include only matching PDFs
+                pdfs: matchingPdfs,
               };
             }
 
             return null;
           })
-          .filter(Boolean) // Remove null values (non-matching items)
-      : code && code.map((item) => item); // Default behavior when not searching
-
-  // end search bar logic
-
-  // end search bar logic
+          .filter(Boolean)
+      : code && code.map((item) => item);
 
   return (
     <>
@@ -135,7 +125,6 @@ function MultipleSelect() {
               )}
 
               {available && (
-                // !available
                 <input
                   type="text"
                   value={searchQuery}
@@ -145,7 +134,6 @@ function MultipleSelect() {
                 />
               )}
               <ul className="max-h-60 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
-                {/* code before selections */}
                 {available ? (
                   <>
                     {filteredCode.length === 0 ? (
@@ -165,7 +153,12 @@ function MultipleSelect() {
                               {item.pdfs.length > 0 ? (
                                 item.pdfs.map((pdfItem, j) => (
                                   <li key={j}>
-                                    <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                                    <div
+                                      className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md cursor-pointer"
+                                      onClick={() =>
+                                        handleCheckboxChange(pdfItem.name)
+                                      }
+                                    >
                                       <input
                                         type="checkbox"
                                         id={`checkbox-item-${pdfItem.name}`}
@@ -175,12 +168,17 @@ function MultipleSelect() {
                                         onChange={() =>
                                           handleCheckboxChange(pdfItem.name)
                                         }
-                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
-                                        // disabled={available}
+                                        onClick={() =>
+                                          handleCheckboxChange(pdfItem.name)
+                                        }
+                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
                                       />
                                       <label
                                         htmlFor={`checkbox-item-${pdfItem.name}`}
-                                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs"
+                                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs cursor-pointer"
+                                        onClick={() =>
+                                          handleCheckboxChange(pdfItem.name)
+                                        }
                                       >
                                         {pdfItem.name}
                                       </label>
@@ -231,7 +229,12 @@ function MultipleSelect() {
                                   )
                                   .map((pdfItem, j) => (
                                     <li key={j}>
-                                      <div className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md">
+                                      <div
+                                        className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md cursor-pointer"
+                                        onClick={() =>
+                                          handleCheckboxChange(pdfItem.name)
+                                        }
+                                      >
                                         <input
                                           type="checkbox"
                                           id={`checkbox-item-${pdfItem.name}`}
@@ -241,12 +244,17 @@ function MultipleSelect() {
                                           onChange={() =>
                                             handleCheckboxChange(pdfItem.name)
                                           }
-                                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500"
-                                          // disabled={available}
+                                          onClick={() =>
+                                            handleCheckboxChange(pdfItem.name)
+                                          }
+                                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500 cursor-pointer"
                                         />
                                         <label
                                           htmlFor={`checkbox-item-${pdfItem.name}`}
-                                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs"
+                                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-xs cursor-pointer"
+                                          onClick={() =>
+                                            handleCheckboxChange(pdfItem.name)
+                                          }
                                         >
                                           {pdfItem.name}
                                         </label>
@@ -261,7 +269,6 @@ function MultipleSelect() {
                 )}
               </ul>
 
-              {/* Show Clear button regardless of available status when codes are selected */}
               {storedCode.length > 0 && (
                 <div className="flex justify-between items-center bg-gray-50 px-3 py-2 border-t">
                   <a
@@ -275,7 +282,6 @@ function MultipleSelect() {
                     {storedCode.length} selected
                   </div>
 
-                  {/* Only show confirm button when not available */}
                   {!available && (
                     <div>
                       <Button

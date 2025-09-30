@@ -148,7 +148,8 @@ function CodeSelectionInterface() {
                         item.pdfs.map((pdfItem, j) => (
                           <div
                             key={j}
-                            className="flex items-center p-2 hover:bg-gray-100 rounded-md"
+                            className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                            onClick={() => handleCheckboxChange(pdfItem.name)}
                           >
                             <input
                               type="checkbox"
@@ -157,11 +158,13 @@ function CodeSelectionInterface() {
                               onChange={() =>
                                 handleCheckboxChange(pdfItem.name)
                               }
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                              onClick={() => handleCheckboxChange(pdfItem.name)}
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
                             />
                             <label
                               htmlFor={`checkbox-item-${i}-${j}`}
                               className="ml-2 text-xs font-medium text-gray-900 cursor-pointer"
+                              onClick={() => handleCheckboxChange(pdfItem.name)}
                             >
                               {pdfItem.name}
                             </label>
