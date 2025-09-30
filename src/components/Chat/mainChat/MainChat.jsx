@@ -39,6 +39,8 @@ import { MathJax, MathJaxContext } from "better-react-mathjax";
 import "boxicons/css/boxicons.min.css";
 import MultipleSelect from "../code/code";
 import { Accordion } from "flowbite-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function MainChat({ windowWidth }) {
   const pathName = usePathname();
@@ -266,11 +268,45 @@ function MainChat({ windowWidth }) {
     }
 
     return (
-      <span
-        dangerouslySetInnerHTML={{
-          __html: data,
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        className="markdown-content"
+        components={{
+          table: ({ node, ...props }) => (
+            <div className="overflow-x-auto my-4">
+              <table
+                className="min-w-full border-collapse border border-gray-300"
+                {...props}
+              />
+            </div>
+          ),
+          thead: ({ node, ...props }) => (
+            <thead className="bg-gray-100" {...props} />
+          ),
+          th: ({ node, ...props }) => (
+            <th
+              className="border border-gray-300 px-4 py-2 text-left font-semibold"
+              {...props}
+            />
+          ),
+          td: ({ node, ...props }) => (
+            <td className="border border-gray-300 px-4 py-2" {...props} />
+          ),
+          tr: ({ node, ...props }) => (
+            <tr className="hover:bg-gray-50" {...props} />
+          ),
+          p: ({ node, ...props }) => <p className="mb-2" {...props} />,
+          ul: ({ node, ...props }) => (
+            <ul className="list-disc ml-4 mb-2" {...props} />
+          ),
+          ol: ({ node, ...props }) => (
+            <ol className="list-decimal ml-4 mb-2" {...props} />
+          ),
+          li: ({ node, ...props }) => <li className="mb-1" {...props} />,
         }}
-      />
+      >
+        {data}
+      </ReactMarkdown>
     );
   };
 

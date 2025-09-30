@@ -1,6 +1,6 @@
 :root {
-  --primary-color: #1E293B;
-  --secondary-color: #1FB7FC;
+  --primary-color: #1e293b;
+  --secondary-color: #1fb7fc;
 }
 
 * {
@@ -9,7 +9,7 @@
 }
 
 .bg-darkBlue {
-  background-color: #1E293B;
+  background-color: #1e293b;
 }
 
 .bg-primary-color {
@@ -29,13 +29,13 @@
 }
 
 /* start nav */
-nav{
+nav {
   padding: 10px 30px;
 }
 
 /* end nav */
 
-.dashed{
+.dashed {
   max-height: 100vh;
   overflow: auto;
 }
@@ -43,29 +43,28 @@ nav{
 /* scroll bar */
 /* For WebKit-based browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 12px;               /* Width of the scrollbar */
+  width: 12px; /* Width of the scrollbar */
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;       /* Background color of the scrollbar track */
+  background: #f1f1f1; /* Background color of the scrollbar track */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #888;    /* Color of the scrollbar thumb */
-  border-radius: 10px;       /* Roundness of the thumb */
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Roundness of the thumb */
   border: 3px solid #f1f1f1; /* Space around the thumb */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;          /* Color when hovered */
+  background: #555; /* Color when hovered */
 }
 
 /* For Firefox */
 * {
-  scrollbar-width: thin;           /* Makes the scrollbar thinner */
-  scrollbar-color: #888 #f1f1f1;   /* Thumb color and track color */
+  scrollbar-width: thin; /* Makes the scrollbar thinner */
+  scrollbar-color: #888 #f1f1f1; /* Thumb color and track color */
 }
-
 
 /* start login */
 .log-bannar {
@@ -77,7 +76,6 @@ nav{
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-
 }
 
 .login_backdrop {
@@ -119,7 +117,6 @@ nav{
   display: none; /* For Chrome, Safari, and Opera */
 }
 
-
 .chat_userName {
   border-left: 3px solid var(--secondary-color);
   color: black;
@@ -132,7 +129,7 @@ nav{
   background-image: url('../assets/logo/Logo.png');
 } */
 
-/* From Uiverse.io by G4b413l */ 
+/* From Uiverse.io by G4b413l */
 .dot-wave {
   --uib-size: 50px;
   --uib-speed: 0.6s;
@@ -156,18 +153,18 @@ nav{
 }
 
 .dot-wave__dot:nth-child(1) {
-  animation: jump824 var(--uib-speed) ease-in-out
-    calc(var(--uib-speed) * -0.45) infinite;
+  animation: jump824 var(--uib-speed) ease-in-out calc(var(--uib-speed) * -0.45)
+    infinite;
 }
 
 .dot-wave__dot:nth-child(2) {
-  animation: jump824 var(--uib-speed) ease-in-out
-    calc(var(--uib-speed) * -0.3) infinite;
+  animation: jump824 var(--uib-speed) ease-in-out calc(var(--uib-speed) * -0.3)
+    infinite;
 }
 
 .dot-wave__dot:nth-child(3) {
-  animation: jump824 var(--uib-speed) ease-in-out
-    calc(var(--uib-speed) * -0.15) infinite;
+  animation: jump824 var(--uib-speed) ease-in-out calc(var(--uib-speed) * -0.15)
+    infinite;
 }
 
 .dot-wave__dot:nth-child(4) {
@@ -184,7 +181,6 @@ nav{
     transform: translateY(-200%);
   }
 }
-
 
 .chat_userName_2 {
   border-right: 3px solid rgb(8, 8, 124);
@@ -215,12 +211,12 @@ nav{
   font-size: 13px;
   color: #555;
   background-color: #fff;
-  border-left: 4px solid #1FB7FC;
+  border-left: 4px solid #1fb7fc;
   padding: 10px 14px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
-.chat_card.question{
+.chat_card.question {
   border-right: 4px solid #fff;
   border-left: 0;
 }
@@ -231,13 +227,13 @@ nav{
   font-size: 13px;
   color: #555;
   background-color: #fff;
-  border-left: 4px solid #1FB7FC;
+  border-left: 4px solid #1fb7fc;
   padding: 10px 14px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-.action-icon{
+.action-icon {
   fill: rgb(174, 174, 174);
 }
 
@@ -280,26 +276,25 @@ nav{
     display: none;
 } */
 
-.break_nav{
+.break_nav {
   display: none;
 }
-.archive_card{
+.archive_card {
   position: absolute;
   right: 0;
   z-index: 1;
   width: 400px;
 }
 
-.code_card{
+.code_card {
   z-index: 20;
   position: absolute;
   right: 0;
-  max-height: 400px; 
-    overflow-y: auto;
+  max-height: 400px;
+  overflow-y: auto;
   max-width: 360px;
- 
 }
-.code_card label{
+.code_card label {
   text-align: left;
 }
 
@@ -308,10 +303,10 @@ nav{
 }
 
 .accordion svg {
-  transition: all 1s cubic-bezier(0, .5, 0, 1);
+  transition: all 1s cubic-bezier(0, 0.5, 0, 1);
 }
 
-.ref{
+.ref {
   font-size: 1rem;
   font-weight: bold;
   top: 80px;
@@ -321,25 +316,25 @@ nav{
 }
 
 @media (max-width: 600px) {
-  .ref{
-    font-size: .8rem;
+  .ref {
+    font-size: 0.8rem;
   }
-  .archive_card{
+  .archive_card {
     position: absolute;
     right: -220%;
     width: 300px;
     /* transform: translateX(-70%); */
   }
-  .code_card{
+  .code_card {
     right: 0px;
   }
-  .break_nav{
+  .break_nav {
     display: block;
   }
-  .code{
+  .code {
     padding: 5px;
   }
-  .code > span{
+  .code > span {
     padding: 0;
     overflow: auto;
     font-size: 10px;
@@ -356,7 +351,6 @@ nav{
   top: 20px;
   transform: translateX(-100%);
 }
-
 
 .globalcheck {
   cursor: pointer;
@@ -376,7 +370,7 @@ nav{
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(34,50,84,0.03);
+  background: rgba(34, 50, 84, 0.03);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -388,7 +382,7 @@ nav{
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke: #c8ccd4;
-  strokeWidth: 1.5;
+  strokewidth: 1.5;
   transform: translate3d(0, 0, 0);
   transition: all 0.2s ease;
 }
@@ -426,11 +420,10 @@ nav{
   transition-delay: 0.15s;
 }
 
-
 .checkbox-wrapper-11 {
   --text: #414856;
-  --check: #4F29F0;
-  --disabled: #C3C8DE;
+  --check: #4f29f0;
+  --disabled: #c3c8de;
   --border-radius: 10px;
   border-radius: var(--border-radius);
   position: relative;
@@ -453,7 +446,7 @@ nav{
 }
 
 .checkbox-wrapper-11 label::before,
-  .checkbox-wrapper-11 label::after {
+.checkbox-wrapper-11 label::after {
   content: "";
   position: absolute;
 }
@@ -475,7 +468,7 @@ nav{
   border-radius: 50%; */
 }
 
-.checkbox-wrapper-11 input[type=checkbox] {
+.checkbox-wrapper-11 input[type="checkbox"] {
   border-color: #2c2722f7;
   border: 2px solid !important;
   -webkit-appearance: none;
@@ -492,17 +485,19 @@ nav{
   align-items: center;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]:checked{
+.checkbox-wrapper-11 input[type="checkbox"]:checked {
   border-color: #2c2722f7;
   border: 2px solid;
   background-color: transparent;
 }
-.checkbox-wrapper-11 input[type=checkbox]:hover{
+.checkbox-wrapper-11 input[type="checkbox"]:hover {
   border-color: #2c2722f7;
-  border: 2px solid;  background-color: transparent;
+  border: 2px solid;
+  background-color: transparent;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]::before, .checkbox-wrapper-11 input[type=checkbox]::after {
+.checkbox-wrapper-11 input[type="checkbox"]::before,
+.checkbox-wrapper-11 input[type="checkbox"]::after {
   content: "";
   position: absolute;
   height: 2px;
@@ -511,42 +506,42 @@ nav{
   border-radius: 2px;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]::before {
+.checkbox-wrapper-11 input[type="checkbox"]::before {
   width: 0px;
   right: 60%;
   transform-origin: right bottom;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]::after {
+.checkbox-wrapper-11 input[type="checkbox"]::after {
   width: 0px;
   left: 40%;
   transform-origin: left bottom;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]:checked::before {
+.checkbox-wrapper-11 input[type="checkbox"]:checked::before {
   -webkit-animation: check-01-11 0.4s ease forwards;
   animation: check-01-11 0.4s ease forwards;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]:checked::after {
+.checkbox-wrapper-11 input[type="checkbox"]:checked::after {
   -webkit-animation: check-02-11 0.4s ease forwards;
   animation: check-02-11 0.4s ease forwards;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]:checked + label {
+.checkbox-wrapper-11 input[type="checkbox"]:checked + label {
   color: var(--primary-color);
   font-weight: 600;
   /* -webkit-animation: move-11 0.3s ease 0.1s forwards;
   animation: move-11 0.3s ease 0.1s forwards; */
 }
 
-.checkbox-wrapper-11 input[type=checkbox]:checked + label::before {
+.checkbox-wrapper-11 input[type="checkbox"]:checked + label::before {
   background: var(--disabled);
   -webkit-animation: slice-11 0.4s ease forwards;
   animation: slice-11 0.4s ease forwards;
 }
 
-.checkbox-wrapper-11 input[type=checkbox]:checked + label::after {
+.checkbox-wrapper-11 input[type="checkbox"]:checked + label::after {
   -webkit-animation: firework-11 0.5s ease forwards 0.1s;
   animation: firework-11 0.5s ease forwards 0.1s;
 }
@@ -706,7 +701,8 @@ nav{
 @-webkit-keyframes firework-11 {
   0% {
     opacity: 1;
-    box-shadow: 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0;
+    box-shadow: 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0;
   }
 
   30% {
@@ -715,14 +711,17 @@ nav{
 
   100% {
     opacity: 0;
-    box-shadow: 0 -15px 0 0px #4F29F0, 14px -8px 0 0px #4F29F0, 14px 8px 0 0px #4F29F0, 0 15px 0 0px #4F29F0, -14px 8px 0 0px #4F29F0, -14px -8px 0 0px #4F29F0;
+    box-shadow: 0 -15px 0 0px #4f29f0, 14px -8px 0 0px #4f29f0,
+      14px 8px 0 0px #4f29f0, 0 15px 0 0px #4f29f0, -14px 8px 0 0px #4f29f0,
+      -14px -8px 0 0px #4f29f0;
   }
 }
 
 @keyframes firework-11 {
   0% {
     opacity: 1;
-    box-shadow: 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0, 0 0 0 -2px #4F29F0;
+    box-shadow: 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0,
+      0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0, 0 0 0 -2px #4f29f0;
   }
 
   30% {
@@ -731,7 +730,9 @@ nav{
 
   100% {
     opacity: 0;
-    box-shadow: 0 -15px 0 0px #4F29F0, 14px -8px 0 0px #4F29F0, 14px 8px 0 0px #4F29F0, 0 15px 0 0px #4F29F0, -14px 8px 0 0px #4F29F0, -14px -8px 0 0px #4F29F0;
+    box-shadow: 0 -15px 0 0px #4f29f0, 14px -8px 0 0px #4f29f0,
+      14px 8px 0 0px #4f29f0, 0 15px 0 0px #4f29f0, -14px 8px 0 0px #4f29f0,
+      -14px -8px 0 0px #4f29f0;
   }
 }
 /* end code */
@@ -841,15 +842,6 @@ button:hover .button-text {
   color: #fff;
 }
 
-
-
-
-
-
-
-
-
-
 .button-back {
   display: flex;
   height: 3em;
@@ -865,14 +857,14 @@ button:hover .button-text {
   background: #fff;
 }
 
-.button-back>svg {
+.button-back > svg {
   margin-right: 5px;
   margin-left: 5px;
   font-size: 20px;
   transition: all 0.4s ease-in;
 }
 
-.button-back:hover>svg {
+.button-back:hover > svg {
   font-size: 1.2em;
   transform: translateX(-5px);
 }
@@ -885,8 +877,6 @@ button:hover .button-text {
 .chat_box p {
   margin-bottom: 10px;
 }
-
-
 
 /* start new chat button */
 /* Note that you only needs to edit the config to customize the button! */
@@ -913,7 +903,8 @@ button:hover .button-text {
   right: 0;
   width: 0;
   height: 0;
-  border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
+  border-width: 0 var(--plus_topRightTriangleSideLength)
+    var(--plus_topRightTriangleSideLength) 0;
   border-style: solid;
   border-color: transparent white transparent transparent;
   transition-timing-function: ease-in-out;
@@ -932,7 +923,7 @@ button:hover .button-text {
   --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
 }
 
-.plusButton>.plusIcon {
+.plusButton > .plusIcon {
   fill: white;
   width: calc(var(--plus_sideLength) * 0.7);
   height: calc(var(--plus_sideLength) * 0.7);
@@ -941,12 +932,12 @@ button:hover .button-text {
   transition-duration: 0.2s;
 }
 
-.plusButton:hover>.plusIcon {
+.plusButton:hover > .plusIcon {
   fill: black;
   transform: rotate(180deg);
 }
 
-.plusButton:focus-visible>.plusIcon {
+.plusButton:focus-visible > .plusIcon {
   fill: black;
   transform: rotate(180deg);
 }
@@ -967,7 +958,7 @@ button:hover .button-text {
   overflow: hidden;
   transition-duration: 0.3s;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
-  background-color: transparent
+  background-color: transparent;
 }
 
 .history_card {
@@ -1006,7 +997,6 @@ button:hover .button-text {
   border: 1px solid #ddd; /* Adjust border as needed */
   border-radius: 5px; /* Adjust border radius as needed */
 }
-
 
 /* plus sign */
 .svgWrapper {
@@ -1061,36 +1051,75 @@ button:hover .button-text {
 }
 
 @media (max-width: 600px) {
-  .Btn_history:hover .svgWrapper{
+  .Btn_history:hover .svgWrapper {
     padding-right: 0;
   }
-  .Btn_history:hover{
+  .Btn_history:hover {
     width: 45px;
   }
 }
 
 /* end history chat button */
 
-
 /* start table */
 .chat_box table {
   border: 2px solid #282828;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chat_box table th {
   border: 2px solid #000;
-  padding: 5px 5px;
-
+  padding: 10px 12px;
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-align: left;
+  color: #333;
 }
 
 .chat_box table tr td {
-  border: 2px solid #282828;
-  padding: 5px 5px;
+  border: 2px solid #d1d5db;
+  padding: 8px 12px;
+  background-color: #fff;
+  color: #555;
+}
 
+.chat_box table tr:hover {
+  background-color: #f9fafb;
+}
+
+.chat_box table thead {
+  border-bottom: 3px solid #1e293b;
+}
+
+/* Markdown table specific styles */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  text-align: left;
+  color: #1f2937;
+}
+
+.markdown-content table td {
+  color: #555;
+}
+
+.markdown-content table tr:nth-child(even) {
+  background-color: #f9fafb;
 }
 
 /* end table */
-
 
 /* start list */
 ul {
@@ -1170,22 +1199,21 @@ ul.roman-numerals li:before {
 /* end loading */
 
 /* start profile */
-#profile_bannar{
+#profile_bannar {
   background-color: #000;
   width: 100%;
-  background-image: url('../assets/profile/profile_bannar.jpg');
+  background-image: url("../assets/profile/profile_bannar.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 }
 
-
-/* From Uiverse.io by Cornerstone-04 */ 
+/* From Uiverse.io by Cornerstone-04 */
 .box_profile {
   width: 140px;
   height: auto;
   float: left;
-  transition: .5s linear;
+  transition: 0.5s linear;
   position: relative;
   display: block;
   overflow: hidden;
@@ -1199,7 +1227,7 @@ ul.roman-numerals li:before {
 
 .box_profile:before {
   position: absolute;
-  content: '';
+  content: "";
   left: 0;
   bottom: 0;
   height: 4px;
@@ -1212,7 +1240,7 @@ ul.roman-numerals li:before {
 
 .box_profile:after {
   position: absolute;
-  content: '';
+  content: "";
   top: 0;
   left: 0;
   width: 100%;
@@ -1231,13 +1259,13 @@ ul.roman-numerals li:before {
   background: transparent;
 }
 /* end profile */
-.user_row{
+.user_row {
   border-bottom: 1px solid rgb(201, 201, 201);
 }
-/* From Uiverse.io by Bodyhc */ 
+/* From Uiverse.io by Bodyhc */
 .checkbox-wrapper-16 *,
-  .checkbox-wrapper-16 *:after,
-  .checkbox-wrapper-16 *:before {
+.checkbox-wrapper-16 *:after,
+.checkbox-wrapper-16 *:before {
   box-sizing: border-box;
 }
 
@@ -1259,14 +1287,14 @@ ul.roman-numerals li:before {
 }
 
 .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile:before {
-  transform: scale(.5);
+  transform: scale(0.5);
   opacity: 1;
   background-color: #2260ff;
   border-color: #2260ff;
 }
 
 .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-icon,
-  .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-label {
+.checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-label {
   color: #2260ff;
 }
 
@@ -1341,44 +1369,42 @@ ul.roman-numerals li:before {
   text-align: center;
 }
 
-#listRef{
-  
+#listRef {
 }
 
-.code{
-  width: 22vw
+.code {
+  width: 22vw;
 }
 
-#ref-Pc{
+#ref-Pc {
   display: block;
 }
-#ref-Mob{
+#ref-Mob {
   display: none;
 }
 
 @media (max-width: 800px) {
-  #ref-Mob{
+  #ref-Mob {
     display: flex;
   }
-  #ref-Pc{
+  #ref-Pc {
     display: none;
   }
 }
 
-.mob #code-btn{
+.mob #code-btn {
   text-align: start;
-  background-color: #1E293B;
+  background-color: #1e293b;
 }
-.mob .dropdown-container{
+.mob .dropdown-container {
   width: 100% !important;
 }
 
-.chat_card ul{
+.chat_card ul {
   padding-inline-start: 40px;
   list-style-type: circle;
-
 }
-.filter-input{
+.filter-input {
   border: none;
   background-color: transparent;
   outline: none;
@@ -1386,6 +1412,6 @@ ul.roman-numerals li:before {
   min-width: 120px;
 }
 
-.dashboard_table{
+.dashboard_table {
   min-height: 550px;
 }
