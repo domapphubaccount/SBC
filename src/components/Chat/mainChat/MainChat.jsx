@@ -267,48 +267,82 @@ function MainChat({ windowWidth }) {
       });
     }
 
-    return (
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        className="markdown-content"
-        components={{
-          table: ({ node, ...props }) => (
-            <div className="overflow-x-auto my-4">
-              <table
-                className="min-w-full border-collapse border border-gray-300"
+    // Check if data contains a markdown table (lines with |)
+    const hasTable = /\|.*\|/.test(data);
+
+    // If it contains a table, use ReactMarkdown for proper table rendering
+    if (hasTable) {
+      return (
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          className="markdown-content"
+          components={{
+            table: ({ node, ...props }) => (
+              <div className="overflow-x-auto my-4">
+                <table
+                  className="min-w-full border-collapse border border-gray-300"
+                  {...props}
+                />
+              </div>
+            ),
+            thead: ({ node, ...props }) => (
+              <thead className="bg-gray-100" {...props} />
+            ),
+            th: ({ node, ...props }) => (
+              <th
+                className="border border-gray-300 px-4 py-2 text-left font-semibold"
                 {...props}
               />
-            </div>
-          ),
-          thead: ({ node, ...props }) => (
-            <thead className="bg-gray-100" {...props} />
-          ),
-          th: ({ node, ...props }) => (
-            <th
-              className="border border-gray-300 px-4 py-2 text-left font-semibold"
-              {...props}
-            />
-          ),
-          td: ({ node, ...props }) => (
-            <td className="border border-gray-300 px-4 py-2" {...props} />
-          ),
-          tr: ({ node, ...props }) => (
-            <tr className="hover:bg-gray-50" {...props} />
-          ),
-          p: ({ node, ...props }) => <p className="mb-2" {...props} />,
-          ul: ({ node, ...props }) => (
-            <ul className="list-disc ml-4 mb-2" {...props} />
-          ),
-          ol: ({ node, ...props }) => (
-            <ol className="list-decimal ml-4 mb-2" {...props} />
-          ),
-          li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+            ),
+            td: ({ node, ...props }) => (
+              <td className="border border-gray-300 px-4 py-2" {...props} />
+            ),
+            tr: ({ node, ...props }) => (
+              <tr className="hover:bg-gray-50" {...props} />
+            ),
+            p: ({ node, ...props }) => <p className="mb-2" {...props} />,
+            ul: ({ node, ...props }) => (
+              <ul className="list-disc ml-4 mb-2" {...props} />
+            ),
+            ol: ({ node, ...props }) => (
+              <ol className="list-decimal ml-4 mb-2" {...props} />
+            ),
+            li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+          }}
+        >
+          {data}
+        </ReactMarkdown>
+      );
+    }
+
+    // For plain text without tables, use dangerouslySetInnerHTML
+    return (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: data,
         }}
-      >
-        {data}
-      </ReactMarkdown>
+      />
     );
   };
+
+  // const textHandler = (item) => {
+  //   let data = item;
+
+  //   if (data.match(pattern)) {
+  //     const matches = data.match(pattern);
+  //     matches.forEach((match) => {
+  //       data = data.replaceAll(match, "");
+  //     });
+  //   }
+
+  //   return (
+  //     <span
+  //       dangerouslySetInnerHTML={{
+  //         __html: data,
+  //       }}
+  //     />
+  //   );
+  // };
 
   // Scroll to the bottom function
   const scrollToBottom = () => {
