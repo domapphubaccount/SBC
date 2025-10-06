@@ -39,8 +39,6 @@ import { MathJax, MathJaxContext } from "better-react-mathjax";
 import "boxicons/css/boxicons.min.css";
 import MultipleSelect from "../code/code";
 import { Accordion } from "flowbite-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 function MainChat({ windowWidth }) {
   const pathName = usePathname();
@@ -257,6 +255,102 @@ function MainChat({ windowWidth }) {
 
   const pattern = /\[source:\s*(.*?)\s*\]/gi;
 
+  // Function to convert markdown tables to HTML tables
+  const convertMarkdownTableToHtml = (markdownText) => {
+    // Split the text by lines
+    const lines = markdownText.split("\n");
+    let html = "";
+    let inTable = false;
+    let tableRows = [];
+    let isFirstRow = true;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      // Check if line is a table row (contains |)
+      if (line.includes("|") && line.split("|").length > 2) {
+        if (!inTable) {
+          inTable = true;
+          tableRows = [];
+          isFirstRow = true;
+        }
+
+        // Skip separator line (contains only |, -, and :)
+        if (/^[\|\s\-:]+$/.test(line)) {
+          continue;
+        }
+
+        // Parse table row
+        const cells = line
+          .split("|")
+          .slice(1, -1) // Remove first and last empty strings (before first | and after last |)
+          .map((cell) => cell.trim()); // Trim whitespace but keep empty cells
+
+        tableRows.push({
+          cells: cells,
+          isHeader: isFirstRow,
+        });
+
+        isFirstRow = false;
+      } else {
+        // If we were in a table, close it
+        if (inTable) {
+          html += generateHtmlTable(tableRows);
+          tableRows = [];
+          inTable = false;
+        }
+
+        // Add non-table content
+        if (line) {
+          html += line + "\n";
+        } else {
+          html += "\n";
+        }
+      }
+    }
+
+    // Close any remaining table
+    if (inTable && tableRows.length > 0) {
+      html += generateHtmlTable(tableRows);
+    }
+
+    return html;
+  };
+
+  // Generate HTML table from parsed rows
+  const generateHtmlTable = (rows) => {
+    if (rows.length === 0) return "";
+
+    let html =
+      '<div class="overflow-x-auto my-4"><table class="min-w-full border-collapse border border-gray-300">';
+
+    // Generate thead if first row is header
+    if (rows[0].isHeader) {
+      html += '<thead class="bg-gray-100"><tr>';
+      rows[0].cells.forEach((cell) => {
+        html += `<th class="border border-gray-300 px-4 py-2 text-left font-semibold">${cell}</th>`;
+      });
+      html += "</tr></thead>";
+      rows = rows.slice(1);
+    }
+
+    // Generate tbody
+    if (rows.length > 0) {
+      html += "<tbody>";
+      rows.forEach((row) => {
+        html += '<tr class="hover:bg-gray-50">';
+        row.cells.forEach((cell) => {
+          html += `<td class="border border-gray-300 px-4 py-2">${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+      html += "</tbody>";
+    }
+
+    html += "</table></div>";
+    return html;
+  };
+
   const textHandler = (item) => {
     let data = item;
 
@@ -270,48 +364,15 @@ function MainChat({ windowWidth }) {
     // Check if data contains a markdown table (lines with |)
     const hasTable = /\|.*\|/.test(data);
 
-    // If it contains a table, use ReactMarkdown for proper table rendering
+    // If it contains a table, convert markdown table to HTML
     if (hasTable) {
+      const htmlContent = convertMarkdownTableToHtml(data);
       return (
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          className="markdown-content"
-          components={{
-            table: ({ node, ...props }) => (
-              <div className="overflow-x-auto my-4">
-                <table
-                  className="min-w-full border-collapse border border-gray-300"
-                  {...props}
-                />
-              </div>
-            ),
-            thead: ({ node, ...props }) => (
-              <thead className="bg-gray-100" {...props} />
-            ),
-            th: ({ node, ...props }) => (
-              <th
-                className="border border-gray-300 px-4 py-2 text-left font-semibold"
-                {...props}
-              />
-            ),
-            td: ({ node, ...props }) => (
-              <td className="border border-gray-300 px-4 py-2" {...props} />
-            ),
-            tr: ({ node, ...props }) => (
-              <tr className="hover:bg-gray-50" {...props} />
-            ),
-            p: ({ node, ...props }) => <p className="mb-2" {...props} />,
-            ul: ({ node, ...props }) => (
-              <ul className="list-disc ml-4 mb-2" {...props} />
-            ),
-            ol: ({ node, ...props }) => (
-              <ol className="list-decimal ml-4 mb-2" {...props} />
-            ),
-            li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+        <span
+          dangerouslySetInnerHTML={{
+            __html: htmlContent,
           }}
-        >
-          {data}
-        </ReactMarkdown>
+        />
       );
     }
 
