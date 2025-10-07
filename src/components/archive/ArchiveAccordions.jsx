@@ -121,8 +121,8 @@ function TailwindAccordion() {
       dispatch(loading_main_chat(true));
       // dispatch(loading_chat(true));
       dispatch(loading_get_chat_history(true));
-      localStorage.setItem("chat", chat_id);
-      localStorage.setItem("hints", false);
+      sessionStorage.setItem("chat", chat_id);
+      sessionStorage.setItem("hints", false);
     }
   };
   const handleDeleteChate = (handleChat) => {
@@ -142,26 +142,26 @@ function TailwindAccordion() {
         }
       )
       .then((response) => {
-        console.log("debug",response)
+        console.log("debug", response);
         if (response) {
-          console.log("debug")
+          console.log("debug");
           dispatch(loading_chat_action(false));
           setDeleteToggle(false);
-          
+
           if (handleChat.id == conversation.id) {
-            console.log("debug2")
-            localStorage.removeItem("chat");
-            localStorage.setItem("hints", true);
+            console.log("debug2");
+            sessionStorage.removeItem("chat");
+            sessionStorage.setItem("hints", true);
             setHandleChat({});
             dispatch(choseChate(null));
             dispatch(getConversation([]));
           }
-          console.log("debug3")
+          console.log("debug3");
           dispatch(update_archive());
           setOpen(false);
           setAction(true);
           setTimeout(() => setAction(false), 1500);
-          console.log("debug4")
+          console.log("debug4");
         }
       })
       .catch((error) => {

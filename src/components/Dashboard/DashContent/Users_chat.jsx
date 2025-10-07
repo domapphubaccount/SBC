@@ -29,8 +29,8 @@ function Users_chat() {
     dispatch(choseChate(id));
     dispatch(loading_main_chat(true));
     dispatch(loading_get_chat_history(true));
-    localStorage.setItem("chat", id);
-    localStorage.setItem("hints", false);
+    sessionStorage.setItem("chat", id);
+    sessionStorage.setItem("hints", false);
     navigate.push("/");
   };
 
@@ -69,12 +69,11 @@ function Users_chat() {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-      // Clear the date filter if no range is selected
-      setSearchTerms((prev) => ({
-        ...prev,
-        created_at: start && end ? { start, end } : "",
-      }));
-    
+    // Clear the date filter if no range is selected
+    setSearchTerms((prev) => ({
+      ...prev,
+      created_at: start && end ? { start, end } : "",
+    }));
   };
 
   const filteredData = masterUsersChat?.filter((row) =>
@@ -91,7 +90,7 @@ function Users_chat() {
       }
 
       if (startDate && endDate) {
-        console.log(row)
+        console.log(row);
         const rowDate = convertToDate(row[column]); // Assuming 'last_seen' is the key
         return rowDate >= startDate && rowDate <= endDate;
       }

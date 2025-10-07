@@ -58,13 +58,13 @@ function Header({ path }) {
     dispatch(set_direct_code([]));
   };
 
-  let test = typeof window != "undefined" && localStorage.getItem("hints");
+  let test = typeof window != "undefined" && sessionStorage.getItem("hints");
 
   useEffect(() => {
     setIsClient(true); // Ensure client-side rendering
     const updateRunState = () => {
-      const hints = localStorage.getItem("hints");
-      const chat = localStorage.getItem("chat");
+      const hints = sessionStorage.getItem("hints");
+      const chat = sessionStorage.getItem("chat");
 
       if ((hints === null || hints === "true") && chatCode) {
         setRun(true);
@@ -76,20 +76,9 @@ function Header({ path }) {
     // Initial run state
     updateRunState();
 
-    // Listen for storage events
-    const handleStorageChange = (event) => {
-      if (event.key === "hints" || event.key === "chat") {
-        updateRunState();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    // Cleanup listener on unmount
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    // Note: Removed storage event listener since sessionStorage doesn't sync across tabs
+    // This prevents unwanted auto-refresh when multiple tabs are open
+  }, [chatCode]);
 
   const steps = [
     {

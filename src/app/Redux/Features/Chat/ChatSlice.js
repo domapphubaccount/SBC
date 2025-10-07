@@ -27,7 +27,7 @@ export const getChatAction = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       if (error?.response?.status === 401) {
-        dispatch(removeAuthAction())
+        dispatch(removeAuthAction());
         RemoveAuth();
       }
       return rejectWithValue(error.response.data);
@@ -60,9 +60,9 @@ export const addQuestionAction = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
-      console.log('debug')
+      console.log("debug");
       if (error?.response?.status === 401) {
-        dispatch(removeAuthAction())
+        dispatch(removeAuthAction());
         RemoveAuth();
       }
       // if (Errors.some((item) => item.error.includes(error?.response.status))) {
@@ -133,8 +133,8 @@ export const chatSlice = createSlice({
       state.loading = false;
     },
     chat_out: (state, action) => {
-      localStorage.removeItem("chat");
-      localStorage.setItem("hints",true)
+      sessionStorage.removeItem("chat");
+      sessionStorage.setItem("hints", true);
       return {
         ...state,
         value: 0,

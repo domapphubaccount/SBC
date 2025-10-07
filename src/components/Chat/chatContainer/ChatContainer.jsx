@@ -55,20 +55,15 @@ function ChatContainer() {
 
   useEffect(() => {
     if (token && pathName.slice(0, 9) != "/sharable") {
-      if (catchChat || localStorage.getItem("chat") || chatCode) {
+      // Only load chat if explicitly selected (catchChat) or from history, not from storage
+      if (catchChat) {
         axios
-          .get(
-            `${config.api}get_chat/${
-              (localStorage.getItem("chat") && localStorage.getItem("chat")) ||
-              catchChat
-            }`,
-            {
-              headers: {
-                Accept: "*/*",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
+          .get(`${config.api}get_chat/${catchChat}`, {
+            headers: {
+              Accept: "*/*",
+              Authorization: `Bearer ${token}`,
+            },
+          })
           .then((response) => {
             if (response.data) {
               let { userChats } = response.data.data;
@@ -79,32 +74,6 @@ function ChatContainer() {
               // dispatch(set_direct_code(lastQuestionCode)); //here
 
               dispatch(getChatCode(lastQuestionCode));
-              dispatch(getConversation(response.data.data));
-              dispatch(getChatData(response.data.data.userChats));
-              dispatch(dispatch(loading_main_chat(false)));
-              dispatch(loading_get_chat_history(false));
-            }
-          })
-          .catch((error) => {
-            console.error("There was an error making the request!", error);
-          });
-      } else if (
-        dashboardData.chat_history &&
-        Object.entries(dashboardData.chat_history).length >= 1 &&
-        catchChat === null
-      ) {
-        const chat_id = Object.entries(dashboardData?.chat_history)[0][1][0]
-          ?.id;
-        axios
-          .get(`${config.api}get-chat/${chat_id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            if (response) {
               dispatch(getConversation(response.data.data));
               dispatch(getChatData(response.data.data.userChats));
               dispatch(dispatch(loading_main_chat(false)));

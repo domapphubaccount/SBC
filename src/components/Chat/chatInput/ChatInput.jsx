@@ -132,11 +132,11 @@ function ChatInput() {
             dispatch(setTypeValue(true));
             dispatch(update());
             if (!chatslice) {
-              localStorage.setItem(
+              sessionStorage.setItem(
                 "chat",
                 response?.data?.data?.master_chat_id
               );
-              localStorage.setItem("hints", false);
+              sessionStorage.setItem("hints", false);
               dispatch(choseChate(response.data?.data?.master_chat_id));
             }
             setMessage("");
@@ -192,7 +192,7 @@ function ChatInput() {
 
     // Check if it's an English character
     const isEnglishChar = /^[A-Za-z]$/.test(firstChar);
-  
+
     // Set direction
     setDir(isEnglishChar);
   }
@@ -328,8 +328,6 @@ function ChatInput() {
             <span style={{ color: "#2C518E" }}>ARABIA</span>
           </span>
         </div>
-
-
         Verify crucial details for accuracy by cross-referencing with reliable
         sources.
       </div>

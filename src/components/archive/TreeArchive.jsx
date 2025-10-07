@@ -32,7 +32,7 @@ export default function TreeArchive() {
 
   // Get archive data
   React.useEffect(() => {
-    console.log("update")
+    console.log("update");
     dispatch(getHistoryAction({ token }));
   }, [updates, updateDashboard, token]);
 
@@ -42,8 +42,8 @@ export default function TreeArchive() {
       dispatch(choseChate(chat_id));
       dispatch(loading_main_chat(true));
       dispatch(loading_get_chat_history(true));
-      localStorage.setItem("chat", chat_id);
-      localStorage.setItem("hints",false)
+      sessionStorage.setItem("chat", chat_id);
+      sessionStorage.setItem("hints", false);
     }
   };
 
@@ -69,7 +69,9 @@ export default function TreeArchive() {
                             innerItem[1].share_name
                           )
                         }
-                        className={`${innerItem[1].id === chatid && 'bg-slate-300'}`}
+                        className={`${
+                          innerItem[1].id === chatid && "bg-slate-300"
+                        }`}
                         key={innerIndex}
                         itemId={`grid-community-${outerIndex}-${innerIndex}`} // Unique ID
                         label={
